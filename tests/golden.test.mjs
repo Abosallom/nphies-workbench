@@ -38,6 +38,38 @@ test("the official samples are present and each resolves to one structure", () =
   assert.ok(cases.length >= 60, `expected at least 60 official samples, found ${cases.length}`);
 });
 
+/*
+ * Every use case, not just the ones with a sample.
+ *
+ * `saml-sso` has no field tables at all — it cites four Confluence pages as unresolved refs —
+ * and resolution used to treat one of those as a field bundle, throw on the missing
+ * `fields/saml.json`, and leave the surface reporting "no compiled structure". Nothing caught
+ * it because every other suite iterates the golden samples, and that use case has none.
+ */
+test("every use case in the manifest resolves to a usable structure", async () => {
+  const registry = await workbench.loadRegistry();
+  const failures = [];
+  for (const entry of registry.entries) {
+    try {
+      const structures = await workbench.structuresFor(entry.summary.id);
+      if (!structures.length) {
+        failures.push(`${entry.summary.id}: no structures`);
+        continue;
+      }
+      for (const structure of structures) {
+        const resolved = await workbench.resolve(entry.summary.id, structure.variant ?? structure.id);
+        if (!resolved) failures.push(`${entry.summary.id}/${structure.id}: resolve returned null`);
+        else if (!resolved.structure.root.members.length) {
+          failures.push(`${entry.summary.id}/${structure.id}: the structure has no members`);
+        }
+      }
+    } catch (err) {
+      failures.push(`${entry.summary.id}: ${err.message}`);
+    }
+  }
+  assert.deepEqual(failures, [], `use cases that do not resolve:\n${failures.join("\n")}`);
+});
+
 test("every official sample parses against its compiled structure", async () => {
   const failures = [];
   for (const c of cases) {

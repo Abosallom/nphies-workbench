@@ -1,7 +1,7 @@
 # Resume notes
 
 The app is complete and running. `npx tsc --noEmit -p tsconfig.app.json` is clean,
-`npm run build` succeeds, and `npm test` passes 14 tests — including one that drives the built
+`npm run build` succeeds, and `npm test` passes 15 tests — including one that drives the built
 bundle in a real browser.
 
 ## Run it
@@ -48,7 +48,17 @@ Each was a confidently-wrong verdict or a hang, found by the round-trip or mutat
    the deployed build alike. Nothing caught it because the Node suites install their own
    resolver and the SSR suite runs under Vite's Node transform. `tests/browser.test.mjs` now
    drives the built bundle in headless Chrome so this class of bug cannot return.
-8. **The compiled CDA body locator was hard-coded to `structuredBody`**, so the official
+8. **`resolveUseCase` threw on `saml-sso`** — the SAML structure cites four Confluence pages
+   as `specRefs` marked `resolved: false`, and resolution treated one as a field table, tried
+   to load a `fields/saml.json` that by design does not exist, and left the surface saying "no
+   compiled structure". Unresolved refs and unshipped families are now skipped, and a test
+   resolves EVERY use case rather than only the ones with a golden sample.
+9. **Clicking a finding emptied the findings pane** — findings were scoped to the selection by
+   path TEXT, but a finding's path is the checker's (`ADT^A03/MSH/MSH-6`) and a node's is built
+   from labels (`Message Header/Receiving Facility`), so they never matched and the pane
+   reported "nothing to report" about the element that had just reported something. Scoping is
+   by node id now, with a path fallback for findings about something absent.
+10. **The compiled CDA body locator was hard-coded to `structuredBody`**, so the official
    Radiology Results Embedded PDF sample was told it had no body. Fixed in
    `scripts/compile-spec.mjs`; re-running the compiler changes exactly that one field.
 

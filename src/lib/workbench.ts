@@ -470,9 +470,13 @@ export async function analyse(
 ): Promise<Analysis> {
   const guess = detectEncoding(text);
   const encodingMismatch =
-    guess.encoding !== "unknown" && guess.encoding !== structure.encoding
-      ? `This looks like ${ENCODING_LABEL[guess.encoding]} — ${guess.because} — but ${structure.title} is ${ENCODING_LABEL[structure.encoding]}.`
-      : null;
+    guess.encoding === structure.encoding
+      ? null
+      : guess.encoding === "unknown"
+        ? // Saying nothing here left an analyst reading "MSH is required but missing" about a
+          // paste that was never a message at all.
+          `This does not look like a message the workbench recognises — ${guess.because}. ${structure.title} is ${ENCODING_LABEL[structure.encoding]}; the findings below assume it was meant to be one.`
+        : `This looks like ${ENCODING_LABEL[guess.encoding]} — ${guess.because} — but ${structure.title} is ${ENCODING_LABEL[structure.encoding]}.`;
 
   const parse = await parseMessage(text, structure, resolved);
   if (parse.failure) {

@@ -102,9 +102,11 @@ test("the built app loads the compiled spec and works end to end", { skip }, asy
     await evaluate(
       `[...document.querySelectorAll("button")].find((b) => /Check structure/.test(b.textContent)).click()`,
     );
+    // Scope to the pane: the use-case rail is a tree too, so a bare [role="treeitem"] count
+    // passes on the rail alone and proves nothing about the message.
     const treeRows = await waitFor(
       evaluate,
-      `document.querySelectorAll('[role="treeitem"]').length`,
+      `document.querySelectorAll('[aria-label="Message structure"] [role="treeitem"]').length`,
       "the structure tree",
       30000,
     );
@@ -124,9 +126,53 @@ test("the built app loads the compiled spec and works end to end", { skip }, asy
     );
     assert.ok(findings > 0, "the findings pane is empty for a message with known defects");
 
+    /*
+     * Clicking a finding must not empty the list it came from.
+     *
+     * Findings are scoped to the selection, and the scope used to be matched on path TEXT: a
+     * finding's path is the checker's (`ADT^A03/MSH/MSH-6`), a node's is built from labels
+     * (`Message Header/Receiving Facility`). They never matched, so selecting a finding
+     * reported "nothing to report" about the element that had just reported something.
+     */
+    const afterClick = await evaluate(`(() => {
+      const head = [...document.querySelectorAll("span")].find((s) => s.textContent.trim() === "Findings");
+      const pane = head?.closest("div")?.parentElement;
+      const row = [...pane.querySelectorAll('[role="button"]')].find((r) =>
+        [...r.querySelectorAll("button")].some((b) => /reveal/i.test(b.textContent)),
+      );
+      if (!row) return null;
+      row.click();
+      return new Promise((r) =>
+        setTimeout(
+          () =>
+            r({
+              stillListed: pane.querySelectorAll('[role="button"]').length,
+              markedSelected: document.querySelectorAll('[aria-pressed="true"]').length,
+              // The structure pane names the selected node as a path, e.g.
+              // "Message Header/Receiving Facility". Injected code carries no newline
+              // escapes: a template literal turns one into a real line break and the page
+              // then sees an unterminated string.
+              treeFollowed: (
+                document.querySelector('[aria-label="Structure and findings"]')?.innerText || ""
+              ).includes("/"),
+            }),
+          700,
+        ),
+      );
+    })()`);
+    assert.ok(afterClick, "no finding offered a reveal affordance");
+    assert.ok(afterClick.stillListed > 0, "clicking a finding emptied the findings pane");
+    assert.equal(afterClick.markedSelected, 1, "the clicked finding is not marked as selected");
+    assert.ok(afterClick.treeFollowed, "the structure pane did not follow the selection");
+
     /* --- the other surfaces -------------------------------------------- */
     await evaluate(`[...document.querySelectorAll("button")].find((b) => b.textContent.trim() === "Explain").click()`);
-    const rules = await waitFor(evaluate, `document.querySelectorAll('[role="treeitem"]').length`, "the rule tree", 25000);
+    const rules = await waitFor(
+      evaluate,
+      `document.querySelectorAll('[aria-label="Structure rules"] [role="treeitem"]').length`,
+      "the rule tree",
+      25000,
+    );
     assert.ok(rules > 10, `Explain rendered ${rules} rule rows`);
 
     await evaluate(`[...document.querySelectorAll("button")].find((b) => b.textContent.trim() === "Build").click()`);

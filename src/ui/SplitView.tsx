@@ -298,21 +298,46 @@ export function SplitView({
   /* ---- right pane filters --------------------------------------------- */
   const [hideIgnored, setHideIgnored] = useState(hideIgnoredByDefault);
 
-  /** Findings scoped to the selection: exact path, or descendants of it. */
+  /**
+   * Findings scoped to the selection.
+   *
+   * Scoped by NODE ID, not by path text. A finding's `path` is the checker's own
+   * (`ADT^A03/MSH/MSH-6`), while a node's is built from labels
+   * (`Message Header/Receiving Facility`) — comparing the two never matches, so clicking a
+   * finding used to empty the very list it was in and report "nothing to report" about an
+   * element that had just reported something.
+   *
+   * A finding with no region is about something ABSENT, so it has no node to be scoped by;
+   * those fall back to path text, which is all there is.
+   */
   const scopedFindings = useMemo(() => {
-    const path = selectedNode?.path ?? selectedRegion?.path ?? null;
     const list = hideIgnored
       ? findings.filter((f) => f.severity !== "ignored")
       : findings;
-    const scoped = path
-      ? list.filter((f) => f.path === path || f.path.startsWith(path + "/"))
-      : list;
+
+    const anchor = selectedNode ?? (selectedRegion ? nodeById.get(nodeByRegion.get(selectedRegion.id) ?? "") : null);
+    let scoped = list;
+    if (anchor) {
+      const ids = new Set<string>();
+      const walk = (n: StructureNode) => {
+        ids.add(n.id);
+        for (const child of n.children ?? []) walk(child);
+      };
+      walk(anchor);
+      const path = anchor.path;
+      scoped = list.filter(
+        (f) =>
+          (f.regionId && ids.has(f.regionId)) ||
+          (!f.regionId && (f.path === path || f.path.startsWith(`${path}/`))),
+      );
+    }
+
     return [...scoped].sort(
       (a, b) =>
         SEVERITY_ORDER[a.severity] - SEVERITY_ORDER[b.severity] ||
         (a.line ?? 0) - (b.line ?? 0),
     );
-  }, [findings, selectedNode, selectedRegion, hideIgnored]);
+  }, [findings, selectedNode, selectedRegion, hideIgnored, nodeById, nodeByRegion]);
 
   const counts = useMemo(() => {
     const c: Record<Severity, number> = {
@@ -496,6 +521,7 @@ export function SplitView({
 
         <div className="min-h-0 flex-1">
           <StructureTree
+            aria-label="Message structure"
             nodes={tree}
             hideIgnored={hideIgnored}
             selectedId={selection?.nodeId ?? null}

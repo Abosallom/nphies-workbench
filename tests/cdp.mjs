@@ -105,9 +105,31 @@ export async function withPage(url, run, { port = 9333 } = {}) {
     await send("Runtime.enable");
     await send("Page.enable");
 
+    /*
+     * Everything crosses the wire as JSON.
+     *
+     * `returnByValue` on a raw expression asks Chrome to serialise whatever it evaluates to,
+     * and it refuses a DOM node or anything deeply linked with "Object reference chain is too
+     * long". Stringifying inside the page removes the question: what comes back is always a
+     * string, and an accidental element serialises to `{}` instead of failing the call.
+     */
     const evaluate = async (expression) => {
+      const wrapped = `(async () => {
+        const value = await (async () => (${expression}))();
+        const seen = new WeakSet();
+        return JSON.stringify(value ?? null, (_k, v) => {
+          // A DOM node carries React's fibers, which are cyclic; describe it instead.
+          if (v instanceof Node) return "<" + (v.nodeName || "node").toLowerCase() + ">";
+          if (typeof v === "object" && v !== null) {
+            if (seen.has(v)) return "[circular]";
+            seen.add(v);
+          }
+          if (typeof v === "function") return "[function]";
+          return v;
+        });
+      })()`;
       const result = await send("Runtime.evaluate", {
-        expression,
+        expression: wrapped,
         awaitPromise: true,
         returnByValue: true,
       });
@@ -116,7 +138,7 @@ export async function withPage(url, run, { port = 9333 } = {}) {
           `page threw: ${result.exceptionDetails.exception?.description ?? result.exceptionDetails.text}`,
         );
       }
-      return result.result.value;
+      return result.result.value === undefined ? null : JSON.parse(result.result.value);
     };
 
     await send("Page.navigate", { url });
@@ -132,7 +154,12 @@ export async function withPage(url, run, { port = 9333 } = {}) {
       // already gone
     }
     proc.kill("SIGKILL");
-    fs.rmSync(profile, { recursive: true, force: true });
+    // Chrome writes to its profile as it dies, so a plain rm races it.
+    try {
+      fs.rmSync(profile, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 });
+    } catch {
+      // A leftover temp profile is not worth failing a test over.
+    }
   }
 }
 

@@ -1542,7 +1542,15 @@ export async function resolveUseCase(useCaseId: string, variant?: string): Promi
 
   const refs = new Set<string>();
   const collect = (list: SpecRef[] | undefined) => {
-    for (const ref of list ?? []) refs.add(`${ref.family}|${ref.ref}`);
+    for (const ref of list ?? []) {
+      // A ref the compiler marked UNRESOLVED is a pointer to a page, not a field table. The
+      // SAML structure carries four of them — "the literal samlp:Response skeleton", "the
+      // five-bullet workflow prose" — and treating one as a bundle made this function throw
+      // on a `fields/saml.json` that by design does not exist, which took the entire use case
+      // down to "no compiled structure".
+      if ((ref as { resolved?: boolean }).resolved === false) continue;
+      refs.add(`${ref.family}|${ref.ref}`);
+    }
   };
   collect(structure.specRefs);
   walkStructure(structure, (member) => collect(member.specRefs));
@@ -1552,10 +1560,16 @@ export async function resolveUseCase(useCaseId: string, variant?: string): Promi
   const families = new Set<SpecFamily>();
   for (const key of refs) families.add(key.split("|")[0] as SpecFamily);
   const loaded = new Map<SpecFamily, FieldBundle>();
+  // Only families the bundle actually ships. A structure may cite a family that has no field
+  // tables at all (SAML has none), and that is a gap in the SPEC, not a reason to refuse to
+  // resolve the message shape — which is compiled, complete, and usable on its own.
+  const shipped = new Set(Object.keys(manifest.files?.fields ?? {}));
   await Promise.all(
-    [...families].map(async (family) => {
-      loaded.set(family, await loadFields(family));
-    }),
+    [...families]
+      .filter((family) => shipped.has(family))
+      .map(async (family) => {
+        loaded.set(family, await loadFields(family));
+      }),
   );
   for (const key of refs) {
     const [family, ref] = key.split("|") as [SpecFamily, string];
