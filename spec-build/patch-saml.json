@@ -1,0 +1,3138 @@
+{
+  "$schema": "nphies-workbench/patch-saml@1",
+  "patchId": "patch-saml",
+  "generatedBy": "SAML structure pass (gate blocker 1: saml-sso had no compiled MessageStructure)",
+  "targets": {
+    "useCaseId": "saml-sso",
+    "structureId": "saml-sso-response",
+    "addsTo": "structures.messageStructures",
+    "buildsOn": "spec-build/constants.json -> saml (environments, attributeNames, responseSkeleton)"
+  },
+  "sourcePages": [
+    {
+      "pageId": "7766254",
+      "title": "Generating & Signing SAML Message -NEW",
+      "use": "the literal samlp:Response skeleton and the variable list; the signing section"
+    },
+    {
+      "pageId": "7766237",
+      "title": "SAML Attributes and Metadata Synchronization-NEW",
+      "use": "per-environment Audience/Recipient/Endpoint; the three EMR/HIS attributes; key exchange"
+    },
+    {
+      "pageId": "7766173",
+      "title": "NPHIES-CS Single Sign On (SSO)",
+      "use": "terminology (Issuer, Audience, Recipient, Organization) and the three-variable definition"
+    },
+    {
+      "pageId": "7766210",
+      "title": "SAML SSO high Level and Sequence Diagrams-NEW",
+      "use": "the five-bullet workflow prose; the two diagrams are IMAGES and were NOT read"
+    }
+  ],
+  "structure": {
+    "id": "saml-sso-response",
+    "useCaseId": "saml-sso",
+    "variant": null,
+    "variantLabel": null,
+    "family": "saml",
+    "encoding": "saml-xml",
+    "title": "SAML SSO Response (samlp:Response)",
+    "direction": "request",
+    "confidence": "medium",
+    "verifiedAgainstSample": false,
+    "envelope": null,
+    "specRefs": [],
+    "root": {
+      "id": "saml-sso-response",
+      "kind": "group",
+      "label": "samlp:Response",
+      "repeats": false,
+      "usage": [
+        {
+          "usage": "R",
+          "condition": null,
+          "min": 1,
+          "max": 1,
+          "validator": "error-if-missing",
+          "raw": {
+            "usage": null,
+            "cardinality": null
+          }
+        }
+      ],
+      "provenance": {
+        "pageId": "7766254",
+        "pageTitle": "Generating & Signing SAML Message -NEW",
+        "row": "SAML Sample XML (without signature tag) line 1",
+        "quote": "<samlp:Response xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" Destination=\"https://iam.cs-ona.nphies.sa/nphies-sso/saml\" ID=\"id-P5g-XB-x0soSL0daHMUf7s2QsCVZdyWYeskA-1JK\" IssueInstant=\"2025-04-22T08:14:46Z\" Version=\"2.0\">"
+      },
+      "guidance": "The whole SAML SSO message is one samlp:Response document, sent by the EMR/HIS (acting as Identity Provider) to the NPHIES SSO endpoint.",
+      "members": [
+        {
+          "id": "saml-sso-response/samlp:Response#51",
+          "kind": "element",
+          "label": "samlp:Response",
+          "number": null,
+          "locator": {
+            "kind": "cdaXPath",
+            "path": "samlp:Response"
+          },
+          "repeats": false,
+          "usage": [
+            {
+              "usage": "R",
+              "condition": null,
+              "min": 1,
+              "max": 1,
+              "validator": "error-if-missing",
+              "raw": {
+                "usage": null,
+                "cardinality": null
+              }
+            }
+          ],
+          "role": "structural",
+          "sourceTier": "literal-skeleton",
+          "fixedValues": [],
+          "valueSets": [],
+          "members": [
+            {
+              "id": "saml-sso-response/@Destination#1",
+              "kind": "element",
+              "label": "@Destination",
+              "number": null,
+              "locator": {
+                "kind": "cdaXPath",
+                "path": "samlp:Response",
+                "relativeTo": "/samlp:Response",
+                "attribute": "Destination"
+              },
+              "repeats": false,
+              "usage": [
+                {
+                  "usage": "R",
+                  "condition": null,
+                  "min": 1,
+                  "max": 1,
+                  "validator": "error-if-missing",
+                  "raw": {
+                    "usage": null,
+                    "cardinality": null
+                  }
+                }
+              ],
+              "role": "structural",
+              "sourceTier": "literal-skeleton",
+              "fixedValues": [
+                {
+                  "value": null,
+                  "target": "Destination",
+                  "statementType": "environmentDependent",
+                  "scope": "attribute",
+                  "elementPath": "samlp:Response",
+                  "attribute": "Destination",
+                  "component": null,
+                  "provenance": {
+                    "pageId": "7766254",
+                    "pageTitle": "Generating & Signing SAML Message -NEW",
+                    "row": "SAML Sample XML (without signature tag) line 1",
+                    "quote": "<samlp:Response xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" Destination=\"https://iam.cs-ona.nphies.sa/nphies-sso/saml\" ID=\"id-P5g-XB-x0soSL0daHMUf7s2QsCVZdyWYeskA-1JK\" IssueInstant=\"2025-04-22T08:14:46Z\" Version=\"2.0\">"
+                  }
+                }
+              ],
+              "valueSets": [],
+              "members": [],
+              "note": null,
+              "guidance": "Per-environment value. The skeleton on page 7766254 is the ONA sample; page 7766237 gives the ONA / ONB / Production values. See this patch's `environments` map, keyed by this member id.",
+              "provenance": {
+                "pageId": "7766254",
+                "pageTitle": "Generating & Signing SAML Message -NEW",
+                "row": "SAML Sample XML (without signature tag) line 1",
+                "quote": "<samlp:Response xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" Destination=\"https://iam.cs-ona.nphies.sa/nphies-sso/saml\" ID=\"id-P5g-XB-x0soSL0daHMUf7s2QsCVZdyWYeskA-1JK\" IssueInstant=\"2025-04-22T08:14:46Z\" Version=\"2.0\">"
+              },
+              "environmentDependent": "endpoint"
+            },
+            {
+              "id": "saml-sso-response/@ID#2",
+              "kind": "element",
+              "label": "@ID",
+              "number": null,
+              "locator": {
+                "kind": "cdaXPath",
+                "path": "samlp:Response",
+                "relativeTo": "/samlp:Response",
+                "attribute": "ID"
+              },
+              "repeats": false,
+              "usage": [
+                {
+                  "usage": "R",
+                  "condition": null,
+                  "min": 1,
+                  "max": 1,
+                  "validator": "error-if-missing",
+                  "raw": {
+                    "usage": null,
+                    "cardinality": null
+                  }
+                }
+              ],
+              "role": "structural",
+              "sourceTier": "literal-skeleton",
+              "fixedValues": [],
+              "valueSets": [],
+              "members": [],
+              "note": null,
+              "guidance": "Per-message unique response id. The skeleton's value 'id-P5g-XB-x0soSL0daHMUf7s2QsCVZdyWYeskA-1JK' is sample data, not a constant. Confluence states no format rule for it.",
+              "provenance": {
+                "pageId": "7766254",
+                "pageTitle": "Generating & Signing SAML Message -NEW",
+                "row": "SAML Sample XML (without signature tag) line 1",
+                "quote": "<samlp:Response xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" Destination=\"https://iam.cs-ona.nphies.sa/nphies-sso/saml\" ID=\"id-P5g-XB-x0soSL0daHMUf7s2QsCVZdyWYeskA-1JK\" IssueInstant=\"2025-04-22T08:14:46Z\" Version=\"2.0\">"
+              }
+            },
+            {
+              "id": "saml-sso-response/@IssueInstant#3",
+              "kind": "element",
+              "label": "@IssueInstant",
+              "number": null,
+              "locator": {
+                "kind": "cdaXPath",
+                "path": "samlp:Response",
+                "relativeTo": "/samlp:Response",
+                "attribute": "IssueInstant"
+              },
+              "repeats": false,
+              "usage": [
+                {
+                  "usage": "R",
+                  "condition": null,
+                  "min": 1,
+                  "max": 1,
+                  "validator": "error-if-missing",
+                  "raw": {
+                    "usage": null,
+                    "cardinality": null
+                  }
+                }
+              ],
+              "role": "structural",
+              "sourceTier": "literal-skeleton",
+              "fixedValues": [],
+              "valueSets": [],
+              "members": [],
+              "note": null,
+              "guidance": "UTC instant, rendered in the skeleton as '2025-04-22T08:14:46Z'. Confluence states no explicit format or skew rule; the format is read off the sample value only.",
+              "provenance": {
+                "pageId": "7766254",
+                "pageTitle": "Generating & Signing SAML Message -NEW",
+                "row": "SAML Sample XML (without signature tag) line 1",
+                "quote": "<samlp:Response xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" Destination=\"https://iam.cs-ona.nphies.sa/nphies-sso/saml\" ID=\"id-P5g-XB-x0soSL0daHMUf7s2QsCVZdyWYeskA-1JK\" IssueInstant=\"2025-04-22T08:14:46Z\" Version=\"2.0\">"
+              }
+            },
+            {
+              "id": "saml-sso-response/@Version#4",
+              "kind": "element",
+              "label": "@Version",
+              "number": null,
+              "locator": {
+                "kind": "cdaXPath",
+                "path": "samlp:Response",
+                "relativeTo": "/samlp:Response",
+                "attribute": "Version"
+              },
+              "repeats": false,
+              "usage": [
+                {
+                  "usage": "R",
+                  "condition": null,
+                  "min": 1,
+                  "max": 1,
+                  "validator": "error-if-missing",
+                  "raw": {
+                    "usage": null,
+                    "cardinality": null
+                  }
+                }
+              ],
+              "role": "structural",
+              "sourceTier": "literal-skeleton",
+              "fixedValues": [
+                {
+                  "value": "2.0",
+                  "target": "Version",
+                  "statementType": "attributeFixedValue",
+                  "scope": "attribute",
+                  "elementPath": "samlp:Response",
+                  "attribute": "Version",
+                  "component": null,
+                  "provenance": {
+                    "pageId": "7766254",
+                    "pageTitle": "Generating & Signing SAML Message -NEW",
+                    "row": "SAML Sample XML (without signature tag) line 1",
+                    "quote": "<samlp:Response xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" Destination=\"https://iam.cs-ona.nphies.sa/nphies-sso/saml\" ID=\"id-P5g-XB-x0soSL0daHMUf7s2QsCVZdyWYeskA-1JK\" IssueInstant=\"2025-04-22T08:14:46Z\" Version=\"2.0\">"
+                  }
+                }
+              ],
+              "valueSets": [],
+              "members": [],
+              "note": null,
+              "guidance": null,
+              "provenance": {
+                "pageId": "7766254",
+                "pageTitle": "Generating & Signing SAML Message -NEW",
+                "row": "SAML Sample XML (without signature tag) line 1",
+                "quote": "<samlp:Response xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" Destination=\"https://iam.cs-ona.nphies.sa/nphies-sso/saml\" ID=\"id-P5g-XB-x0soSL0daHMUf7s2QsCVZdyWYeskA-1JK\" IssueInstant=\"2025-04-22T08:14:46Z\" Version=\"2.0\">"
+              }
+            },
+            {
+              "id": "saml-sso-response/saml:Issuer#10",
+              "kind": "element",
+              "label": "saml:Issuer",
+              "number": null,
+              "locator": {
+                "kind": "cdaXPath",
+                "path": "saml:Issuer",
+                "relativeTo": "/samlp:Response"
+              },
+              "repeats": false,
+              "usage": [
+                {
+                  "usage": "R",
+                  "condition": null,
+                  "min": 1,
+                  "max": 1,
+                  "validator": "error-if-missing",
+                  "raw": {
+                    "usage": null,
+                    "cardinality": null
+                  }
+                }
+              ],
+              "role": "data",
+              "sourceTier": "literal-skeleton",
+              "fixedValues": [],
+              "valueSets": [],
+              "members": [
+                {
+                  "id": "saml-sso-response/@xmlns:saml#8",
+                  "kind": "element",
+                  "label": "@xmlns:saml",
+                  "number": null,
+                  "locator": {
+                    "kind": "cdaXPath",
+                    "path": "saml:Issuer",
+                    "relativeTo": "/samlp:Response",
+                    "attribute": "xmlns:saml"
+                  },
+                  "repeats": false,
+                  "usage": [
+                    {
+                      "usage": "R",
+                      "condition": null,
+                      "min": 1,
+                      "max": 1,
+                      "validator": "error-if-missing",
+                      "raw": {
+                        "usage": null,
+                        "cardinality": null
+                      }
+                    }
+                  ],
+                  "role": "structural",
+                  "sourceTier": "literal-skeleton",
+                  "fixedValues": [
+                    {
+                      "value": "urn:oasis:names:tc:SAML:2.0:assertion",
+                      "target": "xmlns:saml",
+                      "statementType": "attributeFixedValue",
+                      "scope": "attribute",
+                      "elementPath": "saml:Issuer",
+                      "attribute": "xmlns:saml",
+                      "component": null,
+                      "provenance": {
+                        "pageId": "7766254",
+                        "pageTitle": "Generating & Signing SAML Message -NEW",
+                        "row": "SAML Sample XML (without signature tag) line 2",
+                        "quote": "  <saml:Issuer xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\" Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:entity\">Deemaalqassem</saml:Issuer>"
+                      }
+                    }
+                  ],
+                  "valueSets": [],
+                  "members": [],
+                  "note": null,
+                  "guidance": null,
+                  "provenance": {
+                    "pageId": "7766254",
+                    "pageTitle": "Generating & Signing SAML Message -NEW",
+                    "row": "SAML Sample XML (without signature tag) line 2",
+                    "quote": "  <saml:Issuer xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\" Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:entity\">Deemaalqassem</saml:Issuer>"
+                  }
+                },
+                {
+                  "id": "saml-sso-response/@Format#9",
+                  "kind": "element",
+                  "label": "@Format",
+                  "number": null,
+                  "locator": {
+                    "kind": "cdaXPath",
+                    "path": "saml:Issuer",
+                    "relativeTo": "/samlp:Response",
+                    "attribute": "Format"
+                  },
+                  "repeats": false,
+                  "usage": [
+                    {
+                      "usage": "R",
+                      "condition": null,
+                      "min": 1,
+                      "max": 1,
+                      "validator": "error-if-missing",
+                      "raw": {
+                        "usage": null,
+                        "cardinality": null
+                      }
+                    }
+                  ],
+                  "role": "structural",
+                  "sourceTier": "literal-skeleton",
+                  "fixedValues": [
+                    {
+                      "value": "urn:oasis:names:tc:SAML:2.0:nameid-format:entity",
+                      "target": "Format",
+                      "statementType": "attributeFixedValue",
+                      "scope": "attribute",
+                      "elementPath": "saml:Issuer",
+                      "attribute": "Format",
+                      "component": null,
+                      "provenance": {
+                        "pageId": "7766254",
+                        "pageTitle": "Generating & Signing SAML Message -NEW",
+                        "row": "SAML Sample XML (without signature tag) line 2",
+                        "quote": "  <saml:Issuer xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\" Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:entity\">Deemaalqassem</saml:Issuer>"
+                      }
+                    }
+                  ],
+                  "valueSets": [],
+                  "members": [],
+                  "note": null,
+                  "guidance": null,
+                  "provenance": {
+                    "pageId": "7766254",
+                    "pageTitle": "Generating & Signing SAML Message -NEW",
+                    "row": "SAML Sample XML (without signature tag) line 2",
+                    "quote": "  <saml:Issuer xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\" Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:entity\">Deemaalqassem</saml:Issuer>"
+                  }
+                }
+              ],
+              "note": null,
+              "guidance": "Carries VARIABLE 1 of 4, 'Issuer name'. Page 7766254: 'Issuer name: The issuer name is a unique identifier of the consumers.' The same value appears again at /samlp:Response/saml:Assertion/saml:Issuer; the two must agree. The skeleton's 'Deemaalqassem' is sample data.",
+              "provenance": {
+                "pageId": "7766254",
+                "pageTitle": "Generating & Signing SAML Message -NEW",
+                "row": "SAML Sample XML (without signature tag) line 2",
+                "quote": "  <saml:Issuer xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\" Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:entity\">Deemaalqassem</saml:Issuer>"
+              },
+              "variableSlot": "Issuer name"
+            },
+            {
+              "id": "saml-sso-response/samlp:Status#7",
+              "kind": "element",
+              "label": "samlp:Status",
+              "number": null,
+              "locator": {
+                "kind": "cdaXPath",
+                "path": "samlp:Status",
+                "relativeTo": "/samlp:Response"
+              },
+              "repeats": false,
+              "usage": [
+                {
+                  "usage": "R",
+                  "condition": null,
+                  "min": 1,
+                  "max": 1,
+                  "validator": "error-if-missing",
+                  "raw": {
+                    "usage": null,
+                    "cardinality": null
+                  }
+                }
+              ],
+              "role": "structural",
+              "sourceTier": "literal-skeleton",
+              "fixedValues": [],
+              "valueSets": [],
+              "members": [
+                {
+                  "id": "saml-sso-response/samlp:StatusCode#6",
+                  "kind": "element",
+                  "label": "samlp:StatusCode",
+                  "number": null,
+                  "locator": {
+                    "kind": "cdaXPath",
+                    "path": "samlp:StatusCode",
+                    "relativeTo": "/samlp:Response/samlp:Status"
+                  },
+                  "repeats": false,
+                  "usage": [
+                    {
+                      "usage": "R",
+                      "condition": null,
+                      "min": 1,
+                      "max": 1,
+                      "validator": "error-if-missing",
+                      "raw": {
+                        "usage": null,
+                        "cardinality": null
+                      }
+                    }
+                  ],
+                  "role": "structural",
+                  "sourceTier": "literal-skeleton",
+                  "fixedValues": [],
+                  "valueSets": [],
+                  "members": [
+                    {
+                      "id": "saml-sso-response/@Value#5",
+                      "kind": "element",
+                      "label": "@Value",
+                      "number": null,
+                      "locator": {
+                        "kind": "cdaXPath",
+                        "path": "samlp:StatusCode",
+                        "relativeTo": "/samlp:Response/samlp:Status",
+                        "attribute": "Value"
+                      },
+                      "repeats": false,
+                      "usage": [
+                        {
+                          "usage": "R",
+                          "condition": null,
+                          "min": 1,
+                          "max": 1,
+                          "validator": "error-if-missing",
+                          "raw": {
+                            "usage": null,
+                            "cardinality": null
+                          }
+                        }
+                      ],
+                      "role": "structural",
+                      "sourceTier": "literal-skeleton",
+                      "fixedValues": [
+                        {
+                          "value": "urn:oasis:names:tc:SAML:2.0:status:Success",
+                          "target": "Value",
+                          "statementType": "attributeFixedValue",
+                          "scope": "attribute",
+                          "elementPath": "samlp:StatusCode",
+                          "attribute": "Value",
+                          "component": null,
+                          "provenance": {
+                            "pageId": "7766254",
+                            "pageTitle": "Generating & Signing SAML Message -NEW",
+                            "row": "SAML Sample XML (without signature tag) line 4",
+                            "quote": "    <samlp:StatusCode Value=\"urn:oasis:names:tc:SAML:2.0:status:Success\"/>"
+                          }
+                        }
+                      ],
+                      "valueSets": [],
+                      "members": [],
+                      "note": null,
+                      "guidance": "The skeleton shows only the Success status code. Confluence documents no failure-status shape for SSO, so a non-Success StatusCode is outside this structure.",
+                      "provenance": {
+                        "pageId": "7766254",
+                        "pageTitle": "Generating & Signing SAML Message -NEW",
+                        "row": "SAML Sample XML (without signature tag) line 4",
+                        "quote": "    <samlp:StatusCode Value=\"urn:oasis:names:tc:SAML:2.0:status:Success\"/>"
+                      }
+                    }
+                  ],
+                  "note": null,
+                  "guidance": null,
+                  "provenance": {
+                    "pageId": "7766254",
+                    "pageTitle": "Generating & Signing SAML Message -NEW",
+                    "row": "SAML Sample XML (without signature tag) line 4",
+                    "quote": "    <samlp:StatusCode Value=\"urn:oasis:names:tc:SAML:2.0:status:Success\"/>"
+                  }
+                }
+              ],
+              "note": "Rendered on the page as bare text 'samlp:Status' — Confluence's auto-linker turned the opening tag into an href=\"#\" anchor and swallowed its angle brackets. The closing </samlp:Status> on the next line survives, so the element is certain. See `skeletonRepairs`.",
+              "guidance": null,
+              "provenance": {
+                "pageId": "7766254",
+                "pageTitle": "Generating & Signing SAML Message -NEW",
+                "row": "SAML Sample XML (without signature tag) line 3",
+                "quote": "  samlp:Status"
+              }
+            },
+            {
+              "id": "saml-sso-response/saml:Assertion#50",
+              "kind": "element",
+              "label": "saml:Assertion",
+              "number": null,
+              "locator": {
+                "kind": "cdaXPath",
+                "path": "saml:Assertion",
+                "relativeTo": "/samlp:Response"
+              },
+              "repeats": false,
+              "usage": [
+                {
+                  "usage": "R",
+                  "condition": null,
+                  "min": 1,
+                  "max": 1,
+                  "validator": "error-if-missing",
+                  "raw": {
+                    "usage": null,
+                    "cardinality": null
+                  }
+                }
+              ],
+              "role": "structural",
+              "sourceTier": "literal-skeleton",
+              "fixedValues": [],
+              "valueSets": [],
+              "members": [
+                {
+                  "id": "saml-sso-response/@xmlns:saml#11",
+                  "kind": "element",
+                  "label": "@xmlns:saml",
+                  "number": null,
+                  "locator": {
+                    "kind": "cdaXPath",
+                    "path": "saml:Assertion",
+                    "relativeTo": "/samlp:Response",
+                    "attribute": "xmlns:saml"
+                  },
+                  "repeats": false,
+                  "usage": [
+                    {
+                      "usage": "R",
+                      "condition": null,
+                      "min": 1,
+                      "max": 1,
+                      "validator": "error-if-missing",
+                      "raw": {
+                        "usage": null,
+                        "cardinality": null
+                      }
+                    }
+                  ],
+                  "role": "structural",
+                  "sourceTier": "literal-skeleton",
+                  "fixedValues": [
+                    {
+                      "value": "urn:oasis:names:tc:SAML:2.0:assertion",
+                      "target": "xmlns:saml",
+                      "statementType": "attributeFixedValue",
+                      "scope": "attribute",
+                      "elementPath": "saml:Assertion",
+                      "attribute": "xmlns:saml",
+                      "component": null,
+                      "provenance": {
+                        "pageId": "7766254",
+                        "pageTitle": "Generating & Signing SAML Message -NEW",
+                        "row": "SAML Sample XML (without signature tag) line 6",
+                        "quote": "  <saml:Assertion xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\" ID=\"id-aiQo4xnqTnLKjLRs3ou3G-AazQXanNppvdRg-rMT\" IssueInstant=\"2025-04-22T08:14:46Z\" Version=\"2.0\">"
+                      }
+                    }
+                  ],
+                  "valueSets": [],
+                  "members": [],
+                  "note": null,
+                  "guidance": null,
+                  "provenance": {
+                    "pageId": "7766254",
+                    "pageTitle": "Generating & Signing SAML Message -NEW",
+                    "row": "SAML Sample XML (without signature tag) line 6",
+                    "quote": "  <saml:Assertion xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\" ID=\"id-aiQo4xnqTnLKjLRs3ou3G-AazQXanNppvdRg-rMT\" IssueInstant=\"2025-04-22T08:14:46Z\" Version=\"2.0\">"
+                  }
+                },
+                {
+                  "id": "saml-sso-response/@ID#12",
+                  "kind": "element",
+                  "label": "@ID",
+                  "number": null,
+                  "locator": {
+                    "kind": "cdaXPath",
+                    "path": "saml:Assertion",
+                    "relativeTo": "/samlp:Response",
+                    "attribute": "ID"
+                  },
+                  "repeats": false,
+                  "usage": [
+                    {
+                      "usage": "R",
+                      "condition": null,
+                      "min": 1,
+                      "max": 1,
+                      "validator": "error-if-missing",
+                      "raw": {
+                        "usage": null,
+                        "cardinality": null
+                      }
+                    }
+                  ],
+                  "role": "structural",
+                  "sourceTier": "literal-skeleton",
+                  "fixedValues": [],
+                  "valueSets": [],
+                  "members": [],
+                  "note": null,
+                  "guidance": "Per-message unique assertion id, distinct from the Response @ID. The skeleton's value is sample data. This is the id an Assertion-level ds:Signature references.",
+                  "provenance": {
+                    "pageId": "7766254",
+                    "pageTitle": "Generating & Signing SAML Message -NEW",
+                    "row": "SAML Sample XML (without signature tag) line 6",
+                    "quote": "  <saml:Assertion xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\" ID=\"id-aiQo4xnqTnLKjLRs3ou3G-AazQXanNppvdRg-rMT\" IssueInstant=\"2025-04-22T08:14:46Z\" Version=\"2.0\">"
+                  }
+                },
+                {
+                  "id": "saml-sso-response/@IssueInstant#13",
+                  "kind": "element",
+                  "label": "@IssueInstant",
+                  "number": null,
+                  "locator": {
+                    "kind": "cdaXPath",
+                    "path": "saml:Assertion",
+                    "relativeTo": "/samlp:Response",
+                    "attribute": "IssueInstant"
+                  },
+                  "repeats": false,
+                  "usage": [
+                    {
+                      "usage": "R",
+                      "condition": null,
+                      "min": 1,
+                      "max": 1,
+                      "validator": "error-if-missing",
+                      "raw": {
+                        "usage": null,
+                        "cardinality": null
+                      }
+                    }
+                  ],
+                  "role": "structural",
+                  "sourceTier": "literal-skeleton",
+                  "fixedValues": [],
+                  "valueSets": [],
+                  "members": [],
+                  "note": null,
+                  "guidance": "Equal to the Response @IssueInstant in the skeleton; Confluence does not state whether that is required.",
+                  "provenance": {
+                    "pageId": "7766254",
+                    "pageTitle": "Generating & Signing SAML Message -NEW",
+                    "row": "SAML Sample XML (without signature tag) line 6",
+                    "quote": "  <saml:Assertion xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\" ID=\"id-aiQo4xnqTnLKjLRs3ou3G-AazQXanNppvdRg-rMT\" IssueInstant=\"2025-04-22T08:14:46Z\" Version=\"2.0\">"
+                  }
+                },
+                {
+                  "id": "saml-sso-response/@Version#14",
+                  "kind": "element",
+                  "label": "@Version",
+                  "number": null,
+                  "locator": {
+                    "kind": "cdaXPath",
+                    "path": "saml:Assertion",
+                    "relativeTo": "/samlp:Response",
+                    "attribute": "Version"
+                  },
+                  "repeats": false,
+                  "usage": [
+                    {
+                      "usage": "R",
+                      "condition": null,
+                      "min": 1,
+                      "max": 1,
+                      "validator": "error-if-missing",
+                      "raw": {
+                        "usage": null,
+                        "cardinality": null
+                      }
+                    }
+                  ],
+                  "role": "structural",
+                  "sourceTier": "literal-skeleton",
+                  "fixedValues": [
+                    {
+                      "value": "2.0",
+                      "target": "Version",
+                      "statementType": "attributeFixedValue",
+                      "scope": "attribute",
+                      "elementPath": "saml:Assertion",
+                      "attribute": "Version",
+                      "component": null,
+                      "provenance": {
+                        "pageId": "7766254",
+                        "pageTitle": "Generating & Signing SAML Message -NEW",
+                        "row": "SAML Sample XML (without signature tag) line 6",
+                        "quote": "  <saml:Assertion xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\" ID=\"id-aiQo4xnqTnLKjLRs3ou3G-AazQXanNppvdRg-rMT\" IssueInstant=\"2025-04-22T08:14:46Z\" Version=\"2.0\">"
+                      }
+                    }
+                  ],
+                  "valueSets": [],
+                  "members": [],
+                  "note": null,
+                  "guidance": null,
+                  "provenance": {
+                    "pageId": "7766254",
+                    "pageTitle": "Generating & Signing SAML Message -NEW",
+                    "row": "SAML Sample XML (without signature tag) line 6",
+                    "quote": "  <saml:Assertion xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\" ID=\"id-aiQo4xnqTnLKjLRs3ou3G-AazQXanNppvdRg-rMT\" IssueInstant=\"2025-04-22T08:14:46Z\" Version=\"2.0\">"
+                  }
+                },
+                {
+                  "id": "saml-sso-response/saml:Issuer#16",
+                  "kind": "element",
+                  "label": "saml:Issuer",
+                  "number": null,
+                  "locator": {
+                    "kind": "cdaXPath",
+                    "path": "saml:Issuer",
+                    "relativeTo": "/samlp:Response/saml:Assertion"
+                  },
+                  "repeats": false,
+                  "usage": [
+                    {
+                      "usage": "R",
+                      "condition": null,
+                      "min": 1,
+                      "max": 1,
+                      "validator": "error-if-missing",
+                      "raw": {
+                        "usage": null,
+                        "cardinality": null
+                      }
+                    }
+                  ],
+                  "role": "data",
+                  "sourceTier": "literal-skeleton",
+                  "fixedValues": [],
+                  "valueSets": [],
+                  "members": [
+                    {
+                      "id": "saml-sso-response/@Format#15",
+                      "kind": "element",
+                      "label": "@Format",
+                      "number": null,
+                      "locator": {
+                        "kind": "cdaXPath",
+                        "path": "saml:Issuer",
+                        "relativeTo": "/samlp:Response/saml:Assertion",
+                        "attribute": "Format"
+                      },
+                      "repeats": false,
+                      "usage": [
+                        {
+                          "usage": "R",
+                          "condition": null,
+                          "min": 1,
+                          "max": 1,
+                          "validator": "error-if-missing",
+                          "raw": {
+                            "usage": null,
+                            "cardinality": null
+                          }
+                        }
+                      ],
+                      "role": "structural",
+                      "sourceTier": "literal-skeleton",
+                      "fixedValues": [
+                        {
+                          "value": "urn:oasis:names:tc:SAML:2.0:nameid-format:entity",
+                          "target": "Format",
+                          "statementType": "attributeFixedValue",
+                          "scope": "attribute",
+                          "elementPath": "saml:Issuer",
+                          "attribute": "Format",
+                          "component": null,
+                          "provenance": {
+                            "pageId": "7766254",
+                            "pageTitle": "Generating & Signing SAML Message -NEW",
+                            "row": "SAML Sample XML (without signature tag) line 7",
+                            "quote": "    <saml:Issuer Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:entity\">Deemaalqassem</saml:Issuer>"
+                          }
+                        }
+                      ],
+                      "valueSets": [],
+                      "members": [],
+                      "note": null,
+                      "guidance": null,
+                      "provenance": {
+                        "pageId": "7766254",
+                        "pageTitle": "Generating & Signing SAML Message -NEW",
+                        "row": "SAML Sample XML (without signature tag) line 7",
+                        "quote": "    <saml:Issuer Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:entity\">Deemaalqassem</saml:Issuer>"
+                      }
+                    }
+                  ],
+                  "note": null,
+                  "guidance": "Carries VARIABLE 1 of 4, 'Issuer name' — the same value as /samlp:Response/saml:Issuer. Unlike the Response-level Issuer this one does NOT re-declare xmlns:saml, because it inherits the declaration from saml:Assertion.",
+                  "provenance": {
+                    "pageId": "7766254",
+                    "pageTitle": "Generating & Signing SAML Message -NEW",
+                    "row": "SAML Sample XML (without signature tag) line 7",
+                    "quote": "    <saml:Issuer Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:entity\">Deemaalqassem</saml:Issuer>"
+                  },
+                  "variableSlot": "Issuer name"
+                },
+                {
+                  "id": "saml-sso-response/ds:Signature#17",
+                  "kind": "element",
+                  "label": "ds:Signature",
+                  "number": null,
+                  "locator": {
+                    "kind": "cdaXPath",
+                    "path": "ds:Signature",
+                    "relativeTo": "/samlp:Response/saml:Assertion"
+                  },
+                  "repeats": false,
+                  "usage": [
+                    {
+                      "usage": "R",
+                      "condition": null,
+                      "min": 1,
+                      "max": 1,
+                      "validator": "error-if-missing",
+                      "raw": {
+                        "usage": null,
+                        "cardinality": null
+                      }
+                    }
+                  ],
+                  "role": "structural",
+                  "sourceTier": "prose",
+                  "fixedValues": [],
+                  "valueSets": [],
+                  "members": [],
+                  "note": "POSITION NOT STATED BY CONFLUENCE. Page 7766254 says only that the response is signed 'Sign the Assertion way', i.e. the signature covers the saml:Assertion. It does not say where inside the Assertion the ds:Signature element sits, and the published skeleton is explicitly the version 'without signature tag'. This member is placed after saml:Issuer because that is where SAML 2.0 Core's schema puts it — an EXTERNAL fact, not a NPHIES one. Do not report a signature elsewhere in the Assertion as a NPHIES violation.",
+                  "guidance": "Signing itself is OUT OF SCOPE of the Confluence spec: 'To sign SAML responses, we use a Signing SAML tool that simplifies the process.' / 'Using this tool, you can paste an unsigned SAML Response, then sign it using the public and private X.509 certificates in the selected \"mode.\"' The page links an external tool (https://www.samltool.com/sign_response.php). No canonicalization method, digest method, signature method, transform or KeyInfo rule is stated anywhere in these pages, so none is modelled. That the signature is REQUIRED is stated elsewhere: page 7766173 'The Identity Provider responsible for issuing the signed SAML response' and page 7766210 'Oracle IAM validate SAML signature.'",
+                  "provenance": {
+                    "pageId": "7766254",
+                    "pageTitle": "Generating & Signing SAML Message -NEW",
+                    "row": "Sign SAML Response",
+                    "quote": "A SAML Response can be signed in:\nSign the Assertion way"
+                  },
+                  "confidence": "medium",
+                  "signaturePlacement": {
+                    "level": "assertion",
+                    "stated": "level-only",
+                    "responseLevelSigning": "Not mentioned. Page 7766254 lists exactly one option — 'Sign the Assertion way' — so Response-level signing is NOT asserted by this structure."
+                  }
+                },
+                {
+                  "id": "saml-sso-response/saml:Subject#25",
+                  "kind": "element",
+                  "label": "saml:Subject",
+                  "number": null,
+                  "locator": {
+                    "kind": "cdaXPath",
+                    "path": "saml:Subject",
+                    "relativeTo": "/samlp:Response/saml:Assertion"
+                  },
+                  "repeats": false,
+                  "usage": [
+                    {
+                      "usage": "R",
+                      "condition": null,
+                      "min": 1,
+                      "max": 1,
+                      "validator": "error-if-missing",
+                      "raw": {
+                        "usage": null,
+                        "cardinality": null
+                      }
+                    }
+                  ],
+                  "role": "structural",
+                  "sourceTier": "literal-skeleton",
+                  "fixedValues": [],
+                  "valueSets": [],
+                  "members": [
+                    {
+                      "id": "saml-sso-response/saml:NameID#19",
+                      "kind": "element",
+                      "label": "saml:NameID",
+                      "number": null,
+                      "locator": {
+                        "kind": "cdaXPath",
+                        "path": "saml:NameID",
+                        "relativeTo": "/samlp:Response/saml:Assertion/saml:Subject"
+                      },
+                      "repeats": false,
+                      "usage": [
+                        {
+                          "usage": "R",
+                          "condition": null,
+                          "min": 1,
+                          "max": 1,
+                          "validator": "error-if-missing",
+                          "raw": {
+                            "usage": null,
+                            "cardinality": null
+                          }
+                        }
+                      ],
+                      "role": "data",
+                      "sourceTier": "literal-skeleton",
+                      "fixedValues": [],
+                      "valueSets": [],
+                      "members": [
+                        {
+                          "id": "saml-sso-response/@Format#18",
+                          "kind": "element",
+                          "label": "@Format",
+                          "number": null,
+                          "locator": {
+                            "kind": "cdaXPath",
+                            "path": "saml:NameID",
+                            "relativeTo": "/samlp:Response/saml:Assertion/saml:Subject",
+                            "attribute": "Format"
+                          },
+                          "repeats": false,
+                          "usage": [
+                            {
+                              "usage": "R",
+                              "condition": null,
+                              "min": 1,
+                              "max": 1,
+                              "validator": "error-if-missing",
+                              "raw": {
+                                "usage": null,
+                                "cardinality": null
+                              }
+                            }
+                          ],
+                          "role": "structural",
+                          "sourceTier": "literal-skeleton",
+                          "fixedValues": [
+                            {
+                              "value": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
+                              "target": "Format",
+                              "statementType": "attributeFixedValue",
+                              "scope": "attribute",
+                              "elementPath": "saml:NameID",
+                              "attribute": "Format",
+                              "component": null,
+                              "provenance": {
+                                "pageId": "7766254",
+                                "pageTitle": "Generating & Signing SAML Message -NEW",
+                                "row": "SAML Sample XML (without signature tag) line 9",
+                                "quote": "      <saml:NameID Format=\"urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified\">1095650865</saml:NameID>"
+                              }
+                            }
+                          ],
+                          "valueSets": [],
+                          "members": [],
+                          "note": "SAML 1.1 name-id format, not 2.0 — that is what the page literally shows.",
+                          "guidance": null,
+                          "provenance": {
+                            "pageId": "7766254",
+                            "pageTitle": "Generating & Signing SAML Message -NEW",
+                            "row": "SAML Sample XML (without signature tag) line 9",
+                            "quote": "      <saml:NameID Format=\"urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified\">1095650865</saml:NameID>"
+                          }
+                        }
+                      ],
+                      "note": null,
+                      "guidance": "Carries VARIABLE 4 of 4, 'Provider ID'. Page 7766173: 'Provider ID - This is the national ID or Iqama number of the provider. The SAML response will validate the accuracy of this provider ID with the registry.' Page 7766237 calls the same item 'Practitioner ID (National ID/Iqama ID)'. The skeleton's '1095650865' is sample data.",
+                      "provenance": {
+                        "pageId": "7766254",
+                        "pageTitle": "Generating & Signing SAML Message -NEW",
+                        "row": "SAML Sample XML (without signature tag) line 9",
+                        "quote": "      <saml:NameID Format=\"urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified\">1095650865</saml:NameID>"
+                      },
+                      "variableSlot": "Provider ID"
+                    },
+                    {
+                      "id": "saml-sso-response/saml:SubjectConfirmation#24",
+                      "kind": "element",
+                      "label": "saml:SubjectConfirmation",
+                      "number": null,
+                      "locator": {
+                        "kind": "cdaXPath",
+                        "path": "saml:SubjectConfirmation",
+                        "relativeTo": "/samlp:Response/saml:Assertion/saml:Subject"
+                      },
+                      "repeats": false,
+                      "usage": [
+                        {
+                          "usage": "R",
+                          "condition": null,
+                          "min": 1,
+                          "max": 1,
+                          "validator": "error-if-missing",
+                          "raw": {
+                            "usage": null,
+                            "cardinality": null
+                          }
+                        }
+                      ],
+                      "role": "structural",
+                      "sourceTier": "literal-skeleton",
+                      "fixedValues": [],
+                      "valueSets": [],
+                      "members": [
+                        {
+                          "id": "saml-sso-response/@Method#20",
+                          "kind": "element",
+                          "label": "@Method",
+                          "number": null,
+                          "locator": {
+                            "kind": "cdaXPath",
+                            "path": "saml:SubjectConfirmation",
+                            "relativeTo": "/samlp:Response/saml:Assertion/saml:Subject",
+                            "attribute": "Method"
+                          },
+                          "repeats": false,
+                          "usage": [
+                            {
+                              "usage": "R",
+                              "condition": null,
+                              "min": 1,
+                              "max": 1,
+                              "validator": "error-if-missing",
+                              "raw": {
+                                "usage": null,
+                                "cardinality": null
+                              }
+                            }
+                          ],
+                          "role": "structural",
+                          "sourceTier": "literal-skeleton",
+                          "fixedValues": [
+                            {
+                              "value": "urn:oasis:names:tc:SAML:2.0:cm:bearer",
+                              "target": "Method",
+                              "statementType": "attributeFixedValue",
+                              "scope": "attribute",
+                              "elementPath": "saml:SubjectConfirmation",
+                              "attribute": "Method",
+                              "component": null,
+                              "provenance": {
+                                "pageId": "7766254",
+                                "pageTitle": "Generating & Signing SAML Message -NEW",
+                                "row": "SAML Sample XML (without signature tag) line 10",
+                                "quote": "      <saml:SubjectConfirmation Method=\"urn:oasis:names:tc:SAML:2.0:cm:bearer\">"
+                              }
+                            }
+                          ],
+                          "valueSets": [],
+                          "members": [],
+                          "note": null,
+                          "guidance": null,
+                          "provenance": {
+                            "pageId": "7766254",
+                            "pageTitle": "Generating & Signing SAML Message -NEW",
+                            "row": "SAML Sample XML (without signature tag) line 10",
+                            "quote": "      <saml:SubjectConfirmation Method=\"urn:oasis:names:tc:SAML:2.0:cm:bearer\">"
+                          }
+                        },
+                        {
+                          "id": "saml-sso-response/saml:SubjectConfirmationData#23",
+                          "kind": "element",
+                          "label": "saml:SubjectConfirmationData",
+                          "number": null,
+                          "locator": {
+                            "kind": "cdaXPath",
+                            "path": "saml:SubjectConfirmationData",
+                            "relativeTo": "/samlp:Response/saml:Assertion/saml:Subject/saml:SubjectConfirmation"
+                          },
+                          "repeats": false,
+                          "usage": [
+                            {
+                              "usage": "R",
+                              "condition": null,
+                              "min": 1,
+                              "max": 1,
+                              "validator": "error-if-missing",
+                              "raw": {
+                                "usage": null,
+                                "cardinality": null
+                              }
+                            }
+                          ],
+                          "role": "structural",
+                          "sourceTier": "literal-skeleton",
+                          "fixedValues": [],
+                          "valueSets": [],
+                          "members": [
+                            {
+                              "id": "saml-sso-response/@NotOnOrAfter#21",
+                              "kind": "element",
+                              "label": "@NotOnOrAfter",
+                              "number": null,
+                              "locator": {
+                                "kind": "cdaXPath",
+                                "path": "saml:SubjectConfirmationData",
+                                "relativeTo": "/samlp:Response/saml:Assertion/saml:Subject/saml:SubjectConfirmation",
+                                "attribute": "NotOnOrAfter"
+                              },
+                              "repeats": false,
+                              "usage": [
+                                {
+                                  "usage": "R",
+                                  "condition": null,
+                                  "min": 1,
+                                  "max": 1,
+                                  "validator": "error-if-missing",
+                                  "raw": {
+                                    "usage": null,
+                                    "cardinality": null
+                                  }
+                                }
+                              ],
+                              "role": "structural",
+                              "sourceTier": "literal-skeleton",
+                              "fixedValues": [],
+                              "valueSets": [],
+                              "members": [],
+                              "note": null,
+                              "guidance": "In the skeleton this is IssueInstant + 5 minutes (08:14:46Z -> 08:19:46Z), matching saml:Conditions/@NotOnOrAfter. Confluence never states a validity window, so the 5 minutes is an observation of one sample, NOT a rule.",
+                              "provenance": {
+                                "pageId": "7766254",
+                                "pageTitle": "Generating & Signing SAML Message -NEW",
+                                "row": "SAML Sample XML (without signature tag) line 11",
+                                "quote": "        <saml:SubjectConfirmationData NotOnOrAfter=\"2025-04-22T08:19:46Z\" Recipient=\"https://iam.cs-ona.nphies.sa/nphies-sso/saml\"/>"
+                              }
+                            },
+                            {
+                              "id": "saml-sso-response/@Recipient#22",
+                              "kind": "element",
+                              "label": "@Recipient",
+                              "number": null,
+                              "locator": {
+                                "kind": "cdaXPath",
+                                "path": "saml:SubjectConfirmationData",
+                                "relativeTo": "/samlp:Response/saml:Assertion/saml:Subject/saml:SubjectConfirmation",
+                                "attribute": "Recipient"
+                              },
+                              "repeats": false,
+                              "usage": [
+                                {
+                                  "usage": "R",
+                                  "condition": null,
+                                  "min": 1,
+                                  "max": 1,
+                                  "validator": "error-if-missing",
+                                  "raw": {
+                                    "usage": null,
+                                    "cardinality": null
+                                  }
+                                }
+                              ],
+                              "role": "structural",
+                              "sourceTier": "literal-skeleton",
+                              "fixedValues": [
+                                {
+                                  "value": null,
+                                  "target": "Recipient",
+                                  "statementType": "environmentDependent",
+                                  "scope": "attribute",
+                                  "elementPath": "saml:SubjectConfirmationData",
+                                  "attribute": "Recipient",
+                                  "component": null,
+                                  "provenance": {
+                                    "pageId": "7766254",
+                                    "pageTitle": "Generating & Signing SAML Message -NEW",
+                                    "row": "SAML Sample XML (without signature tag) line 11",
+                                    "quote": "        <saml:SubjectConfirmationData NotOnOrAfter=\"2025-04-22T08:19:46Z\" Recipient=\"https://iam.cs-ona.nphies.sa/nphies-sso/saml\"/>"
+                                  }
+                                }
+                              ],
+                              "valueSets": [],
+                              "members": [],
+                              "note": null,
+                              "guidance": "Per-environment value. The skeleton on page 7766254 is the ONA sample; page 7766237 gives the ONA / ONB / Production values. See this patch's `environments` map, keyed by this member id.",
+                              "provenance": {
+                                "pageId": "7766254",
+                                "pageTitle": "Generating & Signing SAML Message -NEW",
+                                "row": "SAML Sample XML (without signature tag) line 11",
+                                "quote": "        <saml:SubjectConfirmationData NotOnOrAfter=\"2025-04-22T08:19:46Z\" Recipient=\"https://iam.cs-ona.nphies.sa/nphies-sso/saml\"/>"
+                              },
+                              "environmentDependent": "recipient"
+                            }
+                          ],
+                          "note": null,
+                          "guidance": null,
+                          "provenance": {
+                            "pageId": "7766254",
+                            "pageTitle": "Generating & Signing SAML Message -NEW",
+                            "row": "SAML Sample XML (without signature tag) line 11",
+                            "quote": "        <saml:SubjectConfirmationData NotOnOrAfter=\"2025-04-22T08:19:46Z\" Recipient=\"https://iam.cs-ona.nphies.sa/nphies-sso/saml\"/>"
+                          }
+                        }
+                      ],
+                      "note": null,
+                      "guidance": null,
+                      "provenance": {
+                        "pageId": "7766254",
+                        "pageTitle": "Generating & Signing SAML Message -NEW",
+                        "row": "SAML Sample XML (without signature tag) line 10",
+                        "quote": "      <saml:SubjectConfirmation Method=\"urn:oasis:names:tc:SAML:2.0:cm:bearer\">"
+                      }
+                    }
+                  ],
+                  "note": "Rendered on the page as bare text 'saml:Subject' (auto-linker swallowed the angle brackets); the closing </saml:Subject> survives. See `skeletonRepairs`.",
+                  "guidance": null,
+                  "provenance": {
+                    "pageId": "7766254",
+                    "pageTitle": "Generating & Signing SAML Message -NEW",
+                    "row": "SAML Sample XML (without signature tag) line 8",
+                    "quote": "    saml:Subject"
+                  }
+                },
+                {
+                  "id": "saml-sso-response/saml:Conditions#30",
+                  "kind": "element",
+                  "label": "saml:Conditions",
+                  "number": null,
+                  "locator": {
+                    "kind": "cdaXPath",
+                    "path": "saml:Conditions",
+                    "relativeTo": "/samlp:Response/saml:Assertion"
+                  },
+                  "repeats": false,
+                  "usage": [
+                    {
+                      "usage": "R",
+                      "condition": null,
+                      "min": 1,
+                      "max": 1,
+                      "validator": "error-if-missing",
+                      "raw": {
+                        "usage": null,
+                        "cardinality": null
+                      }
+                    }
+                  ],
+                  "role": "structural",
+                  "sourceTier": "literal-skeleton",
+                  "fixedValues": [],
+                  "valueSets": [],
+                  "members": [
+                    {
+                      "id": "saml-sso-response/@NotBefore#26",
+                      "kind": "element",
+                      "label": "@NotBefore",
+                      "number": null,
+                      "locator": {
+                        "kind": "cdaXPath",
+                        "path": "saml:Conditions",
+                        "relativeTo": "/samlp:Response/saml:Assertion",
+                        "attribute": "NotBefore"
+                      },
+                      "repeats": false,
+                      "usage": [
+                        {
+                          "usage": "R",
+                          "condition": null,
+                          "min": 1,
+                          "max": 1,
+                          "validator": "error-if-missing",
+                          "raw": {
+                            "usage": null,
+                            "cardinality": null
+                          }
+                        }
+                      ],
+                      "role": "structural",
+                      "sourceTier": "literal-skeleton",
+                      "fixedValues": [],
+                      "valueSets": [],
+                      "members": [],
+                      "note": null,
+                      "guidance": "Equal to the Assertion @IssueInstant in the skeleton. No rule is stated.",
+                      "provenance": {
+                        "pageId": "7766254",
+                        "pageTitle": "Generating & Signing SAML Message -NEW",
+                        "row": "SAML Sample XML (without signature tag) line 14",
+                        "quote": "    <saml:Conditions NotBefore=\"2025-04-22T08:14:46Z\" NotOnOrAfter=\"2025-04-22T08:19:46Z\">"
+                      }
+                    },
+                    {
+                      "id": "saml-sso-response/@NotOnOrAfter#27",
+                      "kind": "element",
+                      "label": "@NotOnOrAfter",
+                      "number": null,
+                      "locator": {
+                        "kind": "cdaXPath",
+                        "path": "saml:Conditions",
+                        "relativeTo": "/samlp:Response/saml:Assertion",
+                        "attribute": "NotOnOrAfter"
+                      },
+                      "repeats": false,
+                      "usage": [
+                        {
+                          "usage": "R",
+                          "condition": null,
+                          "min": 1,
+                          "max": 1,
+                          "validator": "error-if-missing",
+                          "raw": {
+                            "usage": null,
+                            "cardinality": null
+                          }
+                        }
+                      ],
+                      "role": "structural",
+                      "sourceTier": "literal-skeleton",
+                      "fixedValues": [],
+                      "valueSets": [],
+                      "members": [],
+                      "note": null,
+                      "guidance": "NotBefore + 5 minutes in the skeleton, equal to saml:SubjectConfirmationData/@NotOnOrAfter. Observed, not stated.",
+                      "provenance": {
+                        "pageId": "7766254",
+                        "pageTitle": "Generating & Signing SAML Message -NEW",
+                        "row": "SAML Sample XML (without signature tag) line 14",
+                        "quote": "    <saml:Conditions NotBefore=\"2025-04-22T08:14:46Z\" NotOnOrAfter=\"2025-04-22T08:19:46Z\">"
+                      }
+                    },
+                    {
+                      "id": "saml-sso-response/saml:AudienceRestriction#29",
+                      "kind": "element",
+                      "label": "saml:AudienceRestriction",
+                      "number": null,
+                      "locator": {
+                        "kind": "cdaXPath",
+                        "path": "saml:AudienceRestriction",
+                        "relativeTo": "/samlp:Response/saml:Assertion/saml:Conditions"
+                      },
+                      "repeats": false,
+                      "usage": [
+                        {
+                          "usage": "R",
+                          "condition": null,
+                          "min": 1,
+                          "max": 1,
+                          "validator": "error-if-missing",
+                          "raw": {
+                            "usage": null,
+                            "cardinality": null
+                          }
+                        }
+                      ],
+                      "role": "structural",
+                      "sourceTier": "literal-skeleton",
+                      "fixedValues": [],
+                      "valueSets": [],
+                      "members": [
+                        {
+                          "id": "saml-sso-response/saml:Audience#28",
+                          "kind": "element",
+                          "label": "saml:Audience",
+                          "number": null,
+                          "locator": {
+                            "kind": "cdaXPath",
+                            "path": "saml:Audience",
+                            "relativeTo": "/samlp:Response/saml:Assertion/saml:Conditions/saml:AudienceRestriction"
+                          },
+                          "repeats": false,
+                          "usage": [
+                            {
+                              "usage": "R",
+                              "condition": null,
+                              "min": 1,
+                              "max": 1,
+                              "validator": "error-if-missing",
+                              "raw": {
+                                "usage": null,
+                                "cardinality": null
+                              }
+                            }
+                          ],
+                          "role": "structural",
+                          "sourceTier": "literal-skeleton",
+                          "fixedValues": [
+                            {
+                              "value": null,
+                              "target": "saml:Audience",
+                              "statementType": "environmentDependent",
+                              "scope": "wholeField",
+                              "elementPath": "saml:Audience",
+                              "attribute": null,
+                              "component": null,
+                              "provenance": {
+                                "pageId": "7766254",
+                                "pageTitle": "Generating & Signing SAML Message -NEW",
+                                "row": "SAML Sample XML (without signature tag) line 16",
+                                "quote": "        saml:Audience<https://iam.cs-ona.nphies.sa/oam/fed</saml:Audience>>"
+                              }
+                            }
+                          ],
+                          "valueSets": [],
+                          "members": [],
+                          "note": "This is the MOST mangled line on the page. It renders as 'saml:Audience<https://iam.cs-ona.nphies.sa/oam/fed</saml:Audience>>' because the auto-linker ate the opening tag's brackets AND wrapped the URL in an angle-bracket link. The element and its content are nevertheless corroborated by page 7766237, which states the Audience URL per environment independently. See `skeletonRepairs`.",
+                          "guidance": "Per-environment value. The skeleton on page 7766254 is the ONA sample; page 7766237 gives the ONA / ONB / Production values. See this patch's `environments` map, keyed by this member id.",
+                          "provenance": {
+                            "pageId": "7766254",
+                            "pageTitle": "Generating & Signing SAML Message -NEW",
+                            "row": "SAML Sample XML (without signature tag) line 16",
+                            "quote": "        saml:Audience<https://iam.cs-ona.nphies.sa/oam/fed</saml:Audience>>"
+                          },
+                          "environmentDependent": "audience"
+                        }
+                      ],
+                      "note": "Rendered on the page as bare text 'saml:AudienceRestriction' (auto-linker swallowed the angle brackets); the closing tag survives.",
+                      "guidance": null,
+                      "provenance": {
+                        "pageId": "7766254",
+                        "pageTitle": "Generating & Signing SAML Message -NEW",
+                        "row": "SAML Sample XML (without signature tag) line 15",
+                        "quote": "      saml:AudienceRestriction"
+                      }
+                    }
+                  ],
+                  "note": null,
+                  "guidance": null,
+                  "provenance": {
+                    "pageId": "7766254",
+                    "pageTitle": "Generating & Signing SAML Message -NEW",
+                    "row": "SAML Sample XML (without signature tag) line 14",
+                    "quote": "    <saml:Conditions NotBefore=\"2025-04-22T08:14:46Z\" NotOnOrAfter=\"2025-04-22T08:19:46Z\">"
+                  }
+                },
+                {
+                  "id": "saml-sso-response/saml:AuthnStatement#36",
+                  "kind": "element",
+                  "label": "saml:AuthnStatement",
+                  "number": null,
+                  "locator": {
+                    "kind": "cdaXPath",
+                    "path": "saml:AuthnStatement",
+                    "relativeTo": "/samlp:Response/saml:Assertion"
+                  },
+                  "repeats": false,
+                  "usage": [
+                    {
+                      "usage": "R",
+                      "condition": null,
+                      "min": 1,
+                      "max": 1,
+                      "validator": "error-if-missing",
+                      "raw": {
+                        "usage": null,
+                        "cardinality": null
+                      }
+                    }
+                  ],
+                  "role": "structural",
+                  "sourceTier": "literal-skeleton",
+                  "fixedValues": [],
+                  "valueSets": [],
+                  "members": [
+                    {
+                      "id": "saml-sso-response/@AuthnInstant#31",
+                      "kind": "element",
+                      "label": "@AuthnInstant",
+                      "number": null,
+                      "locator": {
+                        "kind": "cdaXPath",
+                        "path": "saml:AuthnStatement",
+                        "relativeTo": "/samlp:Response/saml:Assertion",
+                        "attribute": "AuthnInstant"
+                      },
+                      "repeats": false,
+                      "usage": [
+                        {
+                          "usage": "R",
+                          "condition": null,
+                          "min": 1,
+                          "max": 1,
+                          "validator": "error-if-missing",
+                          "raw": {
+                            "usage": null,
+                            "cardinality": null
+                          }
+                        }
+                      ],
+                      "role": "structural",
+                      "sourceTier": "literal-skeleton",
+                      "fixedValues": [],
+                      "valueSets": [],
+                      "members": [],
+                      "note": null,
+                      "guidance": null,
+                      "provenance": {
+                        "pageId": "7766254",
+                        "pageTitle": "Generating & Signing SAML Message -NEW",
+                        "row": "SAML Sample XML (without signature tag) line 19",
+                        "quote": "    <saml:AuthnStatement AuthnInstant=\"2025-04-22T08:14:46Z\" SessionIndex=\"id-sEy6iN0k4DWW39CrhOUxSG5dNiQmUvt3QaMcu-rx\" SessionNotOnOrAfter=\"2023-10-11T08:55:32Z\">"
+                      }
+                    },
+                    {
+                      "id": "saml-sso-response/@SessionIndex#32",
+                      "kind": "element",
+                      "label": "@SessionIndex",
+                      "number": null,
+                      "locator": {
+                        "kind": "cdaXPath",
+                        "path": "saml:AuthnStatement",
+                        "relativeTo": "/samlp:Response/saml:Assertion",
+                        "attribute": "SessionIndex"
+                      },
+                      "repeats": false,
+                      "usage": [
+                        {
+                          "usage": "R",
+                          "condition": null,
+                          "min": 1,
+                          "max": 1,
+                          "validator": "error-if-missing",
+                          "raw": {
+                            "usage": null,
+                            "cardinality": null
+                          }
+                        }
+                      ],
+                      "role": "structural",
+                      "sourceTier": "literal-skeleton",
+                      "fixedValues": [],
+                      "valueSets": [],
+                      "members": [],
+                      "note": null,
+                      "guidance": "Per-session opaque id; the skeleton's value is sample data.",
+                      "provenance": {
+                        "pageId": "7766254",
+                        "pageTitle": "Generating & Signing SAML Message -NEW",
+                        "row": "SAML Sample XML (without signature tag) line 19",
+                        "quote": "    <saml:AuthnStatement AuthnInstant=\"2025-04-22T08:14:46Z\" SessionIndex=\"id-sEy6iN0k4DWW39CrhOUxSG5dNiQmUvt3QaMcu-rx\" SessionNotOnOrAfter=\"2023-10-11T08:55:32Z\">"
+                      }
+                    },
+                    {
+                      "id": "saml-sso-response/@SessionNotOnOrAfter#33",
+                      "kind": "element",
+                      "label": "@SessionNotOnOrAfter",
+                      "number": null,
+                      "locator": {
+                        "kind": "cdaXPath",
+                        "path": "saml:AuthnStatement",
+                        "relativeTo": "/samlp:Response/saml:Assertion",
+                        "attribute": "SessionNotOnOrAfter"
+                      },
+                      "repeats": false,
+                      "usage": [
+                        {
+                          "usage": "R",
+                          "condition": null,
+                          "min": 1,
+                          "max": 1,
+                          "validator": "error-if-missing",
+                          "raw": {
+                            "usage": null,
+                            "cardinality": null
+                          }
+                        }
+                      ],
+                      "role": "structural",
+                      "sourceTier": "literal-skeleton",
+                      "fixedValues": [],
+                      "valueSets": [],
+                      "members": [],
+                      "note": "The skeleton's value '2023-10-11T08:55:32Z' is EARLIER than its own AuthnInstant '2025-04-22T08:14:46Z' — i.e. the published sample carries an already-expired session. That is stale sample data left over from an older revision of the page, not a rule. Do not copy this value.",
+                      "guidance": null,
+                      "provenance": {
+                        "pageId": "7766254",
+                        "pageTitle": "Generating & Signing SAML Message -NEW",
+                        "row": "SAML Sample XML (without signature tag) line 19",
+                        "quote": "    <saml:AuthnStatement AuthnInstant=\"2025-04-22T08:14:46Z\" SessionIndex=\"id-sEy6iN0k4DWW39CrhOUxSG5dNiQmUvt3QaMcu-rx\" SessionNotOnOrAfter=\"2023-10-11T08:55:32Z\">"
+                      }
+                    },
+                    {
+                      "id": "saml-sso-response/saml:AuthnContext#35",
+                      "kind": "element",
+                      "label": "saml:AuthnContext",
+                      "number": null,
+                      "locator": {
+                        "kind": "cdaXPath",
+                        "path": "saml:AuthnContext",
+                        "relativeTo": "/samlp:Response/saml:Assertion/saml:AuthnStatement"
+                      },
+                      "repeats": false,
+                      "usage": [
+                        {
+                          "usage": "R",
+                          "condition": null,
+                          "min": 1,
+                          "max": 1,
+                          "validator": "error-if-missing",
+                          "raw": {
+                            "usage": null,
+                            "cardinality": null
+                          }
+                        }
+                      ],
+                      "role": "structural",
+                      "sourceTier": "literal-skeleton",
+                      "fixedValues": [],
+                      "valueSets": [],
+                      "members": [
+                        {
+                          "id": "saml-sso-response/saml:AuthnContextClassRef#34",
+                          "kind": "element",
+                          "label": "saml:AuthnContextClassRef",
+                          "number": null,
+                          "locator": {
+                            "kind": "cdaXPath",
+                            "path": "saml:AuthnContextClassRef",
+                            "relativeTo": "/samlp:Response/saml:Assertion/saml:AuthnStatement/saml:AuthnContext"
+                          },
+                          "repeats": false,
+                          "usage": [
+                            {
+                              "usage": "R",
+                              "condition": null,
+                              "min": 1,
+                              "max": 1,
+                              "validator": "error-if-missing",
+                              "raw": {
+                                "usage": null,
+                                "cardinality": null
+                              }
+                            }
+                          ],
+                          "role": "structural",
+                          "sourceTier": "literal-skeleton",
+                          "fixedValues": [
+                            {
+                              "value": "urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport",
+                              "target": "saml:AuthnContextClassRef",
+                              "statementType": "fixedValue",
+                              "scope": "wholeField",
+                              "elementPath": "saml:AuthnContextClassRef",
+                              "attribute": null,
+                              "component": null,
+                              "provenance": {
+                                "pageId": "7766254",
+                                "pageTitle": "Generating & Signing SAML Message -NEW",
+                                "row": "SAML Sample XML (without signature tag) line 21",
+                                "quote": "        saml:AuthnContextClassRefurn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport</saml:AuthnContextClassRef>"
+                              }
+                            }
+                          ],
+                          "valueSets": [],
+                          "members": [],
+                          "note": "Rendered with the opening tag's brackets eaten AND run together with its own text content: 'saml:AuthnContextClassRefurn:oasis:...'. The closing tag survives, and the value is recoverable because the URN is well-formed.",
+                          "guidance": null,
+                          "provenance": {
+                            "pageId": "7766254",
+                            "pageTitle": "Generating & Signing SAML Message -NEW",
+                            "row": "SAML Sample XML (without signature tag) line 21",
+                            "quote": "        saml:AuthnContextClassRefurn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport</saml:AuthnContextClassRef>"
+                          }
+                        }
+                      ],
+                      "note": "Rendered as bare text 'saml:AuthnContext' (auto-linker); closing tag survives.",
+                      "guidance": null,
+                      "provenance": {
+                        "pageId": "7766254",
+                        "pageTitle": "Generating & Signing SAML Message -NEW",
+                        "row": "SAML Sample XML (without signature tag) line 20",
+                        "quote": "      saml:AuthnContext"
+                      }
+                    }
+                  ],
+                  "note": null,
+                  "guidance": null,
+                  "provenance": {
+                    "pageId": "7766254",
+                    "pageTitle": "Generating & Signing SAML Message -NEW",
+                    "row": "SAML Sample XML (without signature tag) line 19",
+                    "quote": "    <saml:AuthnStatement AuthnInstant=\"2025-04-22T08:14:46Z\" SessionIndex=\"id-sEy6iN0k4DWW39CrhOUxSG5dNiQmUvt3QaMcu-rx\" SessionNotOnOrAfter=\"2023-10-11T08:55:32Z\">"
+                  }
+                },
+                {
+                  "id": "saml-sso-response/saml:AttributeStatement#49",
+                  "kind": "element",
+                  "label": "saml:AttributeStatement",
+                  "number": null,
+                  "locator": {
+                    "kind": "cdaXPath",
+                    "path": "saml:AttributeStatement",
+                    "relativeTo": "/samlp:Response/saml:Assertion"
+                  },
+                  "repeats": false,
+                  "usage": [
+                    {
+                      "usage": "R",
+                      "condition": null,
+                      "min": 1,
+                      "max": 1,
+                      "validator": "error-if-missing",
+                      "raw": {
+                        "usage": null,
+                        "cardinality": null
+                      }
+                    }
+                  ],
+                  "role": "structural",
+                  "sourceTier": "literal-skeleton",
+                  "fixedValues": [],
+                  "valueSets": [],
+                  "members": [
+                    {
+                      "id": "saml-sso-response/saml:Attribute[@Name=\"Organization-Id\"]#42",
+                      "kind": "element",
+                      "label": "saml:Attribute[@Name=\"Organization-Id\"]",
+                      "number": null,
+                      "locator": {
+                        "kind": "cdaXPath",
+                        "path": "saml:Attribute[@Name=\"Organization-Id\"]",
+                        "relativeTo": "/samlp:Response/saml:Assertion/saml:AttributeStatement",
+                        "predicate": "@Name=\"Organization-Id\""
+                      },
+                      "repeats": false,
+                      "usage": [
+                        {
+                          "usage": "R",
+                          "condition": null,
+                          "min": 1,
+                          "max": 1,
+                          "validator": "error-if-missing",
+                          "raw": {
+                            "usage": null,
+                            "cardinality": null
+                          }
+                        }
+                      ],
+                      "role": "container",
+                      "sourceTier": "literal-skeleton",
+                      "fixedValues": [],
+                      "valueSets": [],
+                      "members": [
+                        {
+                          "id": "saml-sso-response/@Name#37",
+                          "kind": "element",
+                          "label": "@Name",
+                          "number": null,
+                          "locator": {
+                            "kind": "cdaXPath",
+                            "path": "saml:Attribute[@Name=\"Organization-Id\"]",
+                            "relativeTo": "/samlp:Response/saml:Assertion/saml:AttributeStatement",
+                            "attribute": "Name"
+                          },
+                          "repeats": false,
+                          "usage": [
+                            {
+                              "usage": "R",
+                              "condition": null,
+                              "min": 1,
+                              "max": 1,
+                              "validator": "error-if-missing",
+                              "raw": {
+                                "usage": null,
+                                "cardinality": null
+                              }
+                            }
+                          ],
+                          "role": "structural",
+                          "sourceTier": "literal-skeleton",
+                          "fixedValues": [
+                            {
+                              "value": "Organization-Id",
+                              "target": "Name",
+                              "statementType": "attributeFixedValue",
+                              "scope": "attribute",
+                              "elementPath": "saml:Attribute",
+                              "attribute": "Name",
+                              "component": null,
+                              "provenance": {
+                                "pageId": "7766254",
+                                "pageTitle": "Generating & Signing SAML Message -NEW",
+                                "row": "SAML Sample XML (without signature tag) line 25",
+                                "quote": "      <saml:Attribute Name=\"Organization-Id\" NameFormat=\"urn:oasis:names:tc:SAML:2.0:attrname-format:basic\">"
+                              }
+                            }
+                          ],
+                          "valueSets": [],
+                          "members": [],
+                          "note": null,
+                          "guidance": null,
+                          "provenance": {
+                            "pageId": "7766254",
+                            "pageTitle": "Generating & Signing SAML Message -NEW",
+                            "row": "SAML Sample XML (without signature tag) line 25",
+                            "quote": "      <saml:Attribute Name=\"Organization-Id\" NameFormat=\"urn:oasis:names:tc:SAML:2.0:attrname-format:basic\">"
+                          }
+                        },
+                        {
+                          "id": "saml-sso-response/@NameFormat#38",
+                          "kind": "element",
+                          "label": "@NameFormat",
+                          "number": null,
+                          "locator": {
+                            "kind": "cdaXPath",
+                            "path": "saml:Attribute[@Name=\"Organization-Id\"]",
+                            "relativeTo": "/samlp:Response/saml:Assertion/saml:AttributeStatement",
+                            "attribute": "NameFormat"
+                          },
+                          "repeats": false,
+                          "usage": [
+                            {
+                              "usage": "R",
+                              "condition": null,
+                              "min": 1,
+                              "max": 1,
+                              "validator": "error-if-missing",
+                              "raw": {
+                                "usage": null,
+                                "cardinality": null
+                              }
+                            }
+                          ],
+                          "role": "structural",
+                          "sourceTier": "literal-skeleton",
+                          "fixedValues": [
+                            {
+                              "value": "urn:oasis:names:tc:SAML:2.0:attrname-format:basic",
+                              "target": "NameFormat",
+                              "statementType": "attributeFixedValue",
+                              "scope": "attribute",
+                              "elementPath": "saml:Attribute",
+                              "attribute": "NameFormat",
+                              "component": null,
+                              "provenance": {
+                                "pageId": "7766254",
+                                "pageTitle": "Generating & Signing SAML Message -NEW",
+                                "row": "SAML Sample XML (without signature tag) line 25",
+                                "quote": "      <saml:Attribute Name=\"Organization-Id\" NameFormat=\"urn:oasis:names:tc:SAML:2.0:attrname-format:basic\">"
+                              }
+                            }
+                          ],
+                          "valueSets": [],
+                          "members": [],
+                          "note": null,
+                          "guidance": null,
+                          "provenance": {
+                            "pageId": "7766254",
+                            "pageTitle": "Generating & Signing SAML Message -NEW",
+                            "row": "SAML Sample XML (without signature tag) line 25",
+                            "quote": "      <saml:Attribute Name=\"Organization-Id\" NameFormat=\"urn:oasis:names:tc:SAML:2.0:attrname-format:basic\">"
+                          }
+                        },
+                        {
+                          "id": "saml-sso-response/saml:AttributeValue#41",
+                          "kind": "element",
+                          "label": "saml:AttributeValue",
+                          "number": null,
+                          "locator": {
+                            "kind": "cdaXPath",
+                            "path": "saml:AttributeValue",
+                            "relativeTo": "/samlp:Response/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name=\"Organization-Id\"]"
+                          },
+                          "repeats": false,
+                          "usage": [
+                            {
+                              "usage": "R",
+                              "condition": null,
+                              "min": 1,
+                              "max": 1,
+                              "validator": "error-if-missing",
+                              "raw": {
+                                "usage": null,
+                                "cardinality": null
+                              }
+                            }
+                          ],
+                          "role": "data",
+                          "sourceTier": "literal-skeleton",
+                          "fixedValues": [],
+                          "valueSets": [],
+                          "members": [
+                            {
+                              "id": "saml-sso-response/@xmlns:xsd#39",
+                              "kind": "element",
+                              "label": "@xmlns:xsd",
+                              "number": null,
+                              "locator": {
+                                "kind": "cdaXPath",
+                                "path": "saml:AttributeValue",
+                                "relativeTo": "/samlp:Response/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name=\"Organization-Id\"]",
+                                "attribute": "xmlns:xsd"
+                              },
+                              "repeats": false,
+                              "usage": [
+                                {
+                                  "usage": "R",
+                                  "condition": null,
+                                  "min": 1,
+                                  "max": 1,
+                                  "validator": "error-if-missing",
+                                  "raw": {
+                                    "usage": null,
+                                    "cardinality": null
+                                  }
+                                }
+                              ],
+                              "role": "structural",
+                              "sourceTier": "literal-skeleton",
+                              "fixedValues": [
+                                {
+                                  "value": "http://www.w3.org/2001/XMLSchema",
+                                  "target": "xmlns:xsd",
+                                  "statementType": "attributeFixedValue",
+                                  "scope": "attribute",
+                                  "elementPath": "saml:AttributeValue",
+                                  "attribute": "xmlns:xsd",
+                                  "component": null,
+                                  "provenance": {
+                                    "pageId": "7766254",
+                                    "pageTitle": "Generating & Signing SAML Message -NEW",
+                                    "row": "SAML Sample XML (without signature tag) line 26",
+                                    "quote": "        <saml:AttributeValue xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xsi:type=\"xsd:string\">10000300236625</saml:AttributeValue>"
+                                  }
+                                }
+                              ],
+                              "valueSets": [],
+                              "members": [],
+                              "note": null,
+                              "guidance": null,
+                              "provenance": {
+                                "pageId": "7766254",
+                                "pageTitle": "Generating & Signing SAML Message -NEW",
+                                "row": "SAML Sample XML (without signature tag) line 26",
+                                "quote": "        <saml:AttributeValue xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xsi:type=\"xsd:string\">10000300236625</saml:AttributeValue>"
+                              }
+                            },
+                            {
+                              "id": "saml-sso-response/@xsi:type#40",
+                              "kind": "element",
+                              "label": "@xsi:type",
+                              "number": null,
+                              "locator": {
+                                "kind": "cdaXPath",
+                                "path": "saml:AttributeValue",
+                                "relativeTo": "/samlp:Response/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name=\"Organization-Id\"]",
+                                "attribute": "xsi:type"
+                              },
+                              "repeats": false,
+                              "usage": [
+                                {
+                                  "usage": "R",
+                                  "condition": null,
+                                  "min": 1,
+                                  "max": 1,
+                                  "validator": "error-if-missing",
+                                  "raw": {
+                                    "usage": null,
+                                    "cardinality": null
+                                  }
+                                }
+                              ],
+                              "role": "structural",
+                              "sourceTier": "literal-skeleton",
+                              "fixedValues": [
+                                {
+                                  "value": "xsd:string",
+                                  "target": "xsi:type",
+                                  "statementType": "attributeFixedValue",
+                                  "scope": "attribute",
+                                  "elementPath": "saml:AttributeValue",
+                                  "attribute": "xsi:type",
+                                  "component": null,
+                                  "provenance": {
+                                    "pageId": "7766254",
+                                    "pageTitle": "Generating & Signing SAML Message -NEW",
+                                    "row": "SAML Sample XML (without signature tag) line 26",
+                                    "quote": "        <saml:AttributeValue xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xsi:type=\"xsd:string\">10000300236625</saml:AttributeValue>"
+                                  }
+                                }
+                              ],
+                              "valueSets": [],
+                              "members": [],
+                              "note": null,
+                              "guidance": null,
+                              "provenance": {
+                                "pageId": "7766254",
+                                "pageTitle": "Generating & Signing SAML Message -NEW",
+                                "row": "SAML Sample XML (without signature tag) line 26",
+                                "quote": "        <saml:AttributeValue xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xsi:type=\"xsd:string\">10000300236625</saml:AttributeValue>"
+                              }
+                            }
+                          ],
+                          "note": null,
+                          "guidance": "Carries VARIABLE 2 of 4, 'Organization ID'. Page 7766237: 'Organization ID = National Organization OID'. Page 7766173: 'Organization ID - This is the ID of the organization, which will be validated for accuracy against the organization registry.' The skeleton's '10000300236625' is sample data. NOTE the contradiction recorded in knownGaps: 7766237 calls this an OID, while the sample value is a 14-digit number, not a dotted OID.",
+                          "provenance": {
+                            "pageId": "7766254",
+                            "pageTitle": "Generating & Signing SAML Message -NEW",
+                            "row": "SAML Sample XML (without signature tag) line 26",
+                            "quote": "        <saml:AttributeValue xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xsi:type=\"xsd:string\">10000300236625</saml:AttributeValue>"
+                          },
+                          "variableSlot": "Organization ID"
+                        }
+                      ],
+                      "note": null,
+                      "guidance": null,
+                      "provenance": {
+                        "pageId": "7766254",
+                        "pageTitle": "Generating & Signing SAML Message -NEW",
+                        "row": "SAML Sample XML (without signature tag) line 25",
+                        "quote": "      <saml:Attribute Name=\"Organization-Id\" NameFormat=\"urn:oasis:names:tc:SAML:2.0:attrname-format:basic\">"
+                      }
+                    },
+                    {
+                      "id": "saml-sso-response/saml:Attribute[@Name=\"HealthId\"]#48",
+                      "kind": "element",
+                      "label": "saml:Attribute[@Name=\"HealthId\"]",
+                      "number": null,
+                      "locator": {
+                        "kind": "cdaXPath",
+                        "path": "saml:Attribute[@Name=\"HealthId\"]",
+                        "relativeTo": "/samlp:Response/saml:Assertion/saml:AttributeStatement",
+                        "predicate": "@Name=\"HealthId\""
+                      },
+                      "repeats": false,
+                      "usage": [
+                        {
+                          "usage": "R",
+                          "condition": null,
+                          "min": 1,
+                          "max": 1,
+                          "validator": "error-if-missing",
+                          "raw": {
+                            "usage": null,
+                            "cardinality": null
+                          }
+                        }
+                      ],
+                      "role": "container",
+                      "sourceTier": "literal-skeleton",
+                      "fixedValues": [],
+                      "valueSets": [],
+                      "members": [
+                        {
+                          "id": "saml-sso-response/@Name#43",
+                          "kind": "element",
+                          "label": "@Name",
+                          "number": null,
+                          "locator": {
+                            "kind": "cdaXPath",
+                            "path": "saml:Attribute[@Name=\"HealthId\"]",
+                            "relativeTo": "/samlp:Response/saml:Assertion/saml:AttributeStatement",
+                            "attribute": "Name"
+                          },
+                          "repeats": false,
+                          "usage": [
+                            {
+                              "usage": "R",
+                              "condition": null,
+                              "min": 1,
+                              "max": 1,
+                              "validator": "error-if-missing",
+                              "raw": {
+                                "usage": null,
+                                "cardinality": null
+                              }
+                            }
+                          ],
+                          "role": "structural",
+                          "sourceTier": "literal-skeleton",
+                          "fixedValues": [
+                            {
+                              "value": "HealthId",
+                              "target": "Name",
+                              "statementType": "attributeFixedValue",
+                              "scope": "attribute",
+                              "elementPath": "saml:Attribute",
+                              "attribute": "Name",
+                              "component": null,
+                              "provenance": {
+                                "pageId": "7766254",
+                                "pageTitle": "Generating & Signing SAML Message -NEW",
+                                "row": "SAML Sample XML (without signature tag) line 28",
+                                "quote": "      <saml:Attribute Name=\"HealthId\" NameFormat=\"urn:oasis:names:tc:SAML:2.0:attrname-format:basic\">"
+                              }
+                            }
+                          ],
+                          "valueSets": [],
+                          "members": [],
+                          "note": null,
+                          "guidance": null,
+                          "provenance": {
+                            "pageId": "7766254",
+                            "pageTitle": "Generating & Signing SAML Message -NEW",
+                            "row": "SAML Sample XML (without signature tag) line 28",
+                            "quote": "      <saml:Attribute Name=\"HealthId\" NameFormat=\"urn:oasis:names:tc:SAML:2.0:attrname-format:basic\">"
+                          }
+                        },
+                        {
+                          "id": "saml-sso-response/@NameFormat#44",
+                          "kind": "element",
+                          "label": "@NameFormat",
+                          "number": null,
+                          "locator": {
+                            "kind": "cdaXPath",
+                            "path": "saml:Attribute[@Name=\"HealthId\"]",
+                            "relativeTo": "/samlp:Response/saml:Assertion/saml:AttributeStatement",
+                            "attribute": "NameFormat"
+                          },
+                          "repeats": false,
+                          "usage": [
+                            {
+                              "usage": "R",
+                              "condition": null,
+                              "min": 1,
+                              "max": 1,
+                              "validator": "error-if-missing",
+                              "raw": {
+                                "usage": null,
+                                "cardinality": null
+                              }
+                            }
+                          ],
+                          "role": "structural",
+                          "sourceTier": "literal-skeleton",
+                          "fixedValues": [
+                            {
+                              "value": "urn:oasis:names:tc:SAML:2.0:attrname-format:basic",
+                              "target": "NameFormat",
+                              "statementType": "attributeFixedValue",
+                              "scope": "attribute",
+                              "elementPath": "saml:Attribute",
+                              "attribute": "NameFormat",
+                              "component": null,
+                              "provenance": {
+                                "pageId": "7766254",
+                                "pageTitle": "Generating & Signing SAML Message -NEW",
+                                "row": "SAML Sample XML (without signature tag) line 28",
+                                "quote": "      <saml:Attribute Name=\"HealthId\" NameFormat=\"urn:oasis:names:tc:SAML:2.0:attrname-format:basic\">"
+                              }
+                            }
+                          ],
+                          "valueSets": [],
+                          "members": [],
+                          "note": null,
+                          "guidance": null,
+                          "provenance": {
+                            "pageId": "7766254",
+                            "pageTitle": "Generating & Signing SAML Message -NEW",
+                            "row": "SAML Sample XML (without signature tag) line 28",
+                            "quote": "      <saml:Attribute Name=\"HealthId\" NameFormat=\"urn:oasis:names:tc:SAML:2.0:attrname-format:basic\">"
+                          }
+                        },
+                        {
+                          "id": "saml-sso-response/saml:AttributeValue#47",
+                          "kind": "element",
+                          "label": "saml:AttributeValue",
+                          "number": null,
+                          "locator": {
+                            "kind": "cdaXPath",
+                            "path": "saml:AttributeValue",
+                            "relativeTo": "/samlp:Response/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name=\"HealthId\"]"
+                          },
+                          "repeats": false,
+                          "usage": [
+                            {
+                              "usage": "R",
+                              "condition": null,
+                              "min": 1,
+                              "max": 1,
+                              "validator": "error-if-missing",
+                              "raw": {
+                                "usage": null,
+                                "cardinality": null
+                              }
+                            }
+                          ],
+                          "role": "data",
+                          "sourceTier": "literal-skeleton",
+                          "fixedValues": [],
+                          "valueSets": [],
+                          "members": [
+                            {
+                              "id": "saml-sso-response/@xmlns:xsd#45",
+                              "kind": "element",
+                              "label": "@xmlns:xsd",
+                              "number": null,
+                              "locator": {
+                                "kind": "cdaXPath",
+                                "path": "saml:AttributeValue",
+                                "relativeTo": "/samlp:Response/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name=\"HealthId\"]",
+                                "attribute": "xmlns:xsd"
+                              },
+                              "repeats": false,
+                              "usage": [
+                                {
+                                  "usage": "R",
+                                  "condition": null,
+                                  "min": 1,
+                                  "max": 1,
+                                  "validator": "error-if-missing",
+                                  "raw": {
+                                    "usage": null,
+                                    "cardinality": null
+                                  }
+                                }
+                              ],
+                              "role": "structural",
+                              "sourceTier": "literal-skeleton",
+                              "fixedValues": [
+                                {
+                                  "value": "http://www.w3.org/2001/XMLSchema",
+                                  "target": "xmlns:xsd",
+                                  "statementType": "attributeFixedValue",
+                                  "scope": "attribute",
+                                  "elementPath": "saml:AttributeValue",
+                                  "attribute": "xmlns:xsd",
+                                  "component": null,
+                                  "provenance": {
+                                    "pageId": "7766254",
+                                    "pageTitle": "Generating & Signing SAML Message -NEW",
+                                    "row": "SAML Sample XML (without signature tag) line 29",
+                                    "quote": "        <saml:AttributeValue xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xsi:type=\"xsd:string\">30000999999999</saml:AttributeValue>"
+                                  }
+                                }
+                              ],
+                              "valueSets": [],
+                              "members": [],
+                              "note": null,
+                              "guidance": null,
+                              "provenance": {
+                                "pageId": "7766254",
+                                "pageTitle": "Generating & Signing SAML Message -NEW",
+                                "row": "SAML Sample XML (without signature tag) line 29",
+                                "quote": "        <saml:AttributeValue xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xsi:type=\"xsd:string\">30000999999999</saml:AttributeValue>"
+                              }
+                            },
+                            {
+                              "id": "saml-sso-response/@xsi:type#46",
+                              "kind": "element",
+                              "label": "@xsi:type",
+                              "number": null,
+                              "locator": {
+                                "kind": "cdaXPath",
+                                "path": "saml:AttributeValue",
+                                "relativeTo": "/samlp:Response/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name=\"HealthId\"]",
+                                "attribute": "xsi:type"
+                              },
+                              "repeats": false,
+                              "usage": [
+                                {
+                                  "usage": "R",
+                                  "condition": null,
+                                  "min": 1,
+                                  "max": 1,
+                                  "validator": "error-if-missing",
+                                  "raw": {
+                                    "usage": null,
+                                    "cardinality": null
+                                  }
+                                }
+                              ],
+                              "role": "structural",
+                              "sourceTier": "literal-skeleton",
+                              "fixedValues": [
+                                {
+                                  "value": "xsd:string",
+                                  "target": "xsi:type",
+                                  "statementType": "attributeFixedValue",
+                                  "scope": "attribute",
+                                  "elementPath": "saml:AttributeValue",
+                                  "attribute": "xsi:type",
+                                  "component": null,
+                                  "provenance": {
+                                    "pageId": "7766254",
+                                    "pageTitle": "Generating & Signing SAML Message -NEW",
+                                    "row": "SAML Sample XML (without signature tag) line 29",
+                                    "quote": "        <saml:AttributeValue xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xsi:type=\"xsd:string\">30000999999999</saml:AttributeValue>"
+                                  }
+                                }
+                              ],
+                              "valueSets": [],
+                              "members": [],
+                              "note": null,
+                              "guidance": null,
+                              "provenance": {
+                                "pageId": "7766254",
+                                "pageTitle": "Generating & Signing SAML Message -NEW",
+                                "row": "SAML Sample XML (without signature tag) line 29",
+                                "quote": "        <saml:AttributeValue xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xsi:type=\"xsd:string\">30000999999999</saml:AttributeValue>"
+                              }
+                            }
+                          ],
+                          "note": null,
+                          "guidance": "Carries VARIABLE 3 of 4, 'Health ID'. Page 7766237: 'Health ID(Patient Health ID)'. Page 7766173: 'Patient health ID - This is the patient's health ID number, which can be obtained from the patient registry. The SAML response will validate the accuracy of this health ID with the registry.' The skeleton's '30000999999999' is a placeholder (nine repeated digits) and must never be emitted.",
+                          "provenance": {
+                            "pageId": "7766254",
+                            "pageTitle": "Generating & Signing SAML Message -NEW",
+                            "row": "SAML Sample XML (without signature tag) line 29",
+                            "quote": "        <saml:AttributeValue xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xsi:type=\"xsd:string\">30000999999999</saml:AttributeValue>"
+                          },
+                          "variableSlot": "Health ID"
+                        }
+                      ],
+                      "note": null,
+                      "guidance": null,
+                      "provenance": {
+                        "pageId": "7766254",
+                        "pageTitle": "Generating & Signing SAML Message -NEW",
+                        "row": "SAML Sample XML (without signature tag) line 28",
+                        "quote": "      <saml:Attribute Name=\"HealthId\" NameFormat=\"urn:oasis:names:tc:SAML:2.0:attrname-format:basic\">"
+                      }
+                    }
+                  ],
+                  "note": "Rendered as bare text 'saml:AttributeStatement' (auto-linker); closing tag survives.",
+                  "guidance": "Exactly two attributes, in this order: Organization-Id then HealthId. Page 7766237 lists three 'SAML Attributes from EMR/HIS' — Practitioner ID, Organization ID, Health ID — but the Practitioner ID is not carried here; it is carried as saml:Subject/saml:NameID.",
+                  "provenance": {
+                    "pageId": "7766254",
+                    "pageTitle": "Generating & Signing SAML Message -NEW",
+                    "row": "SAML Sample XML (without signature tag) line 24",
+                    "quote": "    saml:AttributeStatement"
+                  }
+                }
+              ],
+              "note": null,
+              "guidance": null,
+              "provenance": {
+                "pageId": "7766254",
+                "pageTitle": "Generating & Signing SAML Message -NEW",
+                "row": "SAML Sample XML (without signature tag) line 6",
+                "quote": "  <saml:Assertion xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\" ID=\"id-aiQo4xnqTnLKjLRs3ou3G-AazQXanNppvdRg-rMT\" IssueInstant=\"2025-04-22T08:14:46Z\" Version=\"2.0\">"
+              }
+            }
+          ],
+          "note": null,
+          "guidance": null,
+          "provenance": {
+            "pageId": "7766254",
+            "pageTitle": "Generating & Signing SAML Message -NEW",
+            "row": "SAML Sample XML (without signature tag) line 1",
+            "quote": "<samlp:Response xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" Destination=\"https://iam.cs-ona.nphies.sa/nphies-sso/saml\" ID=\"id-P5g-XB-x0soSL0daHMUf7s2QsCVZdyWYeskA-1JK\" IssueInstant=\"2025-04-22T08:14:46Z\" Version=\"2.0\">"
+          }
+        }
+      ]
+    },
+    "notes": [
+      "NO OFFICIAL GOLDEN SAMPLE EXISTS for saml-sso. Every member of this structure rests on Confluence prose and on one literal XML skeleton published on page 7766254; nothing here has been checked against a message NPHIES actually accepted. `verifiedAgainstSample` is false and the structure confidence is \"medium\" for that reason alone — the skeleton itself is unambiguous.",
+      "DIRECTION. This is `direction: \"request\"` even though the XML element is called samlp:Response: the hospital's EMR/HIS generates and SENDS it. Page 7766210: 'EMR/HIS application will generate SAML response.' In SAML terms the EMR/HIS is the Identity Provider and NPHIES is the Service Provider.",
+      "The skeleton on page 7766254 is published WITHOUT the signature tag ('SAML Sample XML (without signature tag)'). A real message carries a ds:Signature over the Assertion; see the ds:Signature member, whose position inside the Assertion is NOT stated by Confluence.",
+      "Confluence's auto-linker destroyed the angle brackets of seven opening tags in the skeleton (samlp:Status, saml:Subject, saml:AudienceRestriction, saml:Audience, saml:AuthnContext, saml:AuthnContextClassRef, saml:AttributeStatement). Each such member carries a `note` saying so, and `skeletonRepairs` lists every repair. All seven are certain, because the matching CLOSING tag survived on the following line.",
+      "The skeleton is the ONA-environment sample. Destination, Recipient and Audience are per-environment and MUST be swapped for the target environment; see `environments`.",
+      "Every literal value in the skeleton's four variable slots (Deemaalqassem, 1095650865, 10000300236625, 30000999999999) is sample data, not a constant.",
+      "@SessionNotOnOrAfter in the skeleton (2023-10-11T08:55:32Z) predates its own @AuthnInstant (2025-04-22T08:14:46Z) — stale sample data on the page, not a rule.",
+      "family is \"saml\", which MessageStructure.family (SpecFamily) does not admit today; see `compilerNotes`. All locators are `cdaXPath`, whose familyOfLocator() is \"cda\"."
+    ]
+  },
+  "skeletonVerbatim": "<samlp:Response xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" Destination=\"https://iam.cs-ona.nphies.sa/nphies-sso/saml\" ID=\"id-P5g-XB-x0soSL0daHMUf7s2QsCVZdyWYeskA-1JK\" IssueInstant=\"2025-04-22T08:14:46Z\" Version=\"2.0\">\n  <saml:Issuer xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\" Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:entity\">Deemaalqassem</saml:Issuer>\n  samlp:Status\n    <samlp:StatusCode Value=\"urn:oasis:names:tc:SAML:2.0:status:Success\"/>\n  </samlp:Status>\n  <saml:Assertion xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\" ID=\"id-aiQo4xnqTnLKjLRs3ou3G-AazQXanNppvdRg-rMT\" IssueInstant=\"2025-04-22T08:14:46Z\" Version=\"2.0\">\n    <saml:Issuer Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:entity\">Deemaalqassem</saml:Issuer>\n    saml:Subject\n      <saml:NameID Format=\"urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified\">1095650865</saml:NameID>\n      <saml:SubjectConfirmation Method=\"urn:oasis:names:tc:SAML:2.0:cm:bearer\">\n        <saml:SubjectConfirmationData NotOnOrAfter=\"2025-04-22T08:19:46Z\" Recipient=\"https://iam.cs-ona.nphies.sa/nphies-sso/saml\"/>\n      </saml:SubjectConfirmation>\n    </saml:Subject>\n    <saml:Conditions NotBefore=\"2025-04-22T08:14:46Z\" NotOnOrAfter=\"2025-04-22T08:19:46Z\">\n      saml:AudienceRestriction\n        saml:Audience<https://iam.cs-ona.nphies.sa/oam/fed</saml:Audience>>\n      </saml:AudienceRestriction>\n    </saml:Conditions>\n    <saml:AuthnStatement AuthnInstant=\"2025-04-22T08:14:46Z\" SessionIndex=\"id-sEy6iN0k4DWW39CrhOUxSG5dNiQmUvt3QaMcu-rx\" SessionNotOnOrAfter=\"2023-10-11T08:55:32Z\">\n      saml:AuthnContext\n        saml:AuthnContextClassRefurn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport</saml:AuthnContextClassRef>\n      </saml:AuthnContext>\n    </saml:AuthnStatement>\n    saml:AttributeStatement\n      <saml:Attribute Name=\"Organization-Id\" NameFormat=\"urn:oasis:names:tc:SAML:2.0:attrname-format:basic\">\n        <saml:AttributeValue xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xsi:type=\"xsd:string\">10000300236625</saml:AttributeValue>\n      </saml:Attribute>\n      <saml:Attribute Name=\"HealthId\" NameFormat=\"urn:oasis:names:tc:SAML:2.0:attrname-format:basic\">\n        <saml:AttributeValue xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xsi:type=\"xsd:string\">30000999999999</saml:AttributeValue>\n      </saml:Attribute>\n    </saml:AttributeStatement>\n  </saml:Assertion>\n</samlp:Response>",
+  "skeletonVerbatimNote": "Exactly what page 7766254 DISPLAYS, character for character, including the seven tags Confluence's auto-linker mangled. Nothing repaired, nothing added. Byte-identical to constants.json saml.responseSkeleton.renderedVerbatim, which this pass re-derived from the cached page HTML independently and confirmed.",
+  "skeletonRepaired": "<samlp:Response xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" Destination=\"https://iam.cs-ona.nphies.sa/nphies-sso/saml\" ID=\"id-P5g-XB-x0soSL0daHMUf7s2QsCVZdyWYeskA-1JK\" IssueInstant=\"2025-04-22T08:14:46Z\" Version=\"2.0\">\n  <saml:Issuer xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\" Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:entity\">{{Issuer name}}</saml:Issuer>\n  <samlp:Status>\n    <samlp:StatusCode Value=\"urn:oasis:names:tc:SAML:2.0:status:Success\"/>\n  </samlp:Status>\n  <saml:Assertion xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\" ID=\"id-aiQo4xnqTnLKjLRs3ou3G-AazQXanNppvdRg-rMT\" IssueInstant=\"2025-04-22T08:14:46Z\" Version=\"2.0\">\n    <saml:Issuer Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:entity\">{{Issuer name}}</saml:Issuer>\n    <saml:Subject>\n      <saml:NameID Format=\"urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified\">{{Provider ID}}</saml:NameID>\n      <saml:SubjectConfirmation Method=\"urn:oasis:names:tc:SAML:2.0:cm:bearer\">\n        <saml:SubjectConfirmationData NotOnOrAfter=\"2025-04-22T08:19:46Z\" Recipient=\"https://iam.cs-ona.nphies.sa/nphies-sso/saml\"/>\n      </saml:SubjectConfirmation>\n    </saml:Subject>\n    <saml:Conditions NotBefore=\"2025-04-22T08:14:46Z\" NotOnOrAfter=\"2025-04-22T08:19:46Z\">\n      <saml:AudienceRestriction>\n        <saml:Audience>https://iam.cs-ona.nphies.sa/oam/fed</saml:Audience>\n      </saml:AudienceRestriction>\n    </saml:Conditions>\n    <saml:AuthnStatement AuthnInstant=\"2025-04-22T08:14:46Z\" SessionIndex=\"id-sEy6iN0k4DWW39CrhOUxSG5dNiQmUvt3QaMcu-rx\" SessionNotOnOrAfter=\"2023-10-11T08:55:32Z\">\n      <saml:AuthnContext>\n        <saml:AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport</saml:AuthnContextClassRef>\n      </saml:AuthnContext>\n    </saml:AuthnStatement>\n    <saml:AttributeStatement>\n      <saml:Attribute Name=\"Organization-Id\" NameFormat=\"urn:oasis:names:tc:SAML:2.0:attrname-format:basic\">\n        <saml:AttributeValue xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xsi:type=\"xsd:string\">{{Organization ID}}</saml:AttributeValue>\n      </saml:Attribute>\n      <saml:Attribute Name=\"HealthId\" NameFormat=\"urn:oasis:names:tc:SAML:2.0:attrname-format:basic\">\n        <saml:AttributeValue xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xsi:type=\"xsd:string\">{{Health ID}}</saml:AttributeValue>\n      </saml:Attribute>\n    </saml:AttributeStatement>\n  </saml:Assertion>\n</samlp:Response>",
+  "skeletonRepairedNote": "The same skeleton with the auto-linker damage undone and the four variable values replaced by {{...}} placeholders. Every repair is itemised in `skeletonRepairs`. This is the form the element tree was built from.",
+  "skeletonRepairs": [
+    {
+      "line": 3,
+      "rendered": "  samlp:Status",
+      "repaired": "  <samlp:Status>",
+      "reason": "Confluence auto-linker replaced the opening tag with an href=\"#\" anchor, eating < and >.",
+      "certainty": "high — the closing </samlp:Status> survives on line 5"
+    },
+    {
+      "line": 8,
+      "rendered": "    saml:Subject",
+      "repaired": "    <saml:Subject>",
+      "reason": "same auto-linker defect",
+      "certainty": "high — closing </saml:Subject> survives on line 13"
+    },
+    {
+      "line": 15,
+      "rendered": "      saml:AudienceRestriction",
+      "repaired": "      <saml:AudienceRestriction>",
+      "reason": "same auto-linker defect",
+      "certainty": "high — closing </saml:AudienceRestriction> survives on line 17"
+    },
+    {
+      "line": 16,
+      "rendered": "        saml:Audience<https://iam.cs-ona.nphies.sa/oam/fed</saml:Audience>>",
+      "repaired": "        <saml:Audience>https://iam.cs-ona.nphies.sa/oam/fed</saml:Audience>",
+      "reason": "Two defects on one line: the opening tag lost its brackets AND the URL was wrapped in an angle-bracket auto-link, leaving a stray '<' before the URL and a stray '>' after the closing tag.",
+      "certainty": "high — the URL is independently stated as the ONA Audience on page 7766237, and the closing </saml:AudienceRestriction> follows"
+    },
+    {
+      "line": 20,
+      "rendered": "      saml:AuthnContext",
+      "repaired": "      <saml:AuthnContext>",
+      "reason": "same auto-linker defect",
+      "certainty": "high — closing </saml:AuthnContext> survives on line 22"
+    },
+    {
+      "line": 21,
+      "rendered": "        saml:AuthnContextClassRefurn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport</saml:AuthnContextClassRef>",
+      "repaired": "        <saml:AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport</saml:AuthnContextClassRef>",
+      "reason": "Opening tag lost its brackets and ran together with its own text content ('saml:AuthnContextClassRefurn:oasis:...').",
+      "certainty": "high — the closing tag survives and the URN boundary is unambiguous because 'urn:oasis:' can only begin the value"
+    },
+    {
+      "line": 24,
+      "rendered": "    saml:AttributeStatement",
+      "repaired": "    <saml:AttributeStatement>",
+      "reason": "same auto-linker defect",
+      "certainty": "high — closing </saml:AttributeStatement> survives on line 31"
+    }
+  ],
+  "samlEnvelope": {
+    "rootElement": "samlp:Response",
+    "samlVersion": "2.0",
+    "samlVersionSource": {
+      "pageId": "7766254",
+      "pageTitle": "Generating & Signing SAML Message -NEW",
+      "row": "SAML Sample XML (without signature tag) line 1",
+      "quote": "<samlp:Response xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" Destination=\"https://iam.cs-ona.nphies.sa/nphies-sso/saml\" ID=\"id-P5g-XB-x0soSL0daHMUf7s2QsCVZdyWYeskA-1JK\" IssueInstant=\"2025-04-22T08:14:46Z\" Version=\"2.0\">"
+    },
+    "profile": "SAML 2.0 Web SSO, IdP-initiated: the EMR/HIS generates an unsolicited samlp:Response and posts it to the NPHIES SSO endpoint. There is no samlp:AuthnRequest anywhere in these pages — which is itself evidence the flow is IdP-initiated, but the pages never say so in words and the sequence diagram is unreadable, so this is marked low confidence.",
+    "profileConfidence": "low",
+    "profileEvidence": "Page 7766210: 'Practitioner will access Provider portal from EMR/HIS applications.' / 'EMR/HIS application will generate SAML response.' No InResponseTo attribute appears in the skeleton, which is consistent with an unsolicited response.",
+    "namespaces": [
+      {
+        "prefix": "samlp",
+        "uri": "urn:oasis:names:tc:SAML:2.0:protocol",
+        "declaredOn": "/samlp:Response",
+        "required": true,
+        "sourceTier": "literal-skeleton",
+        "provenance": {
+          "pageId": "7766254",
+          "pageTitle": "Generating & Signing SAML Message -NEW",
+          "row": "SAML Sample XML (without signature tag) line 1",
+          "quote": "<samlp:Response xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" Destination=\"https://iam.cs-ona.nphies.sa/nphies-sso/saml\" ID=\"id-P5g-XB-x0soSL0daHMUf7s2QsCVZdyWYeskA-1JK\" IssueInstant=\"2025-04-22T08:14:46Z\" Version=\"2.0\">"
+        }
+      },
+      {
+        "prefix": "xsi",
+        "uri": "http://www.w3.org/2001/XMLSchema-instance",
+        "declaredOn": "/samlp:Response",
+        "required": true,
+        "sourceTier": "literal-skeleton",
+        "provenance": {
+          "pageId": "7766254",
+          "pageTitle": "Generating & Signing SAML Message -NEW",
+          "row": "SAML Sample XML (without signature tag) line 1",
+          "quote": "<samlp:Response xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" Destination=\"https://iam.cs-ona.nphies.sa/nphies-sso/saml\" ID=\"id-P5g-XB-x0soSL0daHMUf7s2QsCVZdyWYeskA-1JK\" IssueInstant=\"2025-04-22T08:14:46Z\" Version=\"2.0\">"
+        }
+      },
+      {
+        "prefix": "saml",
+        "uri": "urn:oasis:names:tc:SAML:2.0:assertion",
+        "declaredOn": "/samlp:Response/saml:Issuer and /samlp:Response/saml:Assertion (the skeleton re-declares it on each, rather than once on the root)",
+        "required": true,
+        "sourceTier": "literal-skeleton",
+        "provenance": {
+          "pageId": "7766254",
+          "pageTitle": "Generating & Signing SAML Message -NEW",
+          "row": "SAML Sample XML (without signature tag) line 2",
+          "quote": "  <saml:Issuer xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\" Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:entity\">Deemaalqassem</saml:Issuer>"
+        }
+      },
+      {
+        "prefix": "xsd",
+        "uri": "http://www.w3.org/2001/XMLSchema",
+        "declaredOn": "each /samlp:Response/saml:Assertion/saml:AttributeStatement/saml:Attribute/saml:AttributeValue",
+        "required": true,
+        "sourceTier": "literal-skeleton",
+        "provenance": {
+          "pageId": "7766254",
+          "pageTitle": "Generating & Signing SAML Message -NEW",
+          "row": "SAML Sample XML (without signature tag) line 26",
+          "quote": "        <saml:AttributeValue xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xsi:type=\"xsd:string\">10000300236625</saml:AttributeValue>"
+        }
+      },
+      {
+        "prefix": "ds",
+        "uri": "http://www.w3.org/2000/09/xmldsig#",
+        "declaredOn": "the ds:Signature the signing step adds; NOT present in the page's skeleton, which is published without a signature tag",
+        "required": null,
+        "sourceTier": "not-in-confluence",
+        "note": "The XML-Signature namespace URI is the W3C standard one; page 7766254 never writes it, because it publishes the response WITHOUT the signature tag and delegates signing to an external tool. Recorded here as the namespace a signed response will carry, NOT as a NPHIES-stated rule.",
+        "provenance": {
+          "pageId": "7766254",
+          "pageTitle": "Generating & Signing SAML Message -NEW",
+          "row": "SAML Sample XML (without signature tag):",
+          "quote": "SAML Sample XML (without signature tag)"
+        }
+      }
+    ],
+    "signature": {
+      "required": true,
+      "requiredEvidence": [
+        {
+          "pageId": "7766173",
+          "pageTitle": "NPHIES-CS Single Sign On (SSO)",
+          "row": "Terminology",
+          "quote": "Issuer - The Identity Provider responsible for issuing the signed SAML response. If the Issuer has a SAML Validation Profile set up in NPHIES Platform, all SAML responses signed by the Issuer are trusted."
+        },
+        {
+          "pageId": "7766210",
+          "pageTitle": "SAML SSO high Level and Sequence Diagrams-NEW",
+          "row": "SAML Single Sign On (SSO) Workflow",
+          "quote": "Oracle IAM validate SAML signature."
+        }
+      ],
+      "placement": {
+        "level": "assertion",
+        "memberId": "saml-sso-response/ds:Signature#17",
+        "xpath": "/samlp:Response/saml:Assertion/ds:Signature",
+        "statedBy": {
+          "pageId": "7766254",
+          "pageTitle": "Generating & Signing SAML Message -NEW",
+          "row": "Sign SAML Response",
+          "quote": "A SAML Response can be signed in:\nSign the Assertion way"
+        },
+        "positionWithinAssertionStated": false,
+        "positionNote": "Confluence states the LEVEL (the Assertion is what gets signed) and nothing about the element's position among the Assertion's children. The member is placed after saml:Issuer per SAML 2.0 Core's schema, which is an external fact."
+      },
+      "responseLevel": {
+        "modelled": false,
+        "reason": "Page 7766254 lists exactly one bullet under 'A SAML Response can be signed in:'. Response-level signing is not mentioned, so it is neither required nor forbidden here. See knownGaps/response-level-signing-unknown."
+      },
+      "signingIsOutOfScope": {
+        "statement": "Generating the signature is out of scope of the Confluence spec, which points at an external tool.",
+        "evidence": [
+          {
+            "pageId": "7766254",
+            "pageTitle": "Generating & Signing SAML Message -NEW",
+            "row": "Sign SAML Response",
+            "quote": "To sign SAML responses, we use a Signing SAML tool that simplifies the process."
+          },
+          {
+            "pageId": "7766254",
+            "pageTitle": "Generating & Signing SAML Message -NEW",
+            "row": "Sign SAML Response",
+            "quote": "Using this tool, you can paste an unsigned SAML Response, then sign it using the public and private X.509 certificates in the selected \"mode.\""
+          },
+          {
+            "pageId": "7766254",
+            "pageTitle": "Generating & Signing SAML Message -NEW",
+            "row": "Sign SAML Response",
+            "quote": "Private Key: This key is used to decrypt encrypted data and must remain confidential. It is kept secret by the healthcare organization and should not be shared with nphies."
+          }
+        ],
+        "externalTool": "https://www.samltool.com/sign_response.php",
+        "keyExchange": {
+          "publicKeyToNphies": {
+            "pageId": "7766237",
+            "pageTitle": "SAML Attributes and Metadata Synchronization-NEW",
+            "row": "Provided by health care to nphies team:",
+            "quote": "Public Key: The Public Key is used for NPHIES to read the encrypted signature."
+          },
+          "privateKeyStaysWithProvider": {
+            "pageId": "7766254",
+            "pageTitle": "Generating & Signing SAML Message -NEW",
+            "row": "Sign SAML Response",
+            "quote": "It is kept secret by the healthcare organization and should not be shared with nphies."
+          }
+        },
+        "noRulesInvented": "No canonicalization, digest, signature, transform, reference or KeyInfo rule is modelled, because none is stated. The ds:Signature member has no children."
+      }
+    },
+    "proposedEnvelopeSpec": {
+      "kind": "samlResponse",
+      "samlVersion": "2.0",
+      "rootElement": "samlp:Response",
+      "binding": null,
+      "signatureLevel": "assertion",
+      "specPage": {
+        "pageId": "7766254",
+        "pageTitle": "Generating & Signing SAML Message -NEW"
+      },
+      "_note": "NOT emitted into structure.envelope — EnvelopeSpec has no such kind and src/lib/structure.ts is read-only input. `binding` is null because the HTTP binding is unknown (see knownGaps/sequence-diagrams-unreadable)."
+    }
+  },
+  "namespaces": [
+    {
+      "prefix": "samlp",
+      "uri": "urn:oasis:names:tc:SAML:2.0:protocol",
+      "declaredOn": "/samlp:Response",
+      "required": true,
+      "sourceTier": "literal-skeleton",
+      "provenance": {
+        "pageId": "7766254",
+        "pageTitle": "Generating & Signing SAML Message -NEW",
+        "row": "SAML Sample XML (without signature tag) line 1",
+        "quote": "<samlp:Response xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" Destination=\"https://iam.cs-ona.nphies.sa/nphies-sso/saml\" ID=\"id-P5g-XB-x0soSL0daHMUf7s2QsCVZdyWYeskA-1JK\" IssueInstant=\"2025-04-22T08:14:46Z\" Version=\"2.0\">"
+      }
+    },
+    {
+      "prefix": "xsi",
+      "uri": "http://www.w3.org/2001/XMLSchema-instance",
+      "declaredOn": "/samlp:Response",
+      "required": true,
+      "sourceTier": "literal-skeleton",
+      "provenance": {
+        "pageId": "7766254",
+        "pageTitle": "Generating & Signing SAML Message -NEW",
+        "row": "SAML Sample XML (without signature tag) line 1",
+        "quote": "<samlp:Response xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" Destination=\"https://iam.cs-ona.nphies.sa/nphies-sso/saml\" ID=\"id-P5g-XB-x0soSL0daHMUf7s2QsCVZdyWYeskA-1JK\" IssueInstant=\"2025-04-22T08:14:46Z\" Version=\"2.0\">"
+      }
+    },
+    {
+      "prefix": "saml",
+      "uri": "urn:oasis:names:tc:SAML:2.0:assertion",
+      "declaredOn": "/samlp:Response/saml:Issuer and /samlp:Response/saml:Assertion (the skeleton re-declares it on each, rather than once on the root)",
+      "required": true,
+      "sourceTier": "literal-skeleton",
+      "provenance": {
+        "pageId": "7766254",
+        "pageTitle": "Generating & Signing SAML Message -NEW",
+        "row": "SAML Sample XML (without signature tag) line 2",
+        "quote": "  <saml:Issuer xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\" Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:entity\">Deemaalqassem</saml:Issuer>"
+      }
+    },
+    {
+      "prefix": "xsd",
+      "uri": "http://www.w3.org/2001/XMLSchema",
+      "declaredOn": "each /samlp:Response/saml:Assertion/saml:AttributeStatement/saml:Attribute/saml:AttributeValue",
+      "required": true,
+      "sourceTier": "literal-skeleton",
+      "provenance": {
+        "pageId": "7766254",
+        "pageTitle": "Generating & Signing SAML Message -NEW",
+        "row": "SAML Sample XML (without signature tag) line 26",
+        "quote": "        <saml:AttributeValue xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xsi:type=\"xsd:string\">10000300236625</saml:AttributeValue>"
+      }
+    },
+    {
+      "prefix": "ds",
+      "uri": "http://www.w3.org/2000/09/xmldsig#",
+      "declaredOn": "the ds:Signature the signing step adds; NOT present in the page's skeleton, which is published without a signature tag",
+      "required": null,
+      "sourceTier": "not-in-confluence",
+      "note": "The XML-Signature namespace URI is the W3C standard one; page 7766254 never writes it, because it publishes the response WITHOUT the signature tag and delegates signing to an external tool. Recorded here as the namespace a signed response will carry, NOT as a NPHIES-stated rule.",
+      "provenance": {
+        "pageId": "7766254",
+        "pageTitle": "Generating & Signing SAML Message -NEW",
+        "row": "SAML Sample XML (without signature tag):",
+        "quote": "SAML Sample XML (without signature tag)"
+      }
+    }
+  ],
+  "environments": {
+    "ONA": {
+      "env": "ONA",
+      "name": "ONA Environment",
+      "audience": "https://iam.cs-ona.nphies.sa/oam/fed",
+      "recipient": "https://iam.cs-ona.nphies.sa/nphies-sso/saml",
+      "endpoint": "https://iam.cs-ona.nphies.sa/nphies-sso/saml",
+      "fixedValues": {
+        "saml-sso-response/@Destination#1": {
+          "xpath": "/samlp:Response/samlp:Response/@Destination",
+          "value": "https://iam.cs-ona.nphies.sa/nphies-sso/saml"
+        },
+        "saml-sso-response/@Recipient#22": {
+          "xpath": "/samlp:Response/saml:Assertion/saml:Subject/saml:SubjectConfirmation/saml:SubjectConfirmationData/@Recipient",
+          "value": "https://iam.cs-ona.nphies.sa/nphies-sso/saml"
+        },
+        "saml-sso-response/saml:Audience#28": {
+          "xpath": "/samlp:Response/saml:Assertion/saml:Conditions/saml:AudienceRestriction/saml:Audience",
+          "value": "https://iam.cs-ona.nphies.sa/oam/fed"
+        }
+      },
+      "source": {
+        "pageId": "7766237",
+        "pageTitle": "SAML Attributes and Metadata Synchronization-NEW",
+        "row": "ONA Environment",
+        "quote": "ONA Environment\nAudience: https://iam.cs-ona.nphies.sa/oam/fed\nRecipient: https://iam.cs-ona.nphies.sa/nphies-sso/saml\nEndpoint: https://iam.cs-ona.nphies.sa/nphies-sso/saml"
+      }
+    },
+    "ONB": {
+      "env": "ONB",
+      "name": "ONB Environment",
+      "audience": "https://iam.cs-onb.nphies.sa/oam/fed",
+      "recipient": "https://iam.cs-onb.nphies.sa/nphies-sso/saml",
+      "endpoint": "https://iam.cs-onb.nphies.sa/nphies-sso/saml",
+      "fixedValues": {
+        "saml-sso-response/@Destination#1": {
+          "xpath": "/samlp:Response/samlp:Response/@Destination",
+          "value": "https://iam.cs-onb.nphies.sa/nphies-sso/saml"
+        },
+        "saml-sso-response/@Recipient#22": {
+          "xpath": "/samlp:Response/saml:Assertion/saml:Subject/saml:SubjectConfirmation/saml:SubjectConfirmationData/@Recipient",
+          "value": "https://iam.cs-onb.nphies.sa/nphies-sso/saml"
+        },
+        "saml-sso-response/saml:Audience#28": {
+          "xpath": "/samlp:Response/saml:Assertion/saml:Conditions/saml:AudienceRestriction/saml:Audience",
+          "value": "https://iam.cs-onb.nphies.sa/oam/fed"
+        }
+      },
+      "source": {
+        "pageId": "7766237",
+        "pageTitle": "SAML Attributes and Metadata Synchronization-NEW",
+        "row": "ONB Environment",
+        "quote": "ONB Environment\nAudience: https://iam.cs-onb.nphies.sa/oam/fed\nRecipient: https://iam.cs-onb.nphies.sa/nphies-sso/saml\nEndpoint: https://iam.cs-onb.nphies.sa/nphies-sso/saml"
+      }
+    },
+    "PROD": {
+      "env": "PROD",
+      "name": "Production Environment",
+      "audience": "https://iam.cs.nphies.sa/oam/fed",
+      "recipient": "https://iam.cs.nphies.sa/nphies-sso/saml",
+      "endpoint": "https://iam.cs.nphies.sa/nphies-sso/saml",
+      "fixedValues": {
+        "saml-sso-response/@Destination#1": {
+          "xpath": "/samlp:Response/samlp:Response/@Destination",
+          "value": "https://iam.cs.nphies.sa/nphies-sso/saml"
+        },
+        "saml-sso-response/@Recipient#22": {
+          "xpath": "/samlp:Response/saml:Assertion/saml:Subject/saml:SubjectConfirmation/saml:SubjectConfirmationData/@Recipient",
+          "value": "https://iam.cs.nphies.sa/nphies-sso/saml"
+        },
+        "saml-sso-response/saml:Audience#28": {
+          "xpath": "/samlp:Response/saml:Assertion/saml:Conditions/saml:AudienceRestriction/saml:Audience",
+          "value": "https://iam.cs.nphies.sa/oam/fed"
+        }
+      },
+      "source": {
+        "pageId": "7766237",
+        "pageTitle": "SAML Attributes and Metadata Synchronization-NEW",
+        "row": "Production Environment",
+        "quote": "Production Environment\nAudience: https://iam.cs.nphies.sa/oam/fed\nRecipient: https://iam.cs.nphies.sa/nphies-sso/saml\nEndpoint: https://iam.cs.nphies.sa/nphies-sso/saml"
+      }
+    }
+  },
+  "variantAxis": {
+    "axis": "environment",
+    "label": "NPHIES environment",
+    "values": [
+      "ONA",
+      "ONB",
+      "PROD"
+    ],
+    "affects": [
+      {
+        "role": "endpoint",
+        "boundTo": "/samlp:Response/@Destination",
+        "members": [
+          {
+            "memberId": "saml-sso-response/@Destination#1",
+            "xpath": "/samlp:Response/samlp:Response/@Destination"
+          }
+        ]
+      },
+      {
+        "role": "recipient",
+        "boundTo": "/samlp:Response/saml:Assertion/saml:Subject/saml:SubjectConfirmation/saml:SubjectConfirmationData/@Recipient",
+        "members": [
+          {
+            "memberId": "saml-sso-response/@Recipient#22",
+            "xpath": "/samlp:Response/saml:Assertion/saml:Subject/saml:SubjectConfirmation/saml:SubjectConfirmationData/@Recipient"
+          }
+        ]
+      },
+      {
+        "role": "audience",
+        "boundTo": "/samlp:Response/saml:Assertion/saml:Conditions/saml:AudienceRestriction/saml:Audience",
+        "members": [
+          {
+            "memberId": "saml-sso-response/saml:Audience#28",
+            "xpath": "/samlp:Response/saml:Assertion/saml:Conditions/saml:AudienceRestriction/saml:Audience"
+          }
+        ]
+      }
+    ],
+    "note": "Page 7766237 names the three endpoints 'Audience', 'Recipient' and 'Endpoint'. Recipient and Endpoint hold the SAME URL in all three environments (.../nphies-sso/saml); the skeleton uses it for both /samlp:Response/@Destination and .../saml:SubjectConfirmationData/@Recipient. Audience is a different path (.../oam/fed). This structure therefore has three slots but only two distinct URLs per environment.",
+    "envHostWarning": "Page 7766237 renders each host as a Confluence auto-link whose LINK TARGET is wrongly http://iam.cs-ona.nphies.sa/ on all nine bullets, while the VISIBLE LINK TEXT carries the correct per-environment host (iam.cs-ona / iam.cs-onb / iam.cs). The visible text is what is captured above; the stale href is a Confluence authoring artifact and must be ignored.",
+    "modelledAsVariant": "Emitted as ONE MessageStructure with variant: null plus this axis, rather than as three MessageStructures. The element tree is byte-identical across environments — only three leaf values move — so three structures would triple the tree to encode two URLs. If the compiler prefers the MessageStructure.variant mechanism, expand to saml-sso-response-ona / -onb / -prod by substituting environments[env].fixedValues by member id; nothing else changes."
+  },
+  "variableSlots": [
+    {
+      "sourceDescription": "Literal skeleton lines 2 and 7 (the value 'Deemaalqassem' is highlighted pink on the page as variable 1). Defined in prose on both 7766254 and 7766237: 'Issuer name: The issuer name is a unique identifier of the consumers.' Terminology on 7766173: 'Issuer - The Identity Provider responsible for issuing the signed SAML response. If the Issuer has a SAML Validation Profile set up in NPHIES Platform, all SAML responses signed by the Issuer are trusted.' Supplied by the healthcare organisation to the NPHIES team in advance, together with the Public Key.",
+      "suppliedBy": "healthcare organisation, registered with NPHIES ahead of time",
+      "sourceTier": "literal-skeleton + prose (both)",
+      "sampleValueOnPage": "Deemaalqassem",
+      "appearsTwice": true,
+      "name": "Issuer name",
+      "memberId": "saml-sso-response/saml:Issuer#10",
+      "xpath": "/samlp:Response/saml:Issuer",
+      "role": "data"
+    },
+    {
+      "sourceDescription": "Literal skeleton lines 2 and 7 (the value 'Deemaalqassem' is highlighted pink on the page as variable 1). Defined in prose on both 7766254 and 7766237: 'Issuer name: The issuer name is a unique identifier of the consumers.' Terminology on 7766173: 'Issuer - The Identity Provider responsible for issuing the signed SAML response. If the Issuer has a SAML Validation Profile set up in NPHIES Platform, all SAML responses signed by the Issuer are trusted.' Supplied by the healthcare organisation to the NPHIES team in advance, together with the Public Key.",
+      "suppliedBy": "healthcare organisation, registered with NPHIES ahead of time",
+      "sourceTier": "literal-skeleton + prose (both)",
+      "sampleValueOnPage": "Deemaalqassem",
+      "appearsTwice": true,
+      "name": "Issuer name",
+      "memberId": "saml-sso-response/saml:Issuer#16",
+      "xpath": "/samlp:Response/saml:Assertion/saml:Issuer",
+      "role": "data"
+    },
+    {
+      "sourceDescription": "Literal skeleton line 9 (highlighted blue as variable 4), as saml:Subject/saml:NameID. Page 7766173: 'Provider ID - This is the national ID or Iqama number of the provider. The SAML response will validate the accuracy of this provider ID with the registry.' Page 7766237 lists the same item as 'Practitioner ID (National ID/Iqama ID)'; page 7766210: 'EMR/HIS will provide Practitioner ID i.e. (National ID or Iqama ID), Health ID and Org ID.' The binding of this variable to saml:NameID rests on the colour highlight in the skeleton — it is the only blue-highlighted value on the page — and on the fact that no saml:Attribute carries it.",
+      "suppliedBy": "EMR/HIS per message",
+      "sourceTier": "literal-skeleton + prose (both)",
+      "sampleValueOnPage": "1095650865",
+      "appearsTwice": false,
+      "name": "Provider ID",
+      "memberId": "saml-sso-response/saml:NameID#19",
+      "xpath": "/samlp:Response/saml:Assertion/saml:Subject/saml:NameID",
+      "role": "data"
+    },
+    {
+      "sourceDescription": "Literal skeleton line 26 (highlighted purple as variable 2), inside saml:Attribute[@Name=\"Organization-Id\"]/saml:AttributeValue. Page 7766237: 'Organization ID = National Organization OID'. Page 7766173: 'Organization ID - This is the ID of the organization, which will be validated for accuracy against the organization registry.'",
+      "suppliedBy": "EMR/HIS per message",
+      "sourceTier": "literal-skeleton + prose (both)",
+      "sampleValueOnPage": "10000300236625",
+      "appearsTwice": false,
+      "name": "Organization ID",
+      "memberId": "saml-sso-response/saml:AttributeValue#41",
+      "xpath": "/samlp:Response/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name=\"Organization-Id\"]/saml:AttributeValue",
+      "role": "data"
+    },
+    {
+      "sourceDescription": "Literal skeleton line 29 (highlighted orange as variable 3), inside saml:Attribute[@Name=\"HealthId\"]/saml:AttributeValue. Page 7766237: 'Health ID(Patient Health ID)'. Page 7766173: 'Patient health ID - This is the patient's health ID number, which can be obtained from the patient registry. The SAML response will validate the accuracy of this health ID with the registry.'",
+      "suppliedBy": "EMR/HIS per message",
+      "sourceTier": "literal-skeleton + prose (both)",
+      "sampleValueOnPage": "30000999999999",
+      "appearsTwice": false,
+      "name": "Health ID",
+      "memberId": "saml-sso-response/saml:AttributeValue#47",
+      "xpath": "/samlp:Response/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name=\"HealthId\"]/saml:AttributeValue",
+      "role": "data"
+    }
+  ],
+  "sampleValuesAreNotConstants": {
+    "Issuer name": [
+      "Deemaalqassem"
+    ],
+    "Provider ID": [
+      "1095650865"
+    ],
+    "Organization ID": [
+      "10000300236625"
+    ],
+    "Health ID": [
+      "30000999999999"
+    ]
+  },
+  "sampleValuesWarning": "These four values are the page's own sample data, NOT constants. '30000999999999' in particular carries a 9-digit repeat run and is a placeholder Health ID.",
+  "provenanceSplit": {
+    "fromLiteralSkeleton": {
+      "confidence": "high",
+      "pageId": "7766254",
+      "covers": [
+        "the complete element tree and its document order: Response > (Issuer, Status > StatusCode, Assertion > (Issuer, Subject > (NameID, SubjectConfirmation > SubjectConfirmationData), Conditions > AudienceRestriction > Audience, AuthnStatement > AuthnContext > AuthnContextClassRef, AttributeStatement > Attribute x2 > AttributeValue))",
+        "every attribute name on every element",
+        "every fixed urn value: status:Success, cm:bearer, nameid-format:entity, SAML:1.1:nameid-format:unspecified, attrname-format:basic, ac:classes:PasswordProtectedTransport, Version=2.0, xsi:type=xsd:string",
+        "the attribute names Organization-Id and HealthId, and their order",
+        "the namespace URIs samlp, saml, xsi, xsd and where each is declared",
+        "which four slots are variable (the page colour-codes them and lists them explicitly)"
+      ],
+      "caveat": "Seven opening tags reach us with their angle brackets eaten by Confluence's auto-linker. Each is recovered with high certainty because its closing tag survived; see `skeletonRepairs`."
+    },
+    "fromSurroundingProse": {
+      "confidence": "medium",
+      "covers": [
+        {
+          "claim": "a ds:Signature is REQUIRED and covers the Assertion",
+          "pages": [
+            "7766254",
+            "7766173",
+            "7766210"
+          ],
+          "note": "level stated, position and internals not stated"
+        },
+        {
+          "claim": "the three environments' Audience / Recipient / Endpoint URLs",
+          "pages": [
+            "7766237"
+          ],
+          "note": "corroborates the skeleton's ONA values exactly"
+        },
+        {
+          "claim": "what each variable means and who supplies it",
+          "pages": [
+            "7766173",
+            "7766237"
+          ],
+          "note": "Issuer name and Public Key are pre-registered; the three IDs come per message"
+        },
+        {
+          "claim": "Provider ID is carried in saml:NameID",
+          "pages": [
+            "7766254",
+            "7766237"
+          ],
+          "note": "INFERRED from the page's colour coding plus elimination — no sentence says it. See knownGaps/provider-id-binding-from-highlight."
+        },
+        {
+          "claim": "signing is performed with an external tool, out of scope of the spec",
+          "pages": [
+            "7766254"
+          ],
+          "note": null
+        },
+        {
+          "claim": "direction: the EMR/HIS generates and sends this message",
+          "pages": [
+            "7766210"
+          ],
+          "note": null
+        }
+      ]
+    },
+    "notFromAnySource": {
+      "confidence": "n/a",
+      "covers": [
+        "NOTHING in the element tree was invented.",
+        "The ds:Signature member's POSITION among the Assertion's children follows SAML 2.0 Core's schema, an external standard, and is flagged as such on the member itself.",
+        "The ds namespace URI http://www.w3.org/2000/09/xmldsig# is the W3C constant, flagged in `namespaces` as not-in-confluence."
+      ]
+    }
+  },
+  "counts": {
+    "members": 51,
+    "elements": 22,
+    "attributes": 29,
+    "dataRole": 5,
+    "structuralRole": 44,
+    "containerRole": 2,
+    "bySourceTier": {
+      "literal-skeleton": 50,
+      "prose": 1
+    },
+    "skeletonLines": 33,
+    "skeletonRepairs": 7,
+    "knownGaps": 11
+  },
+  "knownGaps": [
+    {
+      "id": "no-golden-sample",
+      "severity": "high",
+      "gap": "There is no official NPHIES SAML sample in spec-source/golden/. This structure cannot be gate-checked, and nothing in it has been confirmed against a message NPHIES accepted.",
+      "effect": "verifiedAgainstSample: false; structure confidence \"medium\".",
+      "resolvedBy": "Obtain one signed samlp:Response that NPHIES accepted, from any environment."
+    },
+    {
+      "id": "sequence-diagrams-unreadable",
+      "severity": "medium",
+      "gap": "Page 7766210 carries the two authoritative pictures — 'Image.2 SAML SSO High Level Diagram' and 'Image.3 SAML SSO Sequence Diagram' — as PNG attachments (image-20240728-120143.png, image-20240728-120221.png). The cached page holds only the <img> tags; the pixels were not fetched and cannot be read here.",
+      "effect": "The SSO protocol FLOW — HTTP binding (POST vs redirect), form field name (SAMLResponse?), base64 encoding, RelayState, what NPHIES returns, error handling — is unknown. Only the five-bullet prose workflow beside the images was extracted. NOTHING about the flow has been guessed.",
+      "readableProseOnThatPage": "Practitioner will access Provider portal from EMR/HIS applications.\nEMR/HIS application will generate SAML response.\nEMR/HIS will provide Practitioner ID i.e. (National ID or Iqama ID), Health ID and Org ID.\nOracle IAM validate SAML signature.\nPerform the required validation of the data.",
+      "resolvedBy": "Fetch the two PNGs and read them, or get the flow in prose."
+    },
+    {
+      "id": "signature-shape-unspecified",
+      "severity": "high",
+      "gap": "Page 7766254 states only that the response is signed 'Sign the Assertion way' and hands the job to an external tool (https://www.samltool.com/sign_response.php). No ds:Signature internals are specified anywhere: no canonicalization method, digest method, signature method, transform list, reference URI convention, KeyInfo/X509Data requirement, and no statement of where inside the Assertion the element sits.",
+      "effect": "The ds:Signature member records ONLY that a signature exists and that it covers the Assertion. Its children are deliberately empty. A checker must not report a signature's internals as conforming or non-conforming against this structure.",
+      "resolvedBy": "A NPHIES statement of the required signature profile, or a real signed sample."
+    },
+    {
+      "id": "response-level-signing-unknown",
+      "severity": "medium",
+      "gap": "The page lists exactly ONE signing option — 'Sign the Assertion way' — as a single bullet under the plural phrase 'A SAML Response can be signed in:'. The plural wording suggests a second option (Response-level signing) was intended and is missing from the page.",
+      "effect": "Only Assertion-level signing is modelled. Response-level signing is neither required nor forbidden here.",
+      "resolvedBy": "Ask NPHIES whether a Response-level signature is also accepted."
+    },
+    {
+      "id": "organization-id-oid-contradiction",
+      "severity": "medium",
+      "gap": "Page 7766237 states 'Organization ID = National Organization OID', but the skeleton's sample value is '10000300236625' — a 14-digit number, not a dotted OID. spec-build/constants.json records NPHIES national organization identifiers in the same flat-numeric shape.",
+      "effect": "No format rule is asserted for Organization ID. A checker must not require a dotted OID here, and must not require a 14-digit number either.",
+      "resolvedBy": "Confirm which identifier form the Organization-Id attribute actually carries."
+    },
+    {
+      "id": "provider-id-binding-from-highlight",
+      "severity": "medium",
+      "gap": "That 'Provider ID' is carried in saml:Subject/saml:NameID is inferred from the page's colour coding (the variable legend colours 'Provider ID' blue, and 1095650865 in the NameID is the only blue-highlighted value). No sentence on any of the four pages says 'the NameID carries the Provider ID'.",
+      "effect": "The binding is recorded with the highlight as its evidence. It is corroborated by elimination — the two saml:Attribute elements carry the other two IDs — but it is not a quoted rule.",
+      "confidence": "medium",
+      "resolvedBy": "One real sample, or a sentence naming the NameID's content."
+    },
+    {
+      "id": "validity-window-unstated",
+      "severity": "low",
+      "gap": "The skeleton's assertion is valid for 5 minutes (NotBefore 08:14:46Z, NotOnOrAfter 08:19:46Z, SubjectConfirmationData NotOnOrAfter 08:19:46Z). No page states a required or maximum window, nor a clock-skew tolerance.",
+      "effect": "The three timestamp members carry no value rule. 5 minutes is recorded as an observation of one sample.",
+      "resolvedBy": "A NPHIES statement of the accepted assertion lifetime."
+    },
+    {
+      "id": "status-failure-shape-unknown",
+      "severity": "low",
+      "gap": "Only urn:oasis:names:tc:SAML:2.0:status:Success is shown. No failure StatusCode, StatusMessage or StatusDetail shape is documented.",
+      "effect": "The structure models the success case only.",
+      "resolvedBy": "A NPHIES statement of the SSO failure response."
+    },
+    {
+      "id": "no-nphies-response-structure",
+      "severity": "medium",
+      "gap": "Nothing in these four pages describes what NPHIES sends BACK. Page 7766210's 'Oracle IAM validate SAML signature' is the only hint, and it sits next to an unreadable diagram.",
+      "effect": "The use case saml-sso has a request structure only; there is no response structure to compile.",
+      "resolvedBy": "The sequence diagram (see sequence-diagrams-unreadable) or NPHIES prose."
+    },
+    {
+      "id": "saml-generator-tool-doc-unreachable",
+      "severity": "low",
+      "gap": "Page 7766254's link to the SAML Generator documentation is a local Windows file URL on an author's machine ('file:///C:/Users/DemaAlkassim/OneDrive - Lean for Business Services/Microsoft Teams Chat Files/SAMLGeneratorDoc-v1 (3).html'), not a published page. Whatever additional rules that document holds are unavailable.",
+      "effect": "Recorded so nobody re-hunts for it.",
+      "resolvedBy": "Ask NPHIES to publish SAMLGeneratorDoc."
+    },
+    {
+      "id": "xml-prolog-and-encoding-unstated",
+      "severity": "low",
+      "gap": "The skeleton begins at <samlp:Response>; no XML declaration, encoding, or base64/HTTP-binding wrapper is shown.",
+      "effect": "The structure starts at the document element. Serialisation around it is out of scope.",
+      "resolvedBy": "Same source as sequence-diagrams-unreadable."
+    }
+  ],
+  "compilerNotes": [
+    {
+      "id": "family-not-in-SpecFamily",
+      "severity": "blocking-if-typechecked",
+      "what": "`MessageStructure.family` is typed `SpecFamily = \"hl7v2\" | \"fhir\" | \"cda\" | \"xds\"`, which has no \"saml\" member. `UseCaseSummary.family` ALREADY admits \"saml\" and its own comment says '`saml` appears here although it is not a `SpecFamily`: it has no field tables.'",
+      "chosen": "This patch emits `\"family\": \"saml\"`, matching UseCaseSummary and the truth, rather than mislabelling the message as CDA or XDS.",
+      "optionsForCompiler": [
+        "Widen SpecFamily (or MessageStructure.family) to include \"saml\" — the smallest honest change, and consistent with what UseCaseSummary already does.",
+        "Keep SpecFamily as-is and let the compiler map \"saml\" -> a nullable/extended field on the structure record."
+      ],
+      "doNot": "Do NOT set family to \"cda\". Locators here are cdaXPath because that is the XML locator kind the contract offers, but the message is not a CDA document and must not be labelled one. Note that familyOfLocator() on any locator in this structure returns \"cda\" — a consistency check that compares structure.family with familyOfLocator will fire on saml-sso and should be exempted rather than 'fixed' by relabelling the structure.",
+      "structureTsUnchanged": true
+    },
+    {
+      "id": "envelope-has-no-saml-kind",
+      "severity": "non-blocking",
+      "what": "`EnvelopeSpec` is a union of hl7v2Message | fhirBundle | cdaDocument | soapEnvelope. There is no SAML kind, and `MessageEncoding` DOES already include \"saml-xml\" — so the encoding was anticipated and the envelope was not.",
+      "chosen": "`structure.envelope` is null. The envelope facts (root element, required namespaces, signature placement) are carried in this patch's `samlEnvelope` and `namespaces`, plus as real members of the tree, so nothing is lost and nothing is faked into a soapEnvelope.",
+      "proposedShape": "see `samlEnvelope.proposedEnvelopeSpec` — adopt only if structure.ts is widened.",
+      "structureTsUnchanged": true
+    },
+    {
+      "id": "role-on-structure-members",
+      "severity": "non-blocking",
+      "what": "`SpecRole` (data | structural | container | omit) is declared on `SpecNode`, not on `StructureMemberBase`. saml-sso has no field tables and therefore no SpecNodes, so there is nowhere in the contract to put the role.",
+      "chosen": "Every element member in this patch carries `role` (a valid SpecRole value) as an additive field. TypeScript's excess-property check does not apply to JSON-parsed data, so the bundle still satisfies StructureElement. The four data slots additionally carry `variableSlot`.",
+      "optionsForCompiler": [
+        "Carry `role` through onto the structure member (what a UI asking 'what must I actually build?' needs).",
+        "Synthesise one SpecNode per member from these fields and point at them with specRefs — more faithful to the contract, more machinery."
+      ],
+      "structureTsUnchanged": true
+    },
+    {
+      "id": "locator-kind",
+      "severity": "informational",
+      "what": "Whether SAML warrants a new locator kind.",
+      "chosen": "`cdaXPath` is used throughout, as instructed. It fits without strain: `path` + `relativeTo` + `attribute` + `predicate` express every address in this tree, and locatorKey() yields unique, stable keys (the two saml:Issuer elements differ by relativeTo, and the two saml:Attribute elements by predicate).",
+      "recommendation": "No new locator kind is needed for saml-sso. If one is ever added for XML generally, the honest move is to RENAME cdaXPath to something family-neutral rather than add a parallel kind — the same argument applies to the SOAP/XDS structures, which already use cdaXPath for non-CDA XML.",
+      "structureTsUnchanged": true
+    },
+    {
+      "id": "usage-codes-are-derived",
+      "severity": "informational",
+      "what": "The NPHIES usage legend (page 171278410) is a TABLE legend. saml-sso has no table, so no cell ever said M/R/O for any of these members.",
+      "chosen": "Every member carries usage [{usage: \"R\", min: 1, max: 1, raw: {usage: null, cardinality: null}}]. `raw` is null on purpose: there is no cell to quote. The code \"R\" is DERIVED from presence in the single published skeleton, not read from a source. A checker should say 'required by the published SAML skeleton' rather than 'required per the usage table'.",
+      "structureTsUnchanged": true
+    },
+    {
+      "id": "manifest-wiring",
+      "severity": "informational",
+      "what": "What the manifest needs so gate blocker 1 actually closes.",
+      "chosen": "useCases entry `saml-sso` should get structureIds: [\"saml-sso-response\"], family \"saml\", encoding \"saml-xml\", goldenSamples: [], goldenMissing: {reason: \"no official SAML sample published\", note: \"structure rests on Confluence text alone\"}, specPages: [\"7766254\", \"7766237\", \"7766173\", \"7766210\"], status \"partial\" (NOT \"complete\": there is no sample and the flow is unknown).",
+      "structureTsUnchanged": true
+    }
+  ],
+  "verifiedAgainstSample": false,
+  "confidence": "medium",
+  "confidenceReason": "The element tree, its order, its attribute names and every fixed urn value come from one LITERAL XML skeleton published by NPHIES, so those facts are individually high-confidence. The structure as a whole is \"medium\" because (a) no official sample exists to check it against, (b) the skeleton is published without its signature and the signature's shape is unspecified, (c) the SSO flow around the message lives in two unreadable diagram images, and (d) one binding — Provider ID to saml:NameID — rests on a colour highlight rather than a sentence."
+}

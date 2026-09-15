@@ -212,15 +212,48 @@ function usageFromCode(code, { min = null, max = null, condition = null, quoteCa
   ];
 }
 
+/**
+ * Normalise a source object into a Provenance record.
+ *
+ * Two shapes are accepted and they are NOT interchangeable:
+ *   { pageId, pageTitle, row, quote }  a Confluence page states the rule
+ *   { sample, quote }                  the rule was read off an official golden sample
+ *                                      because no Confluence page states it
+ * A record with `sample` set and `pageId` null is a rule that is not in the published
+ * spec. The UI has to be able to say so, which is why the two never collapse.
+ */
 function provenance(src, fallback) {
   const s = src && typeof src === 'object' ? src : fallback;
   if (!s || typeof s !== 'object') return null;
-  return {
+  const out = {
     pageId: s.pageId === undefined || s.pageId === null ? null : String(s.pageId),
     pageTitle: typeof s.pageTitle === 'string' ? s.pageTitle : null,
     row: typeof s.row === 'string' ? s.row : null,
     quote: typeof s.quote === 'string' ? s.quote : null,
   };
+  if (typeof s.sample === 'string' && s.sample.trim()) out.sample = s.sample.trim();
+  return out;
+}
+
+/**
+ * Evidence carried by every rule this compiler ships: how sure we are, whether an official
+ * sample was checked, and how the rule was arrived at.
+ *
+ * `confidence` is NEVER raised here. A repair agent that wrote "low" keeps "low"; the only
+ * thing this helper does is default a missing value and refuse to invent one higher than
+ * the source claimed.
+ */
+function evidence({ confidence, verifiedAgainstSample, derivation, confidenceReason, samples } = {}) {
+  const out = {};
+  const c = typeof confidence === 'string' ? confidence.trim().toLowerCase() : null;
+  out.confidence = c === 'high' || c === 'medium' || c === 'low' ? c : 'medium';
+  if (c && out.confidence !== c) warn('evidence', `unrecognised confidence "${confidence}" recorded as medium`);
+  out.verifiedAgainstSample = verifiedAgainstSample === true;
+  if (derivation) out.derivation = derivation;
+  const reason = cleanText(confidenceReason);
+  if (reason) out.confidenceReason = reason;
+  if (Array.isArray(samples) && samples.length) out.samples = [...new Set(samples.map(String))].sort();
+  return out;
 }
 
 function cleanText(value) {
@@ -255,7 +288,16 @@ function splitXPath(rawPath) {
   const raw = cleanText(rawPath);
   if (!raw) return null;
   // Normalise whitespace that survives anchor stripping, e.g. "./ id" -> "./id".
-  let path = raw.replace(/\s*\/\s*/g, '/').replace(/\s+/g, ' ').trim();
+  // Confluence authors type curly quotes inside predicates (participant[@typeCode=’SBJ’]).
+  // No XPath engine accepts them, so the LOCATOR is normalised to apostrophes. The verbatim
+  // cell survives untouched in `locatorRaw` and in every provenance quote.
+  let path = raw
+    .replace(/[‘’“”]/g, "'")
+    .replace(/\s*\/\s*/g, '/')
+    .replace(/\[\s+/g, '[')
+    .replace(/\s+\]/g, ']')
+    .replace(/\s+/g, ' ')
+    .trim();
   let attribute = null;
   const attrMatch = /\/@([A-Za-z_][\w:.-]*)$/.exec(path);
   if (attrMatch) {
@@ -317,6 +359,193 @@ const errorsIn = inputs.errors.data;
 const constantsIn = inputs.constants.data;
 const datatypesIn = inputs.datatypes.data;
 const goldenIn = inputs.golden.data;
+
+// ---------------------------------------------------------------------------
+// repair patches
+//
+// Six repair passes wrote corrected artifacts next to the first-pass extraction. They are
+// applied ON TOP of spec-build/*.json here rather than being merged back into it, so this
+// compiler stays re-runnable: originals + patches in, src/spec out, deterministically. A
+// missing or malformed patch degrades the bundle, it never fails the build.
+// ---------------------------------------------------------------------------
+
+const PATCH_NAMES = [
+  'patch-xds-ebrim',
+  'patch-literals',
+  'patch-fhir-entries',
+  'patch-cda',
+  'patch-saml',
+  'sample-defects',
+];
+const patches = {};
+for (const name of PATCH_NAMES) {
+  const rec = readInput(name);
+  patches[name] = rec;
+  if (!rec.present) warn('patch', `repair patch spec-build/${name}.json is absent — the repairs it carries are NOT in this bundle`);
+}
+const patchData = (name) => patches[name]?.data ?? null;
+
+const xdsPatch = patchData('patch-xds-ebrim');
+const literalsPatch = patchData('patch-literals');
+const fhirEntriesPatch = patchData('patch-fhir-entries');
+const cdaPatch = patchData('patch-cda');
+const samlPatch = patchData('patch-saml');
+const sampleDefectsPatch = patchData('sample-defects');
+
+// ---------------------------------------------------------------------------
+// literal normalisation
+//
+// Three extractor bugs mangled identifiers on the way out of Confluence (patch-literals):
+//   (1) U+00A0 typed MID-TOKEN inside a <code> span, flattened to a space
+//       -> "$XDSDocumentEntry PatientId"
+//   (2) a <sup>1</sup> footnote marker flattened into the identifier
+//       -> "$XDSDocumentEntry ClassCode 1", "CreationTimeFrom5"
+//   (3) <p>/<br> boundaries joined with a space, merging two element paths into one
+//
+// Two things happen here, and they are different:
+//   * the 36 VERIFIED corrections are applied to the raw inputs by exact literal match,
+//     skipping provenance slots so every quote stays verbatim;
+//   * the RULE itself is folded into normaliseIdentifier(), which every identifier slot
+//     passes through, so a re-scrape that still carries the bug cannot silently reintroduce
+//     it. A guard at the end asserts no identifier survives with NBSP or a glued footnote.
+// ---------------------------------------------------------------------------
+
+const NBSP = '\u00a0';
+const ZWSP = '\u200b';
+const SHY = '\u00ad';
+
+/** Slots that hold VERBATIM source text. Never rewritten, whatever they contain. */
+const PROVENANCE_SLOTS = new Set([
+  'quote',
+  'row',
+  'guidance',
+  'description',
+  'elementLocationRaw',
+  'noteBefore',
+  'sourceHtmlFragment',
+  'pageTitle',
+  'title',
+  'definition',
+  'meaning',
+  'text',
+  'rawUsage',
+  'rawMaxRpt',
+]);
+
+/** Is this string a single wire identifier rather than prose? */
+const IDENTIFIER_RE = /^[$@#]?[A-Za-z_./][A-Za-z0-9_$.:/\u00a0 -]*$/;
+
+const literalNormalisations = [];
+
+/**
+ * Normalise ONE identifier cell. Whitespace inside a wire identifier is always an
+ * extractor artefact; whitespace inside prose is not. The test is deliberately narrow:
+ * only strings that are already shaped like an identifier AND start with a known
+ * identifier prefix get their internal whitespace deleted. Everything else keeps its
+ * spaces and only loses the zero-width characters, which are never meaningful.
+ */
+function normaliseIdentifier(raw, where) {
+  if (typeof raw !== 'string') return raw;
+  let out = raw.replace(new RegExp(`[${ZWSP}${SHY}]`, 'g'), '');
+  const trimmed = out.trim();
+  const identifierish = IDENTIFIER_RE.test(trimmed) && /^(\$XDS|urn:uuid:|urn:ihe:|urn:oasis:)/.test(trimmed);
+  if (identifierish) {
+    const squashed = trimmed.replace(new RegExp(`[\\s${NBSP}]+`, 'g'), '');
+    if (squashed !== trimmed) {
+      literalNormalisations.push({ where: where ?? null, from: raw, to: squashed, rule: 'whitespace-in-identifier' });
+      return squashed;
+    }
+    return trimmed;
+  }
+  // Prose: a no-break space really is a space.
+  return out.replace(new RegExp(NBSP, 'g'), ' ');
+}
+
+/** Apply the verified literal corrections to one loaded artifact, in place. */
+function applyLiteralCorrections() {
+  const summary = { applied: 0, occurrences: 0, artifacts: [], misses: [], specDefectsShipped: 0 };
+  if (!literalsPatch || !Array.isArray(literalsPatch.corrections)) {
+    if (literalsPatch) warn('literals', 'patch-literals.json carries no corrections array');
+    return summary;
+  }
+  const byArtifact = new Map();
+  for (const c of literalsPatch.corrections) {
+    if (typeof c?.storedLiteral !== 'string' || typeof c?.correctedLiteral !== 'string') {
+      warn('literals', 'a correction has no storedLiteral/correctedLiteral pair and was skipped', c?.jsonPath ?? null);
+      continue;
+    }
+    const artifact = String(c.artifact ?? '').replace(/\.json$/, '');
+    if (!INPUT_NAMES.includes(artifact)) {
+      warn('literals', `correction targets unknown artifact "${c.artifact}"`, { storedLiteral: c.storedLiteral });
+      continue;
+    }
+    if (!byArtifact.has(artifact)) byArtifact.set(artifact, new Map());
+    byArtifact.get(artifact).set(c.storedLiteral, {
+      to: c.correctedLiteral,
+      hits: 0,
+      declared: typeof c.occurrences === 'number' ? c.occurrences : null,
+      confidence: c.confidence ?? null,
+      cause: c.cause ?? null,
+    });
+  }
+
+  const walk = (node, table, key) => {
+    if (Array.isArray(node)) {
+      for (let i = 0; i < node.length; i += 1) {
+        const v = node[i];
+        if (typeof v === 'string') {
+          if (PROVENANCE_SLOTS.has(key)) continue;
+          const hit = table.get(v);
+          if (hit) {
+            node[i] = hit.to;
+            hit.hits += 1;
+          }
+        } else if (v && typeof v === 'object') walk(v, table, key);
+      }
+      return;
+    }
+    if (!node || typeof node !== 'object') return;
+    for (const k of Object.keys(node)) {
+      const v = node[k];
+      if (typeof v === 'string') {
+        if (PROVENANCE_SLOTS.has(k)) continue;
+        const hit = table.get(v);
+        if (hit) {
+          node[k] = hit.to;
+          hit.hits += 1;
+        }
+      } else if (v && typeof v === 'object') walk(v, table, k);
+    }
+  };
+
+  for (const [artifact, table] of [...byArtifact.entries()].sort()) {
+    const root = inputs[artifact]?.data;
+    if (!root) {
+      warn('literals', `corrections for "${artifact}" could not be applied — the input is missing`);
+      continue;
+    }
+    walk(root, table, null);
+    summary.artifacts.push(artifact);
+    for (const [from, rec] of table) {
+      if (rec.hits === 0) {
+        summary.misses.push({ artifact, storedLiteral: from, expected: rec.declared });
+        warn('literals', `correction for "${from}" matched nothing in ${artifact}.json — the input may already be fixed`, {
+          expectedOccurrences: rec.declared,
+        });
+        continue;
+      }
+      summary.applied += 1;
+      summary.occurrences += rec.hits;
+      if (rec.declared !== null && rec.hits !== rec.declared) {
+        warn('literals', `correction for "${from}" hit ${rec.hits} slots in ${artifact}.json, the patch declared ${rec.declared}`);
+      }
+    }
+  }
+  return summary;
+}
+
+const literalCorrectionSummary = applyLiteralCorrections();
+
 
 // ---------------------------------------------------------------------------
 // cross-artefact join indexes (fixed values, value-set bindings)
@@ -429,7 +658,9 @@ function compileNode(row, ctx) {
     locator = built[0] ?? null;
     altLocators = built.slice(1);
   } else if (family === 'xds') {
-    const name = cleanText(row.name);
+    // Fold the literal-extraction rule in: whitespace inside a $XDS.../urn: identifier is
+    // always an artefact of the Confluence renderer, never part of the wire name.
+    const name = cleanText(normaliseIdentifier(row.name, `fields.xdsMetadata.${pageId}`));
     if (name) locator = { kind: 'xdsSlot', name };
     altLocators = locations.map((l) => cdaLocator(l, parentPath)).filter(Boolean);
   }
@@ -611,6 +842,474 @@ function compileFieldBundles() {
 }
 
 const { bundles: fieldBundles } = compileFieldBundles();
+
+// ---------------------------------------------------------------------------
+// XDS ebRIM: the metadata model fields.json could never have held
+//
+// The first-pass extraction captured the XDS metadata attribute NAMES from Confluence
+// (classCode, authorPerson, uniqueId, ...) but not the ebRIM machinery that carries them on
+// the wire: the classification / identification scheme UUIDs, the ebRIM slots that are not
+// NPHIES attributes at all (codingScheme, SubmissionSetStatus), and the object attributes
+// whose values are fixed URNs. A scheme UUID is a fixed structural value — a message can
+// neither be built nor checked without it — so it belongs in fields/xds.json alongside the
+// attribute it denotes. That is what this derived page adds.
+//
+// EVIDENCE. Most of it comes from the official samples, because Confluence never prints a
+// UUID. Every node therefore says so: `derivation: "sample"`, `provenance.sample` naming
+// the file, `provenance.quote` the verbatim XML. Where a Confluence row states the
+// attribute's optionality, that row is carried as the node's `usage` with its own quote, so
+// the two kinds of evidence stay distinguishable. Nothing is promoted: the two values the
+// repair pass flagged as conflicting stay low/medium confidence and say why.
+// ---------------------------------------------------------------------------
+
+const EBRIM_PAGE_ID = 'ebrim';
+const EBRIM_AREA = 'IHE ebRIM content model (derived)';
+
+function ebrimUsage(opt, fallbackCardinality) {
+  if (opt && typeof opt === 'object') {
+    return normaliseUsageList([
+      {
+        usage: opt.usage,
+        min: typeof opt.min === 'number' ? opt.min : null,
+        max: opt.max === '*' ? '*' : typeof opt.max === 'number' ? opt.max : null,
+        rawUsage: opt.usage ?? null,
+        rawMaxRpt: opt.maxRpt ?? null,
+      },
+    ]);
+  }
+  // No Confluence optionality row: record the observed cardinality WITHOUT claiming a usage
+  // code. An empty usage list means "no source states a requirement here", which is the
+  // truth, and resolveUsage() already reports that as unstated rather than optional.
+  if (typeof fallbackCardinality === 'string' && fallbackCardinality.trim()) {
+    const { min, max } = parseCardinalityString(fallbackCardinality);
+    if (min !== null || max !== null) {
+      return [{ usage: null, min, max, condition: null, validator: 'unknown', raw: { usage: null, cardinality: fallbackCardinality } }];
+    }
+  }
+  return [];
+}
+
+function ebrimNode(id, fields) {
+  return {
+    id,
+    family: 'xds',
+    number: null,
+    altLocators: undefined,
+    datatype: null,
+    length: null,
+    codeSet: null,
+    valueSets: [],
+    templateIds: [],
+    children: [],
+    roleInferred: false,
+    ...fields,
+  };
+}
+
+function buildEbrimFieldPage() {
+  if (!xdsPatch) return null;
+  const tables = [];
+  let nodeCount = 0;
+
+  /* ---- table 0: classification / identification scheme UUIDs ---------------- */
+  const schemeNodes = [];
+  for (const [i, sch] of (Array.isArray(xdsPatch.schemes) ? xdsPatch.schemes : []).entries()) {
+    if (!sch?.uuid || !sch?.attribute) {
+      warn('xds-ebrim', 'a scheme entry has no uuid/attribute and was skipped');
+      continue;
+    }
+    const schemeKind = sch.kind === 'identification' ? 'identification' : 'classification';
+    const attributeName = schemeKind === 'classification' ? 'classificationScheme' : 'identificationScheme';
+    const observed = Number(sch.sampleCount) > 0;
+    schemeNodes.push(
+      ebrimNode(`${EBRIM_PAGE_ID}:0:${i}`, {
+        label: sch.attribute,
+        locator: {
+          kind: 'xdsScheme',
+          scheme: schemeKind,
+          uuid: String(sch.uuid).toLowerCase(),
+          attribute: sch.attribute,
+          ...(sch.appliesTo ? { appliesTo: sch.appliesTo } : {}),
+        },
+        locatorRaw: `${sch.carriedBy ?? 'rim:Classification'}/@${attributeName}="${sch.uuid}"`,
+        role: 'structural',
+        roleConfidence: 'high',
+        usage: ebrimUsage(sch.nphiesOptionality, null),
+        guidance: [
+          `${sch.appliesTo ?? 'DocumentEntry'}.${sch.attribute} (IHE ${sch.iheName ?? sch.attribute}).`,
+          sch.valueFormat ? `Value: ${sch.valueFormat}` : null,
+          Array.isArray(sch.requiredChildSlots) && sch.requiredChildSlots.length
+            ? `Requires child rim:Slot(s): ${sch.requiredChildSlots.join(', ')}.`
+            : null,
+        ]
+          .filter(Boolean)
+          .join(' '),
+        fixedValues: [
+          {
+            value: String(sch.uuid),
+            target: attributeName,
+            statementType: 'ebrimSchemeUuid',
+            scope: 'attribute',
+            elementPath: sch.carriedBy ?? null,
+            attribute: attributeName,
+            component: null,
+            provenance: provenance(sch.source),
+          },
+        ],
+        provenance: provenance(sch.source) ?? provenance(sch.nphiesOptionality?.source),
+        ...evidence({
+          confidence: sch.confidence,
+          verifiedAgainstSample: observed,
+          derivation: sch.nphiesOptionality ? (observed ? 'confluence+sample' : 'confluence') : observed ? 'sample' : 'standard',
+          confidenceReason: sch.confidenceReason,
+          samples: sch.derivedFrom,
+        }),
+        valueCarrier: sch.valueCarrier ?? null,
+        requiredChildSlots: Array.isArray(sch.requiredChildSlots) ? sch.requiredChildSlots : [],
+        observedNames: Array.isArray(sch.observedNames) ? sch.observedNames : [],
+        occurrenceCount: typeof sch.occurrenceCount === 'number' ? sch.occurrenceCount : null,
+        ...(sch.nphiesOptionality?.source ? { optionalityProvenance: provenance(sch.nphiesOptionality.source) } : {}),
+      }),
+    );
+  }
+  if (schemeNodes.length) {
+    tables.push({
+      tableIndex: 0,
+      kind: 'ebrimSchemes',
+      segment: null,
+      header: ['Metadata attribute', 'ebRIM scheme UUID', 'Object', 'Value carrier'],
+      columns: ['attribute', 'uuid', 'appliesTo', 'valueCarrier'],
+      numberingStyle: null,
+      notes: [],
+      nodes: schemeNodes,
+    });
+    nodeCount += schemeNodes.length;
+  }
+
+  /* ---- table 1: ebRIM slots ------------------------------------------------- */
+  const slotNodes = [];
+  for (const [i, slot] of (Array.isArray(xdsPatch.slots) ? xdsPatch.slots : []).entries()) {
+    if (!slot?.slotName) continue;
+    const name = normaliseIdentifier(slot.slotName, 'patch-xds-ebrim.slots');
+    slotNodes.push(
+      ebrimNode(`${EBRIM_PAGE_ID}:1:${i}`, {
+        label: name,
+        locator: { kind: 'xdsSlot', name },
+        locatorRaw: `<rim:Slot name="${name}">`,
+        role: 'data',
+        roleConfidence: 'high',
+        usage: ebrimUsage(slot.nphiesOptionality, slot.cardinality),
+        guidance: [slot.carries, slot.notes].filter(Boolean).join(' '),
+        fixedValues: [],
+        provenance: provenance(slot.source) ?? provenance(slot.nphiesOptionality?.source),
+        ...evidence({
+          confidence: slot.confidence,
+          verifiedAgainstSample: Number(slot.sampleCount) > 0,
+          derivation: slot.nphiesOptionality ? 'confluence+sample' : 'sample',
+          confidenceReason: slot.confidenceReason,
+          samples: slot.derivedFrom,
+        }),
+        container: slot.container ?? null,
+        appliesTo: slot.appliesTo ?? null,
+        cardinalityText: slot.cardinality ?? null,
+        exampleValue: slot.exampleValue ?? null,
+        occurrenceCount: typeof slot.occurrenceCount === 'number' ? slot.occurrenceCount : null,
+        ...(slot.nphiesOptionality?.source ? { optionalityProvenance: provenance(slot.nphiesOptionality.source) } : {}),
+      }),
+    );
+  }
+  if (slotNodes.length) {
+    tables.push({
+      tableIndex: 1,
+      kind: 'ebrimSlots',
+      segment: null,
+      header: ['Slot name', 'Container', 'Applies to', 'Cardinality'],
+      columns: ['slotName', 'container', 'appliesTo', 'cardinality'],
+      numberingStyle: null,
+      notes: [],
+      nodes: slotNodes,
+    });
+    nodeCount += slotNodes.length;
+  }
+
+  /* ---- table 2: classification NODES (not schemes) -------------------------- */
+  const nodeNodes = [];
+  for (const [i, cn] of (Array.isArray(xdsPatch.classificationNodes) ? xdsPatch.classificationNodes : []).entries()) {
+    const uuid = cn.observedValue ?? cn.iheStandardValue;
+    if (!uuid) continue;
+    const conflicting = Boolean(cn.observedValue && cn.iheStandardValue && cn.observedValue !== cn.iheStandardValue);
+    nodeNodes.push(
+      ebrimNode(`${EBRIM_PAGE_ID}:2:${i}`, {
+        label: cn.iheName ?? cn.purpose ?? 'classification node',
+        locator: {
+          kind: 'xdsScheme',
+          scheme: 'classificationNode',
+          uuid: String(uuid).toLowerCase(),
+          attribute: cn.iheName ?? 'classificationNode',
+          ...(cn.purpose ? { appliesTo: /Folder/i.test(String(cn.iheName)) ? 'Folder' : 'SubmissionSet' } : {}),
+        },
+        locatorRaw: `rim:Classification/@classificationNode="${uuid}"`,
+        role: 'structural',
+        roleConfidence: cn.confidence ?? 'low',
+        usage: ebrimUsage(null, cn.cardinality),
+        guidance: cn.purpose ?? null,
+        // Both candidate values are carried, neither is asserted: a validator must flag the
+        // mismatch for a human rather than auto-correct in either direction.
+        fixedValues: [
+          ...(cn.observedValue
+            ? [{
+                value: cn.observedValue,
+                target: 'classificationNode',
+                statementType: conflicting ? 'ebrimClassificationNodeObserved' : 'ebrimClassificationNode',
+                scope: 'attribute',
+                elementPath: 'rim:Classification',
+                attribute: 'classificationNode',
+                component: null,
+                provenance: provenance(cn.source),
+              }]
+            : []),
+          ...(conflicting
+            ? [{
+                value: cn.iheStandardValue,
+                target: 'classificationNode',
+                statementType: 'ebrimClassificationNodeIheStandard',
+                scope: 'attribute',
+                elementPath: 'rim:Classification',
+                attribute: 'classificationNode',
+                component: null,
+                provenance: null,
+              }]
+            : []),
+        ],
+        provenance: provenance(cn.source),
+        ...evidence({
+          confidence: cn.confidence,
+          verifiedAgainstSample: Number(cn.sampleCount) > 0,
+          derivation: cn.source?.pageId ? 'confluence' : Number(cn.sampleCount) > 0 ? 'sample' : 'standard',
+          confidenceReason: cn.confidenceReason,
+          samples: cn.derivedFrom,
+        }),
+        conflict: conflicting
+          ? { observedValue: cn.observedValue, iheStandardValue: cn.iheStandardValue, action: 'flag for a human; do not auto-correct' }
+          : null,
+      }),
+    );
+  }
+  if (nodeNodes.length) {
+    tables.push({
+      tableIndex: 2,
+      kind: 'ebrimClassificationNodes',
+      segment: null,
+      header: ['Purpose', 'classificationNode UUID', 'Cardinality'],
+      columns: ['purpose', 'uuid', 'cardinality'],
+      numberingStyle: null,
+      notes: [],
+      nodes: nodeNodes,
+    });
+    nodeCount += nodeNodes.length;
+  }
+
+  /* ---- table 3: ITI-18 stored query parameters ------------------------------ */
+  const paramNodes = [];
+  const iti18 = xdsPatch.iti18 ?? null;
+  for (const [i, prm] of (Array.isArray(iti18?.parameters) ? iti18.parameters : []).entries()) {
+    const name = normaliseIdentifier(prm.officialName ?? prm.name, 'patch-xds-ebrim.iti18.parameters');
+    if (!name) continue;
+    paramNodes.push(
+      ebrimNode(`${EBRIM_PAGE_ID}:3:${i}`, {
+        label: name,
+        locator: { kind: 'xdsSlot', name },
+        locatorRaw: `<rim:Slot name="${name}"> inside rim:AdhocQuery`,
+        role: 'data',
+        roleConfidence: 'high',
+        usage: usageFromCode(prm.required ? 'R' : 'O', {
+          min: prm.required ? 1 : 0,
+          max: prm.multipleAllowed ? '*' : 1,
+          quoteCardinality: prm.optionality ?? null,
+        }),
+        guidance: [prm.valueFormat ? `Value format: ${prm.valueFormat}` : null, prm.attribute ? `Queries ${prm.attribute}.` : null]
+          .filter(Boolean)
+          .join(' '),
+        fixedValues: [],
+        provenance: provenance(prm.source),
+        ...evidence({
+          confidence: prm.confidence,
+          verifiedAgainstSample: prm.verifiedInSample === true,
+          derivation: prm.source?.pageId ? (prm.verifiedInSample ? 'confluence+sample' : 'confluence') : 'sample',
+          confidenceReason: prm.confidenceReason,
+          samples: prm.derivedFrom,
+        }),
+        exampleValue: prm.exampleValue ?? null,
+        // The Confluence cell and the wire disagree on some of these names; the cell is kept
+        // so spec-defects.json can show the analyst both spellings.
+        confluenceCellSpelling: prm.confluenceCellSpelling ?? null,
+      }),
+    );
+  }
+  if (paramNodes.length) {
+    const storedQueryProv = provenance(iti18?.storedQuerySource);
+    paramNodes.push(
+      ebrimNode(`${EBRIM_PAGE_ID}:3:${paramNodes.length}`, {
+        label: 'FindDocuments stored query id',
+        locator: { kind: 'xdsSlot', name: 'AdhocQuery/@id' },
+        locatorRaw: `<rim:AdhocQuery id="${iti18?.storedQueryId ?? ''}">`,
+        role: 'structural',
+        roleConfidence: 'high',
+        usage: usageFromCode('M', { min: 1, max: 1 }),
+        guidance: iti18?.storedQueryName ? `Stored query: ${iti18.storedQueryName}.` : null,
+        fixedValues: iti18?.storedQueryId
+          ? [{
+              value: iti18.storedQueryId,
+              target: 'id',
+              statementType: 'fixedValue',
+              scope: 'attribute',
+              elementPath: 'rim:AdhocQuery',
+              attribute: 'id',
+              component: null,
+              provenance: storedQueryProv,
+            }]
+          : [],
+        provenance: storedQueryProv,
+        ...evidence({
+          confidence: iti18?.storedQueryConfidence,
+          verifiedAgainstSample: Array.isArray(iti18?.storedQueryDerivedFrom) && iti18.storedQueryDerivedFrom.length > 0,
+          derivation: 'confluence+sample',
+          samples: iti18?.storedQueryDerivedFrom,
+        }),
+      }),
+    );
+    tables.push({
+      tableIndex: 3,
+      kind: 'iti18QueryParameters',
+      segment: null,
+      header: ['Parameter', 'Optionality', 'Multiple allowed', 'Value format'],
+      columns: ['officialName', 'optionality', 'multipleAllowed', 'valueFormat'],
+      numberingStyle: null,
+      notes: (Array.isArray(iti18?.notes) ? iti18.notes : []).map((t, i) => ({
+        rowId: `${EBRIM_PAGE_ID}:3:note${i}`,
+        text: t,
+        provenance: null,
+      })),
+      nodes: paramNodes,
+    });
+    nodeCount += paramNodes.length;
+  }
+
+  /* ---- table 4: ebRIM object attributes with fixed URN values --------------- */
+  const attrNodes = [];
+  let attrIndex = 0;
+  for (const objectName of ['ExtrinsicObject', 'RegistryPackage', 'Association']) {
+    const obj = xdsPatch.ebrimModel?.[objectName];
+    for (const attr of Array.isArray(obj?.attributes) ? obj.attributes : []) {
+      if (!attr?.attribute) continue;
+      attrNodes.push(
+        ebrimNode(`${EBRIM_PAGE_ID}:4:${attrIndex}`, {
+          label: `${objectName}/@${attr.attribute}`,
+          locator: { kind: 'xdsSlot', name: `${objectName}/@${attr.attribute}` },
+          locatorRaw: `rim:${objectName}/@${attr.attribute}`,
+          role: 'structural',
+          roleConfidence: attr.confidence ?? 'high',
+          usage: attr.required ? usageFromCode('M', { min: 1, max: 1 }) : usageFromCode('O', { min: 0, max: 1 }),
+          guidance: [attr.carries, attr.valueFormat ? `Format: ${attr.valueFormat}` : null].filter(Boolean).join(' '),
+          fixedValues: (Array.isArray(attr.fixedValues) ? attr.fixedValues : []).map((fv) => ({
+            value: fv.value,
+            target: attr.attribute,
+            statementType: Number(fv.observedIn) > 0 ? 'fixedValue' : 'fixedValueDeclaredNeverObserved',
+            scope: 'attribute',
+            elementPath: `rim:${objectName}`,
+            attribute: attr.attribute,
+            component: null,
+            provenance: provenance(attr.source),
+            meaning: fv.meaning ?? null,
+            observedInSamples: typeof fv.observedIn === 'number' ? fv.observedIn : null,
+            note: fv.note ?? null,
+          })),
+          provenance: provenance(attr.source),
+          ...evidence({
+            confidence: attr.confidence,
+            verifiedAgainstSample: Boolean(attr.source?.sample) || (Array.isArray(attr.fixedValues) && attr.fixedValues.some((f) => Number(f.observedIn) > 0)),
+            derivation: attr.source?.pageId ? 'confluence+sample' : 'sample',
+            confidenceReason: attr.confidenceReason,
+          }),
+          ebrimObject: objectName,
+        }),
+      );
+      attrIndex += 1;
+    }
+  }
+  if (attrNodes.length) {
+    tables.push({
+      tableIndex: 4,
+      kind: 'ebrimObjectAttributes',
+      segment: null,
+      header: ['ebRIM object attribute', 'Carries', 'Fixed value(s)'],
+      columns: ['attribute', 'carries', 'fixedValues'],
+      numberingStyle: null,
+      notes: [],
+      nodes: attrNodes,
+    });
+    nodeCount += attrNodes.length;
+  }
+
+  if (!tables.length) return null;
+  return {
+    page: {
+      pageId: EBRIM_PAGE_ID,
+      pageTitle: 'IHE XDS.b ebRIM content model (derived from the official samples and the metadata optionality pages)',
+      ancestors: [],
+      ancestorIds: [],
+      area: EBRIM_AREA,
+      derived: true,
+      derivedFrom: 'spec-build/patch-xds-ebrim.json',
+      derivedNote:
+        'NOT a Confluence page. Every node says where it came from: nodes whose provenance carries `sample` were read off an official golden SOAP message because no cached Confluence page states the fact; nodes whose provenance carries `pageId` quote the metadata-optionality row verbatim.',
+      tables,
+    },
+    nodeCount,
+  };
+}
+
+const ebrimFieldPage = buildEbrimFieldPage();
+if (ebrimFieldPage) {
+  fieldBundles.xds.pages[EBRIM_PAGE_ID] = ebrimFieldPage.page;
+  (fieldBundles.xds.index.byArea[EBRIM_AREA] ??= []).push(EBRIM_PAGE_ID);
+  fieldBundles.xds.counts.pages += 1;
+  fieldBundles.xds.counts.tables += ebrimFieldPage.page.tables.length;
+  fieldBundles.xds.counts.nodes += ebrimFieldPage.nodeCount;
+} else if (xdsPatch) {
+  warn('xds-ebrim', 'patch-xds-ebrim.json produced no ebRIM field nodes');
+}
+
+// ---------------------------------------------------------------------------
+// literal regression guard
+//
+// The three extraction bugs patch-literals fixed are the kind that come back silently on
+// the next scrape. Assert they are gone: no compiled identifier may carry a no-break space,
+// an internal space in a $XDS.../urn: token, or a glued footnote digit.
+// ---------------------------------------------------------------------------
+
+const literalGuardViolations = [];
+{
+  const check = (value, where) => {
+    if (typeof value !== 'string' || !value) return;
+    if (value.includes(NBSP)) literalGuardViolations.push({ where, value, rule: 'no-break-space-in-identifier' });
+    else if (/^\$XDS[A-Za-z]*\s/.test(value)) literalGuardViolations.push({ where, value, rule: 'injected-space-in-identifier' });
+    else if (/^\$XDS[A-Za-z]+\s*\d{1,2}$/.test(value)) literalGuardViolations.push({ where, value, rule: 'glued-footnote-digit' });
+  };
+  const walkNodes = (nodes, where) => {
+    for (const n of nodes) {
+      if (n.locator?.kind === 'xdsSlot') check(n.locator.name, `${where} locator`);
+      check(n.label, `${where} label`);
+      walkNodes(n.children ?? [], where);
+    }
+  };
+  for (const pageId of Object.keys(fieldBundles.xds.pages)) {
+    for (const t of fieldBundles.xds.pages[pageId].tables) walkNodes(t.nodes, `fields/xds.json ${pageId}:${t.tableIndex}`);
+  }
+  for (const v of literalGuardViolations) {
+    warn('literals-guard', `identifier "${v.value}" still carries an extraction artefact (${v.rule})`, { where: v.where });
+  }
+}
 
 /**
  * segment -> field-table refs for MessageStructure specRefs.
@@ -1403,13 +2102,967 @@ function buildXdsStructures() {
   return out;
 }
 
+// ---------------------------------------------------------------------------
+// XDS ebRIM content model -> the SOAP message structures
+//
+// The compiled SOAP envelopes stopped at the Body: the connectivity outline on page
+// 54788867 names soap12:Envelope / Header / Body and the transaction element, and nothing
+// below. Everything inside the RegistryObjectList — ExtrinsicObject, RegistryPackage,
+// Classification, ExternalIdentifier, Association and their Slot/ValueList/Value and
+// Name/LocalizedString children — is ebRIM, and no cached Confluence page draws it.
+//
+// The repair pass modelled it from the 19 official SOAP samples. That is the only source
+// there is, so every member grafted here is marked `derivation: "sample"` with the sample
+// named in its provenance, carries `observed` (what the samples show) instead of `usage`
+// (what a source requires), and the structure gets a note saying that a resolution
+// measurement taken against those same samples is not independent confirmation.
+// ---------------------------------------------------------------------------
+
+const XDS_TRANSACTION_OF_STRUCTURE = {
+  'xds-iti41': 'ITI-41/ProvideAndRegisterDocumentSetRequest',
+  'xds-iti18-request': 'ITI-18/AdhocQueryRequest',
+  'xds-iti18-response': 'ITI-18/AdhocQueryResponse',
+  'xds-iti43-request': 'ITI-43/RetrieveDocumentSetRequest',
+  'xds-iti43-response': 'ITI-43/RetrieveDocumentSetResponse',
+};
+
+/**
+ * Namespace prefixes, read off the verbatim XML fragments the patch itself quotes.
+ * Nothing is recalled: an element whose prefix never appears in a quote gets `null`, which
+ * means "not asserted", not "unprefixed".
+ */
+function ebrimPrefixMap(patch) {
+  const counts = new Map();
+  const scan = (value) => {
+    if (typeof value === 'string') {
+      const re = /<([A-Za-z][\w.-]*):([A-Za-z][\w.-]*)/g;
+      let m;
+      while ((m = re.exec(value)) !== null) {
+        const key = m[2];
+        if (!counts.has(key)) counts.set(key, new Map());
+        const bucket = counts.get(key);
+        bucket.set(m[1], (bucket.get(m[1]) ?? 0) + 1);
+      }
+      return;
+    }
+    if (Array.isArray(value)) {
+      for (const v of value) scan(v);
+      return;
+    }
+    if (value && typeof value === 'object') {
+      for (const k of Object.keys(value)) scan(value[k]);
+    }
+  };
+  scan(patch);
+  const out = {};
+  for (const [local, bucket] of counts) {
+    const best = [...bucket.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0];
+    if (best) out[local] = best[0];
+  }
+  return out;
+}
+
+const localOfLabel = (label) => String(label ?? '').split(':').pop().trim();
+
+function applyEbrimToXdsStructures(structures) {
+  if (!xdsPatch?.ebrimModel?.transactionPaths) {
+    if (xdsPatch) warn('xds-ebrim', 'patch-xds-ebrim.json has no ebrimModel.transactionPaths — SOAP trees were not extended');
+    return { grafted: 0, structures: 0, schemesAttached: 0 };
+  }
+  const prefixes = ebrimPrefixMap(xdsPatch);
+  const model = xdsPatch.ebrimModel;
+
+  // Which scheme UUIDs may sit on which Classification / ExternalIdentifier, by ebRIM
+  // object. The scheme list itself says which object it applies to.
+  const schemesByObject = new Map(); // "DocumentEntry|classification" -> scheme[]
+  for (const sch of Array.isArray(xdsPatch.schemes) ? xdsPatch.schemes : []) {
+    if (!sch?.uuid) continue;
+    const key = `${sch.appliesTo ?? 'DocumentEntry'}|${sch.kind === 'identification' ? 'identification' : 'classification'}`;
+    if (!schemesByObject.has(key)) schemesByObject.set(key, []);
+    schemesByObject.get(key).push(sch);
+  }
+  const schemeRule = (sch) => ({
+    locator: {
+      kind: 'xdsScheme',
+      scheme: sch.kind === 'identification' ? 'identification' : 'classification',
+      uuid: String(sch.uuid).toLowerCase(),
+      attribute: sch.attribute,
+      ...(sch.appliesTo ? { appliesTo: sch.appliesTo } : {}),
+    },
+    valueCarrier: sch.valueCarrier ?? null,
+    requiredChildSlots: Array.isArray(sch.requiredChildSlots) ? sch.requiredChildSlots : [],
+    usage: ebrimUsage(sch.nphiesOptionality, null),
+    provenance: provenance(sch.source) ?? provenance(sch.nphiesOptionality?.source),
+    ...evidence({
+      confidence: sch.confidence,
+      verifiedAgainstSample: Number(sch.sampleCount) > 0,
+      derivation: sch.nphiesOptionality ? 'confluence+sample' : 'sample',
+      confidenceReason: sch.confidenceReason,
+      samples: sch.derivedFrom,
+    }),
+  });
+
+  let grafted = 0;
+  let touched = 0;
+  let schemesAttached = 0;
+
+  for (const structure of structures) {
+    const txnKey = XDS_TRANSACTION_OF_STRUCTURE[structure.id];
+    const txn = txnKey ? model.transactionPaths[txnKey] : null;
+    if (!txn || !txn.paths) continue;
+    touched += 1;
+
+    const sampleProv = (quote) => ({
+      pageId: null,
+      pageTitle: null,
+      row: txnKey,
+      quote: quote ?? null,
+      sample: Array.isArray(txn.derivedFrom) && txn.derivedFrom.length ? txn.derivedFrom[0] : null,
+    });
+
+    // index every element member already in the tree by its localName path
+    const index = new Map();
+    const seed = (members, prefix) => {
+      for (const m of members ?? []) {
+        if (m.kind === 'group') {
+          seed(m.members ?? [], prefix);
+          continue;
+        }
+        const path = prefix ? `${prefix}/${localOfLabel(m.label)}` : localOfLabel(m.label);
+        if (!index.has(path)) index.set(path, m);
+        seed(m.members ?? [], path);
+      }
+    };
+    seed(structure.root.members, '');
+
+    let seq = 0;
+    const ensure = (path) => {
+      const hit = index.get(path);
+      if (hit) return hit;
+      const parts = path.split('/');
+      const local = parts[parts.length - 1];
+      const parentPath = parts.slice(0, -1).join('/');
+      const parent = parentPath ? ensure(parentPath) : null;
+      const observed = txn.paths[path] ?? null;
+      const card = parseCardinalityString(observed?.cardinalityObserved ?? '');
+      const prefix = prefixes[local] ?? null;
+      seq += 1;
+      const member = {
+        kind: 'element',
+        id: `${structure.id}/ebrim/${path.replace(/\//g, '.')}#${seq}`,
+        label: prefix ? `${prefix}:${local}` : local,
+        xmlPrefix: prefix,
+        locator: { kind: 'cdaXPath', path: local, ...(parentPath ? { relativeTo: parentPath } : {}) },
+        repeats: card.max === '*' || (typeof card.max === 'number' && card.max > 1),
+        // Deliberately empty: nothing in Confluence states a requirement at this path, so
+        // claiming one would be an invention. The evidence lives in `observed`.
+        usage: [],
+        observed: observed
+          ? {
+              cardinality: observed.cardinalityObserved ?? null,
+              min: card.min,
+              max: card.max,
+              samples: typeof observed.samples === 'number' ? observed.samples : 0,
+              occurrences: typeof observed.occurrences === 'number' ? observed.occurrences : 0,
+            }
+          : undefined,
+        members: [],
+        note: prefix ? null : 'namespace prefix not asserted: no verbatim source fragment showed one for this element',
+        provenance: sampleProv(null),
+        ...evidence({
+          confidence: txn.confidence,
+          verifiedAgainstSample: true,
+          derivation: 'sample',
+          confidenceReason: txn.confidenceReason,
+          samples: txn.derivedFrom,
+        }),
+      };
+      index.set(path, member);
+      grafted += 1;
+      if (parent) {
+        parent.members = parent.members ?? [];
+        parent.members.push(member);
+      } else {
+        structure.root.members.push(member);
+      }
+      return member;
+    };
+
+    for (const path of Object.keys(txn.paths).sort((a, b) => a.split('/').length - b.split('/').length || a.localeCompare(b))) {
+      if (path === 'Envelope') continue; // the root group already is the envelope
+      ensure(path);
+    }
+
+    // Attach the scheme UUIDs to the members that actually carry them. Without the UUID a
+    // <rim:Classification> says nothing at all about which metadata attribute it expresses.
+    for (const [path, member] of index) {
+      const parentLocal = path.split('/').slice(-2)[0] ?? '';
+      const local = localOfLabel(member.label);
+      let object = null;
+      if (parentLocal === 'ExtrinsicObject') object = 'DocumentEntry';
+      else if (parentLocal === 'RegistryPackage') object = 'SubmissionSet';
+      if (local === 'Classification' && object) {
+        const list = schemesByObject.get(`${object}|classification`) ?? [];
+        if (list.length) {
+          member.xdsSchemes = list.map(schemeRule);
+          schemesAttached += list.length;
+        }
+      } else if (local === 'ExternalIdentifier' && object) {
+        const list = schemesByObject.get(`${object}|identification`) ?? [];
+        if (list.length) {
+          member.xdsSchemes = list.map(schemeRule);
+          schemesAttached += list.length;
+        }
+      } else if (local === 'Classification' && parentLocal === 'RegistryObjectList') {
+        // The node form: no scheme, a classificationNode that types the RegistryPackage as
+        // an XDSSubmissionSet. Its value is in conflict — carried, never asserted.
+        const cn = (Array.isArray(xdsPatch.classificationNodes) ? xdsPatch.classificationNodes : []).find(
+          (c) => c.observedValue,
+        );
+        if (cn) {
+          member.xdsSchemes = [
+            {
+              locator: {
+                kind: 'xdsScheme',
+                scheme: 'classificationNode',
+                uuid: String(cn.observedValue).toLowerCase(),
+                attribute: cn.iheName ?? 'XDSSubmissionSet classification node',
+                appliesTo: 'SubmissionSet',
+              },
+              valueCarrier: 'none',
+              requiredChildSlots: [],
+              usage: ebrimUsage(null, cn.cardinality),
+              provenance: provenance(cn.source),
+              ...evidence({
+                confidence: cn.confidence,
+                verifiedAgainstSample: Number(cn.sampleCount) > 0,
+                derivation: 'sample',
+                confidenceReason: cn.confidenceReason,
+                samples: cn.derivedFrom,
+              }),
+            },
+          ];
+          schemesAttached += 1;
+          member.note =
+            'The samples and the IHE ITI TF-3 constant for this classification node differ by one character. Flag the mismatch for a human; do not auto-correct. NEEDS NPHIES CLARIFICATION.';
+        }
+      }
+    }
+
+    structure.notes = [
+      ...(structure.notes ?? []),
+      `The ebRIM content model below the SOAP Body (RegistryObjectList and everything under it) is derived from ${
+        txn.sampleCount ?? (Array.isArray(txn.derivedFrom) ? txn.derivedFrom.length : 0)
+      } official ${txnKey} sample(s); no cached Confluence page draws it. Those members carry "observed" cardinalities rather than a usage code: a [0..n] low bound means "not in every sample", NOT "optional per NPHIES".`,
+      'Because these members were derived from the golden samples, resolving a golden sample against them is not independent confirmation of the spec.',
+      ...(txn.rootElementDefect ? [txn.rootElementDefect] : []),
+    ];
+    structure.verifiedAgainstSample = true;
+    if (model.RegistryObjectList?.childOrderNote) {
+      structure.notes.push(`RegistryObjectList child order: ${model.RegistryObjectList.childOrderNote}`);
+    }
+  }
+
+  return { grafted, structures: touched, schemesAttached };
+}
+
+// ---------------------------------------------------------------------------
+// CDA repairs
+//
+// Four things the first pass could not produce:
+//   * the ClinicalDocument HEADER element model in document order. The Confluence header
+//     table is a per-document-type CONSTRAINT matrix, not an element list, so the compiled
+//     structures had no <typeId>, <realmCode>, <recordTarget>, ... at all — which is why
+//     `typeId` was the single most frequent unresolved identifier, in all 16 CDA samples.
+//   * sections the body tables place NESTED inside another section, which a flat list loses,
+//     plus one upstream templateId typo corrected in place.
+//   * cda-rad-order, whose body page is genuinely empty upstream; its four children carry
+//     the whole model, so this is Confluence-derived, not sample-derived.
+//   * Full / NoInfo as real variants. The NoInfo mechanism is a templateId flag, NOT
+//     nullFlavor — a checker looking for section/@nullFlavor finds nothing and passes or
+//     fails for the wrong reason.
+// ---------------------------------------------------------------------------
+
+/** Identify a CDA section by (parentTemplateId, templateId, code) — never by OID alone. */
+function findSectionByTemplateId(members, templateId) {
+  for (const m of members ?? []) {
+    if (m.kind === 'section' && (m.templateIds ?? []).includes(templateId)) return m;
+    const hit = findSectionByTemplateId(m.members, templateId);
+    if (hit) return hit;
+  }
+  return null;
+}
+
+function cdaSectionMember(id, spec, position, prov) {
+  const templateIds = [spec.templateId].filter(Boolean);
+  const path = spec.path ?? `./component/section[templateId='${spec.templateId}']`;
+  const split = splitXPath(path);
+  return {
+    kind: 'section',
+    id,
+    position,
+    label: spec.name ?? spec.templateId,
+    number: spec.number ?? null,
+    templateIds,
+    locator: split
+      ? {
+          kind: 'cdaXPath',
+          path: split.path,
+          ...(split.path.startsWith('.') ? { relativeTo: '/ClinicalDocument' } : {}),
+          ...(split.attribute ? { attribute: split.attribute } : {}),
+          ...(split.predicates.length ? { predicate: split.predicates.join(' and ') } : {}),
+        }
+      : null,
+    repeats: spec.max === '*' || (typeof spec.max === 'number' && spec.max > 1),
+    usage: usageFromCode(spec.usage, {
+      min: typeof spec.min === 'number' ? spec.min : null,
+      max: spec.max === null || spec.max === undefined ? null : spec.max,
+    }),
+    guidance: spec.loincCode ? `Section code ${spec.loincCode}${spec.loincDisplay ? ` (${spec.loincDisplay})` : ''}.` : null,
+    members: [],
+    provenance: prov,
+    // A section OID is not globally unique in this spec (204.35 is both "Request" and
+    // "Key Images"); carry the parent so a checker can apply the identity rule.
+    parentTemplateId: spec.parentTemplateId ?? null,
+    sectionCode: spec.loincCode ?? null,
+    ...evidence({
+      confidence: spec.confidence,
+      verifiedAgainstSample: spec.sampleConfirmed === true || Boolean(spec.sampleQuote),
+      derivation: (spec.source ?? spec.sources?.[0])?.pageId ? 'confluence' : 'sample',
+      confidenceReason: spec.confidenceReason,
+    }),
+    ...(spec.noInfoFlagTemplateId ? { noInfoFlagTemplateId: spec.noInfoFlagTemplateId } : {}),
+    ...(Array.isArray(spec.entries) && spec.entries.length
+      ? {
+          entries: spec.entries.map((e) => ({
+            templateId: e.templateId,
+            label: e.name ?? e.templateId,
+            usage: usageFromCode(e.usage, {
+              min: typeof e.min === 'number' ? e.min : null,
+              max: e.max === null || e.max === undefined ? null : e.max,
+            }),
+            provenance: provenance(e.source),
+            ...evidence({
+              confidence: 'high',
+              verifiedAgainstSample: e.sampleConfirmed === true,
+              derivation: e.source?.pageId ? 'confluence' : 'sample',
+            }),
+          })),
+        }
+      : {}),
+  };
+}
+
+function buildCdaHeaderMembers(structureId) {
+  const model = cdaPatch?.headerModel;
+  if (!model || !Array.isArray(model.elements) || !model.elements.length) return null;
+  const members = model.elements.map((el, i) => {
+    const split = splitXPath(el.path ?? `/ClinicalDocument/${el.name}`);
+    const fixed = Object.entries(el.fixedAttributes ?? {}).map(([attribute, value]) => ({
+      value: String(value),
+      target: attribute,
+      statementType: 'attributeFixedValue',
+      scope: 'attribute',
+      elementPath: el.path ?? null,
+      attribute,
+      component: null,
+      provenance: provenance(el.source),
+    }));
+    return {
+      kind: 'element',
+      id: `${structureId}/header/${el.name.replace(/[^\w:.-]/g, '-')}`,
+      label: el.name,
+      number: String(el.order),
+      locator: split ? { kind: 'cdaXPath', path: split.path, ...(split.attribute ? { attribute: split.attribute } : {}) } : null,
+      repeats: el.repeats === true,
+      usage: usageFromCode(el.usage, {
+        min: typeof el.min === 'number' ? el.min : null,
+        max: el.max === null || el.max === undefined ? null : el.max,
+      }),
+      guidance: cleanText(el.notes),
+      fixedValues: fixed,
+      valueSets: [],
+      // Document order is normative in CDA R2 and every sample agrees; a checker may report
+      // an out-of-order header element as an error rather than a warning.
+      documentOrder: el.order,
+      observed: el.observed
+        ? {
+            cardinality: null,
+            min: typeof el.observed.minObserved === 'number' ? el.observed.minObserved : null,
+            max: typeof el.observed.maxObserved === 'number' ? el.observed.maxObserved : null,
+            samples: typeof el.observed.samplesPresent === 'number' ? el.observed.samplesPresent : 0,
+            occurrences: 0,
+          }
+        : undefined,
+      provenance: provenance(el.source),
+      ...evidence({
+        confidence: el.confidence,
+        verifiedAgainstSample: Number(el.observed?.samplesPresent) > 0,
+        derivation: el.source?.pageId ? 'confluence+sample' : el.source?.sample ? 'sample' : 'standard',
+        confidenceReason: el.source?.note ?? null,
+      }),
+      members: [],
+    };
+  });
+  return {
+    kind: 'group',
+    id: `${structureId}/header`,
+    label: 'ClinicalDocument header (document order)',
+    locator: { kind: 'cdaXPath', path: '/ClinicalDocument' },
+    repeats: false,
+    usage: usageFromCode('M', { min: 1, max: 1 }),
+    members,
+    guidance: model.orderBasis ?? null,
+    provenance: provenance(model.elements[0]?.source),
+    ...evidence({ confidence: 'high', verifiedAgainstSample: true, derivation: 'confluence+sample' }),
+  };
+}
+
+function applyCdaPatch(structures) {
+  const out = { headerGroups: 0, sectionsAdded: 0, sectionsCorrected: 0, radOrderSections: 0, variants: [] };
+  if (!cdaPatch) {
+    warn('cda', 'patch-cda.json absent — CDA header model, nested sections and Full/NoInfo variants are NOT in this bundle');
+    return out;
+  }
+  const byId = new Map(structures.map((s) => [s.id, s]));
+
+  /* ---- 1. the header element model, in document order ---------------------- */
+  for (const structure of structures) {
+    const header = buildCdaHeaderMembers(structure.id);
+    if (!header) break;
+    // The existing Table 22 group is a per-document-type CONSTRAINT matrix, not an element
+    // list. Keep it (its id is unchanged) but say what it is, and put the element model in
+    // front of it so document order reads top to bottom.
+    const constraints = structure.root.members.find((m) => m.id === `${structure.id}/header`);
+    if (constraints) {
+      constraints.id = `${structure.id}/header-constraints`;
+      constraints.label = 'CDA header constraints for this document type (Table 22)';
+    }
+    structure.root.members.unshift(header);
+    out.headerGroups += 1;
+  }
+
+  /* ---- 2. cda-rad-order: a body from Confluence, not from the sample ------- */
+  const radOrder = cdaPatch.cdaRadOrder;
+  const radOrderStructure = radOrder ? byId.get(radOrder.useCaseId) : null;
+  if (radOrder && radOrderStructure) {
+    const body = radOrderStructure.root.members.find((m) => m.id === `${radOrderStructure.id}/body`);
+    if (body) {
+      const nodes = new Map();
+      const roots = [];
+      for (const [i, sec] of (radOrder.sections ?? []).entries()) {
+        const member = cdaSectionMember(
+          `${radOrderStructure.id}/section[${i}]`,
+          sec,
+          typeof sec.position === 'number' ? sec.position : i + 1,
+          provenance(sec.source),
+        );
+        nodes.set(sec.templateId, member);
+        if (sec.parentTemplateId && nodes.has(sec.parentTemplateId)) nodes.get(sec.parentTemplateId).members.push(member);
+        else roots.push(member);
+        out.radOrderSections += 1;
+      }
+      body.members = roots;
+      body.provenance = provenance(radOrder.body?.source) ?? body.provenance;
+      radOrderStructure.confidence = radOrder.confidence === 'high' ? 'high' : radOrderStructure.confidence;
+      radOrderStructure.verifiedAgainstSample = Boolean(radOrder.sampleConfirmation?.agreesWithConfluence);
+      radOrderStructure.notes = [
+        ...(radOrderStructure.notes ?? []).filter((n) => !/produced no rows/.test(n)),
+        `The CDA Body page ${radOrder.emptyPageInvestigation?.pageId ?? ''} is genuinely empty upstream (refetched, HTTP 200, empty body). ${
+          radOrder.emptyPageInvestigation?.why ?? ''
+        } The model below therefore comes from those child pages, not from a sample.`,
+      ].filter(Boolean);
+    }
+  }
+
+  /* ---- 3. section corrections and nested additions ------------------------ */
+  for (const [useCaseId, entry] of Object.entries(cdaPatch.sectionAdditions ?? {})) {
+    if (useCaseId === radOrder?.useCaseId) continue; // handled above, wholesale
+    const structure = byId.get(useCaseId);
+    if (!structure) {
+      warn('cda', `patch-cda sectionAdditions names "${useCaseId}", which is not a compiled structure`);
+      continue;
+    }
+    const body = structure.root.members.find((m) => m.id === `${structure.id}/body`);
+    if (!body) continue;
+
+    const corr = entry.correction;
+    if (corr && corr.action === 'correct-templateId-in-place') {
+      const target = findSectionByTemplateId(body.members, corr.compiledTemplateId);
+      if (target && target.templateIds.includes(corr.compiledTemplateId)) {
+        target.templateIds = target.templateIds.map((t) => (t === corr.compiledTemplateId ? corr.correctedTemplateId : t));
+        if (target.locator?.path) {
+          target.locator.path = target.locator.path.split(corr.compiledTemplateId).join(corr.correctedTemplateId);
+          if (target.locator.predicate) {
+            target.locator.predicate = target.locator.predicate.split(corr.compiledTemplateId).join(corr.correctedTemplateId);
+          }
+        }
+        if (corr.noInfoFlagTemplateId) target.noInfoFlagTemplateId = corr.noInfoFlagTemplateId;
+        target.sectionCode = corr.loincCode ?? target.sectionCode ?? null;
+        target.correction = {
+          was: corr.compiledTemplateId,
+          now: corr.correctedTemplateId,
+          rootCause: corr.rootCause ?? null,
+          provenance: provenance(corr.source),
+        };
+        Object.assign(
+          target,
+          evidence({ confidence: corr.confidence, verifiedAgainstSample: true, derivation: 'confluence+sample', confidenceReason: corr.rootCause }),
+        );
+        out.sectionsCorrected += 1;
+      } else {
+        warn('cda', `templateId correction for "${useCaseId}" found no section carrying ${corr.compiledTemplateId}`);
+      }
+    }
+
+    for (const add of entry.additions ?? []) {
+      const parent = add.parentTemplateId ? findSectionByTemplateId(body.members, add.parentTemplateId) : null;
+      if (add.parentTemplateId && !parent) {
+        warn('cda', `nested section ${add.templateId} for "${useCaseId}" has no compiled parent ${add.parentTemplateId}`);
+        continue;
+      }
+      const host = parent ? parent.members : body.members;
+      if (host.some((m) => (m.templateIds ?? []).includes(add.templateId) && m.sectionCode === (add.loincCode ?? null))) continue;
+      const prov = provenance(add.source) ?? provenance((add.sources ?? []).find((x) => x && x.pageId)) ?? provenance((add.sources ?? [])[0]);
+      const member = cdaSectionMember(
+        `${structure.id}/section[${add.parentTemplateId ?? 'body'}/${add.templateId}]`,
+        add,
+        typeof add.position === 'number' ? add.position : host.length + 1,
+        prov,
+      );
+      member.nestingNote = add.nesting ?? null;
+      host.push(member);
+      out.sectionsAdded += 1;
+    }
+  }
+
+  /* ---- 4. Full / NoInfo variants ------------------------------------------ */
+  const noInfo = cdaPatch.noInfoVariantRule ?? null;
+  const variantStructures = [];
+  for (const [useCaseId, spec] of Object.entries(cdaPatch.variants ?? {})) {
+    const base = byId.get(useCaseId);
+    if (!base) {
+      warn('cda', `patch-cda variants names "${useCaseId}", which is not a compiled structure`);
+      continue;
+    }
+    for (const variantName of ['Full', 'NoInfo']) {
+      const observed = spec[variantName];
+      if (!observed) continue;
+      const clone = JSON.parse(JSON.stringify(base));
+      const suffix = variantName.toLowerCase();
+      clone.id = `${base.id}-${suffix}`;
+      clone.variant = variantName;
+      clone.variantLabel = variantName === 'Full' ? 'Full (information available)' : 'NoInfo (no information available)';
+      clone.title = `${base.title} — ${clone.variantLabel}`;
+      const reId = (member) => {
+        member.id = member.id.replace(base.id, clone.id);
+        for (const child of member.members ?? []) reId(child);
+      };
+      clone.root.id = clone.id;
+      for (const m of clone.root.members) reId(m);
+
+      const flagByTemplate = new Map(
+        (observed.sections ?? []).filter((x) => x.noInfoFlagTemplateId).map((x) => [x.templateId, x.noInfoFlagTemplateId]),
+      );
+      if (variantName === 'NoInfo') {
+        const stamp = (members) => {
+          for (const m of members ?? []) {
+            if (m.kind === 'section') {
+              const flag = flagByTemplate.get((m.templateIds ?? [])[0]) ?? m.noInfoFlagTemplateId ?? null;
+              if (flag && !m.templateIds.includes(flag)) m.templateIds = [...m.templateIds, flag];
+              if (flag) m.noInfoFlagTemplateId = flag;
+              // The section stays REQUIRED; only its entry requirement is waived.
+              m.entryConstraintWaived = true;
+            }
+            stamp(m.members ?? []);
+          }
+        };
+        stamp(clone.root.members);
+        clone.notes = [
+          ...(clone.notes ?? []),
+          noInfo?.howItWorks ?? null,
+          noInfo?.notNullFlavor ?? null,
+          'The section itself stays required in a NoInfo document: only the entry requirement is waived.',
+        ].filter(Boolean);
+      } else {
+        clone.notes = [...(clone.notes ?? []), 'Every section required by this document type is present and carries entries.'];
+      }
+      clone.verifiedAgainstSample = Boolean(observed.sample);
+      clone.confidenceReason = cleanText(spec.verdict);
+      if (/INCONSISTENT/i.test(String(spec.verdict ?? ''))) {
+        clone.notes.push(
+          `Variant verdict: ${spec.verdict}${
+            cdaPatch.immunizationRecommendationsRuling?.verdict === 'sample-defect'
+              ? ' The compiled usage is correct and the official sample is defective; see spec-defects.json and sample-defects.json.'
+              : ''
+          }`,
+        );
+      }
+      variantStructures.push(clone);
+      out.variants.push(clone.id);
+    }
+  }
+  out.newStructures = variantStructures;
+  return out;
+}
+
+// ---------------------------------------------------------------------------
+// FHIR bundle entries
+//
+// Two defects the first pass shipped:
+//   * the row LABEL was read as the resource type. "Bundle entry(s) for Imaging Procedure"
+//     names a clinical role; the type is whatever the profile constrains — Procedure. Nine
+//     of sixteen phantom types were exactly this mistake, and a phantom type makes the
+//     entry uncheckable in both directions.
+//   * fhir-rad-report was compiled from the STRUCTURED variant table only, so the
+//     embedded-PDF bundle's DocumentReference entry could not resolve and three structured
+//     entries were reported missing from a bundle that legitimately has none.
+//
+// The two-family rule is also ENFORCED here rather than merely recorded: every medications
+// bundle is type "message" with MessageHeader first, every lab/rad document bundle is type
+// "document" with Composition first. A compiled structure that disagrees is a warning, not
+// a silent overwrite.
+// ---------------------------------------------------------------------------
+
+/** `derivation: "confluence-stated + profile-url + sample"` -> a Derivation + a source kind. */
+function fhirDerivation(raw, source) {
+  const text = String(raw ?? '').toLowerCase();
+  const fromPage = Boolean(source?.pageId);
+  const fromSample = /sample/.test(text) || Boolean(source?.sample);
+  if (fromPage && fromSample) return 'confluence+sample';
+  if (fromPage) return 'confluence';
+  if (fromSample) return 'sample';
+  return 'inferred';
+}
+
+function fhirResourceTypeSource(raw) {
+  const text = String(raw ?? '').toLowerCase();
+  if (/stated/.test(text)) return 'stated';
+  if (/guidance/.test(text)) return 'guidance-quote';
+  if (/profile/.test(text)) return 'profile-url';
+  if (/sample/.test(text)) return 'sample';
+  return null;
+}
+
+function fhirEntryMember(structureId, entry, index, variantName) {
+  const ev = entry.evidence ?? {};
+  const src = ev.source ?? null;
+  const samples = [
+    ...(src?.sample ? [src.sample] : []),
+    ...(Array.isArray(ev.corroboratedBy) ? ev.corroboratedBy.map((c) => c?.sample).filter(Boolean) : []),
+  ];
+  const max = entry.max === '*' ? '*' : typeof entry.max === 'number' ? entry.max : null;
+  const usageCode = typeof entry.usageCode === 'string' && USAGE_CODES.has(entry.usageCode.trim()) ? entry.usageCode.trim() : null;
+  return {
+    kind: 'entry',
+    id: `${structureId}/entry[${index}]`,
+    position: index + 1,
+    label: cleanText(entry.label) ?? `Bundle entry for ${entry.resourceType}`,
+    resourceType: entry.resourceType ?? null,
+    resourceTypeSource: fhirResourceTypeSource(ev.derivation),
+    profile: entry.profile ?? null,
+    locator: { kind: 'fhirPath', path: './entry', relativeTo: 'Bundle' },
+    repeats: max === '*' || (typeof max === 'number' && max > 1),
+    usage: usageCode
+      ? usageFromCode(usageCode, { min: typeof entry.min === 'number' ? entry.min : null, max })
+      : [
+          {
+            usage: typeof entry.min === 'number' && entry.min > 0 ? 'M' : 'O',
+            min: typeof entry.min === 'number' ? entry.min : null,
+            max,
+            // A conditional cell such as "M (otherwise) / NP (in case no images)" is kept
+            // verbatim as the condition instead of being collapsed to one code.
+            condition: typeof entry.usageCode === 'string' ? entry.usageCode : null,
+            validator: typeof entry.min === 'number' && entry.min > 0 ? 'error-if-missing' : 'ok',
+            raw: { usage: typeof entry.usageCode === 'string' ? entry.usageCode : null, cardinality: null },
+          },
+        ],
+    guidance: cleanText(src?.quote),
+    orderingConstraint: index === 0 ? 'First entry of the bundle.' : null,
+    provenance: provenance(src),
+    ...(variantName ? { variants: [variantName] } : {}),
+    ...evidence({
+      confidence: entry.confidence ?? 'high',
+      verifiedAgainstSample: samples.length > 0,
+      derivation: fhirDerivation(ev.derivation, src),
+      confidenceReason: entry.confidenceReason ?? cleanText(ev.note),
+      samples,
+    }),
+    ...(entry.corrected
+      ? { correction: { wasCompiledAs: entry.wasCompiledAs ?? null, now: entry.resourceType, reason: cleanText(ev.note) } }
+      : {}),
+    ...(entry.observedCardinality ? { observed: { cardinality: null, min: entry.observedCardinality.min ?? null, max: entry.observedCardinality.max ?? null, samples: entry.observedCardinality.acrossSamples ?? 0, occurrences: 0 } } : {}),
+  };
+}
+
+function applyFhirEntriesPatch(structures) {
+  const out = { replaced: 0, entries: 0, corrected: 0, variants: [], newStructures: [], conflicts: 0 };
+  if (!fhirEntriesPatch?.structures) {
+    warn('fhir', 'patch-fhir-entries.json absent — bundle entry lists keep their first-pass (label-derived) resource types');
+    return out;
+  }
+  const byId = new Map(structures.map((s) => [s.id, s]));
+  const familyOfUseCase = new Map();
+  for (const fam of fhirEntriesPatch.twoFamilyRule?.rule ?? []) {
+    for (const uc of fam.useCases ?? []) familyOfUseCase.set(uc, fam);
+  }
+
+  for (const [useCaseId, spec] of Object.entries(fhirEntriesPatch.structures)) {
+    const structure = byId.get(useCaseId);
+    if (!structure) {
+      warn('fhir', `patch-fhir-entries names "${useCaseId}", which is not a compiled structure`);
+      continue;
+    }
+    const entriesGroup = structure.root.members.find((m) => m.id === `${structure.id}/entries`);
+    if (!entriesGroup) {
+      warn('fhir', `compiled structure "${useCaseId}" has no entries group to replace`);
+      continue;
+    }
+
+    const applyTo = (target, entries, variantName) => {
+      target.members = entries.map((e, i) => fhirEntryMember(target.id.replace(/\/entries$/, ''), e, i, variantName));
+      out.entries += target.members.length;
+      out.corrected += entries.filter((e) => e.corrected).length;
+    };
+    applyTo(entriesGroup, spec.entries ?? [], null);
+    out.replaced += 1;
+
+    // --- envelope: bundle type, first entry, fixed profile -------------------
+    const env = structure.envelope ?? {};
+    env.bundleType = spec.bundleType ?? env.bundleType;
+    env.bundleTypeRule = { value: spec.bundleType ?? null, ...(spec.bundleTypeEvidence ?? {}), provenance: provenance(spec.bundleTypeEvidence?.source) };
+    env.firstEntryRule = { resourceType: spec.firstEntry ?? null, ...(spec.firstEntryEvidence ?? {}), provenance: provenance(spec.firstEntryEvidence?.source) };
+    env.profileFixed = spec.profileFixed ?? null;
+    env.profileFixedRule = spec.profileFixedEvidence
+      ? { value: spec.profileFixed ?? null, ...spec.profileFixedEvidence, provenance: provenance(spec.profileFixedEvidence.source) }
+      : null;
+    structure.envelope = env;
+    structure.confidence = spec.confidence === 'high' || spec.confidence === 'medium' || spec.confidence === 'low' ? spec.confidence : structure.confidence;
+    structure.verifiedAgainstSample = Boolean(fhirEntriesPatch.observedInSamples?.[useCaseId]?.samples);
+    structure.specRefs = [
+      ...(structure.specRefs ?? []),
+      ...(spec.specPages ?? []).map((pid) => pageRef('fhir', pid, 0)),
+    ].filter((r, i, a) => r && a.findIndex((x) => x.ref === r.ref) === i);
+
+    // resources the spec names but that are NOT Bundle.entry — knowing this stops a
+    // checker demanding an entry that belongs inside another resource
+    if (Array.isArray(spec.notEntries) && spec.notEntries.length) {
+      structure.notEntries = spec.notEntries.map((n) => ({
+        resourceType: n.resourceType,
+        reason: n.reason,
+        provenance: provenance(n.evidence?.source),
+        ...evidence({
+          confidence: 'high',
+          verifiedAgainstSample: Boolean(n.evidence?.source?.sample),
+          derivation: fhirDerivation(n.evidence?.derivation, n.evidence?.source),
+        }),
+      }));
+    }
+
+    // --- enforce the two-family rule ---------------------------------------
+    const fam = familyOfUseCase.get(useCaseId);
+    if (fam) {
+      structure.bundleFamilyRule = {
+        family: fam.family,
+        bundleType: fam.bundleType,
+        firstEntryResourceType: fam.firstEntryResourceType,
+        evidenceStrength: fam.evidenceStrength ?? null,
+        sources: (fam.sources ?? []).map((x) => provenance(x)).filter(Boolean),
+        samplesChecked: fam.samplesChecked ?? null,
+        samplesConforming: fam.samplesConforming ?? null,
+      };
+      if (env.bundleType && env.bundleType !== fam.bundleType) {
+        warn('fhir', `"${useCaseId}" compiles bundleType "${env.bundleType}" but the ${fam.family} family rule says "${fam.bundleType}"`);
+        out.conflicts += 1;
+      }
+      const first = entriesGroup.members[0];
+      if (first && first.resourceType && first.resourceType !== fam.firstEntryResourceType) {
+        warn('fhir', `"${useCaseId}" first entry is "${first.resourceType}" but the ${fam.family} family rule says "${fam.firstEntryResourceType}"`);
+        out.conflicts += 1;
+      }
+      if (first) first.orderingConstraint = `First entry SHALL be ${fam.firstEntryResourceType} (${fam.family} bundle family).`;
+    }
+
+    // --- content variants ---------------------------------------------------
+    if (spec.variants) {
+      structure.variantRule = {
+        requirement: spec.variantRule?.requirement ?? null,
+        note: spec.variantRule?.note ?? null,
+        selectedBy: 'Composition.meta.profile',
+        source: spec.variantRule?.source ?? null,
+      };
+      structure.notes = [
+        ...(structure.notes ?? []),
+        spec.entriesNote ?? null,
+        spec.variantRule?.requirement ?? null,
+      ].filter(Boolean);
+      for (const [variantKey, variantSpec] of Object.entries(spec.variants)) {
+        const clone = JSON.parse(JSON.stringify(structure));
+        const slug = variantKey.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`);
+        clone.id = `${structure.id}-${slug}`;
+        clone.variant = variantKey;
+        clone.variantLabel = variantKey === 'structured' ? 'Structured report' : 'Embedded PDF report';
+        clone.title = `${structure.title} — ${clone.variantLabel}`;
+        const reId = (m) => {
+          m.id = m.id.replace(structure.id, clone.id);
+          for (const c of m.members ?? []) reId(c);
+        };
+        clone.root.id = clone.id;
+        for (const m of clone.root.members) reId(m);
+        const g = clone.root.members.find((m) => m.id === `${clone.id}/entries`);
+        if (g) applyTo(g, variantSpec.entries ?? [], variantKey);
+        clone.envelope = { ...clone.envelope, compositionProfile: variantSpec.compositionProfile ?? null };
+        clone.specRefs = [...(clone.specRefs ?? []), pageRef('fhir', variantSpec.specPage, 0)].filter(Boolean);
+        clone.verifiedAgainstSample = Array.isArray(variantSpec.officialSamples) && variantSpec.officialSamples.length > 0;
+        clone.notes = [
+          ...(clone.notes ?? []),
+          `Variant selected by the Composition profile ${variantSpec.compositionProfile}.`,
+        ];
+        out.newStructures.push(clone);
+        out.variants.push(clone.id);
+      }
+    }
+  }
+
+  // Conflicts the repair pass found between the spec and the official samples. These are
+  // NOT resolved here: both readings are shipped so an analyst can see the disagreement.
+  if (Array.isArray(fhirEntriesPatch.conflicts)) {
+    for (const c of fhirEntriesPatch.conflicts) {
+      for (const uc of c.useCases ?? []) {
+        const st = byId.get(uc);
+        if (!st) continue;
+        st.specVsSampleConflicts = [
+          ...(st.specVsSampleConflicts ?? []),
+          {
+            id: c.id,
+            field: c.field,
+            specValue: c.specValue,
+            wireValue: c.wireValue,
+            resolution: c.resolution,
+            recommendation: c.recommendation,
+            confidence: c.confidence ?? 'medium',
+            affectedSamples: c.affectedSamples ?? [],
+            sources: (c.specSources ?? []).map((x) => provenance(x)).filter(Boolean),
+          },
+        ];
+      }
+    }
+  }
+  return out;
+}
+
+// ---------------------------------------------------------------------------
+// SAML SSO
+//
+// saml-sso was the one use case with NO MessageStructure at all. It still has no golden
+// sample: everything below rests on one literal samlp:Response skeleton published on page
+// 7766254 plus surrounding prose, so `verifiedAgainstSample` is false and the confidence
+// is medium for that reason alone — the skeleton itself is unambiguous.
+//
+// Two contract points, both handled by widening rather than by mislabelling:
+//   * `family` is "saml". It is NOT a SpecFamily (saml-sso has no field tables), and
+//     MessageStructure.family now admits it. Do not relabel it "cda" to satisfy an older
+//     check: the locators are cdaXPath only because that is the XML locator kind on offer.
+//   * `EnvelopeSpec` gained a `samlResponse` kind, so the root element, SAML version,
+//     signature level and required namespaces are carried structurally instead of in prose.
+// ---------------------------------------------------------------------------
+
+function buildSamlStructures() {
+  if (!samlPatch?.structure) {
+    if (samlPatch) warn('saml', 'patch-saml.json carries no structure');
+    else warn('saml', 'patch-saml.json absent — use case "saml-sso" still has no MessageStructure');
+    return [];
+  }
+  const src = JSON.parse(JSON.stringify(samlPatch.structure));
+
+  // Re-run every usage list and provenance object through this compiler's own normalisers
+  // so the SAML tree is byte-comparable with the rest of the bundle.
+  const normalise = (member) => {
+    if (Array.isArray(member.usage)) member.usage = normaliseUsageList(member.usage);
+    if (member.provenance) member.provenance = provenance(member.provenance);
+    for (const fv of member.fixedValues ?? []) if (fv.provenance) fv.provenance = provenance(fv.provenance);
+    Object.assign(
+      member,
+      evidence({
+        confidence: member.sourceTier === 'literal-skeleton' ? 'medium' : 'low',
+        verifiedAgainstSample: false,
+        derivation: 'confluence',
+        confidenceReason:
+          member.sourceTier === 'literal-skeleton'
+            ? 'read off the literal samlp:Response skeleton published on page 7766254; no golden sample exists to confirm it'
+            : 'derived from prose around the skeleton, not from the skeleton itself; no golden sample exists to confirm it',
+      }),
+    );
+    for (const child of member.members ?? []) normalise(child);
+  };
+  if (Array.isArray(src.root?.usage)) src.root.usage = normaliseUsageList(src.root.usage);
+  if (src.root?.provenance) src.root.provenance = provenance(src.root.provenance);
+  for (const m of src.root?.members ?? []) normalise(m);
+
+  const envPatch = samlPatch.samlEnvelope ?? {};
+  src.envelope = {
+    kind: 'samlResponse',
+    samlVersion: envPatch.samlVersion ?? null,
+    rootElement: envPatch.rootElement ?? 'samlp:Response',
+    binding: envPatch.proposedEnvelopeSpec?.binding ?? null,
+    signatureLevel: envPatch.proposedEnvelopeSpec?.signatureLevel ?? null,
+    namespaces: (samlPatch.namespaces ?? []).map((n) => ({ prefix: n.prefix, uri: n.uri })),
+    specPage: envPatch.proposedEnvelopeSpec?.specPage ?? null,
+  };
+
+  // The environment is a variant AXIS, not a variant: the element tree is identical across
+  // ONA / ONB / PROD and only three leaf values move. Encoding it as three structures would
+  // triple the tree to carry two URLs.
+  const axis = samlPatch.variantAxis;
+  if (axis && samlPatch.environments) {
+    src.variantAxis = {
+      axis: axis.axis,
+      label: axis.label,
+      values: axis.values ?? Object.keys(samlPatch.environments),
+      valuesByMember: Object.fromEntries(
+        Object.entries(samlPatch.environments).map(([env, spec]) => [env, spec.fixedValues ?? {}]),
+      ),
+      note: [axis.note, axis.envHostWarning].filter(Boolean).join(' '),
+      provenance: provenance(Object.values(samlPatch.environments)[0]?.source),
+    };
+  }
+
+  src.specRefs = (samlPatch.sourcePages ?? [])
+    .map((p) => ({ family: 'saml', pageId: String(p.pageId), tableIndex: 0, ref: `${p.pageId}:0`, resolved: false, use: p.use ?? null }));
+  src.verifiedAgainstSample = false;
+  src.confidenceReason = samlPatch.confidenceReason ?? null;
+  src.notes = [
+    ...(src.notes ?? []),
+    ...(samlPatch.knownGaps ?? [])
+      .filter((g) => g.severity === 'high')
+      .map((g) => `KNOWN GAP (${g.id}): ${g.gap}`),
+    ...(samlPatch.sampleValuesWarning ? [samlPatch.sampleValuesWarning] : []),
+  ];
+  Object.assign(
+    src,
+    evidence({
+      confidence: samlPatch.confidence ?? src.confidence,
+      verifiedAgainstSample: false,
+      derivation: 'confluence',
+      confidenceReason: samlPatch.confidenceReason,
+    }),
+  );
+  return [src];
+}
+
 const messageStructures = [
   ...buildAdtStructures(),
   ...buildOruStructures(),
   ...buildFhirStructures(),
   ...buildCdaStructures(),
   ...buildXdsStructures(),
+  ...buildSamlStructures(),
 ];
+const ebrimGraft = applyEbrimToXdsStructures(messageStructures.filter((m) => m.family === 'xds'));
+const cdaPatchApplied = applyCdaPatch(messageStructures.filter((m) => m.family === 'cda'));
+messageStructures.push(...(cdaPatchApplied.newStructures ?? []));
+const fhirPatchApplied = applyFhirEntriesPatch(messageStructures.filter((m) => m.family === 'fhir'));
+messageStructures.push(...(fhirPatchApplied.newStructures ?? []));
 void memberId; // reserved for future generated ids
 
 // ---------------------------------------------------------------------------
@@ -1439,9 +3092,11 @@ const USE_CASE_META = {
   'cda-iehr-summary': { title: 'CDA iEHR Summary (on demand)', family: 'cda', encoding: 'cda-xml', areas: ['iEHR Summary'] },
   'cda-immunization-card': { title: 'CDA Immunization Card (on demand)', family: 'cda', encoding: 'cda-xml', areas: ['Immunization Card'] },
   'cda-immunization-summary': { title: 'CDA Immunization Summary (on demand)', family: 'cda', encoding: 'cda-xml', areas: ['Immunization Summary'] },
-  'xds-iti41': { title: 'XDS ITI-41 Provide and Register Document Set-b', family: 'xds', encoding: 'soap-xml', areas: ['Provide and Register – ITI-41'] },
-  'xds-iti18': { title: 'XDS ITI-18 Registry Stored Query', family: 'xds', encoding: 'soap-xml', areas: ['XDS Query Document Set'] },
-  'xds-iti43': { title: 'XDS ITI-43 Retrieve Document Set', family: 'xds', encoding: 'soap-xml', areas: ['XDS Query Document Set'] },
+  // EBRIM_AREA is the derived ebRIM content-model page: it is where the classification and
+  // identification scheme UUIDs live, and all three transactions need it.
+  'xds-iti41': { title: 'XDS ITI-41 Provide and Register Document Set-b', family: 'xds', encoding: 'soap-xml', areas: ['Provide and Register – ITI-41', EBRIM_AREA] },
+  'xds-iti18': { title: 'XDS ITI-18 Registry Stored Query', family: 'xds', encoding: 'soap-xml', areas: ['XDS Query Document Set', EBRIM_AREA] },
+  'xds-iti43': { title: 'XDS ITI-43 Retrieve Document Set', family: 'xds', encoding: 'soap-xml', areas: ['XDS Query Document Set', EBRIM_AREA] },
   'saml-sso': { title: 'SAML single sign-on', family: 'saml', encoding: 'saml-xml', areas: [] },
 };
 
@@ -1683,6 +3338,165 @@ const goldenFile = writeJson('golden.json', goldenIn ?? { missing: true, samples
 
 const { index: valueSetIndex, files: valueSetFiles } = compileValueSets();
 
+// ---------------------------------------------------------------------------
+// spec-defects.json — where the PUBLISHED SPEC is wrong
+//
+// These are not compiler failures and they are not sample failures: they are places the
+// Confluence text contradicts the wire, or contradicts itself. The stored Confluence
+// literal stays verbatim everywhere else in the bundle; this file is what lets the UI say
+// "Confluence says authorSpeciality, the wire uses authorSpecialty" instead of silently
+// rewriting either side. Where no sample settles it, no winner is picked.
+// ---------------------------------------------------------------------------
+
+function buildSpecDefects() {
+  const defects = [];
+  for (const [i, d] of (literalsPatch?.specDefects ?? []).entries()) {
+    defects.push({
+      id: `literal-${i + 1}-${String(d.confluenceSpelling ?? '').replace(/[^\w.$-]/g, '')}`,
+      kind: 'identifier-spelling',
+      confluenceSpelling: d.confluenceSpelling ?? null,
+      wireSpelling: d.wireSpelling ?? null,
+      whatItIs: d.whatItIs ?? null,
+      wireWins: d.wireWins === true,
+      action: d.action ?? null,
+      affectedPages: (d.affectedPages ?? []).map((pg) => ({
+        pageId: String(pg.pageId),
+        title: pg.title ?? null,
+        row: pg.row ?? null,
+      })),
+      affectedSpecBuildPaths: d.affectedSpecBuildPaths ?? [],
+      provenance: provenance(
+        d.evidence?.confluence ? { ...d.evidence.confluence, pageTitle: d.affectedPages?.[0]?.title ?? null } : null,
+      ),
+      evidence: d.evidence ?? null,
+      ...evidence({
+        confidence: d.confidence,
+        verifiedAgainstSample: Number(d.evidence?.sampleOccurrences) > 0,
+        derivation: Number(d.evidence?.sampleOccurrences) > 0 ? 'confluence+sample' : 'confluence',
+        confidenceReason: d.lowConfidenceReason ?? null,
+        samples: d.evidence?.samples,
+      }),
+    });
+  }
+
+  // The radiology-report Composition profile disagreement and its siblings: the spec and the
+  // official samples say different things and neither side is overwritten.
+  for (const c of fhirEntriesPatch?.conflicts ?? []) {
+    defects.push({
+      id: `fhir-conflict-${c.id}`,
+      kind: 'spec-vs-wire-conflict',
+      confluenceSpelling: c.specValue ?? null,
+      wireSpelling: c.wireValue ?? null,
+      whatItIs: `${c.field} in ${(c.useCases ?? []).join(', ')}`,
+      wireWins: /wire|sample/i.test(String(c.resolution ?? '')),
+      action: c.recommendation ?? c.resolution ?? null,
+      affectedPages: (c.specSources ?? []).map((pg) => ({
+        pageId: String(pg.pageId),
+        title: pg.pageTitle ?? null,
+        row: pg.row ?? null,
+      })),
+      affectedSpecBuildPaths: [],
+      provenance: provenance((c.specSources ?? [])[0]),
+      evidence: { investigation: c.investigation ?? null, affectedSamples: c.affectedSamples ?? [] },
+      ...evidence({
+        confidence: c.confidence,
+        verifiedAgainstSample: Array.isArray(c.affectedSamples) && c.affectedSamples.length > 0,
+        derivation: 'confluence+sample',
+        confidenceReason: c.investigation ?? null,
+        samples: c.affectedSamples,
+      }),
+    });
+  }
+
+  // A section templateId OID is not globally unique in this spec: resolving by OID alone
+  // silently accepts a Key Images section where a Request section belongs.
+  for (const col of cdaPatch?.oidCollisions?.collisions ?? []) {
+    defects.push({
+      id: `cda-oid-collision-${col.templateId}`,
+      kind: 'templateid-collision',
+      confluenceSpelling: col.templateId,
+      wireSpelling: null,
+      whatItIs: `templateId ${col.templateId} names ${(col.meanings ?? []).length} different CDA sections`,
+      wireWins: false,
+      action: cdaPatch.oidCollisions.identityRule ?? null,
+      affectedPages: (col.meanings ?? [])
+        .map((m) => m.declaredOn)
+        .filter(Boolean)
+        .map((pg) => ({ pageId: String(pg.pageId), title: pg.pageTitle ?? null, row: pg.row ?? null })),
+      affectedSpecBuildPaths: [],
+      provenance: provenance((col.meanings ?? [])[0]?.declaredOn),
+      evidence: { meanings: col.meanings ?? [], why: cdaPatch.oidCollisions.why ?? null },
+      ...evidence({ confidence: 'high', verifiedAgainstSample: true, derivation: 'confluence+sample' }),
+    });
+  }
+
+  const bundle = {
+    $schema: BUNDLE_SCHEMA,
+    generatedAt: process.env.SPEC_GENERATED_AT || new Date().toISOString(),
+    what:
+      'Places the PUBLISHED NPHIES SPEC is wrong, contradicts the wire, or contradicts itself. The stored Confluence literal is kept verbatim everywhere else in the bundle; nothing here is a silent rewrite. Where no official sample settles a disagreement, no winner is picked.',
+    defects: defects.sort((a, b) => String(a.id).localeCompare(String(b.id))),
+    upstreamPageDefects: (cdaPatch?.upstreamDefects ?? []).map((d) => ({
+      severity: d.severity ?? null,
+      pageId: d.pageId === undefined || d.pageId === null ? null : String(d.pageId),
+      where: d.where ?? null,
+      defect: d.defect ?? null,
+      impact: d.impact ?? null,
+      evidence: d.evidence ?? null,
+    })),
+    openQuestions: [
+      ...(xdsPatch?.openQuestions ?? []).map((q) => ({ area: 'xds', ...q })),
+      ...(samlPatch?.knownGaps ?? []).map((g) => ({ area: 'saml', id: g.id, severity: g.severity, question: g.gap, why: g.effect ?? null })),
+    ],
+    /** Literals the compiler corrected on the way in, and the rule that stops them coming back. */
+    literalCorrections: {
+      summary: { ...literalCorrectionSummary, specDefectsShipped: defects.length },
+      rule: literalsPatch?.extractionRule?.description ?? null,
+      guardViolations: literalGuardViolations,
+      normalisedByCompiler: literalNormalisations,
+      rejected: literalsPatch?.rejected ?? [],
+    },
+    counts: {
+      defects: defects.length,
+      identifierSpellings: defects.filter((d) => d.kind === 'identifier-spelling').length,
+      specVsWireConflicts: defects.filter((d) => d.kind === 'spec-vs-wire-conflict').length,
+      templateIdCollisions: defects.filter((d) => d.kind === 'templateid-collision').length,
+      upstreamPageDefects: (cdaPatch?.upstreamDefects ?? []).length,
+      openQuestions: (xdsPatch?.openQuestions ?? []).length + (samlPatch?.knownGaps ?? []).length,
+      lowConfidence: defects.filter((d) => d.confidence === 'low').length,
+    },
+  };
+  if (!literalsPatch && !cdaPatch && !fhirEntriesPatch) {
+    warn('spec-defects', 'no repair patch supplied spec defects — spec-defects.json is empty');
+  }
+  return bundle;
+}
+
+const specDefectsBundle = buildSpecDefects();
+const specDefectsFile = writeJson('spec-defects.json', specDefectsBundle);
+
+// ---------------------------------------------------------------------------
+// sample-defects.json — where the OFFICIAL SAMPLES are wrong
+//
+// Shipped so a hospital copying a golden message does not copy its mistakes, and so a
+// checker can tell "your message differs from the sample" from "your message is wrong".
+// ---------------------------------------------------------------------------
+
+if (!sampleDefectsPatch) warn('sample-defects', 'sample-defects.json absent — the official samples ship with no defect list');
+const sampleDefectsFile = writeJson(
+  'sample-defects.json',
+  sampleDefectsPatch
+    ? {
+        $schema: BUNDLE_SCHEMA,
+        ...sampleDefectsPatch,
+        what:
+          sampleDefectsPatch.what ??
+          'Defects in the OFFICIAL NPHIES sample messages. A sample is ground truth for STRUCTURE, not for correctness: where a sample is wrong, the compiled rule wins and this file says why.',
+      }
+    : { $schema: BUNDLE_SCHEMA, missing: true, defects: [], summary: null },
+);
+
+
 // index.json
 const generatedAt = process.env.SPEC_GENERATED_AT || new Date().toISOString();
 
@@ -1696,14 +3510,18 @@ const manifest = {
   generatedAt,
   generator: 'scripts/compile-spec.mjs',
   engine: 'src/lib/structure.ts',
-  inputs: INPUT_NAMES.map((name) => ({
+  inputs: [...INPUT_NAMES, ...PATCH_NAMES].map((name) => ({
     name: `spec-build/${name}.json`,
-    present: inputs[name].present,
-    bytes: inputs[name].bytes,
-    sha256: inputs[name].sha256,
-    error: inputs[name].error ?? null,
+    present: (inputs[name] ?? patches[name]).present,
+    bytes: (inputs[name] ?? patches[name]).bytes,
+    sha256: (inputs[name] ?? patches[name]).sha256,
+    error: (inputs[name] ?? patches[name]).error ?? null,
+    kind: INPUT_NAMES.includes(name) ? 'extraction' : 'repair-patch',
   })),
-  missingInputs: INPUT_NAMES.filter((n) => !inputs[n].present).map((n) => `spec-build/${n}.json`),
+  missingInputs: [
+    ...INPUT_NAMES.filter((n) => !inputs[n].present),
+    ...PATCH_NAMES.filter((n) => !patches[n].present),
+  ].map((n) => `spec-build/${n}.json`),
   usageLegend: {
     source: { pageId: '171278410', pageTitle: 'Usage Legend', row: 'legend', quote: 'R = required, R2 = required if known, O = optional, I = ignored' },
     codes: USAGE_SEMANTICS,
@@ -1717,6 +3535,62 @@ const manifest = {
     golden: goldenFile,
     fields: familyFiles,
     valueSetIndex: 'valuesets/index.json',
+    specDefects: specDefectsFile,
+    sampleDefects: sampleDefectsFile,
+  },
+  /**
+   * What the six repair passes contributed, and what the compiler normalises on the way in
+   * so the defects they fixed cannot come back silently on the next scrape.
+   */
+  repairs: {
+    patchesApplied: PATCH_NAMES.filter((n) => patches[n].present).map((n) => `spec-build/${n}.json`),
+    patchesMissing: PATCH_NAMES.filter((n) => !patches[n].present).map((n) => `spec-build/${n}.json`),
+    literals: {
+      correctionsApplied: literalCorrectionSummary.applied,
+      slotsRewritten: literalCorrectionSummary.occurrences,
+      artifactsTouched: literalCorrectionSummary.artifacts,
+      correctionsThatMatchedNothing: literalCorrectionSummary.misses,
+      normalisedByCompilerRule: literalNormalisations.length,
+      guardViolations: literalGuardViolations.length,
+      specDefectsShipped: specDefectsBundle.counts.defects,
+      normalisationRules: [
+        'identifier cells: U+200B and U+00AD are deleted; U+00A0 and whitespace inside a $XDS…/urn: token are deleted; in prose U+00A0 becomes a space',
+        'element paths and predicates: curly quotes are mapped to apostrophes and stray spaces around / and [ ] are removed — the verbatim cell survives in locatorRaw and in every provenance quote',
+        'provenance slots (quote, row, guidance, description, elementLocationRaw, …) are NEVER rewritten',
+      ],
+    },
+    xdsEbrim: {
+      schemesAsSpecNodes: ebrimFieldPage ? ebrimFieldPage.page.tables.reduce((n, t) => n + t.nodes.length, 0) : 0,
+      fieldTablesAdded: ebrimFieldPage ? ebrimFieldPage.page.tables.length : 0,
+      soapMembersGrafted: ebrimGraft.grafted,
+      structuresExtended: ebrimGraft.structures,
+      schemeRulesAttached: ebrimGraft.schemesAttached,
+      note:
+        'The ebRIM content model below the SOAP Body is derived from the official samples; no cached Confluence page draws it. Those members carry `observed` cardinalities, not usage codes, and a resolution measurement taken against the same samples is not independent confirmation.',
+    },
+    cda: {
+      headerModelsAttached: cdaPatchApplied.headerGroups,
+      headerElementsPerDocument: cdaPatch?.headerModel?.elements?.length ?? 0,
+      sectionsAdded: cdaPatchApplied.sectionsAdded,
+      sectionsCorrectedInPlace: cdaPatchApplied.sectionsCorrected,
+      radOrderSectionsBuilt: cdaPatchApplied.radOrderSections,
+      variantStructures: cdaPatchApplied.variants,
+      noInfoMechanism: cdaPatch?.noInfoVariantRule?.mechanism ?? null,
+    },
+    fhir: {
+      entryListsReplaced: fhirPatchApplied.replaced,
+      entryRows: fhirPatchApplied.entries,
+      entriesCorrected: fhirPatchApplied.corrected,
+      variantStructures: fhirPatchApplied.variants,
+      twoFamilyRuleConfirmed: fhirEntriesPatch?.twoFamilyRule?.confirmed === true,
+      twoFamilyRuleViolations: fhirPatchApplied.conflicts,
+    },
+    saml: {
+      structuresAdded: messageStructures.filter((m) => m.family === 'saml').map((m) => m.id),
+      verifiedAgainstSample: false,
+      note: 'No official SAML sample exists. Every member rests on one published skeleton plus prose.',
+    },
+    sampleDefects: sampleDefectsPatch?.summary ?? null,
   },
   families: ['hl7v2', 'fhir', 'cda', 'xds'].map((family) => ({
     id: family,
@@ -1743,6 +3617,9 @@ const manifest = {
     errors: errorsIn && Array.isArray(errorsIn.errors) ? errorsIn.errors.length : 0,
     datatypes: datatypesIn && datatypesIn.datatypes ? Object.keys(datatypesIn.datatypes).length : 0,
     goldenSamples: goldenIn && Array.isArray(goldenIn.samples) ? goldenIn.samples.length : 0,
+    specDefects: specDefectsBundle.counts.defects,
+    sampleDefects: sampleDefectsPatch?.summary?.defects ?? 0,
+    structuresVerifiedAgainstSample: messageStructures.filter((s) => s.verifiedAgainstSample === true).length,
   },
   coverage: {
     useCasesWithStructure: useCases.filter((u) => u.structureIds.length > 0).length,
@@ -1769,6 +3646,12 @@ process.stdout.write(
     `  message structures: ${messageStructures.length}`,
     `  spec nodes:         ${manifest.counts.specNodes}`,
     `  value sets:         ${valueSetIndex.count} (${valueSetIndex.totalConcepts} concepts)`,
+    `  repair patches:     ${manifest.repairs.patchesApplied.length}/${PATCH_NAMES.length} applied${
+      manifest.repairs.patchesMissing.length ? ` (missing: ${manifest.repairs.patchesMissing.join(', ')})` : ''
+    }`,
+    `  literal fixes:      ${literalCorrectionSummary.applied} corrections / ${literalCorrectionSummary.occurrences} slots, ${literalGuardViolations.length} guard violation(s)`,
+    `  ebRIM:              ${manifest.repairs.xdsEbrim.schemesAsSpecNodes} spec nodes, ${ebrimGraft.grafted} SOAP members, ${ebrimGraft.schemesAttached} scheme rules`,
+    `  spec defects:       ${specDefectsBundle.counts.defects}   sample defects: ${manifest.counts.sampleDefects}`,
     `  missing inputs:     ${manifest.missingInputs.length ? manifest.missingInputs.join(', ') : 'none'}`,
     `  warnings:           ${warnings.length}`,
     ...(valueSetFiles.length ? [] : ['  NOTE: no value set files were written']),

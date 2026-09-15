@@ -1,0 +1,2359 @@
+{
+  "$schema": "nphies-workbench/patch-cda@1",
+  "generatedAt": "2026-09-15",
+  "generator": "CDA gap-closure pass (gate blockers: cdaHeaderElement typeId, section-not-in-structure x13, required-section-missing, cda-rad-order empty body)",
+  "scope": "CDA only. Does not touch FHIR, HL7 v2 or SOAP/XDS.",
+  "readMe": [
+    "Every rule carries provenance. {source:{pageId,quote}} quotes are verbatim rows lifted programmatically from spec-source/pages/<pageId>.json - none were typed by hand.",
+    "{source:{sample:...}} means the rule is derived from an official sample because Confluence does not state it.",
+    "Three findings contradict assumptions in the brief and are called out explicitly: the NoInfo mechanism is a templateId flag and NOT nullFlavor; cda-rad-order is derivable from Confluence and did NOT need a sample fallback; and the missing Immunization Summary section is a CORRECTION to an existing row, not an addition."
+  ],
+  "headerModel": {
+    "appliesTo": "all 13 compiled cda-* structures",
+    "orderIsNormative": true,
+    "orderBasis": "HL7 CDA R2 normative ClinicalDocument sequence, confirmed element-by-element against all 16 official CDA samples. No sample contradicts it.",
+    "nphiesExtension": {
+      "prefix": "nphies",
+      "namespace": "urn:oid:2.16.840.1.113883.3.3731.1.2.2.11111111111110",
+      "declaredOn": "/ClinicalDocument",
+      "source": {
+        "pageId": "15925510",
+        "pageTitle": "Clinical Document General",
+        "row": "row 1",
+        "quote": "1 | Clinical Document |   |   | /ClinicalDocument |"
+      }
+    },
+    "elements": [
+      {
+        "name": "realmCode",
+        "path": "/ClinicalDocument/realmCode",
+        "order": 1,
+        "min": 1,
+        "max": 1,
+        "repeats": false,
+        "usage": "M",
+        "fixedAttributes": {
+          "code": "SA"
+        },
+        "observed": {
+          "minObserved": 1,
+          "maxObserved": 1,
+          "samplesPresent": 16,
+          "samplesTotal": 16
+        },
+        "confidence": "high",
+        "source": {
+          "pageId": "15925510",
+          "pageTitle": "Clinical Document General",
+          "row": "row 1.2",
+          "quote": "1.2 | Realm code | M | [1..1] | ./realmCode | Describing the realm in which this document has been created.SHALL contain the attribute @code set to the fixed value “SA”."
+        },
+        "notes": "Sample-confirmed: <realmCode code=\"SA\"/> appears exactly once in all 16 samples."
+      },
+      {
+        "name": "typeId",
+        "path": "/ClinicalDocument/typeId",
+        "order": 2,
+        "min": 1,
+        "max": 1,
+        "repeats": false,
+        "usage": "M",
+        "fixedAttributes": {
+          "root": "2.16.840.1.113883.1.3",
+          "extension": "POCD_HD000040"
+        },
+        "observed": {
+          "minObserved": 1,
+          "maxObserved": 1,
+          "samplesPresent": 16,
+          "samplesTotal": 16
+        },
+        "confidence": "high",
+        "source": {
+          "sample": "spec-source/golden/CDA/nphies Discharge Summary v4.9beta1.xml",
+          "quote": "<typeId extension=\"POCD_HD000040\" root=\"2.16.840.1.113883.1.3\"/>",
+          "corroboration": "HL7 CDA R2 normative ClinicalDocument element sequence (ANSI/HL7 CDA R2-2005)",
+          "note": "NO Confluence page in the 617-page cached corpus mentions typeId or POCD_HD000040; the string 'POCD_HD000040' returns zero hits. This row therefore carries sample + CDA R2 provenance only, never a Confluence quote."
+        },
+        "notes": "THE GAP-1 FIX. Identical in all 16 samples, always the 2nd child, immediately after realmCode. Fixed by CDA R2: typeId/@root is the HL7 RIM OID and @extension the POCD_HD000040 document message type. NPHIES adds no constraint, which is why it is missing from the Confluence header table and therefore from the compiled spec."
+      },
+      {
+        "name": "templateId",
+        "path": "/ClinicalDocument/templateId",
+        "order": 3,
+        "min": 1,
+        "max": null,
+        "repeats": true,
+        "usage": "M",
+        "fixedAttributes": {},
+        "observed": {
+          "minObserved": 1,
+          "maxObserved": 2,
+          "samplesPresent": 16,
+          "samplesTotal": 16
+        },
+        "confidence": "high",
+        "source": {
+          "pageId": "15925510",
+          "pageTitle": "Clinical Document General",
+          "row": "row 1.1",
+          "quote": "1.1 | Template indicator | M | [1..*] | ./templateId[1..*] | Template indicator(s) for the particular kind of document."
+        },
+        "notes": "Max Rpt is [1..*]. Observed 1-2 per document: the nphies document templateId always, plus an IHE/CCD document template where the document type defines one (Laboratory Results, Radiology Results Embedded PDF)."
+      },
+      {
+        "name": "id",
+        "path": "/ClinicalDocument/id",
+        "order": 4,
+        "min": 1,
+        "max": 1,
+        "repeats": false,
+        "usage": "M",
+        "fixedAttributes": {},
+        "observed": {
+          "minObserved": 1,
+          "maxObserved": 1,
+          "samplesPresent": 16,
+          "samplesTotal": 16
+        },
+        "confidence": "high",
+        "source": {
+          "pageId": "15925510",
+          "pageTitle": "Clinical Document General",
+          "row": "row 1.3",
+          "quote": "1.3 | Document Identifier | M | [1..1] | ./id | Document identifiers must be unique every time a new version of the document is published.SHALL contain attribute @root, containing an OID based on the root OID of the organization assigned by nphies during onboarding ensuring a unique document identifier.SHALL contain attribute @extension, which contains the local document identifier."
+        }
+      },
+      {
+        "name": "code",
+        "path": "/ClinicalDocument/code",
+        "order": 5,
+        "min": 1,
+        "max": 1,
+        "repeats": false,
+        "usage": "M",
+        "fixedAttributes": {},
+        "observed": {
+          "minObserved": 1,
+          "maxObserved": 1,
+          "samplesPresent": 16,
+          "samplesTotal": 16
+        },
+        "confidence": "high",
+        "source": {
+          "pageId": "15925510",
+          "pageTitle": "Clinical Document General",
+          "row": "row 1.4",
+          "quote": "1.4 | Document Type Code | M | [1..1] | ./code | The code specifying the particular kind of document.The Code is specialized by each specific type of document.The attributes @code, @codeSystem and @displayName SHALL be present. The attribute @codeSystemName MAY be present."
+        }
+      },
+      {
+        "name": "title",
+        "path": "/ClinicalDocument/title",
+        "order": 6,
+        "min": 1,
+        "max": 1,
+        "repeats": false,
+        "usage": "M",
+        "fixedAttributes": {},
+        "observed": {
+          "minObserved": 1,
+          "maxObserved": 1,
+          "samplesPresent": 16,
+          "samplesTotal": 16
+        },
+        "confidence": "high",
+        "source": {
+          "pageId": "15925510",
+          "pageTitle": "Clinical Document General",
+          "row": "row 1.5",
+          "quote": "1.5 | Title of the document | M | [1..1] | ./title | Represents the title of the document."
+        }
+      },
+      {
+        "name": "nphies:documentStatus",
+        "path": "/ClinicalDocument/nphies:documentStatus",
+        "order": 7,
+        "min": 1,
+        "max": 1,
+        "repeats": false,
+        "usage": "M",
+        "fixedAttributes": {},
+        "observed": {
+          "minObserved": 1,
+          "maxObserved": 1,
+          "samplesPresent": 16,
+          "samplesTotal": 16
+        },
+        "confidence": "high",
+        "source": {
+          "pageId": "15925510",
+          "pageTitle": "Clinical Document General",
+          "row": "row 1.6",
+          "quote": "1.6 | Document Status (Business/workflow level) | M | [1..1] | ./nphies:documentStatus | SHALL contain one of the following values out of the nphies FHIR Diagnostic Report Status Value Set"
+        },
+        "notes": "NPHIES EXTENSION ELEMENT, not part of CDA R2. Bound to the namespace declared on ClinicalDocument as xmlns:nphies=\"urn:oid:2.16.840.1.113883.3.3731.1.2.2.11111111111110\" (see page 15925510 row 1). It sits between title and effectiveTime in all 16 samples - the CDA R2 slot occupied by sdtcStatusCode. A validator that enforces the bare CDA R2 sequence will reject every conformant NPHIES document unless it allows this element here."
+      },
+      {
+        "name": "effectiveTime",
+        "path": "/ClinicalDocument/effectiveTime",
+        "order": 8,
+        "min": 1,
+        "max": 1,
+        "repeats": false,
+        "usage": "M",
+        "fixedAttributes": {},
+        "observed": {
+          "minObserved": 1,
+          "maxObserved": 1,
+          "samplesPresent": 16,
+          "samplesTotal": 16
+        },
+        "confidence": "high",
+        "source": {
+          "pageId": "15925510",
+          "pageTitle": "Clinical Document General",
+          "row": "row 1.7",
+          "quote": "1.7 | Document creation date and time | M | [1..1] | ./effectiveTime | Signifies the document creation date and time, when the document first came into being."
+        }
+      },
+      {
+        "name": "confidentialityCode",
+        "path": "/ClinicalDocument/confidentialityCode",
+        "order": 9,
+        "min": 1,
+        "max": 1,
+        "repeats": false,
+        "usage": "M",
+        "fixedAttributes": {},
+        "observed": {
+          "minObserved": 1,
+          "maxObserved": 1,
+          "samplesPresent": 16,
+          "samplesTotal": 16
+        },
+        "confidence": "high",
+        "source": {
+          "pageId": "15925510",
+          "pageTitle": "Clinical Document General",
+          "row": "row 1.8",
+          "quote": "1.8 | Confidentiality Code | M | 1..1 | ./confidentialityCode | SHALL contain a value out of the \"KSA Confidentiality Code\" value-set.The attributes @code, @codeSystem and @displayName SHALL be present. The attribute @codeSystemName MAY be present."
+        }
+      },
+      {
+        "name": "languageCode",
+        "path": "/ClinicalDocument/languageCode",
+        "order": 10,
+        "min": 1,
+        "max": 1,
+        "repeats": false,
+        "usage": "R",
+        "fixedAttributes": {},
+        "observed": {
+          "minObserved": 1,
+          "maxObserved": 1,
+          "samplesPresent": 16,
+          "samplesTotal": 16
+        },
+        "confidence": "high",
+        "source": {
+          "pageId": "15925510",
+          "pageTitle": "Clinical Document General",
+          "row": "row 1.9",
+          "quote": "1.9 | Language code | R | [1..1] | ./lanugageCode | Language code of the document.SHALL contain the attribute @code set to a value according to the IETF BCP 47 standard.Examples: ar-SA, en-US, …"
+        },
+        "notes": "UPSTREAM TYPO: the Confluence CDA Element Location cell reads './lanugageCode' (transposed letters). The correct CDA R2 element name is languageCode, which is what all 16 samples carry. Do not propagate the typo into a locator."
+      },
+      {
+        "name": "setId",
+        "path": "/ClinicalDocument/setId",
+        "order": 11,
+        "min": 1,
+        "max": 1,
+        "repeats": false,
+        "usage": "M",
+        "fixedAttributes": {},
+        "observed": {
+          "minObserved": 1,
+          "maxObserved": 1,
+          "samplesPresent": 16,
+          "samplesTotal": 16
+        },
+        "confidence": "high",
+        "source": {
+          "pageId": "15925510",
+          "pageTitle": "Clinical Document General",
+          "row": "row 1.10",
+          "quote": "1.10 | Document Set Id | M | [1..1] | ./setId | This attribute represents an identifier that is common across all document revisions. It shall be a unique identifier.SHALL contain attribute @root, containing an OID based on the root OID of the organization assigned by nphies during onboarding ensuring a unique document identifier.It is recommended to set it equal to the document id of the first version of a document."
+        }
+      },
+      {
+        "name": "versionNumber",
+        "path": "/ClinicalDocument/versionNumber",
+        "order": 12,
+        "min": 1,
+        "max": 1,
+        "repeats": false,
+        "usage": "M",
+        "fixedAttributes": {},
+        "observed": {
+          "minObserved": 1,
+          "maxObserved": 1,
+          "samplesPresent": 16,
+          "samplesTotal": 16
+        },
+        "confidence": "high",
+        "source": {
+          "pageId": "15925510",
+          "pageTitle": "Clinical Document General",
+          "row": "row 1.11",
+          "quote": "1.11 | Version number | M | [1..1] | ./versionNumber | An integer value used to version successive replacement documents, e.g. “1” for the first version of the document."
+        }
+      },
+      {
+        "name": "recordTarget",
+        "path": "/ClinicalDocument/recordTarget",
+        "order": 13,
+        "min": 1,
+        "max": 1,
+        "repeats": false,
+        "usage": "M",
+        "fixedAttributes": {},
+        "observed": {
+          "minObserved": 1,
+          "maxObserved": 1,
+          "samplesPresent": 16,
+          "samplesTotal": 16
+        },
+        "confidence": "high",
+        "source": {
+          "pageId": "15859939",
+          "pageTitle": "Patient Demographics Information",
+          "row": "row 2.1",
+          "quote": "2.1 | Patient Information | M | [1..1] | /ClinicalDocument/recordTarget/patientRole | Data element that represent the patient."
+        },
+        "notes": "Confluence constrains the child path recordTarget/patientRole as M [1..1]; the recordTarget wrapper is therefore M [1..1]. Present exactly once in all 16 samples."
+      },
+      {
+        "name": "author",
+        "path": "/ClinicalDocument/author",
+        "order": 14,
+        "min": 1,
+        "max": null,
+        "repeats": true,
+        "usage": "M",
+        "fixedAttributes": {},
+        "observed": {
+          "minObserved": 1,
+          "maxObserved": 2,
+          "samplesPresent": 16,
+          "samplesTotal": 16
+        },
+        "confidence": "high",
+        "source": {
+          "pageId": "15859954",
+          "pageTitle": "Author Information (Person)",
+          "row": "row 3.1",
+          "quote": "3.1 | Author | M[1] | [1..1] | /ClinicalDocument/author | Data element that represents the author of the document"
+        },
+        "notes": "Person author is M [1..1] (page 15859954 row 3.1). A Device author is separately O [0..1] (page 15892870 row 4.1, quoted in headerModel.supplementarySources), so the element repeats up to 2. Observed: 1 in 15 samples, 2 in Radiology Results Embedded PDF (person + device)."
+      },
+      {
+        "name": "dataEnterer",
+        "path": "/ClinicalDocument/dataEnterer",
+        "order": 15,
+        "min": 0,
+        "max": 1,
+        "repeats": false,
+        "usage": "O",
+        "fixedAttributes": {},
+        "observed": {
+          "minObserved": 0,
+          "maxObserved": 1,
+          "samplesPresent": 1,
+          "samplesTotal": 16
+        },
+        "confidence": "high",
+        "source": {
+          "pageId": "15925558",
+          "pageTitle": "Data Enterer",
+          "row": "row 5.1",
+          "quote": "5.1 | Data Enterer | O | [0..1] | /ClinicalDocument/dataEnterer | Data element that represents the data enterer of the document.The Clinical Document MAY contain exactly one [0..1] Data Enterer."
+        }
+      },
+      {
+        "name": "informant",
+        "path": "/ClinicalDocument/informant",
+        "order": 16,
+        "min": 0,
+        "max": null,
+        "repeats": true,
+        "usage": "O",
+        "fixedAttributes": {},
+        "observed": {
+          "minObserved": 0,
+          "maxObserved": 0,
+          "samplesPresent": 0,
+          "samplesTotal": 16
+        },
+        "confidence": "low",
+        "source": {
+          "corroboration": "HL7 CDA R2 normative ClinicalDocument element sequence (ANSI/HL7 CDA R2-2005)",
+          "note": "No Confluence page in the cached corpus constrains /ClinicalDocument/informant, and it appears in none of the 16 samples. Listed for CDA R2 sequence completeness only."
+        },
+        "notes": "LOW CONFIDENCE: no NPHIES constraint found and no sample evidence. Included so that the ordering model is complete; a tool should not report its absence as a defect, nor its presence as an order violation."
+      },
+      {
+        "name": "custodian",
+        "path": "/ClinicalDocument/custodian",
+        "order": 17,
+        "min": 1,
+        "max": 1,
+        "repeats": false,
+        "usage": "M",
+        "fixedAttributes": {},
+        "observed": {
+          "minObserved": 1,
+          "maxObserved": 1,
+          "samplesPresent": 16,
+          "samplesTotal": 16
+        },
+        "confidence": "high",
+        "source": {
+          "pageId": "15892888",
+          "pageTitle": "Custodian Information",
+          "row": "row 6.1",
+          "quote": "6.1 | Custodian | M | [1..1] | /ClinicalDocument/custodian/assignedCustodian/representedCustodianOrganization | Data element that represents the custodian of the document"
+        },
+        "notes": "Confluence constrains the child path custodian/assignedCustodian/representedCustodianOrganization as M [1..1]; the custodian wrapper is therefore M [1..1]. Present exactly once in all 16 samples."
+      },
+      {
+        "name": "informationRecipient",
+        "path": "/ClinicalDocument/informationRecipient",
+        "order": 18,
+        "min": 0,
+        "max": null,
+        "repeats": true,
+        "usage": "O",
+        "fixedAttributes": {},
+        "observed": {
+          "minObserved": 0,
+          "maxObserved": 0,
+          "samplesPresent": 0,
+          "samplesTotal": 16
+        },
+        "confidence": "low",
+        "source": {
+          "corroboration": "HL7 CDA R2 normative ClinicalDocument element sequence (ANSI/HL7 CDA R2-2005)",
+          "note": "No Confluence page in the cached corpus constrains /ClinicalDocument/informationRecipient, and it appears in none of the 16 samples. Listed for CDA R2 sequence completeness only."
+        },
+        "notes": "LOW CONFIDENCE: no NPHIES constraint found and no sample evidence."
+      },
+      {
+        "name": "legalAuthenticator",
+        "path": "/ClinicalDocument/legalAuthenticator",
+        "order": 19,
+        "min": 0,
+        "max": 1,
+        "repeats": false,
+        "usage": "R2",
+        "fixedAttributes": {},
+        "observed": {
+          "minObserved": 0,
+          "maxObserved": 1,
+          "samplesPresent": 8,
+          "samplesTotal": 16
+        },
+        "confidence": "high",
+        "source": {
+          "pageId": "15958267",
+          "pageTitle": "Legal Authenticator Information",
+          "row": "row 7.1",
+          "quote": "7.1 | Legal Authenticator | O | [1..1] | /ClinicalDocument/legalAuthenticator | Data element that represents the legal authenticator of the document.The Clinical Document SHALL contain exactly one [1..1] Legal Authenticator if the document is signed."
+        },
+        "notes": "The Confluence Usage/Max Rpt cells disagree with each other: Usage 'O' but Max Rpt '[1..1]'. The guidance resolves it - 'SHALL contain exactly one [1..1] Legal Authenticator if the document is signed' - i.e. conditional, R2 [0..1]. Sample evidence agrees: present in 8 of 16, absent from the 4 on-demand query documents, both Immunization documents, the Radiology Order and the Laboratory Order. Per-document-type overrides exist: Table 22 (page 15925336) makes it M [1..1] for Outpatient Encounter Summary, Discharge Summary, Maternal/Newborn Discharge Summary and Operative Notes."
+      },
+      {
+        "name": "authenticator",
+        "path": "/ClinicalDocument/authenticator",
+        "order": 20,
+        "min": 0,
+        "max": null,
+        "repeats": true,
+        "usage": "O",
+        "fixedAttributes": {
+          "typeCode": "AUTHEN"
+        },
+        "observed": {
+          "minObserved": 0,
+          "maxObserved": 1,
+          "samplesPresent": 1,
+          "samplesTotal": 16
+        },
+        "confidence": "high",
+        "source": {
+          "pageId": "15958278",
+          "pageTitle": "Clinical Authenticator Information",
+          "row": "row 8.1",
+          "quote": "8.1 | Authenticator | O | [0..*] | /ClinicalDocument/authenticator | Data element that represents the authenticator of the document.SHALL contain the attribute @typeCode set to the fixed value “AUTHEN”."
+        },
+        "notes": "Observed in 1 of 16 samples (Laboratory Results)."
+      },
+      {
+        "name": "participant",
+        "path": "/ClinicalDocument/participant",
+        "order": 21,
+        "min": 0,
+        "max": null,
+        "repeats": true,
+        "usage": "O",
+        "fixedAttributes": {
+          "typeCode": "IND"
+        },
+        "observed": {
+          "minObserved": 1,
+          "maxObserved": 2,
+          "samplesPresent": 16,
+          "samplesTotal": 16
+        },
+        "confidence": "high",
+        "source": {
+          "pageId": "15860060",
+          "pageTitle": "Employer and School Contacts",
+          "row": "row 12.1",
+          "quote": "12.1 | Participant | O |  [0..*] | ClinicalDocument/participant | Data element that represents the participant.The participant element SHALL contain the attribute @typeCode=’IND’."
+        },
+        "notes": "Confluence says O [0..*] with @typeCode='IND' fixed. Present in all 16 samples (1-2 occurrences), so in practice it is always populated even though the spec makes it optional."
+      },
+      {
+        "name": "inFulfillmentOf",
+        "path": "/ClinicalDocument/inFulfillmentOf",
+        "order": 22,
+        "min": 0,
+        "max": 1,
+        "repeats": false,
+        "usage": "R2",
+        "fixedAttributes": {},
+        "observed": {
+          "minObserved": 0,
+          "maxObserved": 1,
+          "samplesPresent": 3,
+          "samplesTotal": 16
+        },
+        "confidence": "medium",
+        "source": {
+          "pageId": "38928391",
+          "pageTitle": "Order Information - Radiology Results",
+          "row": "row 6.1",
+          "quote": "6.1 | InFulfillmentOf Container | R2 | [0..1] | /ClinicalDocument/inFulfillmentOf | Order information SHALL be present IF KNOWN."
+        },
+        "notes": "No generic constraint exists on page 15892805 or its children; cardinality is set per document type. Radiology Results says R2 [0..1] (page 38928391 row 6.1, quoted); Laboratory Results says M [1..1] (page 23167172 row 5.1, quoted in headerModel.supplementarySources). The generic default here is the looser R2 [0..1]; a document-type rule overrides it. Observed in 3 of 16 samples."
+      },
+      {
+        "name": "documentationOf",
+        "path": "/ClinicalDocument/documentationOf",
+        "order": 23,
+        "min": 0,
+        "max": null,
+        "repeats": true,
+        "usage": "R2",
+        "fixedAttributes": {},
+        "observed": {
+          "minObserved": 1,
+          "maxObserved": 3,
+          "samplesPresent": 10,
+          "samplesTotal": 16
+        },
+        "confidence": "medium",
+        "source": {
+          "sample": "spec-source/golden/CDA/nphies Laboratory Results v4.9beta1.xml",
+          "corroboration": "Per-document-type constraints exist (page 33587412 row 3.1 and page 17564169 row 3.1, quoted in headerModel.supplementarySources) but no generic cardinality row for /ClinicalDocument/documentationOf exists on page 15892805 or its children."
+        },
+        "notes": "MEDIUM CONFIDENCE for the generic cardinality: derived from the samples (present in 10 of 16, 1-3 occurrences) because Confluence constrains only documentationOf/serviceEvent per document type, never the wrapper generically. Document types that define serviceEvents (Laboratory Order, Radiology Order, Laboratory Results) make the first documentationOf/serviceEvent M [1..1]."
+      },
+      {
+        "name": "relatedDocument",
+        "path": "/ClinicalDocument/relatedDocument",
+        "order": 24,
+        "min": 0,
+        "max": 1,
+        "repeats": false,
+        "usage": "O",
+        "fixedAttributes": {
+          "typeCode": "RPLC"
+        },
+        "observed": {
+          "minObserved": 0,
+          "maxObserved": 0,
+          "samplesPresent": 0,
+          "samplesTotal": 16
+        },
+        "confidence": "high",
+        "source": {
+          "pageId": "15925612",
+          "pageTitle": "Previous version",
+          "row": "row 10.1",
+          "quote": "10.1 | Related document (previous version, which is replaced) | O | [0..1] | /ClinicalDocument/relatedDocument [@typeCode=”RPLC”]/parentDocument | Exactly one relatedDocument element MAY be present under the ClinicalDocument root element with @typeCode=’RPLC’Exactly one parentDocument element SHALL be present under the relatedDocument element"
+        },
+        "notes": "Used only when the document replaces a previous version. Absent from all 16 samples, which are all first versions (versionNumber value='1')."
+      },
+      {
+        "name": "authorization",
+        "path": "/ClinicalDocument/authorization",
+        "order": 25,
+        "min": 0,
+        "max": null,
+        "repeats": true,
+        "usage": "O",
+        "fixedAttributes": {},
+        "observed": {
+          "minObserved": 0,
+          "maxObserved": 0,
+          "samplesPresent": 0,
+          "samplesTotal": 16
+        },
+        "confidence": "low",
+        "source": {
+          "corroboration": "HL7 CDA R2 normative ClinicalDocument element sequence (ANSI/HL7 CDA R2-2005)",
+          "note": "No Confluence page in the cached corpus constrains /ClinicalDocument/authorization, and it appears in none of the 16 samples. Listed for CDA R2 sequence completeness only."
+        },
+        "notes": "LOW CONFIDENCE: no NPHIES constraint found and no sample evidence."
+      },
+      {
+        "name": "componentOf",
+        "path": "/ClinicalDocument/componentOf",
+        "order": 26,
+        "min": 0,
+        "max": 1,
+        "repeats": false,
+        "usage": "O",
+        "fixedAttributes": {},
+        "observed": {
+          "minObserved": 1,
+          "maxObserved": 1,
+          "samplesPresent": 10,
+          "samplesTotal": 16
+        },
+        "confidence": "high",
+        "source": {
+          "pageId": "15892943",
+          "pageTitle": "Encounter Information",
+          "row": "row 11.1",
+          "quote": "11.1 | Encounter | O |  [0..1] | ClinicalDocument/componentOf/encompassingEncounter | Data element that represents the encounter."
+        },
+        "notes": "Confluence constrains the child path componentOf/encompassingEncounter as O [0..1]. Present in 10 of 16 samples; absent from the on-demand query documents and both Immunization documents, which are not encounter-scoped."
+      },
+      {
+        "name": "component",
+        "path": "/ClinicalDocument/component",
+        "order": 27,
+        "min": 1,
+        "max": 1,
+        "repeats": false,
+        "usage": "M",
+        "fixedAttributes": {},
+        "observed": {
+          "minObserved": 1,
+          "maxObserved": 1,
+          "samplesPresent": 16,
+          "samplesTotal": 16
+        },
+        "confidence": "high",
+        "source": {
+          "pageId": "17596837",
+          "pageTitle": "CDA Body",
+          "row": "row 1.1",
+          "quote": "1.1 | Structured Body | M | [1..1] | /ClinicalDocument/component/structuredBody | Container holding all the clinical information in structured form."
+        },
+        "notes": "Exactly one component. Its child is structuredBody (M [1..1]) for every document type except Radiology Results Embedded PDF, which uses nonXMLBody - see page 39256089 row 1.1, quoted in headerModel.supplementarySources."
+      }
+    ],
+    "supplementarySources": [
+      {
+        "pageId": "15892870",
+        "pageTitle": "Author Device",
+        "row": "row 4.1",
+        "quote": "4.1 | Author | O | [0..1] | /ClinicalDocument/author | Data element that represents the author of the document"
+      },
+      {
+        "pageId": "23167172",
+        "pageTitle": "Order Information",
+        "row": "row 5.1",
+        "quote": "5.1 | InFulfillmentOf Container | M | [1..1] | /ClinicalDocument/inFulfillmentOf | Order information SHALL be present."
+      },
+      {
+        "pageId": "33587412",
+        "pageTitle": "Service Events - Radiology Orders",
+        "row": "row 3.1",
+        "quote": "3.1 | Radiology Order Status | M | [1..1] | /ClinicalDocument/documentationOf[1..1]/serviceEvent | The first documentationOf/serviceEvent element SHALL contain the Radiology Order ID and Status."
+      },
+      {
+        "pageId": "17564169",
+        "pageTitle": "Service Events - Laboratory Orders",
+        "row": "row 3.1",
+        "quote": "3.1 | Laboratory Order Status | M | [1..1] | /ClinicalDocument/documentationOf[1..1]/serviceEvent | The first documentationOf/serviceEvent element SHALL contain the Laboratory Order ID and Status."
+      },
+      {
+        "pageId": "39256089",
+        "pageTitle": "CDA Body (Embedded PDF) - Radiology Results",
+        "row": "row 1.1",
+        "quote": "1.1 | Unstructured Body (embedded PDF) | M | [1..1] | /ClinicalDocument/component/nonXMLBody | Container holding the clinical information in unstructured form."
+      },
+      {
+        "pageId": "15925510",
+        "pageTitle": "Clinical Document General",
+        "row": "row 1",
+        "quote": "1 | Clinical Document |   |   | /ClinicalDocument |"
+      }
+    ],
+    "gapClosed": {
+      "identifier": "typeId",
+      "kind": "cdaHeaderElement",
+      "unresolvedInSamples": 16,
+      "wasTheSingleMostFrequentUnresolvedIdentifier": true,
+      "resolution": "modelled at order 2 with fixed root and extension"
+    }
+  },
+  "sectionAdditions": {
+    "cda-immunization-summary": {
+      "correction": {
+        "useCaseId": "cda-immunization-summary",
+        "action": "correct-templateId-in-place",
+        "changeType": "correction, NOT an addition",
+        "position": 6,
+        "number": "1.6",
+        "name": "List of Surgeries",
+        "compiledTemplateId": "2.16.840.1.113883.3.3731.1.210.100.87",
+        "correctedTemplateId": "2.16.840.1.113883.3.3731.1.210.100.7",
+        "loincCode": "47519-4",
+        "loincDisplay": "HISTORY OF PROCEDURES",
+        "usage": "R",
+        "min": 1,
+        "max": 1,
+        "noInfoFlagTemplateId": "2.16.840.1.113883.3.3731.1.210.100.7.1",
+        "rootCause": "Page 53477475 (CDA Body - Immunization Summary) contains an UPSTREAM TYPO. Row 1.6 'List of Surgeries' and row 1.10 'Immunization Serology Coded Results' both cite templateId 2.16.840.1.113883.3.3731.1.210.100.87. The first-pass extractor faithfully captured the typo, so the compiled list holds .87 twice and never holds .210.100.7 - which is why the gate could not resolve it in either Immunization Summary sample. Row 1.6 should read 2.16.840.1.113883.3.3731.1.210.100.7.",
+        "whyNotAnAddition": "Appending .210.100.7 as a 12th section would leave 2.16.840.1.113883.3.3731.1.210.100.87 declared twice and would invent a section the spec never defines. The defect is a wrong value in an existing row, so the fix is to correct that row in place. The section count stays 11.",
+        "confidence": "high",
+        "corroboration": [
+          {
+            "kind": "declaringPage",
+            "note": "The dedicated section page assigns .210.100.7 to List of Surgeries and 47519-4 as its code.",
+            "source": {
+              "pageId": "15893106",
+              "pageTitle": "List of Surgeries Section (History of Procedures)",
+              "row": "row 8.1",
+              "quote": "8.1 | Template indicator | M | [1..1] | ./templateId[1] | Template indicator: nphies List of Surgeries Section.Attribute @root SHALL be set to ‘2.16.840.1.113883.3.3731.1.210.100.7’"
+            }
+          },
+          {
+            "kind": "declaringPageCode",
+            "source": {
+              "pageId": "15893106",
+              "pageTitle": "List of Surgeries Section (History of Procedures)",
+              "row": "row 8.6",
+              "quote": "8.6 | Code | M | [1..1] | ./code | SHALL contain the attributes @code=’47519-4’ and @codeSystem=’2.16.840.1.113883.6.1’MAY contain the attributes @displayName=’HISTORY OF PROCEDURES’ and @codeSystemName=’LOINC’"
+            }
+          },
+          {
+            "kind": "disambiguation",
+            "note": "The dedicated section page assigns .210.100.87 to Immunization Serology Coded Results, a different section, with LOINC 30954-2 - so .87 cannot also be List of Surgeries.",
+            "source": {
+              "pageId": "16810590",
+              "pageTitle": "Immunization Serology Coded Results Section",
+              "row": "row 46.1",
+              "quote": "46.1 | Template indicator | M | [1..1] | ./templateId[1] | Template indicator: nphies Immunization Serology Coded Results Section.Attribute @root SHALL be set to ‘2.16.840.1.113883.3.3731.1.210.100.87’"
+            }
+          },
+          {
+            "kind": "siblingDocument",
+            "note": "The iEHR Summary body table cites .210.100.7 for the very same List of Surgeries section.",
+            "source": {
+              "pageId": "54723003",
+              "pageTitle": "CDA Body - iEHR Summary",
+              "row": "row 1.4",
+              "quote": "1.4 | List of Surgeries | R | [1..1] | ./component/section[templateId=‘2.16.840.1.113883.3.3731.1.210.100.7’] | The History of Procedures defines all interventional, surgical, diagnostic, or therapeutic procedures or treatments pertinent to the patient historically at the time of the encounter.See List of Surgeries Section (History of Procedures)"
+            }
+          },
+          {
+            "kind": "sample",
+            "note": "Both official samples carry templateId .210.100.7 with code 47519-4 and title 'List of Surgeries'.",
+            "sources": [
+              {
+                "sample": "spec-source/golden/CDA/On-demand documents as response/nphies Immunization Summary v4.9beta1 Full.xml"
+              },
+              {
+                "sample": "spec-source/golden/CDA/On-demand documents as response/nphies Immunization Summary v4.9beta1 NoInfo.xml"
+              }
+            ]
+          }
+        ],
+        "source": {
+          "pageId": "53477475",
+          "pageTitle": "CDA Body - Immunization Summary",
+          "row": "row 1.6",
+          "quote": "1.6 | List of Surgeries | R | [1..1] | ./component/section[templateId=‘2.16.840.1.113883.3.3731.1.210.100.87’] | The History of Procedures defines all interventional, surgical, diagnostic, or therapeutic procedures or treatments pertinent to the patient historically at the time of the encounter."
+        }
+      },
+      "additions": []
+    },
+    "cda-lab-result": {
+      "additions": [
+        {
+          "useCaseId": "cda-lab-result",
+          "action": "add-nested-subsection",
+          "templateId": "2.16.840.1.113883.3.3731.1.105.14",
+          "name": "Laboratory Order Specialty Section",
+          "loincCode": null,
+          "loincNote": "No fixed LOINC. The section code mirrors the parent Laboratory Specialty Section code, drawn from the 'Laboratory Department' value-set (18723-7 Hematology Studies and 18725-2 Microbiology in the sample).",
+          "usage": "R2",
+          "min": 0,
+          "max": 1,
+          "position": 1,
+          "parentTemplateId": "2.16.840.1.113883.3.3731.1.105.8",
+          "parentName": "Laboratory Specialty Section",
+          "nesting": "NESTED, not a sibling. Path: /ClinicalDocument/component/structuredBody/component/section[templateId='...105.8']/component/section[templateId='...105.14']. The gate flattened the section tree and compared against a flat 2-entry list, so a nested section read as missing.",
+          "rationale": "105.14 is the Laboratory Order Specialty Section, declared on page 17695242. A Laboratory Results document embeds the originating order's section inside each Laboratory Specialty Section. The official sample marks this explicitly with the comment 'AS DERIVED FROM THE LABORATORY ORDER' immediately above each occurrence - exactly parallel to the way a Radiology Results document embeds the Radiology Order Section (2.16.840.1.113883.3.3731.1.204.34).",
+          "confidence": "medium",
+          "confidenceReason": "The IDENTITY of 105.14 is high-confidence (page 17695242 declares it, and page 17596837 row 1.2 makes it the top-level section of cda-lab-order). The EMBEDDING inside 105.8 in a Results document is derived from the sample alone: page 23199954 (Laboratory Specialty Section) lists rows 2.2-2.8 and declares NO sub-section, so Confluence does not document this nesting. Cardinality R2 [0..1] is inferred from the sample (one per specialty section, both present) and is the least-risky reading; a tool should warn, not error, on its absence.",
+          "sources": [
+            {
+              "pageId": "17695242",
+              "pageTitle": "Laboratory Order Specialty Section",
+              "row": "row 2.2",
+              "quote": "2.2 | Template indicator | M | [1..1] | ./templateId[1] | Template indicator: nphies Laboratory Order Specialty Section.Attribute @root SHALL be set to ‘2.16.840.1.113883.3.3731.1.105.14’"
+            },
+            {
+              "pageId": "17596837",
+              "pageTitle": "CDA Body",
+              "row": "row 1.2",
+              "quote": "1.2 | Laboratory Order Specialty Section | R | [1..*] | ./component/section[templateId=‘2.16.840.1.113883.3.3731.1.105.14’] | The Laboratory Order Specialty Section is a group of data elements which provides the detailed laboratory order information for a single laboratory discipline.One to many Laboratory Order Specialty Sections SHALL be present.See section (Laboratory Order Specialty)"
+            },
+            {
+              "sample": "spec-source/golden/CDA/nphies Laboratory Results v4.9beta1.xml"
+            }
+          ],
+          "sampleQuote": "<templateId root=\"2.16.840.1.113883.3.3731.1.105.14\"/>"
+        }
+      ]
+    },
+    "cda-rad-result-structured": {
+      "additions": [
+        {
+          "templateId": "2.16.840.1.113883.3.3731.1.204.35",
+          "name": "Request",
+          "loincCode": "55115-0",
+          "usage": "R",
+          "min": 1,
+          "max": 1,
+          "position": 1,
+          "parentTemplateId": "2.16.840.1.113883.3.3731.1.204.34",
+          "parentName": "Radiology Order Section",
+          "nesting": "NESTED sub-section (depth 1), not a top-level sibling of structuredBody.",
+          "confidence": "high",
+          "source": {
+            "pageId": "33554777",
+            "pageTitle": "Radiology Order Section",
+            "row": "row 2.7",
+            "quote": "2.7 | Sub-Section “Request” | R | [1..1] | ./component/section[templateId=‘2.16.840.1.113883.3.3731.1.204.35’] | A “Request” sub-section SHALL be present.See “Request” Sub-section."
+          },
+          "note": "Reached because cda-rad-result-structured embeds the whole Radiology Order Section (204.34) with its three sub-sections. OID .204.35 is OVERLOADED - see oidCollisions."
+        },
+        {
+          "templateId": "2.16.840.1.113883.3.3731.1.204.36",
+          "name": "Procedure Indications",
+          "loincCode": "59768-2",
+          "usage": "R",
+          "min": 1,
+          "max": 1,
+          "position": 2,
+          "parentTemplateId": "2.16.840.1.113883.3.3731.1.204.34",
+          "parentName": "Radiology Order Section",
+          "nesting": "NESTED sub-section (depth 1), not a top-level sibling of structuredBody.",
+          "confidence": "high",
+          "source": {
+            "pageId": "33554777",
+            "pageTitle": "Radiology Order Section",
+            "row": "row 2.8",
+            "quote": "2.8 | Sub-Section “Procedure Indications” | R | [1..1] | ./component/section[templateId=‘2.16.840.1.113883.3.3731.1.204.36’] | A “Procedure Indications” sub-section SHALL be present.See “Procedure Indications” Sub-section."
+          },
+          "note": "Same embedding as above. OID .204.36 is OVERLOADED - see oidCollisions."
+        },
+        {
+          "templateId": "2.16.840.1.113883.3.3731.1.204.37",
+          "name": "Medical (General) History",
+          "loincCode": "11329-0",
+          "usage": "R",
+          "min": 1,
+          "max": 1,
+          "position": 3,
+          "parentTemplateId": "2.16.840.1.113883.3.3731.1.204.34",
+          "parentName": "Radiology Order Section",
+          "nesting": "NESTED sub-section (depth 1), not a top-level sibling of structuredBody.",
+          "confidence": "high",
+          "source": {
+            "pageId": "33554777",
+            "pageTitle": "Radiology Order Section",
+            "row": "row 2.9",
+            "quote": "2.9 | Sub-Section “Medical (General) History” | R | [1..1] | ./component/section[templateId=‘2.16.840.1.113883.3.3731.1.204.37’] | A “Medical (General) History” sub-section SHALL be present.See “Medical (General) History” Sub-section."
+          }
+        },
+        {
+          "templateId": "2.16.840.1.113883.3.3731.1.204.31",
+          "name": "Radiation Exposure and Protection Information",
+          "loincCode": "73569-6",
+          "usage": "R2",
+          "min": 0,
+          "max": 1,
+          "position": 1,
+          "parentTemplateId": "2.16.840.1.113883.3.3731.1.204.29",
+          "parentName": "Current Procedure Descriptions Section",
+          "nesting": "NESTED sub-section (depth 1), not a top-level sibling of structuredBody.",
+          "confidence": "high",
+          "source": {
+            "pageId": "39223298",
+            "pageTitle": "Current Procedure Descriptions Section - Radiology Results",
+            "row": "row 2.6",
+            "quote": "2.6 | Sub-Section “Radiation Exposure and Protection Information” | R2 | [0..1] | ./component/section[templateId=‘2.16.840.1.113883.3.3731.1.204.31’] | A “Radiation Exposure and Protection Information” sub-section SHALL be present IF KNOWN.See here"
+          }
+        },
+        {
+          "templateId": "2.16.840.1.113883.3.3731.1.204.26",
+          "name": "Communication of Critical Results",
+          "loincCode": "73568-8",
+          "usage": "R2",
+          "min": 0,
+          "max": 1,
+          "position": 1,
+          "parentTemplateId": "2.16.840.1.113883.3.3731.1.204.25",
+          "parentName": "Impressions Section",
+          "nesting": "NESTED sub-section (depth 1), not a top-level sibling of structuredBody.",
+          "confidence": "high",
+          "source": {
+            "pageId": "39288886",
+            "pageTitle": "Impressions Section - Radiology Results",
+            "row": "row 5.5",
+            "quote": "5.5 | Sub-Section “Communication of Critical Results” | R2 | [0..1] | ./component/section[templateId=‘2.16.840.1.113883.3.3731.1.204.26’] | A “Communication of Critical Results” sub-section SHALL be present IF KNOWN.See here"
+          }
+        },
+        {
+          "templateId": "2.16.840.1.113883.3.3731.1.204.35",
+          "name": "Key Images",
+          "loincCode": "55113-5",
+          "usage": "R2",
+          "min": 0,
+          "max": 1,
+          "position": 2,
+          "parentTemplateId": "2.16.840.1.113883.3.3731.1.204.25",
+          "parentName": "Impressions Section",
+          "nesting": "NESTED sub-section (depth 1), not a top-level sibling of structuredBody.",
+          "confidence": "high",
+          "source": {
+            "pageId": "39288886",
+            "pageTitle": "Impressions Section - Radiology Results",
+            "row": "row 5.6",
+            "quote": "5.6 | Sub-Section “Key Images” | R2 | [0..1] | ./component/section[templateId=‘2.16.840.1.113883.3.3731.1.204.35’] | A “Key Images” sub-section SHALL be present IF KNOWN.See here"
+          },
+          "note": "SECOND, DISTINCT meaning of OID .204.35 in the same document - see oidCollisions."
+        }
+      ]
+    },
+    "cda-rad-order": {
+      "additions": [
+        {
+          "templateId": "2.16.840.1.113883.3.3731.1.204.34",
+          "name": "Radiology Order Section",
+          "loincCode": "57832-8",
+          "loincDisplay": null,
+          "usage": "M",
+          "min": 1,
+          "max": 1,
+          "position": 1,
+          "parentTemplateId": null,
+          "path": "/ClinicalDocument/component/structuredBody/component/section[templateId='2.16.840.1.113883.3.3731.1.204.34']",
+          "source": {
+            "pageId": "33554777",
+            "pageTitle": "Radiology Order Section",
+            "row": "row 2",
+            "quote": "2 | Radiology Order Section | M | [1..1] | ./component[1..1]/section | The Radiology Order Section is a group of data elements which provides the detailed Radiology order information.Exactly one Radiology Order Section SHALL be present."
+          },
+          "codeSource": {
+            "pageId": "33554777",
+            "pageTitle": "Radiology Order Section",
+            "row": "row 2.3",
+            "quote": "2.3 | Radiology Order Section Code | M | [1..1] | ./code | SHALL contain the attributes @code=’57832-8’ and @codeSystem=’2.16.840.1.113883.6.1’MAY contain the attributes @displayName=’Prescription for diagnostic or specialist care’ and @codeSystemName=’LOINC’"
+          },
+          "confidence": "high",
+          "titleSource": {
+            "pageId": "33554777",
+            "pageTitle": "Radiology Order Section",
+            "row": "row 2.4",
+            "quote": "2.4 | Radiology Order Section Title | M | [1..1] | ./title | SHALL contain the string “Radiology Order Section”"
+          },
+          "entries": [
+            {
+              "templateId": "2.16.840.1.113883.3.3731.1.210.100.67",
+              "name": "Additional Order Information Organizer",
+              "usage": "R2",
+              "min": 0,
+              "max": 1,
+              "source": {
+                "pageId": "33554777",
+                "pageTitle": "Radiology Order Section",
+                "row": "row 2.6",
+                "quote": "2.6 | Additional Order Information | R2 | [0..1] | ./entry[templateId=’2.16.840.1.113883.3.3731.1.210.100.67’] | SHALL contain zero to one Additional Order Information Organizer IF KNOWN, which contains the information in form of Additional Order Information Entry(s).See “Additional Order Information Organizer Entry (Container for Additional Order Information Observation Entries)“ section."
+              },
+              "sampleConfirmed": true
+            }
+          ],
+          "note": "templateId row: 2.2 | Template indicator | M | [1..1] | ./templateId[1] | Template indicator: nphies Radiology Order Section.Attribute @root SHALL be set to ‘2.16.840.1.113883.3.3731.1.204.34’"
+        },
+        {
+          "templateId": "2.16.840.1.113883.3.3731.1.204.35",
+          "name": "Request",
+          "loincCode": "55115-0",
+          "loincDisplay": null,
+          "usage": "R",
+          "min": 1,
+          "max": 1,
+          "position": 2,
+          "parentTemplateId": "2.16.840.1.113883.3.3731.1.204.34",
+          "path": "./component/section[templateId='2.16.840.1.113883.3.3731.1.204.35']",
+          "source": {
+            "pageId": "33554777",
+            "pageTitle": "Radiology Order Section",
+            "row": "row 2.7",
+            "quote": "2.7 | Sub-Section “Request” | R | [1..1] | ./component/section[templateId=‘2.16.840.1.113883.3.3731.1.204.35’] | A “Request” sub-section SHALL be present.See “Request” Sub-section."
+          },
+          "codeSource": {
+            "pageId": "33554798",
+            "pageTitle": "Sub-Section: Request",
+            "row": "row 3.2",
+            "quote": "3.2 | Request Section Code | M | [1..1] | ./code | SHALL contain the attributes @code=’55115-0’ and @codeSystem=’2.16.840.1.113883.6.1’MAY contain the attributes @displayName=’Requested imaging studies information’ and @codeSystemName=’LOINC’"
+          },
+          "confidence": "high",
+          "titleSource": {
+            "pageId": "33554798",
+            "pageTitle": "Sub-Section: Request",
+            "row": "row 3.3",
+            "quote": "3.3 | Request Section Title | M | [1..1] | ./title | SHALL contain the string “Request”"
+          },
+          "entries": [
+            {
+              "templateId": "2.16.840.1.113883.3.3731.1.204.38",
+              "name": "Imaging Procedure Entry",
+              "usage": "R",
+              "min": 1,
+              "max": null,
+              "source": {
+                "pageId": "33554798",
+                "pageTitle": "Sub-Section: Request",
+                "row": "row 3.5",
+                "quote": "3.5 | Imaging Procedure Entry | R | [1..*] | ./entry[templateId=‘2.16.840.1.113883.3.3731.1.204.38’] | SHALL contain Imaging Procedure Entries, representing the imaging procedures ordered.See “Imaging Procedure Entry” section."
+              },
+              "sampleConfirmed": true
+            }
+          ]
+        },
+        {
+          "templateId": "2.16.840.1.113883.3.3731.1.204.36",
+          "name": "Procedure Indications",
+          "loincCode": "59768-2",
+          "loincDisplay": null,
+          "usage": "R",
+          "min": 1,
+          "max": 1,
+          "position": 3,
+          "parentTemplateId": "2.16.840.1.113883.3.3731.1.204.34",
+          "path": "./component/section[templateId='2.16.840.1.113883.3.3731.1.204.36']",
+          "source": {
+            "pageId": "33554777",
+            "pageTitle": "Radiology Order Section",
+            "row": "row 2.8",
+            "quote": "2.8 | Sub-Section “Procedure Indications” | R | [1..1] | ./component/section[templateId=‘2.16.840.1.113883.3.3731.1.204.36’] | A “Procedure Indications” sub-section SHALL be present.See “Procedure Indications” Sub-section."
+          },
+          "codeSource": {
+            "pageId": "33489172",
+            "pageTitle": "Sub-Section: Procedure Indications",
+            "row": "row 4.2",
+            "quote": "4.2 | Procedure Indications Section Code | M | [1..1] | ./code | SHALL contain the attributes @code=’59768-2’ and @codeSystem=’2.16.840.1.113883.6.1’MAY contain the attributes @displayName=’Procedure Indications’ and @codeSystemName=’LOINC’"
+          },
+          "confidence": "high",
+          "titleSource": {
+            "pageId": "33489172",
+            "pageTitle": "Sub-Section: Procedure Indications",
+            "row": "row 4.3",
+            "quote": "4.3 | Procedure Indications Section Title | M | [1..1] | ./title | SHALL contain the string “Procedure Indications”"
+          },
+          "entries": [
+            {
+              "templateId": "2.16.840.1.113883.3.3731.1.210.100.43",
+              "name": "Problem Concern Entry",
+              "usage": "O",
+              "min": 0,
+              "max": null,
+              "source": {
+                "pageId": "33489172",
+                "pageTitle": "Sub-Section: Procedure Indications",
+                "row": "row 4.5",
+                "quote": "4.5 | Problem Concern Entry | O | [0..*] | ./entry[templateId=‘2.16.840.1.113883.3.3731.1.210.100.43’] | MAY contain Problem Concern Entries, representing indicating diagnoses for the requested imaging procedure.See “Problem Concern Entry (Container for diagnosis)“ section."
+              },
+              "sampleConfirmed": false,
+              "note": "Not populated in the official sample; usage is O so this is conformant."
+            }
+          ]
+        },
+        {
+          "templateId": "2.16.840.1.113883.3.3731.1.204.37",
+          "name": "Medical (General) History",
+          "loincCode": "11329-0",
+          "loincDisplay": null,
+          "usage": "R",
+          "min": 1,
+          "max": 1,
+          "position": 4,
+          "parentTemplateId": "2.16.840.1.113883.3.3731.1.204.34",
+          "path": "./component/section[templateId='2.16.840.1.113883.3.3731.1.204.37']",
+          "source": {
+            "pageId": "33554777",
+            "pageTitle": "Radiology Order Section",
+            "row": "row 2.9",
+            "quote": "2.9 | Sub-Section “Medical (General) History” | R | [1..1] | ./component/section[templateId=‘2.16.840.1.113883.3.3731.1.204.37’] | A “Medical (General) History” sub-section SHALL be present.See “Medical (General) History” Sub-section."
+          },
+          "codeSource": {
+            "pageId": "33587554",
+            "pageTitle": "Sub-Section: Medical (General) History",
+            "row": "row 5.2",
+            "quote": "5.2 | Medical (General) History Section Code | M | [1..1] | ./code | SHALL contain the attributes @code=’11329-0’ and @codeSystem=’2.16.840.1.113883.6.1’MAY contain the attributes @displayName=’History General’ and @codeSystemName=’LOINC’"
+          },
+          "confidence": "high",
+          "titleSource": {
+            "pageId": "33587554",
+            "pageTitle": "Sub-Section: Medical (General) History",
+            "row": "row 5.3",
+            "quote": "5.3 | Medical (General) History Section Title | M | [1..1] | ./title | SHALL contain the string “Medical (General) History”"
+          },
+          "entries": [
+            {
+              "templateId": "2.16.840.1.113883.3.3731.1.210.100.43",
+              "name": "Problem Concern Entry",
+              "usage": "O",
+              "min": 0,
+              "max": null,
+              "source": {
+                "pageId": "33587554",
+                "pageTitle": "Sub-Section: Medical (General) History",
+                "row": "row 5.5",
+                "quote": "5.5 | Problem Concern Entry | O | [0..*] | ./entry[templateId=‘2.16.840.1.113883.3.3731.1.210.100.43’] | MAY contain Problem Concern Entries, representing diagnoses related to the Medical History of the patient.See “Problem Concern Entry (Container for diagnosis)” section"
+              },
+              "sampleConfirmed": false,
+              "note": "The official sample carries this section with narrative text 'No information' and no entries."
+            }
+          ]
+        }
+      ],
+      "note": "cda-rad-order had an empty compiled body; its whole section list is supplied under cdaRadOrder."
+    },
+    "cda-immunization-card": {
+      "additions": [],
+      "note": "No section is missing from the compiled list. See variants.cda-immunization-card.immunizationRecommendationsRuling."
+    }
+  },
+  "oidCollisions": {
+    "why": "A section templateId OID is NOT globally unique in this spec. Two sections in ONE radiology document share an OID and are told apart only by parent section and LOINC code.",
+    "identityRule": "Identify a CDA section by the tuple (parentTemplateId, templateId, code) - never by templateId alone. Resolving by OID alone will silently accept a Key Images section where a Request section belongs.",
+    "collisions": [
+      {
+        "templateId": "2.16.840.1.113883.3.3731.1.204.35",
+        "meanings": [
+          {
+            "name": "Request",
+            "loincCode": "55115-0",
+            "parentTemplateId": "2.16.840.1.113883.3.3731.1.204.34",
+            "parentName": "Radiology Order Section",
+            "declaredOn": {
+              "pageId": "33554798",
+              "pageTitle": "Sub-Section: Request",
+              "row": "row 3.1",
+              "quote": "3.1 | Template indicator | M | [1..1] | ./templateId | Template indicator: nphies Request Section.Attribute @root SHALL be set to ‘2.16.840.1.113883.3.3731.1.204.35’"
+            },
+            "codeRow": {
+              "pageId": "33554798",
+              "pageTitle": "Sub-Section: Request",
+              "row": "row 3.2",
+              "quote": "3.2 | Request Section Code | M | [1..1] | ./code | SHALL contain the attributes @code=’55115-0’ and @codeSystem=’2.16.840.1.113883.6.1’MAY contain the attributes @displayName=’Requested imaging studies information’ and @codeSystemName=’LOINC’"
+            }
+          },
+          {
+            "name": "Key Images",
+            "loincCode": "55113-5",
+            "parentTemplateId": "2.16.840.1.113883.3.3731.1.204.25",
+            "parentName": "Impressions Section",
+            "declaredOn": {
+              "pageId": "39256069",
+              "pageTitle": "Sub-Section: Key Images",
+              "row": "row 9.1",
+              "quote": "9.1 | Template indicator | M | [1..1] | ./templateId | Template indicator: nphies Key Images Section.Attribute @root SHALL be set to ‘2.16.840.1.113883.3.3731.1.204.35’"
+            },
+            "codeRow": {
+              "pageId": "39256069",
+              "pageTitle": "Sub-Section: Key Images",
+              "row": "row 9.2",
+              "quote": "9.2 | Key Images Section Code | M | [1..1] | ./code | SHALL contain the attributes @code=’55113-5’ and @codeSystem=’2.16.840.1.113883.6.1’MAY contain the attributes @displayName=’Key Images’ and @codeSystemName=’LOINC’"
+            }
+          }
+        ],
+        "evidence": "Both meanings occur in ONE document: spec-source/golden/CDA/nphies Radiology Results Structured v4.9beta1.xml carries templateId .204.35 twice - once with code 55115-0 titled 'Request' under .204.34, once with code 55113-5 titled 'Key Images' under .204.25."
+      },
+      {
+        "templateId": "2.16.840.1.113883.3.3731.1.204.36",
+        "meanings": [
+          {
+            "name": "Procedure Indications",
+            "loincCode": "59768-2",
+            "parentTemplateId": "2.16.840.1.113883.3.3731.1.204.34",
+            "parentName": "Radiology Order Section",
+            "declaredOn": {
+              "pageId": "33489172",
+              "pageTitle": "Sub-Section: Procedure Indications",
+              "row": "row 4.1",
+              "quote": "4.1 | Template indicator | M | [1..1] | ./templateId | Template indicator: nphies Procedure Indications Section.Attribute @root SHALL be set to ‘2.16.840.1.113883.3.3731.1.204.36’"
+            },
+            "codeRow": {
+              "pageId": "33489172",
+              "pageTitle": "Sub-Section: Procedure Indications",
+              "row": "row 4.2",
+              "quote": "4.2 | Procedure Indications Section Code | M | [1..1] | ./code | SHALL contain the attributes @code=’59768-2’ and @codeSystem=’2.16.840.1.113883.6.1’MAY contain the attributes @displayName=’Procedure Indications’ and @codeSystemName=’LOINC’"
+            }
+          },
+          {
+            "name": "Addendum",
+            "loincCode": "55107-7",
+            "parentTemplateId": null,
+            "parentName": "structuredBody (top level)",
+            "declaredOn": {
+              "pageId": "39157785",
+              "pageTitle": "Addendum Section - Radiology Results",
+              "row": "row 6.1",
+              "quote": "6.1 | Template indicator | M | [1..1] | ./templateId | Template indicator: nphies Addendum Section.Attribute @root SHALL be set to ‘2.16.840.1.113883.3.3731.1.204.36’"
+            },
+            "codeRow": {
+              "pageId": "39157785",
+              "pageTitle": "Addendum Section - Radiology Results",
+              "row": "row 6.2",
+              "quote": "6.2 | Addendum Section Code | M | [1..1] | ./code | SHALL contain the attributes @code=’55107-7’ and @codeSystem=’2.16.840.1.113883.6.1’MAY contain the attributes @displayName=’Addendum’ and @codeSystemName=’LOINC’"
+            }
+          }
+        ],
+        "evidence": "Both meanings occur in ONE document: the same Radiology Results Structured sample carries .204.36 with code 59768-2 nested under .204.34, and again with code 55107-7 at top level."
+      }
+    ]
+  },
+  "variants": {
+    "cda-immunization-summary": {
+      "Full": {
+        "sample": "spec-source/golden/CDA/On-demand documents as response/nphies Immunization Summary v4.9beta1 Full.xml",
+        "sectionsPresent": 10,
+        "sections": [
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.6",
+            "title": "Immunizations",
+            "code": "11369-6",
+            "noInfoFlagTemplateId": null,
+            "entryCount": 1
+          },
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.3",
+            "title": "Active problems",
+            "code": "11450-4",
+            "noInfoFlagTemplateId": null,
+            "entryCount": 1
+          },
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.8",
+            "title": "Allergies and Adverse Reactions",
+            "code": "48765-2",
+            "noInfoFlagTemplateId": null,
+            "entryCount": 1
+          },
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.93",
+            "title": "Medications Risk Factor List",
+            "code": "10160-0",
+            "noInfoFlagTemplateId": null,
+            "entryCount": 1
+          },
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.7",
+            "title": "List of Surgeries",
+            "code": "47519-4",
+            "noInfoFlagTemplateId": null,
+            "entryCount": 1
+          },
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.86",
+            "title": "History of Past Illness",
+            "code": "11348-0",
+            "noInfoFlagTemplateId": null,
+            "entryCount": 1
+          },
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.23",
+            "title": "Pregnancy History",
+            "code": "10162-6",
+            "noInfoFlagTemplateId": null,
+            "entryCount": 4
+          },
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.83",
+            "title": "Social History",
+            "code": "29762-2",
+            "noInfoFlagTemplateId": null,
+            "entryCount": 1
+          },
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.87",
+            "title": "Immunization Serology Coded Results",
+            "code": "30954-2",
+            "noInfoFlagTemplateId": null,
+            "entryCount": 1
+          },
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.89",
+            "title": "Immunization Recommendations",
+            "code": "18776-5",
+            "noInfoFlagTemplateId": null,
+            "entryCount": 1
+          }
+        ],
+        "noInfoFlagsPresent": 0,
+        "rule": "Every section required by the document's body table is present and carries entries."
+      },
+      "NoInfo": {
+        "sample": "spec-source/golden/CDA/On-demand documents as response/nphies Immunization Summary v4.9beta1 NoInfo.xml",
+        "sectionsPresent": 10,
+        "sections": [
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.6",
+            "title": "Immunizations",
+            "code": "11369-6",
+            "noInfoFlagTemplateId": "2.16.840.1.113883.3.3731.1.210.100.6.1",
+            "entryCount": 0
+          },
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.3",
+            "title": "Active problems",
+            "code": "11450-4",
+            "noInfoFlagTemplateId": "2.16.840.1.113883.3.3731.1.210.100.3.1",
+            "entryCount": 0
+          },
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.8",
+            "title": "Allergies and Adverse Reactions",
+            "code": "48765-2",
+            "noInfoFlagTemplateId": "2.16.840.1.113883.3.3731.1.210.100.8.1",
+            "entryCount": 0
+          },
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.93",
+            "title": "Medications Risk Factor List",
+            "code": "10160-0",
+            "noInfoFlagTemplateId": "2.16.840.1.113883.3.3731.1.210.100.93.1",
+            "entryCount": 0
+          },
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.7",
+            "title": "List of Surgeries",
+            "code": "47519-4",
+            "noInfoFlagTemplateId": "2.16.840.1.113883.3.3731.1.210.100.7.1",
+            "entryCount": 0
+          },
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.86",
+            "title": "History of Past Illness",
+            "code": "11348-0",
+            "noInfoFlagTemplateId": "2.16.840.1.113883.3.3731.1.210.100.86.1",
+            "entryCount": 0
+          },
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.23",
+            "title": "Pregnancy History",
+            "code": "10162-6",
+            "noInfoFlagTemplateId": "2.16.840.1.113883.3.3731.1.210.100.23.1",
+            "entryCount": 0
+          },
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.83",
+            "title": "Social History",
+            "code": "29762-2",
+            "noInfoFlagTemplateId": "2.16.840.1.113883.3.3731.1.210.100.83.1",
+            "entryCount": 0
+          },
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.87",
+            "title": "Immunization Serology Coded Results",
+            "code": "30954-2",
+            "noInfoFlagTemplateId": "2.16.840.1.113883.3.3731.1.210.100.87.1",
+            "entryCount": 0
+          },
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.89",
+            "title": "Immunization Recommendations",
+            "code": "18776-5",
+            "noInfoFlagTemplateId": "2.16.840.1.113883.3.3731.1.210.100.89.1",
+            "entryCount": 0
+          }
+        ],
+        "rule": "Every section is still PRESENT, each with its no-info flag templateId, narrative 'No information available' and zero entries."
+      },
+      "verdict": "CONSISTENT. All 10 body sections are present in both variants. The NoInfo variant flags all 10 with their .1 templateId. This is the reference behaviour for the NoInfo variant."
+    },
+    "cda-iehr-summary": {
+      "Full": {
+        "sample": "spec-source/golden/CDA/On-demand documents as response/nphies iEHR Summary v4.9beta1 Full.xml",
+        "sectionsPresent": 12,
+        "sections": [
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.3",
+            "title": "Active problems",
+            "code": "11450-4",
+            "noInfoFlagTemplateId": null,
+            "entryCount": 1
+          },
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.8",
+            "title": "Allergies and Adverse Reactions",
+            "code": "48765-2",
+            "noInfoFlagTemplateId": null,
+            "entryCount": 1
+          },
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.7",
+            "title": "List of Surgeries",
+            "code": "47519-4",
+            "noInfoFlagTemplateId": null,
+            "entryCount": 1
+          },
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.5",
+            "title": "Medications List",
+            "code": "10160-0",
+            "noInfoFlagTemplateId": null,
+            "entryCount": 2
+          },
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.6",
+            "title": "Immunizations",
+            "code": "11369-6",
+            "noInfoFlagTemplateId": null,
+            "entryCount": 1
+          },
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.83",
+            "title": "Social History",
+            "code": "29762-2",
+            "noInfoFlagTemplateId": null,
+            "entryCount": 1
+          },
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.84",
+            "title": "Family Medical History",
+            "code": "10157-6",
+            "noInfoFlagTemplateId": null,
+            "entryCount": 0
+          },
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.11",
+            "title": "Visible Implanted Medical Devices",
+            "code": "57080-4",
+            "noInfoFlagTemplateId": null,
+            "entryCount": 0
+          },
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.10",
+            "title": "Vital Signs",
+            "code": "8716-3",
+            "noInfoFlagTemplateId": null,
+            "entryCount": 2
+          },
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.14",
+            "title": "Blood Group Test Results",
+            "code": "30954-2",
+            "noInfoFlagTemplateId": null,
+            "entryCount": 1
+          },
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.15",
+            "title": "Assessment and Plan",
+            "code": "51847-2",
+            "noInfoFlagTemplateId": null,
+            "entryCount": 0
+          },
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.13",
+            "title": "Care Plan",
+            "code": "61145-9",
+            "noInfoFlagTemplateId": null,
+            "entryCount": 0
+          }
+        ],
+        "noInfoFlagsPresent": 0,
+        "rule": "Every section required by the document's body table is present and carries entries."
+      },
+      "NoInfo": {
+        "sample": "spec-source/golden/CDA/On-demand documents as response/nphies iEHR Summary v4.9beta1 NoInfo.xml",
+        "sectionsPresent": 12,
+        "sections": [
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.3",
+            "title": "Active problems",
+            "code": "11450-4",
+            "noInfoFlagTemplateId": "2.16.840.1.113883.3.3731.1.210.100.3.1",
+            "entryCount": 0
+          },
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.8",
+            "title": "Allergies and Adverse Reactions",
+            "code": "48765-2",
+            "noInfoFlagTemplateId": "2.16.840.1.113883.3.3731.1.210.100.8.1",
+            "entryCount": 0
+          },
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.7",
+            "title": "List of Surgeries",
+            "code": "47519-4",
+            "noInfoFlagTemplateId": "2.16.840.1.113883.3.3731.1.210.100.7.1",
+            "entryCount": 0
+          },
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.5",
+            "title": "Medications List",
+            "code": "10160-0",
+            "noInfoFlagTemplateId": "2.16.840.1.113883.3.3731.1.210.100.5.1",
+            "entryCount": 0
+          },
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.6",
+            "title": "Immunizations",
+            "code": "11369-6",
+            "noInfoFlagTemplateId": "2.16.840.1.113883.3.3731.1.210.100.6.1",
+            "entryCount": 0
+          },
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.83",
+            "title": "Social History",
+            "code": "29762-2",
+            "noInfoFlagTemplateId": "2.16.840.1.113883.3.3731.1.210.100.83.1",
+            "entryCount": 0
+          },
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.84",
+            "title": "Family Medical History",
+            "code": "10157-6",
+            "noInfoFlagTemplateId": "2.16.840.1.113883.3.3731.1.210.100.84.1",
+            "entryCount": 0
+          },
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.11",
+            "title": "Visible Implanted Medical Devices",
+            "code": "57080-4",
+            "noInfoFlagTemplateId": "2.16.840.1.113883.3.3731.1.210.100.11.1",
+            "entryCount": 0
+          },
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.10",
+            "title": "Vital Signs",
+            "code": "8716-3",
+            "noInfoFlagTemplateId": "2.16.840.1.113883.3.3731.1.210.100.10.1",
+            "entryCount": 0
+          },
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.14",
+            "title": "Blood Group Test Results",
+            "code": "30954-2",
+            "noInfoFlagTemplateId": "2.16.840.1.113883.3.3731.1.210.100.14.1",
+            "entryCount": 0
+          },
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.15",
+            "title": "Assessment and Plan",
+            "code": "51847-2",
+            "noInfoFlagTemplateId": "2.16.840.1.113883.3.3731.1.210.100.15.1",
+            "entryCount": 0
+          },
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.13",
+            "title": "Care Plan",
+            "code": "61145-9",
+            "noInfoFlagTemplateId": "2.16.840.1.113883.3.3731.1.210.100.13.1",
+            "entryCount": 0
+          }
+        ],
+        "rule": "Every section is still PRESENT, each with its no-info flag templateId, narrative 'No information available' and zero entries."
+      },
+      "verdict": "CONSISTENT. All 12 body sections are present in both variants; the NoInfo variant flags all 12."
+    },
+    "cda-immunization-card": {
+      "Full": {
+        "sample": "spec-source/golden/CDA/On-demand documents as response/nphies Immunization Card v4.9beta1 Full.xml",
+        "sectionsPresent": 2,
+        "sections": [
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.6",
+            "title": "Immunizations",
+            "code": "11369-6",
+            "noInfoFlagTemplateId": null,
+            "entryCount": 1
+          },
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.89",
+            "title": "Immunization Recommendations",
+            "code": "18776-5",
+            "noInfoFlagTemplateId": null,
+            "entryCount": 1
+          }
+        ],
+        "noInfoFlagsPresent": 0,
+        "rule": "Every section required by the document's body table is present and carries entries."
+      },
+      "NoInfo": {
+        "sample": "spec-source/golden/CDA/On-demand documents as response/nphies Immunization Card v4.9beta1 NoInfo.xml",
+        "sectionsPresent": 1,
+        "sections": [
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.6",
+            "title": "Immunizations",
+            "code": "11369-6",
+            "noInfoFlagTemplateId": "2.16.840.1.113883.3.3731.1.210.100.6.1",
+            "entryCount": 0
+          }
+        ],
+        "rule": "Every section is still PRESENT, each with its no-info flag templateId, narrative 'No information available' and zero entries."
+      },
+      "verdict": "INCONSISTENT - see immunizationRecommendationsRuling."
+    }
+  },
+  "noInfoVariantRule": {
+    "mechanism": "no-info flag templateId",
+    "howItWorks": "A section with no available information keeps its normal templateId list and APPENDS one extra templateId whose root is the section's own nphies OID with '.1' suffixed. Its <text> is the literal narrative 'No information available' and it carries ZERO <entry> elements.",
+    "notNullFlavor": "CORRECTION TO A COMMON ASSUMPTION: NoInfo documents do NOT use nullFlavor on sections. Measured across the three NoInfo samples, the whole document contains only 2 nullFlavor attributes and both are on custodian/telecom and custodian/addr, never on a section. Every no-info section is flagged by the .1 templateId instead. A validator looking for section/@nullFlavor will find nothing and wrongly pass or wrongly fail.",
+    "entryConstraintWaived": true,
+    "flagTemplateIdPattern": "<section nphies OID> + '.1'",
+    "sources": [
+      {
+        "pageId": "53379410",
+        "pageTitle": "No availability of information in sections - Immunization Summary",
+        "quote": "In case no information is available for a clinical section of the Immunization Summary, the narrative text part of the section will show “No information available”, with no entry elements present. A special templateId is present in that case (refer to the description of the respective section)."
+      },
+      {
+        "pageId": "53379410",
+        "pageTitle": "No availability of information in sections - Immunization Summary",
+        "quote": "Note: In case the section would “require” entry elements (specified as [M] or [R] in the chapter where it is specified), this constraint is ignored."
+      },
+      {
+        "pageId": "53379840",
+        "pageTitle": "No availability of information in sections - Immunization Card",
+        "quote": "In case no information is available for a clinical section of the Immunization Card, the narrative text part of the section will show “No information available”, with no entry elements present. A special templateId is present in that case (refer to the description of the respective section)."
+      },
+      {
+        "pageId": "15893106",
+        "pageTitle": "List of Surgeries Section (History of Procedures)",
+        "row": "row 8.5",
+        "quote": "8.5 | Template indicator(No information available) | R2 | [0..1] | ./templateId[5] | Template indicator: nphies List of Surgeries Section – No information availableAttribute @root SHALL be set to ‘2.16.840.1.113883.3.3731.1.210.100.7.1’This template indicator indicates that the section is used in an on-demand document (e.g., iEHR Summary, Immunization Summary, …) and that there is no information available. This covers off the following scenarios:Data is not present in the systemData is present but has not been able to be retrieved"
+      },
+      {
+        "pageId": "16810590",
+        "pageTitle": "Immunization Serology Coded Results Section",
+        "row": "row 46.2",
+        "quote": "46.2 | Template indicator(No information available) | R2 | [0..1] | ./templateId[2] | Template indicator: nphies Immunization Serology Coded Results Section – No information availableAttribute @root SHALL be set to ‘2.16.840.1.113883.3.3731.1.210.100.87.1’This template indicator indicates that the section is used in an on-demand document (e.g., iEHR Summary, Immunization Summary, …) and that there is no information available. This covers off the following scenarios:Data is not present in the systemData is present but has not been able to be retrieved"
+      },
+      {
+        "pageId": "16744968",
+        "pageTitle": "Immunization Recommendations Section",
+        "row": "row 47.3",
+        "quote": "47.3 | Template indicator(No information available) | R2 | [0..1] | ./templateId[3] | Template indicator: nphies Immunization Recommendations Section – No information availableAttribute @root SHALL be set to ‘2.16.840.1.113883.3.3731.1.210.100.89.1’This template indicator indicates that the section is used in an on-demand document (e.g., iEHR Summary, Immunization Summary, …) and that there is no information available. This covers off the following scenarios:Data is not present in the systemData is present but has not been able to be retrieved"
+      }
+    ]
+  },
+  "immunizationRecommendationsRuling": {
+    "gateFinding": "required-section-missing: section \"Immunization Recommendations\" is R in cda-immunization-card but absent from the official sample (nphies Immunization Card v4.9beta1 NoInfo.xml).",
+    "question": "(a) correct, because NoInfo variants legitimately omit sections, or (b) a mis-extracted usage?",
+    "answer": "NEITHER. The compiled usage R [1..1] is CORRECTLY extracted, and NoInfo variants do NOT legitimately omit sections. The official NoInfo sample is itself defective.",
+    "why": [
+      "(b) is ruled out: page 53379828 row 1.3 states Immunization Recommendations is R [1..1]. The compiled value matches the source exactly, so nothing was mis-extracted.",
+      "(a) is ruled out: page 53379840 defines the NoInfo mechanism for this very document and says the section is still PRESENT, carrying a special templateId and the narrative 'No information available'. Only the ENTRY requirement is waived - 'In case the section would “require” entry elements (specified as [M] or [R] in the chapter where it is specified), this constraint is ignored.' Nothing waives the SECTION requirement.",
+      "The sibling on-demand documents prove the intended behaviour: Immunization Summary NoInfo keeps all 10 sections and iEHR Summary NoInfo keeps all 12, each flagged. Immunization Card NoInfo keeps only 1 of its 2.",
+      "Page 16744968 row 47.3 defines the no-info flag for this exact section - 2.16.840.1.113883.3.3731.1.210.100.89.1 - which would be pointless if the section could simply be dropped."
+    ],
+    "verdict": "sample-defect",
+    "expectedMarkup": "<section><templateId root=\"2.16.840.1.113883.3.3731.1.210.100.89\"/><templateId root=\"1.3.6.1.4.1.19376.1.5.3.1.1.18.3.1\"/><templateId root=\"2.16.840.1.113883.3.3731.1.210.100.89.1\"/><code code=\"18776-5\" codeSystem=\"2.16.840.1.113883.6.1\"/><title>Immunization Recommendations</title><text>No information available</text></section>",
+    "actionForTheTool": "KEEP usage R [1..1] for Immunization Recommendations in cda-immunization-card. An HIS omitting this section should be told it is missing. Report the official sample as non-conformant rather than relaxing the rule to match it - relaxing it would teach every onboarding HIS to emit an incomplete Immunization Card.",
+    "confidence": "high",
+    "sources": [
+      {
+        "pageId": "53379828",
+        "pageTitle": "CDA Body - Immunization Card",
+        "row": "row 1.3",
+        "quote": "1.3 | Immunization Recommendations | R | [1..1] | ./component/section[templateId=‘2.16.840.1.113883.3.3731.1.210.100.89’] | The schedule of vaccinations that are intended or proposed for the patient.See Immunization Recommendations Section"
+      },
+      {
+        "pageId": "16744968",
+        "pageTitle": "Immunization Recommendations Section",
+        "row": "row 47.1",
+        "quote": "47.1 | Template indicator | M | [1..1] | ./templateId[1] | Template indicator: nphies Immunization Recommendations Section.Attribute @root SHALL be set to ‘2.16.840.1.113883.3.3731.1.210.100.89’"
+      },
+      {
+        "pageId": "16744968",
+        "pageTitle": "Immunization Recommendations Section",
+        "row": "row 47.3",
+        "quote": "47.3 | Template indicator(No information available) | R2 | [0..1] | ./templateId[3] | Template indicator: nphies Immunization Recommendations Section – No information availableAttribute @root SHALL be set to ‘2.16.840.1.113883.3.3731.1.210.100.89.1’This template indicator indicates that the section is used in an on-demand document (e.g., iEHR Summary, Immunization Summary, …) and that there is no information available. This covers off the following scenarios:Data is not present in the systemData is present but has not been able to be retrieved"
+      },
+      {
+        "pageId": "16744968",
+        "pageTitle": "Immunization Recommendations Section",
+        "row": "row 47.4",
+        "quote": "47.4 | Code | M | [1..1] | ./code | SHALL contain the attributes @code=‘18776-5’ and @codeSystem=’2.16.840.1.113883.6.1’MAY contain the attributes @displayName=’TREATMENT PLAN’ and @codeSystemName=’LOINC’"
+      },
+      {
+        "pageId": "53379840",
+        "pageTitle": "No availability of information in sections - Immunization Card",
+        "quote": "Note: In case the section would “require” entry elements (specified as [M] or [R] in the chapter where it is specified), this constraint is ignored."
+      },
+      {
+        "sample": "spec-source/golden/CDA/On-demand documents as response/nphies Immunization Card v4.9beta1 NoInfo.xml"
+      }
+    ]
+  },
+  "cdaRadOrder": {
+    "useCaseId": "cda-rad-order",
+    "wasCompiledAs": {
+      "sections": 0,
+      "entries": 0,
+      "confidence": "low"
+    },
+    "derivedFrom": "confluence",
+    "confidence": "high",
+    "emptyPageInvestigation": {
+      "pageId": "33489120",
+      "title": "CDA Body - Radiology Orders",
+      "refetched": true,
+      "emptyUpstreamToo": true,
+      "finding": "GENUINELY EMPTY UPSTREAM. The live public REST API returns HTTP 200 with body.storage.value == \"\" AND body.view.value == \"\". The cached export is faithful, not truncated.",
+      "why": "33489120 is a CONTAINER page. Its four children carry all the content, and all four are present and non-empty in the cached export: 33554777 'Radiology Order Section', 33554798 'Sub-Section: Request', 33489172 'Sub-Section: Procedure Indications', 33587554 'Sub-Section: Medical (General) History'.",
+      "consequence": "cda-rad-order does NOT need to be derived from the sample. Page 33554777 alone specifies the entire body - structuredBody, the Radiology Order Section with its code, title and entry, and all three sub-sections with cardinality. The sample is used only as independent confirmation, so confidence is high rather than the 'sample' fallback the task anticipated."
+    },
+    "body": {
+      "path": "/ClinicalDocument/component/structuredBody",
+      "usage": "M",
+      "min": 1,
+      "max": 1,
+      "source": {
+        "pageId": "33554777",
+        "pageTitle": "Radiology Order Section",
+        "row": "row 1.1",
+        "quote": "1.1 | Structured Body | M | [1..1] | /ClinicalDocument/component/structuredBody | Container holding all the clinical information in structured form."
+      }
+    },
+    "sections": [
+      {
+        "templateId": "2.16.840.1.113883.3.3731.1.204.34",
+        "name": "Radiology Order Section",
+        "loincCode": "57832-8",
+        "loincDisplay": null,
+        "usage": "M",
+        "min": 1,
+        "max": 1,
+        "position": 1,
+        "parentTemplateId": null,
+        "path": "/ClinicalDocument/component/structuredBody/component/section[templateId='2.16.840.1.113883.3.3731.1.204.34']",
+        "source": {
+          "pageId": "33554777",
+          "pageTitle": "Radiology Order Section",
+          "row": "row 2",
+          "quote": "2 | Radiology Order Section | M | [1..1] | ./component[1..1]/section | The Radiology Order Section is a group of data elements which provides the detailed Radiology order information.Exactly one Radiology Order Section SHALL be present."
+        },
+        "codeSource": {
+          "pageId": "33554777",
+          "pageTitle": "Radiology Order Section",
+          "row": "row 2.3",
+          "quote": "2.3 | Radiology Order Section Code | M | [1..1] | ./code | SHALL contain the attributes @code=’57832-8’ and @codeSystem=’2.16.840.1.113883.6.1’MAY contain the attributes @displayName=’Prescription for diagnostic or specialist care’ and @codeSystemName=’LOINC’"
+        },
+        "confidence": "high",
+        "titleSource": {
+          "pageId": "33554777",
+          "pageTitle": "Radiology Order Section",
+          "row": "row 2.4",
+          "quote": "2.4 | Radiology Order Section Title | M | [1..1] | ./title | SHALL contain the string “Radiology Order Section”"
+        },
+        "entries": [
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.67",
+            "name": "Additional Order Information Organizer",
+            "usage": "R2",
+            "min": 0,
+            "max": 1,
+            "source": {
+              "pageId": "33554777",
+              "pageTitle": "Radiology Order Section",
+              "row": "row 2.6",
+              "quote": "2.6 | Additional Order Information | R2 | [0..1] | ./entry[templateId=’2.16.840.1.113883.3.3731.1.210.100.67’] | SHALL contain zero to one Additional Order Information Organizer IF KNOWN, which contains the information in form of Additional Order Information Entry(s).See “Additional Order Information Organizer Entry (Container for Additional Order Information Observation Entries)“ section."
+            },
+            "sampleConfirmed": true
+          }
+        ],
+        "note": "templateId row: 2.2 | Template indicator | M | [1..1] | ./templateId[1] | Template indicator: nphies Radiology Order Section.Attribute @root SHALL be set to ‘2.16.840.1.113883.3.3731.1.204.34’"
+      },
+      {
+        "templateId": "2.16.840.1.113883.3.3731.1.204.35",
+        "name": "Request",
+        "loincCode": "55115-0",
+        "loincDisplay": null,
+        "usage": "R",
+        "min": 1,
+        "max": 1,
+        "position": 2,
+        "parentTemplateId": "2.16.840.1.113883.3.3731.1.204.34",
+        "path": "./component/section[templateId='2.16.840.1.113883.3.3731.1.204.35']",
+        "source": {
+          "pageId": "33554777",
+          "pageTitle": "Radiology Order Section",
+          "row": "row 2.7",
+          "quote": "2.7 | Sub-Section “Request” | R | [1..1] | ./component/section[templateId=‘2.16.840.1.113883.3.3731.1.204.35’] | A “Request” sub-section SHALL be present.See “Request” Sub-section."
+        },
+        "codeSource": {
+          "pageId": "33554798",
+          "pageTitle": "Sub-Section: Request",
+          "row": "row 3.2",
+          "quote": "3.2 | Request Section Code | M | [1..1] | ./code | SHALL contain the attributes @code=’55115-0’ and @codeSystem=’2.16.840.1.113883.6.1’MAY contain the attributes @displayName=’Requested imaging studies information’ and @codeSystemName=’LOINC’"
+        },
+        "confidence": "high",
+        "titleSource": {
+          "pageId": "33554798",
+          "pageTitle": "Sub-Section: Request",
+          "row": "row 3.3",
+          "quote": "3.3 | Request Section Title | M | [1..1] | ./title | SHALL contain the string “Request”"
+        },
+        "entries": [
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.204.38",
+            "name": "Imaging Procedure Entry",
+            "usage": "R",
+            "min": 1,
+            "max": null,
+            "source": {
+              "pageId": "33554798",
+              "pageTitle": "Sub-Section: Request",
+              "row": "row 3.5",
+              "quote": "3.5 | Imaging Procedure Entry | R | [1..*] | ./entry[templateId=‘2.16.840.1.113883.3.3731.1.204.38’] | SHALL contain Imaging Procedure Entries, representing the imaging procedures ordered.See “Imaging Procedure Entry” section."
+            },
+            "sampleConfirmed": true
+          }
+        ]
+      },
+      {
+        "templateId": "2.16.840.1.113883.3.3731.1.204.36",
+        "name": "Procedure Indications",
+        "loincCode": "59768-2",
+        "loincDisplay": null,
+        "usage": "R",
+        "min": 1,
+        "max": 1,
+        "position": 3,
+        "parentTemplateId": "2.16.840.1.113883.3.3731.1.204.34",
+        "path": "./component/section[templateId='2.16.840.1.113883.3.3731.1.204.36']",
+        "source": {
+          "pageId": "33554777",
+          "pageTitle": "Radiology Order Section",
+          "row": "row 2.8",
+          "quote": "2.8 | Sub-Section “Procedure Indications” | R | [1..1] | ./component/section[templateId=‘2.16.840.1.113883.3.3731.1.204.36’] | A “Procedure Indications” sub-section SHALL be present.See “Procedure Indications” Sub-section."
+        },
+        "codeSource": {
+          "pageId": "33489172",
+          "pageTitle": "Sub-Section: Procedure Indications",
+          "row": "row 4.2",
+          "quote": "4.2 | Procedure Indications Section Code | M | [1..1] | ./code | SHALL contain the attributes @code=’59768-2’ and @codeSystem=’2.16.840.1.113883.6.1’MAY contain the attributes @displayName=’Procedure Indications’ and @codeSystemName=’LOINC’"
+        },
+        "confidence": "high",
+        "titleSource": {
+          "pageId": "33489172",
+          "pageTitle": "Sub-Section: Procedure Indications",
+          "row": "row 4.3",
+          "quote": "4.3 | Procedure Indications Section Title | M | [1..1] | ./title | SHALL contain the string “Procedure Indications”"
+        },
+        "entries": [
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.43",
+            "name": "Problem Concern Entry",
+            "usage": "O",
+            "min": 0,
+            "max": null,
+            "source": {
+              "pageId": "33489172",
+              "pageTitle": "Sub-Section: Procedure Indications",
+              "row": "row 4.5",
+              "quote": "4.5 | Problem Concern Entry | O | [0..*] | ./entry[templateId=‘2.16.840.1.113883.3.3731.1.210.100.43’] | MAY contain Problem Concern Entries, representing indicating diagnoses for the requested imaging procedure.See “Problem Concern Entry (Container for diagnosis)“ section."
+            },
+            "sampleConfirmed": false,
+            "note": "Not populated in the official sample; usage is O so this is conformant."
+          }
+        ]
+      },
+      {
+        "templateId": "2.16.840.1.113883.3.3731.1.204.37",
+        "name": "Medical (General) History",
+        "loincCode": "11329-0",
+        "loincDisplay": null,
+        "usage": "R",
+        "min": 1,
+        "max": 1,
+        "position": 4,
+        "parentTemplateId": "2.16.840.1.113883.3.3731.1.204.34",
+        "path": "./component/section[templateId='2.16.840.1.113883.3.3731.1.204.37']",
+        "source": {
+          "pageId": "33554777",
+          "pageTitle": "Radiology Order Section",
+          "row": "row 2.9",
+          "quote": "2.9 | Sub-Section “Medical (General) History” | R | [1..1] | ./component/section[templateId=‘2.16.840.1.113883.3.3731.1.204.37’] | A “Medical (General) History” sub-section SHALL be present.See “Medical (General) History” Sub-section."
+        },
+        "codeSource": {
+          "pageId": "33587554",
+          "pageTitle": "Sub-Section: Medical (General) History",
+          "row": "row 5.2",
+          "quote": "5.2 | Medical (General) History Section Code | M | [1..1] | ./code | SHALL contain the attributes @code=’11329-0’ and @codeSystem=’2.16.840.1.113883.6.1’MAY contain the attributes @displayName=’History General’ and @codeSystemName=’LOINC’"
+        },
+        "confidence": "high",
+        "titleSource": {
+          "pageId": "33587554",
+          "pageTitle": "Sub-Section: Medical (General) History",
+          "row": "row 5.3",
+          "quote": "5.3 | Medical (General) History Section Title | M | [1..1] | ./title | SHALL contain the string “Medical (General) History”"
+        },
+        "entries": [
+          {
+            "templateId": "2.16.840.1.113883.3.3731.1.210.100.43",
+            "name": "Problem Concern Entry",
+            "usage": "O",
+            "min": 0,
+            "max": null,
+            "source": {
+              "pageId": "33587554",
+              "pageTitle": "Sub-Section: Medical (General) History",
+              "row": "row 5.5",
+              "quote": "5.5 | Problem Concern Entry | O | [0..*] | ./entry[templateId=‘2.16.840.1.113883.3.3731.1.210.100.43’] | MAY contain Problem Concern Entries, representing diagnoses related to the Medical History of the patient.See “Problem Concern Entry (Container for diagnosis)” section"
+            },
+            "sampleConfirmed": false,
+            "note": "The official sample carries this section with narrative text 'No information' and no entries."
+          }
+        ]
+      }
+    ],
+    "entries": [
+      {
+        "templateId": "2.16.840.1.113883.3.3731.1.210.100.67",
+        "name": "Additional Order Information Organizer",
+        "usage": "R2",
+        "min": 0,
+        "max": 1,
+        "source": {
+          "pageId": "33554777",
+          "pageTitle": "Radiology Order Section",
+          "row": "row 2.6",
+          "quote": "2.6 | Additional Order Information | R2 | [0..1] | ./entry[templateId=’2.16.840.1.113883.3.3731.1.210.100.67’] | SHALL contain zero to one Additional Order Information Organizer IF KNOWN, which contains the information in form of Additional Order Information Entry(s).See “Additional Order Information Organizer Entry (Container for Additional Order Information Observation Entries)“ section."
+        },
+        "sampleConfirmed": true
+      },
+      {
+        "templateId": "2.16.840.1.113883.3.3731.1.204.38",
+        "name": "Imaging Procedure Entry",
+        "usage": "R",
+        "min": 1,
+        "max": null,
+        "source": {
+          "pageId": "33554798",
+          "pageTitle": "Sub-Section: Request",
+          "row": "row 3.5",
+          "quote": "3.5 | Imaging Procedure Entry | R | [1..*] | ./entry[templateId=‘2.16.840.1.113883.3.3731.1.204.38’] | SHALL contain Imaging Procedure Entries, representing the imaging procedures ordered.See “Imaging Procedure Entry” section."
+        },
+        "sampleConfirmed": true
+      },
+      {
+        "templateId": "2.16.840.1.113883.3.3731.1.210.100.43",
+        "name": "Problem Concern Entry",
+        "usage": "O",
+        "min": 0,
+        "max": null,
+        "source": {
+          "pageId": "33489172",
+          "pageTitle": "Sub-Section: Procedure Indications",
+          "row": "row 4.5",
+          "quote": "4.5 | Problem Concern Entry | O | [0..*] | ./entry[templateId=‘2.16.840.1.113883.3.3731.1.210.100.43’] | MAY contain Problem Concern Entries, representing indicating diagnoses for the requested imaging procedure.See “Problem Concern Entry (Container for diagnosis)“ section."
+        },
+        "sampleConfirmed": false,
+        "note": "Not populated in the official sample; usage is O so this is conformant."
+      },
+      {
+        "templateId": "2.16.840.1.113883.3.3731.1.210.100.43",
+        "name": "Problem Concern Entry",
+        "usage": "O",
+        "min": 0,
+        "max": null,
+        "source": {
+          "pageId": "33587554",
+          "pageTitle": "Sub-Section: Medical (General) History",
+          "row": "row 5.5",
+          "quote": "5.5 | Problem Concern Entry | O | [0..*] | ./entry[templateId=‘2.16.840.1.113883.3.3731.1.210.100.43’] | MAY contain Problem Concern Entries, representing diagnoses related to the Medical History of the patient.See “Problem Concern Entry (Container for diagnosis)” section"
+        },
+        "sampleConfirmed": false,
+        "note": "The official sample carries this section with narrative text 'No information' and no entries."
+      }
+    ],
+    "sampleConfirmation": {
+      "sample": "spec-source/golden/CDA/nphies Radiology Order v4.9beta1.xml",
+      "observedSectionTree": [
+        {
+          "depth": 0,
+          "templateId": "2.16.840.1.113883.3.3731.1.204.34",
+          "code": "57832-8",
+          "title": "Radiology Order"
+        },
+        {
+          "depth": 1,
+          "templateId": "2.16.840.1.113883.3.3731.1.204.35",
+          "code": "55115-0",
+          "title": "Request"
+        },
+        {
+          "depth": 1,
+          "templateId": "2.16.840.1.113883.3.3731.1.204.36",
+          "code": "59768-2",
+          "title": "Procedure Indications"
+        },
+        {
+          "depth": 1,
+          "templateId": "2.16.840.1.113883.3.3731.1.204.37",
+          "code": "11329-0",
+          "title": "Medical (General) History"
+        }
+      ],
+      "observedEntries": [
+        {
+          "inSection": "2.16.840.1.113883.3.3731.1.204.34",
+          "entryTemplateIds": [
+            "2.16.840.1.113883.3.3731.1.210.100.67",
+            "2.16.840.1.113883.3.3731.1.210.100.68"
+          ],
+          "classCode": "CLUSTER",
+          "moodCode": "EVN"
+        },
+        {
+          "inSection": "2.16.840.1.113883.3.3731.1.204.35",
+          "entryTemplateIds": [
+            "2.16.840.1.113883.3.3731.1.204.38"
+          ],
+          "classCode": "PROC",
+          "moodCode": "EVN"
+        }
+      ],
+      "agreesWithConfluence": true,
+      "discrepancies": [
+        "The sample's Radiology Order Section title is 'Radiology Order'; page 33554777 row 2.4 requires the string 'Radiology Order Section'. Flagged, not resolved: a title mismatch is a value-level issue outside this structural patch."
+      ]
+    }
+  },
+  "refetched": {
+    "15892484": {
+      "title": "Clinical Documents",
+      "htmlLength": 0,
+      "storageLength": 0,
+      "hadContent": false,
+      "httpStatus": 200,
+      "cachedHtmlLength": 0,
+      "cacheWasFaithful": true,
+      "verdict": "genuinely empty upstream",
+      "childPages": [
+        {
+          "id": "54788867",
+          "title": "Connectivity - Clinical Documents"
+        },
+        {
+          "id": "54755960",
+          "title": "Workflows - Clinical Documents"
+        },
+        {
+          "id": "54788879",
+          "title": "Request - Clinical Documents"
+        },
+        {
+          "id": "17564468",
+          "title": "Responses/Error - Clinical Documents"
+        }
+      ],
+      "note": "Container page. All content lives on these children, which ARE present and non-empty in the cached export."
+    },
+    "171180212": {
+      "title": "OR Responses/Error",
+      "htmlLength": 0,
+      "storageLength": 0,
+      "hadContent": false,
+      "httpStatus": 200,
+      "cachedHtmlLength": 0,
+      "cacheWasFaithful": true,
+      "verdict": "genuinely empty upstream"
+    },
+    "171213009": {
+      "title": "ORU - Responses/Error Segment Description",
+      "htmlLength": 0,
+      "storageLength": 0,
+      "hadContent": false,
+      "httpStatus": 200,
+      "cachedHtmlLength": 0,
+      "cacheWasFaithful": true,
+      "verdict": "genuinely empty upstream"
+    },
+    "171278450": {
+      "title": "Vital Signs Segment Group",
+      "htmlLength": 0,
+      "storageLength": 0,
+      "hadContent": false,
+      "httpStatus": 200,
+      "cachedHtmlLength": 0,
+      "cacheWasFaithful": true,
+      "verdict": "genuinely empty upstream",
+      "childPages": [
+        {
+          "id": "171180143",
+          "title": "OBR"
+        },
+        {
+          "id": "171246336",
+          "title": "OBR-NTE"
+        },
+        {
+          "id": "171246357",
+          "title": "OBX"
+        },
+        {
+          "id": "171180201",
+          "title": "OBX-NTE"
+        }
+      ],
+      "note": "Container page. All content lives on these children, which ARE present and non-empty in the cached export."
+    },
+    "33489120": {
+      "title": "CDA Body - Radiology Orders",
+      "htmlLength": 0,
+      "storageLength": 0,
+      "hadContent": false,
+      "httpStatus": 200,
+      "cachedHtmlLength": 0,
+      "cacheWasFaithful": true,
+      "verdict": "genuinely empty upstream",
+      "childPages": [
+        {
+          "id": "33554777",
+          "title": "Radiology Order Section"
+        },
+        {
+          "id": "33554798",
+          "title": "Sub-Section: Request"
+        },
+        {
+          "id": "33489172",
+          "title": "Sub-Section: Procedure Indications"
+        },
+        {
+          "id": "33587554",
+          "title": "Sub-Section: Medical (General) History"
+        }
+      ],
+      "note": "Container page. All content lives on these children, which ARE present and non-empty in the cached export."
+    },
+    "387448836": {
+      "title": "Request - FHIR Radiology Orders",
+      "htmlLength": 0,
+      "storageLength": 0,
+      "hadContent": false,
+      "httpStatus": 200,
+      "cachedHtmlLength": 0,
+      "cacheWasFaithful": true,
+      "verdict": "genuinely empty upstream"
+    },
+    "414547969": {
+      "title": "Resources in the Radiology Report Bundle",
+      "htmlLength": 0,
+      "storageLength": 0,
+      "hadContent": false,
+      "httpStatus": 200,
+      "cachedHtmlLength": 0,
+      "cacheWasFaithful": true,
+      "verdict": "genuinely empty upstream",
+      "childPages": [
+        {
+          "id": "414154754",
+          "title": "Radiology Results Report (structured)"
+        },
+        {
+          "id": "414679041",
+          "title": "Radiology Results Report (embedded pdf)"
+        }
+      ],
+      "note": "Container page. All content lives on these children, which ARE present and non-empty in the cached export."
+    },
+    "53379437": {
+      "title": "Request - Immunization Card",
+      "htmlLength": 0,
+      "storageLength": 0,
+      "hadContent": false,
+      "httpStatus": 200,
+      "cachedHtmlLength": 0,
+      "cacheWasFaithful": true,
+      "verdict": "genuinely empty upstream"
+    },
+    "53477389": {
+      "title": "Request - Immunization Summary",
+      "htmlLength": 0,
+      "storageLength": 0,
+      "hadContent": false,
+      "httpStatus": 200,
+      "cachedHtmlLength": 0,
+      "cacheWasFaithful": true,
+      "verdict": "genuinely empty upstream"
+    },
+    "54722795": {
+      "title": "Request - iEHR Summary",
+      "htmlLength": 0,
+      "storageLength": 0,
+      "hadContent": false,
+      "httpStatus": 200,
+      "cachedHtmlLength": 0,
+      "cacheWasFaithful": true,
+      "verdict": "genuinely empty upstream"
+    },
+    "63668262": {
+      "title": "Request - FHIR Laboratory Results",
+      "htmlLength": 0,
+      "storageLength": 0,
+      "hadContent": false,
+      "httpStatus": 200,
+      "cachedHtmlLength": 0,
+      "cacheWasFaithful": true,
+      "verdict": "genuinely empty upstream"
+    }
+  },
+  "upstreamDefects": [
+    {
+      "severity": "high",
+      "pageId": "53477475",
+      "where": "row 1.6",
+      "defect": "templateId typo: 'List of Surgeries' cites 2.16.840.1.113883.3.3731.1.210.100.87, which page 16810590 assigns to Immunization Serology Coded Results. Should be ...210.100.7.",
+      "impact": "cda-immunization-summary lost one section and duplicated another.",
+      "evidence": {
+        "pageId": "53477475",
+        "pageTitle": "CDA Body - Immunization Summary",
+        "row": "row 1.6",
+        "quote": "1.6 | List of Surgeries | R | [1..1] | ./component/section[templateId=‘2.16.840.1.113883.3.3731.1.210.100.87’] | The History of Procedures defines all interventional, surgical, diagnostic, or therapeutic procedures or treatments pertinent to the patient historically at the time of the encounter."
+      }
+    },
+    {
+      "severity": "low",
+      "pageId": "15925510",
+      "where": "row 1.9",
+      "defect": "CDA Element Location spelled './lanugageCode' instead of './languageCode'.",
+      "impact": "a locator copied verbatim matches nothing.",
+      "evidence": {
+        "pageId": "15925510",
+        "pageTitle": "Clinical Document General",
+        "row": "row 1.9",
+        "quote": "1.9 | Language code | R | [1..1] | ./lanugageCode | Language code of the document.SHALL contain the attribute @code set to a value according to the IETF BCP 47 standard.Examples: ar-SA, en-US, …"
+      }
+    },
+    {
+      "severity": "medium",
+      "pageId": "15958267",
+      "where": "row 7.1",
+      "defect": "Usage cell says 'O' but Max Rpt cell says '[1..1]'; the guidance shows the real rule is conditional.",
+      "impact": "legalAuthenticator is compiled as either always-optional or always-required, both wrong.",
+      "evidence": {
+        "pageId": "15958267",
+        "pageTitle": "Legal Authenticator Information",
+        "row": "row 7.1",
+        "quote": "7.1 | Legal Authenticator | O | [1..1] | /ClinicalDocument/legalAuthenticator | Data element that represents the legal authenticator of the document.The Clinical Document SHALL contain exactly one [1..1] Legal Authenticator if the document is signed."
+      }
+    },
+    {
+      "severity": "medium",
+      "pageId": "(corpus-wide)",
+      "where": "CDA header tables",
+      "defect": "typeId is specified on no page in the 617-page corpus; 'POCD_HD000040' returns zero hits.",
+      "impact": "the single most frequent unresolved identifier in the gate, in all 16 CDA samples.",
+      "evidence": {
+        "search": "grep POCD_HD000040 spec-source/pages/*.json -> 0 hits"
+      }
+    },
+    {
+      "severity": "medium",
+      "sample": "spec-source/golden/CDA/On-demand documents as response/nphies Immunization Card v4.9beta1 NoInfo.xml",
+      "defect": "omits the Immunization Recommendations section entirely instead of carrying it with its no-info flag.",
+      "impact": "an HIS copying this sample emits a non-conformant Immunization Card.",
+      "evidence": "see immunizationRecommendationsRuling"
+    },
+    {
+      "severity": "low",
+      "sample": "spec-source/golden/CDA/nphies Radiology Order v4.9beta1.xml",
+      "defect": "Radiology Order Section <title> is 'Radiology Order'; page 33554777 row 2.4 requires the string 'Radiology Order Section'.",
+      "impact": "value-level, not structural.",
+      "evidence": {
+        "pageId": "33554777",
+        "pageTitle": "Radiology Order Section",
+        "row": "row 2.4",
+        "quote": "2.4 | Radiology Order Section Title | M | [1..1] | ./title | SHALL contain the string “Radiology Order Section”"
+      }
+    }
+  ],
+  "stats": {
+    "headerElementsModelled": 27,
+    "headerElementsByConfidence": {
+      "high": 22,
+      "low": 3,
+      "medium": 2
+    },
+    "headerElementsWithConfluenceQuote": 22,
+    "headerElementsSampleOrStandardOnly": 5,
+    "headerElementsPresentInAll16Samples": 17,
+    "cdaSamplesAnalysed": 16,
+    "gateUnresolvedTypeIdOccurrencesClosed": 16,
+    "sectionMismatchesAddressed": 14,
+    "sectionMismatchBreakdown": {
+      "cda-rad-order": 4,
+      "cda-rad-result-structured": 5,
+      "cda-lab-result": 2,
+      "cda-immunization-summary": 2,
+      "cda-immunization-card": 1
+    },
+    "sectionsAddedAsNested": 7,
+    "sectionsCorrectedInPlace": 1,
+    "sectionsAddedToCdaRadOrder": 4,
+    "entriesAddedToCdaRadOrder": 4,
+    "oidCollisionsFound": 2,
+    "pagesRefetched": 11,
+    "pagesRefetchedWithContent": 0,
+    "pagesGenuinelyEmptyUpstream": 11,
+    "upstreamDefectsFound": 6,
+    "distinctConfluencePagesCited": 17,
+    "projectedCdaResolutionAfterPatch": {
+      "before": {
+        "cdaHeaderElement": "273/289",
+        "cdaSection": "154/165",
+        "cdaTemplateId": "870/871",
+        "overallCdaRate": 0.979
+      },
+      "after": {
+        "cdaHeaderElement": "289/289",
+        "cdaSection": "165/165",
+        "cdaTemplateId": "870/871",
+        "overallCdaRate": 0.9992
+      },
+      "caveat": "Projection assumes the compiler applies the header model, the nested-section additions and the cda-immunization-summary correction. cdaTemplateId 2.16.840.1.113883.3.3731.1.105.1 in the Laboratory Order sample is out of scope for this patch (it is an entry-level, not section-level, OID)."
+    }
+  }
+}

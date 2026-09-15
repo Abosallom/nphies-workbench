@@ -1,0 +1,1314 @@
+{
+  "$schema": "nphies-workbench/patch-literals@1",
+  "artifact": "spec-build/patch-literals.json",
+  "generatedAt": "2026-09-15",
+  "purpose": "Corrects stored structural literals that the first-pass extractor mangled, so a validator matching on the stored string stops rejecting official NPHIES messages. Separates extractor mangling (corrections) from genuine defects in the published spec (specDefects), which are recorded, never silently fixed.",
+  "howToApply": "Each correction names one artifact and every jsonPath in it whose string value equals storedLiteral. Replace the value at those paths with correctedLiteral. jsonPath is the first path; jsonPaths is the complete list. Provenance slots (source.quote, source.row, guidance, description, elementLocationRaw) are excluded by construction and must stay verbatim.",
+  "vsGate": {
+    "gateKnewAbout": 24,
+    "gateSource": "gate-report.json blocker \"24 identifier(s) match the compiled spec only AFTER normalisation\" + recommendation 3",
+    "foundHere": 36,
+    "newBeyondGate": 12,
+    "note": "The gate counted 24 RESOLVED-AFTER-NORMALISATION identifier occurrences in the SOAP samples. Two of those 24 (repositoryUniqueId, and the case-folded authorSpecialty) are spec defects, not extractor mangles, and are reclassified below. The 24 mangled $XDSDocumentEntry* literals are all present here, plus 12 more that no sample exercises and the gate therefore could not see: the two Attribute-column footnote markers on page 54788213, the FindDocuments stored-query UUID broken by an NBSP, the OID catalogue label that inherited the same NBSP, five XPaths with stray spaces that fields.json already normalises but constants.json/valuesets.json do not, and three cells holding two element paths flattened into one."
+  },
+  "corrections": [
+    {
+      "artifact": "fields.json",
+      "jsonPath": "$.xdsMetadata[\"53379096\"].tables[0].rows[0].name",
+      "jsonPaths": [
+        "$.xdsMetadata[\"53379096\"].tables[0].rows[0].name",
+        "$.xdsMetadata[\"53379096\"].tables[0].tree[0].name",
+        "$.xdsMetadata[\"53412448\"].tables[0].rows[0].name",
+        "$.xdsMetadata[\"53412448\"].tables[0].tree[0].name",
+        "$.xdsMetadata[\"53477537\"].tables[0].rows[0].name",
+        "$.xdsMetadata[\"53477537\"].tables[0].tree[0].name",
+        "$.xdsMetadata[\"53510278\"].tables[0].rows[0].name",
+        "$.xdsMetadata[\"53510278\"].tables[0].tree[0].name",
+        "$.xdsMetadata[\"54689906\"].tables[0].rows[0].name",
+        "$.xdsMetadata[\"54689906\"].tables[0].tree[0].name",
+        "$.xdsMetadata[\"54722824\"].tables[0].rows[0].name",
+        "$.xdsMetadata[\"54722824\"].tables[0].tree[0].name",
+        "$.xdsMetadata[\"54788213\"].tables[0].rows[0].name",
+        "$.xdsMetadata[\"54788213\"].tables[0].tree[0].name"
+      ],
+      "occurrences": 14,
+      "storedLiteral": "$XDSDocumentEntry PatientId",
+      "correctedLiteral": "$XDSDocumentEntryPatientId",
+      "evidence": {
+        "sample": "spec-source/golden/SOAP/ITI-18/1 nphies ITI18 RegistryStoredQueryRequest v4.9beta1 - Specific query for Discharge Summaries of a certain author.xml",
+        "pageIds": [
+          "53379096",
+          "53412448",
+          "53477537",
+          "53510278",
+          "54689906",
+          "54722824",
+          "54788213"
+        ],
+        "sourceHtmlFragment": "<code>$XDSDocumentEntry PatientId</code>",
+        "sourceHtmlFragmentPageId": "53379096",
+        "sourceHtmlFragmentNote": "verbatim substring of the html in spec-source/pages/53379096.json; the break character it shows is U+00A0 NO-BREAK SPACE"
+      },
+      "cause": "nbsp-in-identifier",
+      "causeDetail": "U+00A0 NO-BREAK SPACE typed inside the <code> token in the published Confluence page; the extractor mapped &nbsp; to U+0020 like any other whitespace instead of recognising it as a mid-token artefact.",
+      "confidence": "high"
+    },
+    {
+      "artifact": "fields.json",
+      "jsonPath": "$.xdsMetadata[\"53379096\"].tables[0].rows[1].name",
+      "jsonPaths": [
+        "$.xdsMetadata[\"53379096\"].tables[0].rows[1].name",
+        "$.xdsMetadata[\"53379096\"].tables[0].tree[1].name",
+        "$.xdsMetadata[\"53412448\"].tables[0].rows[1].name",
+        "$.xdsMetadata[\"53412448\"].tables[0].tree[1].name",
+        "$.xdsMetadata[\"53477537\"].tables[0].rows[1].name",
+        "$.xdsMetadata[\"53477537\"].tables[0].tree[1].name",
+        "$.xdsMetadata[\"53510278\"].tables[0].rows[1].name",
+        "$.xdsMetadata[\"53510278\"].tables[0].tree[1].name",
+        "$.xdsMetadata[\"54689906\"].tables[0].rows[1].name",
+        "$.xdsMetadata[\"54689906\"].tables[0].tree[1].name",
+        "$.xdsMetadata[\"54722824\"].tables[0].rows[1].name",
+        "$.xdsMetadata[\"54722824\"].tables[0].tree[1].name"
+      ],
+      "occurrences": 12,
+      "storedLiteral": "$XDSDocumentEntry Status",
+      "correctedLiteral": "$XDSDocumentEntryStatus",
+      "evidence": {
+        "sample": "spec-source/golden/SOAP/ITI-18/1 nphies ITI18 RegistryStoredQueryRequest v4.9beta1 - Specific query for Discharge Summaries of a certain author.xml",
+        "pageIds": [
+          "53379096",
+          "53412448",
+          "53477537",
+          "53510278",
+          "54689906",
+          "54722824"
+        ],
+        "sourceHtmlFragment": "<code>$XDSDocumentEntry Status</code>",
+        "sourceHtmlFragmentPageId": "53379096",
+        "sourceHtmlFragmentNote": "verbatim substring of the html in spec-source/pages/53379096.json; the break character it shows is U+00A0 NO-BREAK SPACE"
+      },
+      "cause": "nbsp-in-identifier",
+      "causeDetail": "U+00A0 NO-BREAK SPACE typed inside the <code> token in the published Confluence page; the extractor mapped &nbsp; to U+0020 like any other whitespace instead of recognising it as a mid-token artefact.",
+      "confidence": "high"
+    },
+    {
+      "artifact": "fields.json",
+      "jsonPath": "$.xdsMetadata[\"53379096\"].tables[0].rows[2].name",
+      "jsonPaths": [
+        "$.xdsMetadata[\"53379096\"].tables[0].rows[2].name",
+        "$.xdsMetadata[\"53379096\"].tables[0].tree[2].name",
+        "$.xdsMetadata[\"53412448\"].tables[0].rows[2].name",
+        "$.xdsMetadata[\"53412448\"].tables[0].tree[2].name",
+        "$.xdsMetadata[\"53477537\"].tables[0].rows[2].name",
+        "$.xdsMetadata[\"53477537\"].tables[0].tree[2].name",
+        "$.xdsMetadata[\"53510278\"].tables[0].rows[2].name",
+        "$.xdsMetadata[\"53510278\"].tables[0].tree[2].name",
+        "$.xdsMetadata[\"54689906\"].tables[0].rows[2].name",
+        "$.xdsMetadata[\"54689906\"].tables[0].tree[2].name",
+        "$.xdsMetadata[\"54722824\"].tables[0].rows[2].name",
+        "$.xdsMetadata[\"54722824\"].tables[0].tree[2].name"
+      ],
+      "occurrences": 12,
+      "storedLiteral": "$XDSDocumentEntry ClassCode",
+      "correctedLiteral": "$XDSDocumentEntryClassCode",
+      "evidence": {
+        "sample": "spec-source/golden/SOAP/ITI-18/1 nphies ITI18 RegistryStoredQueryRequest v4.9beta1 - Specific query for Discharge Summaries of a certain author.xml",
+        "pageIds": [
+          "53379096",
+          "53412448",
+          "53477537",
+          "53510278",
+          "54689906",
+          "54722824"
+        ],
+        "sourceHtmlFragment": "<code>$XDSDocumentEntry ClassCode</code>",
+        "sourceHtmlFragmentPageId": "53379096",
+        "sourceHtmlFragmentNote": "verbatim substring of the html in spec-source/pages/53379096.json; the break character it shows is U+00A0 NO-BREAK SPACE"
+      },
+      "cause": "nbsp-in-identifier",
+      "causeDetail": "U+00A0 NO-BREAK SPACE typed inside the <code> token in the published Confluence page; the extractor mapped &nbsp; to U+0020 like any other whitespace instead of recognising it as a mid-token artefact.",
+      "confidence": "high"
+    },
+    {
+      "artifact": "fields.json",
+      "jsonPath": "$.xdsMetadata[\"53379096\"].tables[0].rows[3].name",
+      "jsonPaths": [
+        "$.xdsMetadata[\"53379096\"].tables[0].rows[3].name",
+        "$.xdsMetadata[\"53379096\"].tables[0].tree[3].name",
+        "$.xdsMetadata[\"53412448\"].tables[0].rows[3].name",
+        "$.xdsMetadata[\"53412448\"].tables[0].tree[3].name",
+        "$.xdsMetadata[\"53477537\"].tables[0].rows[3].name",
+        "$.xdsMetadata[\"53477537\"].tables[0].tree[3].name",
+        "$.xdsMetadata[\"53510278\"].tables[0].rows[3].name",
+        "$.xdsMetadata[\"53510278\"].tables[0].tree[3].name",
+        "$.xdsMetadata[\"54689906\"].tables[0].rows[3].name",
+        "$.xdsMetadata[\"54689906\"].tables[0].tree[3].name",
+        "$.xdsMetadata[\"54722824\"].tables[0].rows[3].name",
+        "$.xdsMetadata[\"54722824\"].tables[0].tree[3].name"
+      ],
+      "occurrences": 12,
+      "storedLiteral": "$XDSDocumentEntry TypeCode",
+      "correctedLiteral": "$XDSDocumentEntryTypeCode",
+      "evidence": {
+        "sample": "spec-source/golden/SOAP/ITI-18/1 nphies ITI18 RegistryStoredQueryRequest v4.9beta1 - Specific query for Discharge Summaries of a certain author.xml",
+        "pageIds": [
+          "53379096",
+          "53412448",
+          "53477537",
+          "53510278",
+          "54689906",
+          "54722824"
+        ],
+        "sourceHtmlFragment": "<code>$XDSDocumentEntry TypeCode</code>",
+        "sourceHtmlFragmentPageId": "53379096",
+        "sourceHtmlFragmentNote": "verbatim substring of the html in spec-source/pages/53379096.json; the break character it shows is U+00A0 NO-BREAK SPACE"
+      },
+      "cause": "nbsp-in-identifier",
+      "causeDetail": "U+00A0 NO-BREAK SPACE typed inside the <code> token in the published Confluence page; the extractor mapped &nbsp; to U+0020 like any other whitespace instead of recognising it as a mid-token artefact.",
+      "confidence": "high"
+    },
+    {
+      "artifact": "fields.json",
+      "jsonPath": "$.xdsMetadata[\"53379096\"].tables[0].rows[4].name",
+      "jsonPaths": [
+        "$.xdsMetadata[\"53379096\"].tables[0].rows[4].name",
+        "$.xdsMetadata[\"53379096\"].tables[0].tree[4].name",
+        "$.xdsMetadata[\"53412448\"].tables[0].rows[4].name",
+        "$.xdsMetadata[\"53412448\"].tables[0].tree[4].name",
+        "$.xdsMetadata[\"53477537\"].tables[0].rows[4].name",
+        "$.xdsMetadata[\"53477537\"].tables[0].tree[4].name",
+        "$.xdsMetadata[\"53510278\"].tables[0].rows[4].name",
+        "$.xdsMetadata[\"53510278\"].tables[0].tree[4].name",
+        "$.xdsMetadata[\"54689906\"].tables[0].rows[4].name",
+        "$.xdsMetadata[\"54689906\"].tables[0].tree[4].name",
+        "$.xdsMetadata[\"54722824\"].tables[0].rows[4].name",
+        "$.xdsMetadata[\"54722824\"].tables[0].tree[4].name"
+      ],
+      "occurrences": 12,
+      "storedLiteral": "$XDSDocumentEntry HealthcareFacilityTypeCode",
+      "correctedLiteral": "$XDSDocumentEntryHealthcareFacilityTypeCode",
+      "evidence": {
+        "sample": "spec-source/golden/SOAP/ITI-18/1 nphies ITI18 RegistryStoredQueryRequest v4.9beta1 - Specific query for Discharge Summaries of a certain author.xml",
+        "pageIds": [
+          "53379096",
+          "53412448",
+          "53477537",
+          "53510278",
+          "54689906",
+          "54722824"
+        ],
+        "sourceHtmlFragment": "$XDSDocumentEntry HealthcareFacilityTypeCode",
+        "sourceHtmlFragmentPageId": "53379096",
+        "sourceHtmlFragmentNote": "verbatim substring of the html in spec-source/pages/53379096.json; the break character it shows is U+00A0 NO-BREAK SPACE"
+      },
+      "cause": "nbsp-in-identifier",
+      "causeDetail": "U+00A0 NO-BREAK SPACE typed inside the <code> token in the published Confluence page; the extractor mapped &nbsp; to U+0020 like any other whitespace instead of recognising it as a mid-token artefact.",
+      "confidence": "high"
+    },
+    {
+      "artifact": "fields.json",
+      "jsonPath": "$.xdsMetadata[\"53379096\"].tables[0].rows[5].name",
+      "jsonPaths": [
+        "$.xdsMetadata[\"53379096\"].tables[0].rows[5].name",
+        "$.xdsMetadata[\"53379096\"].tables[0].tree[5].name",
+        "$.xdsMetadata[\"53412448\"].tables[0].rows[5].name",
+        "$.xdsMetadata[\"53412448\"].tables[0].tree[5].name",
+        "$.xdsMetadata[\"53477537\"].tables[0].rows[5].name",
+        "$.xdsMetadata[\"53477537\"].tables[0].tree[5].name",
+        "$.xdsMetadata[\"53510278\"].tables[0].rows[5].name",
+        "$.xdsMetadata[\"53510278\"].tables[0].tree[5].name",
+        "$.xdsMetadata[\"54689906\"].tables[0].rows[5].name",
+        "$.xdsMetadata[\"54689906\"].tables[0].tree[5].name",
+        "$.xdsMetadata[\"54722824\"].tables[0].rows[5].name",
+        "$.xdsMetadata[\"54722824\"].tables[0].tree[5].name"
+      ],
+      "occurrences": 12,
+      "storedLiteral": "$XDSDocumentEntry PracticeSettingCode",
+      "correctedLiteral": "$XDSDocumentEntryPracticeSettingCode",
+      "evidence": {
+        "sample": "spec-source/golden/SOAP/ITI-18/1 nphies ITI18 RegistryStoredQueryRequest v4.9beta1 - Specific query for Discharge Summaries of a certain author.xml",
+        "pageIds": [
+          "53379096",
+          "53412448",
+          "53477537",
+          "53510278",
+          "54689906",
+          "54722824"
+        ],
+        "sourceHtmlFragment": "<code>$XDSDocumentEntry PracticeSettingCode</code>",
+        "sourceHtmlFragmentPageId": "53379096",
+        "sourceHtmlFragmentNote": "verbatim substring of the html in spec-source/pages/53379096.json; the break character it shows is U+00A0 NO-BREAK SPACE"
+      },
+      "cause": "nbsp-in-identifier",
+      "causeDetail": "U+00A0 NO-BREAK SPACE typed inside the <code> token in the published Confluence page; the extractor mapped &nbsp; to U+0020 like any other whitespace instead of recognising it as a mid-token artefact.",
+      "confidence": "high"
+    },
+    {
+      "artifact": "fields.json",
+      "jsonPath": "$.xdsMetadata[\"53379096\"].tables[0].rows[6].name",
+      "jsonPaths": [
+        "$.xdsMetadata[\"53379096\"].tables[0].rows[6].name",
+        "$.xdsMetadata[\"53379096\"].tables[0].tree[6].name",
+        "$.xdsMetadata[\"53412448\"].tables[0].rows[6].name",
+        "$.xdsMetadata[\"53412448\"].tables[0].tree[6].name",
+        "$.xdsMetadata[\"53477537\"].tables[0].rows[6].name",
+        "$.xdsMetadata[\"53477537\"].tables[0].tree[6].name",
+        "$.xdsMetadata[\"53510278\"].tables[0].rows[6].name",
+        "$.xdsMetadata[\"53510278\"].tables[0].tree[6].name",
+        "$.xdsMetadata[\"54689906\"].tables[0].rows[6].name",
+        "$.xdsMetadata[\"54689906\"].tables[0].tree[6].name",
+        "$.xdsMetadata[\"54722824\"].tables[0].rows[6].name",
+        "$.xdsMetadata[\"54722824\"].tables[0].tree[6].name"
+      ],
+      "occurrences": 12,
+      "storedLiteral": "$XDSDocumentEntry AuthorPerson",
+      "correctedLiteral": "$XDSDocumentEntryAuthorPerson",
+      "evidence": {
+        "sample": "spec-source/golden/SOAP/ITI-18/1 nphies ITI18 RegistryStoredQueryRequest v4.9beta1 - Specific query for Discharge Summaries of a certain author.xml",
+        "pageIds": [
+          "53379096",
+          "53412448",
+          "53477537",
+          "53510278",
+          "54689906",
+          "54722824"
+        ],
+        "sourceHtmlFragment": "<code>$XDSDocumentEntry AuthorPerson</code>",
+        "sourceHtmlFragmentPageId": "53379096",
+        "sourceHtmlFragmentNote": "verbatim substring of the html in spec-source/pages/53379096.json; the break character it shows is U+00A0 NO-BREAK SPACE"
+      },
+      "cause": "nbsp-in-identifier",
+      "causeDetail": "U+00A0 NO-BREAK SPACE typed inside the <code> token in the published Confluence page; the extractor mapped &nbsp; to U+0020 like any other whitespace instead of recognising it as a mid-token artefact.",
+      "confidence": "high"
+    },
+    {
+      "artifact": "fields.json",
+      "jsonPath": "$.xdsMetadata[\"53379096\"].tables[0].rows[7].name",
+      "jsonPaths": [
+        "$.xdsMetadata[\"53379096\"].tables[0].rows[7].name",
+        "$.xdsMetadata[\"53379096\"].tables[0].tree[7].name",
+        "$.xdsMetadata[\"53412448\"].tables[0].rows[7].name",
+        "$.xdsMetadata[\"53412448\"].tables[0].tree[7].name",
+        "$.xdsMetadata[\"53477537\"].tables[0].rows[7].name",
+        "$.xdsMetadata[\"53477537\"].tables[0].tree[7].name",
+        "$.xdsMetadata[\"53510278\"].tables[0].rows[7].name",
+        "$.xdsMetadata[\"53510278\"].tables[0].tree[7].name",
+        "$.xdsMetadata[\"54689906\"].tables[0].rows[7].name",
+        "$.xdsMetadata[\"54689906\"].tables[0].tree[7].name",
+        "$.xdsMetadata[\"54722824\"].tables[0].rows[7].name",
+        "$.xdsMetadata[\"54722824\"].tables[0].tree[7].name"
+      ],
+      "occurrences": 12,
+      "storedLiteral": "$XDSDocumentEntry FormatCode",
+      "correctedLiteral": "$XDSDocumentEntryFormatCode",
+      "evidence": {
+        "sample": "spec-source/golden/SOAP/ITI-18/1 nphies ITI18 RegistryStoredQueryRequest v4.9beta1 - Specific query for Discharge Summaries of a certain author.xml",
+        "pageIds": [
+          "53379096",
+          "53412448",
+          "53477537",
+          "53510278",
+          "54689906",
+          "54722824"
+        ],
+        "sourceHtmlFragment": "<code>$XDSDocumentEntry FormatCode</code>",
+        "sourceHtmlFragmentPageId": "53379096",
+        "sourceHtmlFragmentNote": "verbatim substring of the html in spec-source/pages/53379096.json; the break character it shows is U+00A0 NO-BREAK SPACE"
+      },
+      "cause": "nbsp-in-identifier",
+      "causeDetail": "U+00A0 NO-BREAK SPACE typed inside the <code> token in the published Confluence page; the extractor mapped &nbsp; to U+0020 like any other whitespace instead of recognising it as a mid-token artefact.",
+      "confidence": "high"
+    },
+    {
+      "artifact": "fields.json",
+      "jsonPath": "$.xdsMetadata[\"53379096\"].tables[0].rows[8].name",
+      "jsonPaths": [
+        "$.xdsMetadata[\"53379096\"].tables[0].rows[8].name",
+        "$.xdsMetadata[\"53379096\"].tables[0].tree[8].name",
+        "$.xdsMetadata[\"53412448\"].tables[0].rows[8].name",
+        "$.xdsMetadata[\"53412448\"].tables[0].tree[8].name",
+        "$.xdsMetadata[\"53477537\"].tables[0].rows[8].name",
+        "$.xdsMetadata[\"53477537\"].tables[0].tree[8].name",
+        "$.xdsMetadata[\"53510278\"].tables[0].rows[8].name",
+        "$.xdsMetadata[\"53510278\"].tables[0].tree[8].name",
+        "$.xdsMetadata[\"54689906\"].tables[0].rows[8].name",
+        "$.xdsMetadata[\"54689906\"].tables[0].tree[8].name",
+        "$.xdsMetadata[\"54722824\"].tables[0].rows[8].name",
+        "$.xdsMetadata[\"54722824\"].tables[0].tree[8].name",
+        "$.xdsMetadata[\"54788213\"].tables[0].rows[16].name",
+        "$.xdsMetadata[\"54788213\"].tables[0].tree[16].name"
+      ],
+      "occurrences": 14,
+      "storedLiteral": "$XDSDocumentEntry EntryType",
+      "correctedLiteral": "$XDSDocumentEntryEntryType",
+      "evidence": {
+        "pageIds": [
+          "53379096",
+          "53412448",
+          "53477537",
+          "53510278",
+          "54689906",
+          "54722824",
+          "54788213"
+        ],
+        "sourceHtmlFragment": "<code>$XDSDocumentEntry EntryType</code>",
+        "sourceHtmlFragmentPageId": "53379096",
+        "sourceHtmlFragmentNote": "verbatim substring of the html in spec-source/pages/53379096.json; the break character it shows is U+00A0 NO-BREAK SPACE"
+      },
+      "cause": "nbsp-in-identifier",
+      "causeDetail": "U+00A0 NO-BREAK SPACE typed inside the <code> token in the published Confluence page; the extractor mapped &nbsp; to U+0020 like any other whitespace instead of recognising it as a mid-token artefact.",
+      "confidence": "medium",
+      "note": "no official sample exercises this query parameter; correction derived from the raw HTML of page 54788213 plus the footnote list on the same page"
+    },
+    {
+      "artifact": "fields.json",
+      "jsonPath": "$.xdsMetadata[\"54788213\"].tables[0].rows[1].name",
+      "jsonPaths": [
+        "$.xdsMetadata[\"54788213\"].tables[0].rows[1].name",
+        "$.xdsMetadata[\"54788213\"].tables[0].tree[1].name"
+      ],
+      "occurrences": 2,
+      "storedLiteral": "$XDSDocumentEntry Status 3",
+      "correctedLiteral": "$XDSDocumentEntryStatus",
+      "evidence": {
+        "sample": "spec-source/golden/SOAP/ITI-18/1 nphies ITI18 RegistryStoredQueryRequest v4.9beta1 - Specific query for Discharge Summaries of a certain author.xml",
+        "pageIds": [
+          "54788213"
+        ],
+        "sourceHtmlFragment": "<code>$XDSDocumentEntry Status  3</code>",
+        "sourceHtmlFragmentPageId": "54788213",
+        "sourceHtmlFragmentNote": "verbatim substring of the html in spec-source/pages/54788213.json; the break character it shows is U+00A0 NO-BREAK SPACE",
+        "footnoteMarker": 3
+      },
+      "cause": "nbsp-in-identifier + footnote-marker-glued-to-identifier",
+      "causeDetail": "U+00A0 NO-BREAK SPACE typed inside the <code> token in the published Confluence page; the extractor mapped &nbsp; to U+0020 like any other whitespace instead of recognising it as a mid-token artefact. In addition, footnote marker 3 sits in a sibling <sup>3</sup> that the extractor flattened into the same cell text and joined with a space. Footnote 3 on page 54788213 names the parameter WITHOUT the digit, proving the digit is a marker.",
+      "confidence": "high"
+    },
+    {
+      "artifact": "fields.json",
+      "jsonPath": "$.xdsMetadata[\"54788213\"].tables[0].rows[2].name",
+      "jsonPaths": [
+        "$.xdsMetadata[\"54788213\"].tables[0].rows[2].name",
+        "$.xdsMetadata[\"54788213\"].tables[0].tree[2].name"
+      ],
+      "occurrences": 2,
+      "storedLiteral": "$XDSDocumentEntry ClassCode 1",
+      "correctedLiteral": "$XDSDocumentEntryClassCode",
+      "evidence": {
+        "sample": "spec-source/golden/SOAP/ITI-18/1 nphies ITI18 RegistryStoredQueryRequest v4.9beta1 - Specific query for Discharge Summaries of a certain author.xml",
+        "pageIds": [
+          "54788213"
+        ],
+        "sourceHtmlFragment": "<code>$XDSDocumentEntry ClassCode</code> <sup>1</sup>",
+        "sourceHtmlFragmentPageId": "54788213",
+        "sourceHtmlFragmentNote": "verbatim substring of the html in spec-source/pages/54788213.json; the break character it shows is U+00A0 NO-BREAK SPACE",
+        "footnoteMarker": 1
+      },
+      "cause": "nbsp-in-identifier + footnote-marker-glued-to-identifier",
+      "causeDetail": "U+00A0 NO-BREAK SPACE typed inside the <code> token in the published Confluence page; the extractor mapped &nbsp; to U+0020 like any other whitespace instead of recognising it as a mid-token artefact. In addition, footnote marker 1 sits in a sibling <sup>1</sup> that the extractor flattened into the same cell text and joined with a space. Footnote 1 on page 54788213 names the parameter WITHOUT the digit, proving the digit is a marker.",
+      "confidence": "high"
+    },
+    {
+      "artifact": "fields.json",
+      "jsonPath": "$.xdsMetadata[\"54788213\"].tables[0].rows[3].name",
+      "jsonPaths": [
+        "$.xdsMetadata[\"54788213\"].tables[0].rows[3].name",
+        "$.xdsMetadata[\"54788213\"].tables[0].tree[3].name"
+      ],
+      "occurrences": 2,
+      "storedLiteral": "$XDSDocumentEntry TypeCode 1",
+      "correctedLiteral": "$XDSDocumentEntryTypeCode",
+      "evidence": {
+        "sample": "spec-source/golden/SOAP/ITI-18/1 nphies ITI18 RegistryStoredQueryRequest v4.9beta1 - Specific query for Discharge Summaries of a certain author.xml",
+        "pageIds": [
+          "54788213"
+        ],
+        "sourceHtmlFragment": "<code>$XDSDocumentEntry TypeCode</code> <sup>1</sup>",
+        "sourceHtmlFragmentPageId": "54788213",
+        "sourceHtmlFragmentNote": "verbatim substring of the html in spec-source/pages/54788213.json; the break character it shows is U+00A0 NO-BREAK SPACE",
+        "footnoteMarker": 1
+      },
+      "cause": "nbsp-in-identifier + footnote-marker-glued-to-identifier",
+      "causeDetail": "U+00A0 NO-BREAK SPACE typed inside the <code> token in the published Confluence page; the extractor mapped &nbsp; to U+0020 like any other whitespace instead of recognising it as a mid-token artefact. In addition, footnote marker 1 sits in a sibling <sup>1</sup> that the extractor flattened into the same cell text and joined with a space. Footnote 1 on page 54788213 names the parameter WITHOUT the digit, proving the digit is a marker.",
+      "confidence": "high"
+    },
+    {
+      "artifact": "fields.json",
+      "jsonPath": "$.xdsMetadata[\"54788213\"].tables[0].rows[4].name",
+      "jsonPaths": [
+        "$.xdsMetadata[\"54788213\"].tables[0].rows[4].name",
+        "$.xdsMetadata[\"54788213\"].tables[0].tree[4].name"
+      ],
+      "occurrences": 2,
+      "storedLiteral": "$XDSDocumentEntry PracticeSettingCode 1",
+      "correctedLiteral": "$XDSDocumentEntryPracticeSettingCode",
+      "evidence": {
+        "sample": "spec-source/golden/SOAP/ITI-18/1 nphies ITI18 RegistryStoredQueryRequest v4.9beta1 - Specific query for Discharge Summaries of a certain author.xml",
+        "pageIds": [
+          "54788213"
+        ],
+        "sourceHtmlFragment": "<code>$XDSDocumentEntry PracticeSettingCode</code> <sup>1</sup>",
+        "sourceHtmlFragmentPageId": "54788213",
+        "sourceHtmlFragmentNote": "verbatim substring of the html in spec-source/pages/54788213.json; the break character it shows is U+00A0 NO-BREAK SPACE",
+        "footnoteMarker": 1
+      },
+      "cause": "nbsp-in-identifier + footnote-marker-glued-to-identifier",
+      "causeDetail": "U+00A0 NO-BREAK SPACE typed inside the <code> token in the published Confluence page; the extractor mapped &nbsp; to U+0020 like any other whitespace instead of recognising it as a mid-token artefact. In addition, footnote marker 1 sits in a sibling <sup>1</sup> that the extractor flattened into the same cell text and joined with a space. Footnote 1 on page 54788213 names the parameter WITHOUT the digit, proving the digit is a marker.",
+      "confidence": "high"
+    },
+    {
+      "artifact": "fields.json",
+      "jsonPath": "$.xdsMetadata[\"54788213\"].tables[0].rows[11].name",
+      "jsonPaths": [
+        "$.xdsMetadata[\"54788213\"].tables[0].rows[11].name",
+        "$.xdsMetadata[\"54788213\"].tables[0].tree[11].name"
+      ],
+      "occurrences": 2,
+      "storedLiteral": "$XDSDocumentEntry HealthcareFacilityTypeCode 1",
+      "correctedLiteral": "$XDSDocumentEntryHealthcareFacilityTypeCode",
+      "evidence": {
+        "sample": "spec-source/golden/SOAP/ITI-18/1 nphies ITI18 RegistryStoredQueryRequest v4.9beta1 - Specific query for Discharge Summaries of a certain author.xml",
+        "pageIds": [
+          "54788213"
+        ],
+        "sourceHtmlFragment": "<code>$XDSDocumentEntry HealthcareFacilityTypeCode</code> <sup>1</sup>",
+        "sourceHtmlFragmentPageId": "54788213",
+        "sourceHtmlFragmentNote": "verbatim substring of the html in spec-source/pages/54788213.json; the break character it shows is U+00A0 NO-BREAK SPACE",
+        "footnoteMarker": 1
+      },
+      "cause": "nbsp-in-identifier + footnote-marker-glued-to-identifier",
+      "causeDetail": "U+00A0 NO-BREAK SPACE typed inside the <code> token in the published Confluence page; the extractor mapped &nbsp; to U+0020 like any other whitespace instead of recognising it as a mid-token artefact. In addition, footnote marker 1 sits in a sibling <sup>1</sup> that the extractor flattened into the same cell text and joined with a space. Footnote 1 on page 54788213 names the parameter WITHOUT the digit, proving the digit is a marker.",
+      "confidence": "high"
+    },
+    {
+      "artifact": "fields.json",
+      "jsonPath": "$.xdsMetadata[\"54788213\"].tables[0].rows[12].name",
+      "jsonPaths": [
+        "$.xdsMetadata[\"54788213\"].tables[0].rows[12].name",
+        "$.xdsMetadata[\"54788213\"].tables[0].tree[12].name"
+      ],
+      "occurrences": 2,
+      "storedLiteral": "$XDSDocumentEntry EventCodeList 1",
+      "correctedLiteral": "$XDSDocumentEntryEventCodeList",
+      "evidence": {
+        "pageIds": [
+          "54788213"
+        ],
+        "sourceHtmlFragment": "<code>$XDSDocumentEntry EventCodeList</code> <sup>1</sup>",
+        "sourceHtmlFragmentPageId": "54788213",
+        "sourceHtmlFragmentNote": "verbatim substring of the html in spec-source/pages/54788213.json; the break character it shows is U+00A0 NO-BREAK SPACE",
+        "footnoteMarker": 1
+      },
+      "cause": "nbsp-in-identifier + footnote-marker-glued-to-identifier",
+      "causeDetail": "U+00A0 NO-BREAK SPACE typed inside the <code> token in the published Confluence page; the extractor mapped &nbsp; to U+0020 like any other whitespace instead of recognising it as a mid-token artefact. In addition, footnote marker 1 sits in a sibling <sup>1</sup> that the extractor flattened into the same cell text and joined with a space. Footnote 1 on page 54788213 names the parameter WITHOUT the digit, proving the digit is a marker.",
+      "confidence": "medium",
+      "note": "no official sample exercises this query parameter; correction derived from the raw HTML of page 54788213 plus the footnote list on the same page"
+    },
+    {
+      "artifact": "fields.json",
+      "jsonPath": "$.xdsMetadata[\"54788213\"].tables[0].rows[13].name",
+      "jsonPaths": [
+        "$.xdsMetadata[\"54788213\"].tables[0].rows[13].name",
+        "$.xdsMetadata[\"54788213\"].tables[0].tree[13].name"
+      ],
+      "occurrences": 2,
+      "storedLiteral": "$XDSDocumentEntry ConfidentialityCode 1",
+      "correctedLiteral": "$XDSDocumentEntryConfidentialityCode",
+      "evidence": {
+        "sample": "spec-source/golden/SOAP/ITI-18/1 nphies ITI18 RegistryStoredQueryRequest v4.9beta1 - Specific query for Discharge Summaries of a certain author.xml",
+        "pageIds": [
+          "54788213"
+        ],
+        "sourceHtmlFragment": "<code>$XDSDocumentEntry ConfidentialityCode</code> <sup>1</sup>",
+        "sourceHtmlFragmentPageId": "54788213",
+        "sourceHtmlFragmentNote": "verbatim substring of the html in spec-source/pages/54788213.json; the break character it shows is U+00A0 NO-BREAK SPACE",
+        "footnoteMarker": 1
+      },
+      "cause": "nbsp-in-identifier + footnote-marker-glued-to-identifier",
+      "causeDetail": "U+00A0 NO-BREAK SPACE typed inside the <code> token in the published Confluence page; the extractor mapped &nbsp; to U+0020 like any other whitespace instead of recognising it as a mid-token artefact. In addition, footnote marker 1 sits in a sibling <sup>1</sup> that the extractor flattened into the same cell text and joined with a space. Footnote 1 on page 54788213 names the parameter WITHOUT the digit, proving the digit is a marker.",
+      "confidence": "high"
+    },
+    {
+      "artifact": "fields.json",
+      "jsonPath": "$.xdsMetadata[\"54788213\"].tables[0].rows[14].name",
+      "jsonPaths": [
+        "$.xdsMetadata[\"54788213\"].tables[0].rows[14].name",
+        "$.xdsMetadata[\"54788213\"].tables[0].tree[14].name"
+      ],
+      "occurrences": 2,
+      "storedLiteral": "$XDSDocumentEntry AuthorPerson 4",
+      "correctedLiteral": "$XDSDocumentEntryAuthorPerson",
+      "evidence": {
+        "sample": "spec-source/golden/SOAP/ITI-18/1 nphies ITI18 RegistryStoredQueryRequest v4.9beta1 - Specific query for Discharge Summaries of a certain author.xml",
+        "pageIds": [
+          "54788213"
+        ],
+        "sourceHtmlFragment": "<code>$XDSDocumentEntry AuthorPerson</code> <sup>4</sup>",
+        "sourceHtmlFragmentPageId": "54788213",
+        "sourceHtmlFragmentNote": "verbatim substring of the html in spec-source/pages/54788213.json; the break character it shows is U+00A0 NO-BREAK SPACE",
+        "footnoteMarker": 4
+      },
+      "cause": "nbsp-in-identifier + footnote-marker-glued-to-identifier",
+      "causeDetail": "U+00A0 NO-BREAK SPACE typed inside the <code> token in the published Confluence page; the extractor mapped &nbsp; to U+0020 like any other whitespace instead of recognising it as a mid-token artefact. In addition, footnote marker 4 sits in a sibling <sup>4</sup> that the extractor flattened into the same cell text and joined with a space. Footnote 4 on page 54788213 names the parameter WITHOUT the digit, proving the digit is a marker.",
+      "confidence": "high"
+    },
+    {
+      "artifact": "fields.json",
+      "jsonPath": "$.xdsMetadata[\"54788213\"].tables[0].rows[15].name",
+      "jsonPaths": [
+        "$.xdsMetadata[\"54788213\"].tables[0].rows[15].name",
+        "$.xdsMetadata[\"54788213\"].tables[0].tree[15].name"
+      ],
+      "occurrences": 2,
+      "storedLiteral": "$XDSDocumentEntry FormatCode 1",
+      "correctedLiteral": "$XDSDocumentEntryFormatCode",
+      "evidence": {
+        "sample": "spec-source/golden/SOAP/ITI-18/1 nphies ITI18 RegistryStoredQueryRequest v4.9beta1 - Specific query for Discharge Summaries of a certain author.xml",
+        "pageIds": [
+          "54788213"
+        ],
+        "sourceHtmlFragment": "<code>$XDSDocumentEntry FormatCode</code> <sup>1</sup>",
+        "sourceHtmlFragmentPageId": "54788213",
+        "sourceHtmlFragmentNote": "verbatim substring of the html in spec-source/pages/54788213.json; the break character it shows is U+00A0 NO-BREAK SPACE",
+        "footnoteMarker": 1
+      },
+      "cause": "nbsp-in-identifier + footnote-marker-glued-to-identifier",
+      "causeDetail": "U+00A0 NO-BREAK SPACE typed inside the <code> token in the published Confluence page; the extractor mapped &nbsp; to U+0020 like any other whitespace instead of recognising it as a mid-token artefact. In addition, footnote marker 1 sits in a sibling <sup>1</sup> that the extractor flattened into the same cell text and joined with a space. Footnote 1 on page 54788213 names the parameter WITHOUT the digit, proving the digit is a marker.",
+      "confidence": "high"
+    },
+    {
+      "artifact": "fields.json",
+      "jsonPath": "$.xdsMetadata[\"54788213\"].tables[0].rows[5].name",
+      "jsonPaths": [
+        "$.xdsMetadata[\"54788213\"].tables[0].rows[5].name",
+        "$.xdsMetadata[\"54788213\"].tables[0].tree[5].name"
+      ],
+      "occurrences": 2,
+      "storedLiteral": "$XDSDocumentEntry CreationTimeFrom5",
+      "correctedLiteral": "$XDSDocumentEntryCreationTimeFrom",
+      "evidence": {
+        "sample": "spec-source/golden/SOAP/ITI-18/1 nphies ITI18 RegistryStoredQueryRequest v4.9beta1 - Specific query for Discharge Summaries of a certain author.xml",
+        "pageIds": [
+          "54788213"
+        ],
+        "sourceHtmlFragment": "<code>$XDSDocumentEntry CreationTimeFrom5</code>",
+        "sourceHtmlFragmentPageId": "54788213",
+        "sourceHtmlFragmentNote": "verbatim substring of the html in spec-source/pages/54788213.json; the break character it shows is U+00A0 NO-BREAK SPACE",
+        "footnoteMarker": 5
+      },
+      "cause": "nbsp-in-identifier + footnote-marker-glued-to-identifier",
+      "causeDetail": "U+00A0 NO-BREAK SPACE typed inside the <code> token in the published Confluence page; the extractor mapped &nbsp; to U+0020 like any other whitespace instead of recognising it as a mid-token artefact. In addition, footnote marker 5 was typed INSIDE the <code> element and was carried into the identifier. Footnote 5 on page 54788213 names the parameter WITHOUT the digit, proving the digit is a marker.",
+      "confidence": "high"
+    },
+    {
+      "artifact": "fields.json",
+      "jsonPath": "$.xdsMetadata[\"54788213\"].tables[0].rows[6].name",
+      "jsonPaths": [
+        "$.xdsMetadata[\"54788213\"].tables[0].rows[6].name",
+        "$.xdsMetadata[\"54788213\"].tables[0].tree[6].name"
+      ],
+      "occurrences": 2,
+      "storedLiteral": "$XDSDocumentEntry CreationTimeTo5",
+      "correctedLiteral": "$XDSDocumentEntryCreationTimeTo",
+      "evidence": {
+        "sample": "spec-source/golden/SOAP/ITI-18/1 nphies ITI18 RegistryStoredQueryRequest v4.9beta1 - Specific query for Discharge Summaries of a certain author.xml",
+        "pageIds": [
+          "54788213"
+        ],
+        "sourceHtmlFragment": "<code>$XDSDocumentEntry CreationTimeTo5</code>",
+        "sourceHtmlFragmentPageId": "54788213",
+        "sourceHtmlFragmentNote": "verbatim substring of the html in spec-source/pages/54788213.json; the break character it shows is U+00A0 NO-BREAK SPACE",
+        "footnoteMarker": 5
+      },
+      "cause": "nbsp-in-identifier + footnote-marker-glued-to-identifier",
+      "causeDetail": "U+00A0 NO-BREAK SPACE typed inside the <code> token in the published Confluence page; the extractor mapped &nbsp; to U+0020 like any other whitespace instead of recognising it as a mid-token artefact. In addition, footnote marker 5 was typed INSIDE the <code> element and was carried into the identifier. Footnote 5 on page 54788213 names the parameter WITHOUT the digit, proving the digit is a marker.",
+      "confidence": "high"
+    },
+    {
+      "artifact": "fields.json",
+      "jsonPath": "$.xdsMetadata[\"54788213\"].tables[0].rows[7].name",
+      "jsonPaths": [
+        "$.xdsMetadata[\"54788213\"].tables[0].rows[7].name",
+        "$.xdsMetadata[\"54788213\"].tables[0].tree[7].name"
+      ],
+      "occurrences": 2,
+      "storedLiteral": "$XDSDocumentEntry ServiceStartTimeFrom6",
+      "correctedLiteral": "$XDSDocumentEntryServiceStartTimeFrom",
+      "evidence": {
+        "sample": "spec-source/golden/SOAP/ITI-18/1 nphies ITI18 RegistryStoredQueryRequest v4.9beta1 - Specific query for Discharge Summaries of a certain author.xml",
+        "pageIds": [
+          "54788213"
+        ],
+        "sourceHtmlFragment": "<code>$XDSDocumentEntry ServiceStartTimeFrom6</code>",
+        "sourceHtmlFragmentPageId": "54788213",
+        "sourceHtmlFragmentNote": "verbatim substring of the html in spec-source/pages/54788213.json; the break character it shows is U+00A0 NO-BREAK SPACE",
+        "footnoteMarker": 6
+      },
+      "cause": "nbsp-in-identifier + footnote-marker-glued-to-identifier",
+      "causeDetail": "U+00A0 NO-BREAK SPACE typed inside the <code> token in the published Confluence page; the extractor mapped &nbsp; to U+0020 like any other whitespace instead of recognising it as a mid-token artefact. In addition, footnote marker 6 was typed INSIDE the <code> element and was carried into the identifier. Footnote 6 on page 54788213 names the parameter WITHOUT the digit, proving the digit is a marker.",
+      "confidence": "high"
+    },
+    {
+      "artifact": "fields.json",
+      "jsonPath": "$.xdsMetadata[\"54788213\"].tables[0].rows[8].name",
+      "jsonPaths": [
+        "$.xdsMetadata[\"54788213\"].tables[0].rows[8].name",
+        "$.xdsMetadata[\"54788213\"].tables[0].tree[8].name"
+      ],
+      "occurrences": 2,
+      "storedLiteral": "$XDSDocumentEntry ServiceStartTimeTo 6",
+      "correctedLiteral": "$XDSDocumentEntryServiceStartTimeTo",
+      "evidence": {
+        "sample": "spec-source/golden/SOAP/ITI-18/1 nphies ITI18 RegistryStoredQueryRequest v4.9beta1 - Specific query for Discharge Summaries of a certain author.xml",
+        "pageIds": [
+          "54788213"
+        ],
+        "sourceHtmlFragment": "<code>$XDSDocumentEntry ServiceStartTimeTo  6</code>",
+        "sourceHtmlFragmentPageId": "54788213",
+        "sourceHtmlFragmentNote": "verbatim substring of the html in spec-source/pages/54788213.json; the break character it shows is U+00A0 NO-BREAK SPACE",
+        "footnoteMarker": 6
+      },
+      "cause": "nbsp-in-identifier + footnote-marker-glued-to-identifier",
+      "causeDetail": "U+00A0 NO-BREAK SPACE typed inside the <code> token in the published Confluence page; the extractor mapped &nbsp; to U+0020 like any other whitespace instead of recognising it as a mid-token artefact. In addition, footnote marker 6 sits in a sibling <sup>6</sup> that the extractor flattened into the same cell text and joined with a space. Footnote 6 on page 54788213 names the parameter WITHOUT the digit, proving the digit is a marker.",
+      "confidence": "high"
+    },
+    {
+      "artifact": "fields.json",
+      "jsonPath": "$.xdsMetadata[\"54788213\"].tables[0].rows[9].name",
+      "jsonPaths": [
+        "$.xdsMetadata[\"54788213\"].tables[0].rows[9].name",
+        "$.xdsMetadata[\"54788213\"].tables[0].tree[9].name"
+      ],
+      "occurrences": 2,
+      "storedLiteral": "$XDSDocumentEntry ServiceStopTimeFrom 6",
+      "correctedLiteral": "$XDSDocumentEntryServiceStopTimeFrom",
+      "evidence": {
+        "sample": "spec-source/golden/SOAP/ITI-18/1 nphies ITI18 RegistryStoredQueryRequest v4.9beta1 - Specific query for Discharge Summaries of a certain author.xml",
+        "pageIds": [
+          "54788213"
+        ],
+        "sourceHtmlFragment": "<code>$XDSDocumentEntry ServiceStopTimeFrom  6</code>",
+        "sourceHtmlFragmentPageId": "54788213",
+        "sourceHtmlFragmentNote": "verbatim substring of the html in spec-source/pages/54788213.json; the break character it shows is U+00A0 NO-BREAK SPACE",
+        "footnoteMarker": 6
+      },
+      "cause": "nbsp-in-identifier + footnote-marker-glued-to-identifier",
+      "causeDetail": "U+00A0 NO-BREAK SPACE typed inside the <code> token in the published Confluence page; the extractor mapped &nbsp; to U+0020 like any other whitespace instead of recognising it as a mid-token artefact. In addition, footnote marker 6 sits in a sibling <sup>6</sup> that the extractor flattened into the same cell text and joined with a space. Footnote 6 on page 54788213 names the parameter WITHOUT the digit, proving the digit is a marker.",
+      "confidence": "high"
+    },
+    {
+      "artifact": "fields.json",
+      "jsonPath": "$.xdsMetadata[\"54788213\"].tables[0].rows[10].name",
+      "jsonPaths": [
+        "$.xdsMetadata[\"54788213\"].tables[0].rows[10].name",
+        "$.xdsMetadata[\"54788213\"].tables[0].tree[10].name"
+      ],
+      "occurrences": 2,
+      "storedLiteral": "$XDSDocumentEntry ServiceStopTimeTo 6",
+      "correctedLiteral": "$XDSDocumentEntryServiceStopTimeTo",
+      "evidence": {
+        "sample": "spec-source/golden/SOAP/ITI-18/1 nphies ITI18 RegistryStoredQueryRequest v4.9beta1 - Specific query for Discharge Summaries of a certain author.xml",
+        "pageIds": [
+          "54788213"
+        ],
+        "sourceHtmlFragment": "<code>$XDSDocumentEntry ServiceStopTimeTo  6</code>",
+        "sourceHtmlFragmentPageId": "54788213",
+        "sourceHtmlFragmentNote": "verbatim substring of the html in spec-source/pages/54788213.json; the break character it shows is U+00A0 NO-BREAK SPACE",
+        "footnoteMarker": 6
+      },
+      "cause": "nbsp-in-identifier + footnote-marker-glued-to-identifier",
+      "causeDetail": "U+00A0 NO-BREAK SPACE typed inside the <code> token in the published Confluence page; the extractor mapped &nbsp; to U+0020 like any other whitespace instead of recognising it as a mid-token artefact. In addition, footnote marker 6 sits in a sibling <sup>6</sup> that the extractor flattened into the same cell text and joined with a space. Footnote 6 on page 54788213 names the parameter WITHOUT the digit, proving the digit is a marker.",
+      "confidence": "high"
+    },
+    {
+      "artifact": "fields.json",
+      "jsonPath": "$.xdsMetadata[\"54788213\"].tables[0].rows[12].fixedValue",
+      "jsonPaths": [
+        "$.xdsMetadata[\"54788213\"].tables[0].rows[12].fixedValue"
+      ],
+      "occurrences": 1,
+      "storedLiteral": "XDSDocumentEntry.eventCodeList 2",
+      "correctedLiteral": "XDSDocumentEntry.eventCodeList",
+      "evidence": {
+        "pageId": "54788213",
+        "quote": "<code>XDSDocumentEntry.eventCodeList</code> <sup>2</sup>",
+        "footnoteMarker": 2
+      },
+      "cause": "footnote-marker-glued-to-identifier",
+      "causeDetail": "Raw HTML is <code>XDSDocumentEntry.eventCodeList</code> <sup>2</sup>; the <sup> footnote marker was flattened into the Attribute-column cell text and joined to the IHE attribute name with a space.",
+      "confidence": "high"
+    },
+    {
+      "artifact": "fields.json",
+      "jsonPath": "$.xdsMetadata[\"54788213\"].tables[0].rows[13].fixedValue",
+      "jsonPaths": [
+        "$.xdsMetadata[\"54788213\"].tables[0].rows[13].fixedValue"
+      ],
+      "occurrences": 1,
+      "storedLiteral": "XDSDocumentEntry.confidentialityCode 2",
+      "correctedLiteral": "XDSDocumentEntry.confidentialityCode",
+      "evidence": {
+        "pageId": "54788213",
+        "quote": "<code>XDSDocumentEntry.confidentialityCode</code> <sup>2</sup>",
+        "footnoteMarker": 2
+      },
+      "cause": "footnote-marker-glued-to-identifier",
+      "causeDetail": "Raw HTML is <code>XDSDocumentEntry.confidentialityCode</code> <sup>2</sup>; the <sup> footnote marker was flattened into the Attribute-column cell text and joined to the IHE attribute name with a space.",
+      "confidence": "high"
+    },
+    {
+      "artifact": "errors.json",
+      "jsonPath": "$.xds[4].uuidsMentioned[0]",
+      "jsonPaths": [
+        "$.xds[4].uuidsMentioned[0]"
+      ],
+      "occurrences": 1,
+      "storedLiteral": "urn:uuid:14d4debf-8f97-4251-9a74 -a90016b0af0d",
+      "correctedLiteral": "urn:uuid:14d4debf-8f97-4251-9a74-a90016b0af0d",
+      "evidence": {
+        "sample": "spec-source/golden/SOAP/ITI-18/1 nphies ITI18 RegistryStoredQueryRequest v4.9beta1 - Specific query for Discharge Summaries of a certain author.xml",
+        "pageId": "17564468",
+        "quote": "ID must be urn:uuid:14d4debf-8f97-4251-9a74 -a90016b0af0d. An error will occur otherwise."
+      },
+      "cause": "nbsp-in-identifier",
+      "causeDetail": "Raw HTML of page 17564468 reads '14d4debf-8f97-4251-9a74\\u00a0-a90016b0af0d'; the NBSP inside the UUID became U+0020. Page 54788213 spells the same stored-query id without the break.",
+      "confidence": "high"
+    },
+    {
+      "artifact": "constants.json",
+      "jsonPath": "$.oids.items[170].label",
+      "jsonPaths": [
+        "$.oids.items[170].label"
+      ],
+      "occurrences": 1,
+      "storedLiteral": "$XDSDocumentEntry HealthcareFacilityTypeCode",
+      "correctedLiteral": "$XDSDocumentEntryHealthcareFacilityTypeCode",
+      "evidence": {
+        "sample": "spec-source/golden/SOAP/ITI-18/1 nphies ITI18 RegistryStoredQueryRequest v4.9beta1 - Specific query for Discharge Summaries of a certain author.xml",
+        "pageId": "53379096",
+        "sourceHtmlFragment": "<p>$XDSDocumentEntry HealthcareFacilityTypeCode</p>",
+        "sourceHtmlFragmentNote": "verbatim from spec-source/pages/53379096.json; on THIS page the break is a plain U+0020 outside <code>, on 54788213 it is U+00A0 inside <code>"
+      },
+      "cause": "nbsp-in-identifier",
+      "causeDetail": "constants.oids.items[].label is copied verbatim from the mangled fields.json row name (labelSource=\"row name\"), so the same NBSP defect propagated into the OID catalogue.",
+      "confidence": "high"
+    },
+    {
+      "artifact": "constants.json",
+      "jsonPath": "$.fixedValues[61].elementPath",
+      "jsonPaths": [
+        "$.fixedValues[61].elementPath"
+      ],
+      "occurrences": 1,
+      "storedLiteral": "/ClinicalDocument/participant[ @typeCode=’SBJ’]/associatedEntity[ @classCode=’CIT’]",
+      "correctedLiteral": "/ClinicalDocument/participant[@typeCode=’SBJ’]/associatedEntity[@classCode=’CIT’]",
+      "evidence": {
+        "pageId": "15859939",
+        "crossCheck": "fields.json elementLocation[].path for the same row already stores the normalised form"
+      },
+      "cause": "stray-space-in-xpath",
+      "causeDetail": "The space is present in the published Confluence cell (a hand-typed XPath), which makes the stored path unparseable by any XPath engine. fields.json ALREADY applies this normalisation when it builds elementLocation[].path (it keeps the raw form only in elementLocationRaw); constants.json and valuesets.json copy the raw cell text instead, so the same page yields two different literals in two artifacts.",
+      "confidence": "high"
+    },
+    {
+      "artifact": "constants.json",
+      "jsonPath": "$.fixedValues[62].elementPath",
+      "jsonPaths": [
+        "$.fixedValues[62].elementPath"
+      ],
+      "occurrences": 1,
+      "storedLiteral": "/ClinicalDocument/participant[ @typeCode=’SBJ’]/associatedEntity[ @classCode=’CIT’]/templateId",
+      "correctedLiteral": "/ClinicalDocument/participant[@typeCode=’SBJ’]/associatedEntity[@classCode=’CIT’]/templateId",
+      "evidence": {
+        "pageId": "15859939",
+        "crossCheck": "fields.json elementLocation[].path for the same row already stores the normalised form"
+      },
+      "cause": "stray-space-in-xpath",
+      "causeDetail": "The space is present in the published Confluence cell (a hand-typed XPath), which makes the stored path unparseable by any XPath engine. fields.json ALREADY applies this normalisation when it builds elementLocation[].path (it keeps the raw form only in elementLocationRaw); constants.json and valuesets.json copy the raw cell text instead, so the same page yields two different literals in two artifacts.",
+      "confidence": "high"
+    },
+    {
+      "artifact": "valuesets.json",
+      "jsonPath": "$.bindings[46].elementLocation",
+      "jsonPaths": [
+        "$.bindings[46].elementLocation"
+      ],
+      "occurrences": 1,
+      "storedLiteral": "/ClinicalDocument/participant[ @typeCode=’SBJ’]/associatedEntity[ @classCode=’CIT’]",
+      "correctedLiteral": "/ClinicalDocument/participant[@typeCode=’SBJ’]/associatedEntity[@classCode=’CIT’]",
+      "evidence": {
+        "pageId": "15859939",
+        "crossCheck": "fields.json elementLocation[].path for the same row already stores the normalised form"
+      },
+      "cause": "stray-space-in-xpath",
+      "causeDetail": "The space is present in the published Confluence cell (a hand-typed XPath), which makes the stored path unparseable by any XPath engine. fields.json ALREADY applies this normalisation when it builds elementLocation[].path (it keeps the raw form only in elementLocationRaw); constants.json and valuesets.json copy the raw cell text instead, so the same page yields two different literals in two artifacts.",
+      "confidence": "high"
+    },
+    {
+      "artifact": "valuesets.json",
+      "jsonPath": "$.bindings[47].elementLocation",
+      "jsonPaths": [
+        "$.bindings[47].elementLocation"
+      ],
+      "occurrences": 1,
+      "storedLiteral": "/ClinicalDocument/participant[ @typeCode=’SBJ’]/associatedEntity[ @classCode=’CIT’]/code",
+      "correctedLiteral": "/ClinicalDocument/participant[@typeCode=’SBJ’]/associatedEntity[@classCode=’CIT’]/code",
+      "evidence": {
+        "pageId": "15859939",
+        "crossCheck": "fields.json elementLocation[].path for the same row already stores the normalised form"
+      },
+      "cause": "stray-space-in-xpath",
+      "causeDetail": "The space is present in the published Confluence cell (a hand-typed XPath), which makes the stored path unparseable by any XPath engine. fields.json ALREADY applies this normalisation when it builds elementLocation[].path (it keeps the raw form only in elementLocationRaw); constants.json and valuesets.json copy the raw cell text instead, so the same page yields two different literals in two artifacts.",
+      "confidence": "high"
+    },
+    {
+      "artifact": "valuesets.json",
+      "jsonPath": "$.bindings[56].elementLocation",
+      "jsonPaths": [
+        "$.bindings[56].elementLocation"
+      ],
+      "occurrences": 1,
+      "storedLiteral": "./assignedEntity/representedOrganization /standardIndustryClassCode",
+      "correctedLiteral": "./assignedEntity/representedOrganization/standardIndustryClassCode",
+      "evidence": {
+        "pageId": "15958291",
+        "crossCheck": "fields.json elementLocation[].path for the same row already stores the normalised form"
+      },
+      "cause": "stray-space-in-xpath",
+      "causeDetail": "The space is present in the published Confluence cell (a hand-typed XPath), which makes the stored path unparseable by any XPath engine. fields.json ALREADY applies this normalisation when it builds elementLocation[].path (it keeps the raw form only in elementLocationRaw); constants.json and valuesets.json copy the raw cell text instead, so the same page yields two different literals in two artifacts.",
+      "confidence": "high"
+    },
+    {
+      "artifact": "constants.json",
+      "jsonPath": "$.fixedValues[4].target",
+      "jsonPaths": [
+        "$.fixedValues[1011].elementPath",
+        "$.fixedValues[1011].target",
+        "$.fixedValues[4].elementPath",
+        "$.fixedValues[4].target"
+      ],
+      "occurrences": 4,
+      "storedLiteral": "./extension/url= ”https://hl7.org/fhir/extensions/StructureDefinition-medicationdispense-refillsRemaining” ./extension/valueInteger",
+      "correctedLiteral": "./extension/url=”https://hl7.org/fhir/extensions/StructureDefinition-medicationdispense-refillsRemaining”\n./extension/valueInteger",
+      "evidence": {
+        "pageIds": [
+          "117965118",
+          "44008128"
+        ]
+      },
+      "cause": "paragraph-boundary-flattened-to-space",
+      "causeDetail": "The Confluence cell holds TWO element paths in separate <p> blocks (separator <br/>). The extractor joined block-level children with a single space, producing one unusable path; where the separator was a <br/> it also left a space between \"url=\" and the opening quote. Restore the block boundary as a newline so the compiler sees two paths: the extension url discriminator and the value element.",
+      "confidence": "medium",
+      "note": "correctedLiteral is newline-separated: the downstream compiler must split it into two element paths. No official sample validates the path text itself, so this is derived from the raw HTML block structure only."
+    },
+    {
+      "artifact": "constants.json",
+      "jsonPath": "$.fixedValues[43].target",
+      "jsonPaths": [
+        "$.fixedValues[1048].elementPath",
+        "$.fixedValues[1048].target",
+        "$.fixedValues[43].elementPath",
+        "$.fixedValues[43].target"
+      ],
+      "occurrences": 4,
+      "storedLiteral": "./extension/url= ”http://nphies.sa/fhir/ksa/nphies-cs/Extension/reasonmedicinalproductrequested” ./extension/reasonRequested/coding",
+      "correctedLiteral": "./extension/url=”http://nphies.sa/fhir/ksa/nphies-cs/Extension/reasonmedicinalproductrequested”\n./extension/reasonRequested/coding",
+      "evidence": {
+        "pageIds": [
+          "118129076",
+          "47087850"
+        ]
+      },
+      "cause": "paragraph-boundary-flattened-to-space",
+      "causeDetail": "The Confluence cell holds TWO element paths in separate <p> blocks (separator </p><p>). The extractor joined block-level children with a single space, producing one unusable path; where the separator was a <br/> it also left a space between \"url=\" and the opening quote. Restore the block boundary as a newline so the compiler sees two paths: the extension url discriminator and the value element.",
+      "confidence": "medium",
+      "note": "correctedLiteral is newline-separated: the downstream compiler must split it into two element paths. No official sample validates the path text itself, so this is derived from the raw HTML block structure only."
+    },
+    {
+      "artifact": "constants.json",
+      "jsonPath": "$.fixedValues[807].target",
+      "jsonPaths": [
+        "$.fixedValues[807].elementPath",
+        "$.fixedValues[807].target",
+        "$.fixedValues[894].elementPath",
+        "$.fixedValues[894].target",
+        "$.fixedValues[986].elementPath",
+        "$.fixedValues[986].target"
+      ],
+      "occurrences": 6,
+      "storedLiteral": "./extension/url=”http://nphies.sa/fhir/ksa/nphies-cs/Extension/specimenReceiver” ./extension/valueReference",
+      "correctedLiteral": "./extension/url=”http://nphies.sa/fhir/ksa/nphies-cs/Extension/specimenReceiver”\n./extension/valueReference",
+      "evidence": {
+        "pageIds": [
+          "359071746",
+          "392626178",
+          "414875658"
+        ]
+      },
+      "cause": "paragraph-boundary-flattened-to-space",
+      "causeDetail": "The Confluence cell holds TWO element paths in separate <p> blocks (separator </p><p/><p>). The extractor joined block-level children with a single space, producing one unusable path; where the separator was a <br/> it also left a space between \"url=\" and the opening quote. Restore the block boundary as a newline so the compiler sees two paths: the extension url discriminator and the value element.",
+      "confidence": "medium",
+      "note": "correctedLiteral is newline-separated: the downstream compiler must split it into two element paths. No official sample validates the path text itself, so this is derived from the raw HTML block structure only."
+    }
+  ],
+  "specDefects": [
+    {
+      "confluenceSpelling": "authorSpeciality",
+      "wireSpelling": "authorSpecialty",
+      "whatItIs": "XDS DocumentEntry / SubmissionSet author sub-attribute (rim:Slot name on the author Classification)",
+      "wireWins": true,
+      "evidence": {
+        "confluence": {
+          "pageId": "17596480",
+          "quote": "1.1 | 1.1.4 | authorSpeciality | R | [1..1] | Author specialty"
+        },
+        "samples": [
+          "spec-source/golden/SOAP/ITI-41/nphies ITI41 Discharge Summary v4.9beta1.xml",
+          "spec-source/golden/SOAP/ITI-18/1 nphies ITI18 RegistryStoredQueryResponse v4.9beta1 - Returns Discharge Summary DocumentEntry - Kopie.xml"
+        ],
+        "sampleOccurrences": 23,
+        "confluenceOccurrences": 2,
+        "note": "23 rim:Slot name=\"authorSpecialty\" across the official SOAP samples; zero occurrences of \"authorSpeciality\" anywhere in spec-source/golden. The guidance text on the same Confluence row spells the English word \"specialty\" correctly, only the attribute name is wrong."
+      },
+      "affectedPages": [
+        {
+          "pageId": "17596480",
+          "title": "Document Metadata Attribute Optionality for Provide and Register Document Set-b",
+          "row": "1.1.4"
+        },
+        {
+          "pageId": "17694733",
+          "title": "SubmissionSet Metadata Attribute Optionality for Provide and Register Document Set-b",
+          "row": "2.1.4"
+        }
+      ],
+      "affectedSpecBuildPaths": [
+        "$.xdsMetadata[\"17596480\"].tables[0].rows[5].name",
+        "$.xdsMetadata[\"17596480\"].tables[0].tree[0].children[0].children[3].name",
+        "$.xdsMetadata[\"17694733\"].tables[0].rows[5].name",
+        "$.xdsMetadata[\"17694733\"].tables[0].tree[0].children[0].children[3].name"
+      ],
+      "action": "do NOT rewrite the stored literal; surface it in the UI as a known published-spec defect and accept \"authorSpecialty\" on the wire",
+      "confidence": "high"
+    },
+    {
+      "confluenceSpelling": "repositoryUniqueID",
+      "wireSpelling": "repositoryUniqueId",
+      "whatItIs": "XDS DocumentEntry metadata attribute (rim:Slot name on the ExtrinsicObject)",
+      "wireWins": true,
+      "evidence": {
+        "confluence": {
+          "pageId": "17596480",
+          "quote": "1.21 | repositoryUniqueID | O | [0..1] | The globally unique identifier of the repository where the document is stored, assigned by each Document Repository."
+        },
+        "samples": [
+          "spec-source/golden/SOAP/ITI-18/1 nphies ITI18 RegistryStoredQueryResponse v4.9beta1 - Returns Discharge Summary DocumentEntry - Kopie.xml"
+        ],
+        "sampleOccurrences": 2,
+        "confluenceOccurrences": 4,
+        "note": "IHE ITI TF-3 4.2.3.2.24 also spells it repositoryUniqueId. Zero occurrences of \"repositoryUniqueID\" in spec-source/golden."
+      },
+      "affectedPages": [
+        {
+          "pageId": "17596480",
+          "title": "Document Metadata Attribute Optionality for Provide and Register Document Set-b",
+          "row": "1.21"
+        },
+        {
+          "pageId": "53379631",
+          "title": "Document metadata (returned by query) - Immunization Card"
+        },
+        {
+          "pageId": "53510303",
+          "title": "Document metadata (returned by query)"
+        },
+        {
+          "pageId": "54722907",
+          "title": "Document metadata (returned by query) - iEHR Summary"
+        }
+      ],
+      "affectedSpecBuildPaths": [
+        "$.xdsMetadata[\"17596480\"].tables[0].rows[26].name",
+        "$.xdsMetadata[\"17596480\"].tables[0].tree[0].children[20].name",
+        "$.xdsMetadata[\"53379631\"].tables[0].rows[8].name",
+        "$.xdsMetadata[\"53379631\"].tables[0].tree[8].name",
+        "$.xdsMetadata[\"53510303\"].tables[0].rows[8].name",
+        "$.xdsMetadata[\"53510303\"].tables[0].tree[8].name",
+        "$.xdsMetadata[\"54722907\"].tables[0].rows[8].name",
+        "$.xdsMetadata[\"54722907\"].tables[0].tree[8].name"
+      ],
+      "action": "do NOT rewrite; surface as a known spec defect. Note the spec is also internally inconsistent: homeCommunityID (p.17596480) vs homeCommunityId (p.17694733).",
+      "confidence": "high"
+    },
+    {
+      "confluenceSpelling": "$XDSDocumentEntryEntryType",
+      "wireSpelling": "$XDSDocumentEntryType",
+      "whatItIs": "ITI-18 FindDocuments stored-query parameter for XDSDocumentEntry.objectType",
+      "wireWins": true,
+      "evidence": {
+        "confluence": {
+          "pageId": "54788213",
+          "quote": "$XDSDocumentEntry EntryType | XDSDocumentEntry.objectType | Optional | Yes",
+          "quoteSource": "fields.json $.xdsMetadata[\"54788213\"].tables[0].rows[16].source.quote (verbatim row quote as extracted)",
+          "sourceHtmlFragment": "<code>$XDSDocumentEntry EntryType</code>"
+        },
+        "samples": [
+          "spec-source/golden/SOAP/ITI-18/2 nphies ITI18 RegistryStoredQueryRequest v4.9beta1 - Query for the on-demand iEHR Summary of a patient.xml"
+        ],
+        "sampleOccurrences": 1,
+        "note": "The official request carries <rim:Slot name=\"$XDSDocumentEntryType\"> — and even comments the row \"<!-- EntryType: on-demand document -->\", so the authors knew the concept as EntryType but the wire name is $XDSDocumentEntryType (IHE ITI TF-2a 3.18.4.1.2.3.7.1). Separate from the NBSP mangle, which is corrected above; after de-mangling the Confluence literal is still wrong."
+      },
+      "affectedPages": [
+        {
+          "pageId": "53379096",
+          "title": "Main workflow: Querying and retrieval of the on-demand Immunization Summary"
+        },
+        {
+          "pageId": "53412448",
+          "title": "Alternative workflow 1: Querying and retrieval of persisted Immunization Card(s)"
+        },
+        {
+          "pageId": "53477537",
+          "title": "Main workflow: Querying and retrieval of the on-demand Immunization Card"
+        },
+        {
+          "pageId": "53510278",
+          "title": "Alternative workflow 1: Querying and retrieval of persisted Immunization Summary(s)"
+        },
+        {
+          "pageId": "54689906",
+          "title": "Main workflow: Querying and retrieval of the on-demand iEHR Summary"
+        },
+        {
+          "pageId": "54722824",
+          "title": "Alternative workflow 1: Querying and retrieval of persisted iEHR Summary(s)"
+        },
+        {
+          "pageId": "54788213",
+          "title": "Query Header - XDS Query Document Set"
+        }
+      ],
+      "affectedSpecBuildPaths": [
+        "$.xdsMetadata[\"53379096\"].tables[0].rows[8].name",
+        "$.xdsMetadata[\"53379096\"].tables[0].tree[8].name",
+        "$.xdsMetadata[\"53412448\"].tables[0].rows[8].name",
+        "$.xdsMetadata[\"53412448\"].tables[0].tree[8].name",
+        "$.xdsMetadata[\"53477537\"].tables[0].rows[8].name",
+        "$.xdsMetadata[\"53477537\"].tables[0].tree[8].name",
+        "$.xdsMetadata[\"53510278\"].tables[0].rows[8].name",
+        "$.xdsMetadata[\"53510278\"].tables[0].tree[8].name",
+        "$.xdsMetadata[\"54689906\"].tables[0].rows[8].name",
+        "$.xdsMetadata[\"54689906\"].tables[0].tree[8].name",
+        "$.xdsMetadata[\"54722824\"].tables[0].rows[8].name",
+        "$.xdsMetadata[\"54722824\"].tables[0].tree[8].name",
+        "$.xdsMetadata[\"54788213\"].tables[0].rows[16].name",
+        "$.xdsMetadata[\"54788213\"].tables[0].tree[16].name"
+      ],
+      "storedLiteralAtThosePaths": "$XDSDocumentEntry EntryType",
+      "appliesAfterCorrection": true,
+      "appliesAfterCorrectionNote": "those paths still hold the MANGLED literal \"$XDSDocumentEntry EntryType\"; the NBSP correction above rewrites them to \"$XDSDocumentEntryEntryType\", and only then does this spec defect apply. Two defects stacked on one row.",
+      "action": "surface as a known spec defect; a validator must accept $XDSDocumentEntryType and should warn, not reject, on $XDSDocumentEntryEntryType",
+      "confidence": "high"
+    },
+    {
+      "confluenceSpelling": "healthcareFacilityType",
+      "wireSpelling": "healthcareFacilityTypeCode",
+      "whatItIs": "XDS DocumentEntry metadata attribute name in the \"Document metadata (returned by query)\" tables",
+      "wireWins": true,
+      "evidence": {
+        "confluence": {
+          "pageId": "53379631",
+          "quote": "healthcareFacilityType | AP5 (Primary Healthcare) out of coding system 2.16.840.1.113883.3.3731.1.202.2"
+        },
+        "samples": [
+          "spec-source/golden/SOAP/ITI-41/nphies ITI41 Discharge Summary v4.9beta1.xml"
+        ],
+        "sampleOccurrences": 13,
+        "note": "Verbatim in the raw HTML (<p>healthcareFacilityType</p>), so not an extractor truncation. The ITI-41 metadata page 17596480 spells the same attribute healthcareFacilityTypeCode, so the spec contradicts itself. IHE ITI TF-3 4.2.3.2.10 = healthcareFacilityTypeCode."
+      },
+      "affectedPages": [
+        {
+          "pageId": "53379631",
+          "title": "Document metadata (returned by query) - Immunization Card"
+        },
+        {
+          "pageId": "53510303",
+          "title": "Document metadata (returned by query)"
+        },
+        {
+          "pageId": "54722907",
+          "title": "Document metadata (returned by query) - iEHR Summary"
+        }
+      ],
+      "affectedSpecBuildPaths": [
+        "$.xdsMetadata[\"53379631\"].tables[0].rows[6].name",
+        "$.xdsMetadata[\"53379631\"].tables[0].tree[6].name",
+        "$.xdsMetadata[\"53510303\"].tables[0].rows[6].name",
+        "$.xdsMetadata[\"53510303\"].tables[0].tree[6].name",
+        "$.xdsMetadata[\"54722907\"].tables[0].rows[6].name",
+        "$.xdsMetadata[\"54722907\"].tables[0].tree[6].name"
+      ],
+      "action": "do NOT rewrite; surface as a known spec defect",
+      "confidence": "high"
+    },
+    {
+      "confluenceSpelling": "practiceSetting",
+      "wireSpelling": "practiceSettingCode",
+      "whatItIs": "XDS DocumentEntry metadata attribute name on the KOS manifest metadata page",
+      "wireWins": true,
+      "evidence": {
+        "confluence": {
+          "pageId": "35094652",
+          "quote": "practiceSetting | Contains one coded value out of the “Facility Medical Units and Departments Identifier”"
+        },
+        "samples": [
+          "spec-source/golden/SOAP/ITI-41/nphies ITI41 Discharge Summary v4.9beta1.xml"
+        ],
+        "sampleOccurrences": 13,
+        "note": "Verbatim in the raw HTML (<p>practiceSetting</p>). Six other rows in the same artifact spell it practiceSettingCode. IHE ITI TF-3 4.2.3.2.17 = practiceSettingCode."
+      },
+      "affectedPages": [
+        {
+          "pageId": "35094652",
+          "title": "XDS Metadata for Manifests (KOS)"
+        }
+      ],
+      "affectedSpecBuildPaths": [
+        "$.xdsMetadata[\"35094652\"].tables[0].rows[4].name",
+        "$.xdsMetadata[\"35094652\"].tables[0].tree[4].name"
+      ],
+      "action": "do NOT rewrite; surface as a known spec defect",
+      "confidence": "high"
+    },
+    {
+      "confluenceSpelling": "homeCommunityID",
+      "wireSpelling": null,
+      "whatItIs": "XDS metadata attribute; the spec spells it two different ways on two sibling pages",
+      "wireWins": false,
+      "evidence": {
+        "confluence": {
+          "pageId": "17596480",
+          "quote": "1.12 | homeCommunityID | O | [0..1] | A globally unique identifier for a community (OID)."
+        },
+        "counterSpelling": {
+          "pageId": "17694733",
+          "spelling": "homeCommunityId",
+          "row": "2.6"
+        },
+        "samples": [],
+        "sampleOccurrences": 0,
+        "note": "NO official sample carries homeCommunityId/ID at all, so the wire spelling cannot be confirmed from spec-source/golden. IHE ITI TF-3 4.2.3.2.11 spells it homeCommunityId, which is why the ITI-41 SubmissionSet page is probably the correct one — but this tool must not assert that from an external memory."
+      },
+      "affectedPages": [
+        {
+          "pageId": "17596480",
+          "title": "Document Metadata Attribute Optionality for Provide and Register Document Set-b",
+          "row": "1.12"
+        },
+        {
+          "pageId": "17694733",
+          "title": "SubmissionSet Metadata Attribute Optionality for Provide and Register Document Set-b",
+          "row": "2.6"
+        }
+      ],
+      "affectedSpecBuildPaths": [
+        "$.xdsMetadata[\"17596480\"].tables[0].rows[17].name",
+        "$.xdsMetadata[\"17596480\"].tables[0].tree[0].children[11].name"
+      ],
+      "action": "surface as an internal inconsistency in the published spec; do not pick a winner — no sample evidence exists",
+      "confidence": "low",
+      "lowConfidenceReason": "no official sample exercises this attribute; both spellings appear in Confluence and neither can be confirmed against the wire"
+    }
+  ],
+  "rejected": [
+    {
+      "class": "human-readable row label, not a wire identifier",
+      "count": 63,
+      "examples": [
+        "Message Header",
+        "Imaging Study",
+        "Data Type",
+        "Status Code",
+        "Legal Authenticator",
+        "Author Person",
+        "Patient ID",
+        "Confidentiality Code",
+        "Structured Body",
+        "Resource Type"
+      ],
+      "whyRejected": "de-spacing these produces a string that happens to match a FHIR resourceType / CDA element name in the golden samples, but the stored value sits in a label column (fields.*.tables[].rows[].name for CDA/FHIR guidance tables, valuesets aliases/previousName, table header cells, page titles) that the validator never matches against wire content. Rewriting them would corrupt the display labels and gain nothing."
+    },
+    {
+      "class": "multi-valued cell stored in a single-value field",
+      "count": 5,
+      "examples": [
+        "valuesets $.valueSets[85].codeSystemOid = \"2.16.840.1.113883.3.3731.1.205.16 2.16.840.1.113883.1.11.19719 2.16.840.1.113883.1.11.19377\"",
+        "valuesets $.valueSets[97].codeSystemOid = \"2.16.840.1.113883.3.3731.1.205.17 2.16.840.1.113883.6.96\"",
+        "valuesets $.valueSets[89].codeSystemOid",
+        "valuesets $.valueSets[98].codeSystemOid",
+        "valuesets $.valueSets[96].codeSystemOid"
+      ],
+      "whyRejected": "these are NOT whitespace injections — the Confluence cell genuinely lists several code system OIDs (one KSA-local, one or more external HL7/SNOMED). No single corrected literal is derivable, so a string patch would be a guess. The real fix is a schema change: codeSystemOid must become a list. Flagged for the valuesets owner, not patched here."
+    },
+    {
+      "class": "space present in the published spec with no derivable correction",
+      "count": 1,
+      "examples": [
+        "fields $.xdsMetadata[\"33357874\"].tables[0].rows[0].fixedValue = \"urn:ksa-ehealth:document: ImagingProcedure-Modality-BodyRegion:2023\""
+      ],
+      "whyRejected": "page 33357874 prints the Format line as urn:ksa-ehealth:document:mappingRadio_ImagingProcedure-Modality-BodyRegion:2023 and the Example line (which is what got captured) as urn:ksa-ehealth:document: ImagingProcedure-Modality-BodyRegion:2023 — the two disagree by more than the space (mappingRadio_). No golden sample carries either. Removing the space alone would produce a literal that still does not match the Format line, so the corrected value is ambiguous. Also note the captured cell is an EXAMPLE, not a fixed value."
+    },
+    {
+      "class": "typographic quotes inside stored XPaths",
+      "count": null,
+      "examples": [
+        "./entryRelationship/act[templateId/@root=’1.3.6.1.4.1.19376.1.3.1.3’]/code"
+      ],
+      "whyRejected": "Confluence smart quotes (U+2018/U+2019) in XPath predicates make the stored path unparseable by any XPath engine, and fields.json preserves them in the normalised elementLocation[].path too. This is a real defect but it is uniform across hundreds of paths and is a single normalisation switch in the compiler (see extractionRule.additionalNormalisations), not a per-literal patch. Emitting hundreds of near-identical corrections would bury the 31 that matter."
+    },
+    {
+      "class": "provenance strings deliberately left verbatim",
+      "count": null,
+      "examples": [
+        "fields $.xdsMetadata[\"54788213\"].tables[0].rows[2].source.quote",
+        "errors $.xds[4].source.quote",
+        "fields *.elementLocationRaw"
+      ],
+      "whyRejected": "source.quote / source.row / elementLocationRaw are the verbatim evidence for a rule. They MUST keep the mangled text — that is what the page actually says, and it is how a reviewer confirms the correction. Only the derived data slots are patched."
+    }
+  ],
+  "extractionRule": {
+    "description": "Three independent bugs in the cell-text extractor produced every literal in `corrections`.\n(1) NBSP: Confluence authors press Ctrl+Shift+Space inside <code> spans to stop identifiers wrapping, so the page carries U+00A0 MID-TOKEN ($XDSDocumentEntry\\u00a0ClassCode, 14d4debf-8f97-4251-9a74\\u00a0-a90016b0af0d). The extractor maps every whitespace character, NBSP included, to U+0020. NBSP must NOT be treated as whitespace inside an identifier cell: in an identifier context it is deleted, in prose it becomes a space. Verified: 0 of the 243,245 strings in spec-build still contain U+00A0, which is exactly the symptom - the information that it was an NBSP was destroyed at parse time.\n(2) <sup> footnotes: page 54788213 carries all 10 <sup>digit</sup> markers in the corpus. The extractor flattens the cell with a text join, so <code>$XDSDocumentEntry&nbsp;ClassCode</code>&nbsp;<sup>1</sup> becomes \"$XDSDocumentEntry ClassCode 1\". Strip <sup> whose text is a bare 1-2 digit run BEFORE flattening. On six rows the author typed the marker INSIDE the <code> (CreationTimeFrom5, ServiceStartTimeTo\\u00a0\\u00a06, Status\\u00a0\\u00a03), so a second, guarded pass is needed: strip a trailing 1-2 digit run from an identifier only when the page has a numbered footnote list, the digit indexes into it, and the de-suffixed form is corroborated (a golden sample, or another row on another page). Footnotes 5 and 6 on that page literally name \"CreationTimeFrom and CreationTimeTo\" and \"ServiceStartTimeFrom, ServiceStartTimeTo, ServiceStopTimeFrom and ServiceStopTimeTo\" without digits - that is the corroboration.\n(3) Block-level joins: <p>, <p/> and <br/> boundaries inside one <td> are joined with a single space, which merges two element paths into one unusable string (./extension/url= ”...” ./extension/valueReference) and leaves a space after \"url=\". Block boundaries must become newlines; only INLINE markup (<span>, <a>, <code>, <strong>, <u>) is unwrapped with no separator at all.\nPrefer the <code> descendant: in every identifier column on these pages the identifier is exactly the <code> element text, and taking it first sidesteps the sibling <sup> entirely.",
+    "pythonSnippet": "# Drop-in replacement for the cell-text step of spec-build/_extract_lib.py.\n# Fixes all three defects: NBSP mid-token, <sup> footnote markers, block-level joins.\n\nimport re\nfrom bs4 import BeautifulSoup, NavigableString\n\nNBSP, ZWSP, SHY = ' ', '​', '­'\nBLOCK = {'p', 'div', 'li', 'tr', 'br'}\nFOOTNOTE_SUP = re.compile(r'^\\s*\\d{1,2}\\s*$')\n# an identifier: $XDSDocumentEntryClassCode, XDSDocumentEntry.eventCodeList,\n# authorSpecialty, urn:uuid:..., ./extension/valueReference\nIDENTIFIER = re.compile(r'^[$@#]?[A-Za-z_./][A-Za-z0-9_$.:/\\\\-]*$')\n\n\ndef strip_footnote_sups(node):\n    \"\"\"<sup>1</sup> next to an identifier is a footnote marker, not part of it.\"\"\"\n    for sup in node.find_all('sup'):\n        if FOOTNOTE_SUP.match(sup.get_text()):\n            sup.decompose()\n    return node\n\n\ndef cell_text(node):\n    \"\"\"Flatten a <td>/<p>/<code> keeping token integrity.\n\n    Block boundaries -> '\\n' (so a cell holding two element paths stays two lines).\n    Inline markup    -> unwrapped with NO separator (a <span> split mid-token\n                        must not become a space).\n    NBSP             -> kept as U+00A0 here; resolved by normalise_identifier /\n                        normalise_prose, which know whether this is a token.\n    \"\"\"\n    out = []\n\n    def walk(n):\n        if isinstance(n, NavigableString):\n            out.append(str(n))\n            return\n        if n.name in BLOCK and out and not out[-1].endswith('\\n'):\n            out.append('\\n')\n        for child in n.children:\n            walk(child)\n        if n.name in BLOCK:\n            out.append('\\n')\n\n    walk(node)\n    return ''.join(out)\n\n\ndef normalise_prose(text):\n    \"\"\"Prose: NBSP really is a space.\"\"\"\n    text = text.replace(ZWSP, '').replace(SHY, '').replace(NBSP, ' ')\n    return re.sub(r'[ \\t]+', ' ', text).strip()\n\n\ndef normalise_identifier(text, page_footnotes=(), corroborate=lambda s: False):\n    \"\"\"Identifier cell: whitespace is ALWAYS an artefact, never part of the name.\n\n    page_footnotes -- ordered footnote texts from the same page (may be empty)\n    corroborate    -- predicate: is this de-suffixed form attested elsewhere\n                      (an official sample, or the same row on another page)?\n    Returns (value, flags). Never guesses silently: anything it could not\n    resolve is returned with a flag so the row is marked low confidence.\n    \"\"\"\n    flags = []\n    raw = text.replace(ZWSP, '').replace(SHY, '').strip()\n    squashed = re.sub(r'[\\s ]+', '', raw)          # delete ALL whitespace\n\n    if not IDENTIFIER.match(squashed):\n        # not a single token after all -> treat as prose, do not mangle it\n        return normalise_prose(raw), ['not-an-identifier']\n    if squashed != re.sub(r'\\s+', '', raw):\n        flags.append('nbsp-removed')\n    elif squashed != raw:\n        flags.append('space-removed')\n\n    # guarded footnote-digit strip, for markers typed inside the <code>\n    m = re.match(r'^(?P<stem>.*[A-Za-z])(?P<digits>\\d{1,2})$', squashed)\n    if m:\n        stem, digits = m.group('stem'), int(m.group('digits'))\n        if page_footnotes and 1 <= digits <= len(page_footnotes) and corroborate(stem):\n            return stem, flags + ['footnote-digit-stripped:%d' % digits]\n        if m.group('digits') and corroborate(stem) and not corroborate(squashed):\n            return stem, flags + ['footnote-digit-stripped-uncorroborated:%d' % digits]\n        flags.append('trailing-digits-kept-unverified')\n    return squashed, flags\n\n\ndef identifier_from_cell(td, **kw):\n    \"\"\"Preferred entry point for an identifier column.\n\n    The identifier is the <code> text where one exists; taking it first also\n    sidesteps the sibling <sup> footnote marker entirely.\n    \"\"\"\n    strip_footnote_sups(td)\n    code = td.find('code')\n    return normalise_identifier(cell_text(code if code is not None else td), **kw)\n\n\ndef xpath_from_cell(td):\n    \"\"\"Element-path column: also drop the spaces Confluence authors typed by hand.\n\n    fields.json already does this for elementLocation[].path; constants.json and\n    valuesets.json must call the SAME function or the two artifacts disagree.\n    \"\"\"\n    paths = [p for p in (l.strip() for l in cell_text(td).split('\\n')) if p]\n    fixed = []\n    for p in paths:\n        p = p.replace(NBSP, ' ')\n        p = re.sub(r'\\[\\s+', '[', p)          # participant[ @typeCode -> participant[@typeCode\n        p = re.sub(r'\\s+\\]', ']', p)\n        p = re.sub(r'\\s*/\\s*', '/', p)        # representedOrganization /std -> .../std\n        fixed.append(re.sub(r'\\s{2,}', ' ', p).strip())\n    return fixed                              # a list: one cell may hold several paths",
+    "additionalNormalisations": [
+      {
+        "id": "smart-quotes-in-xpath",
+        "what": "XPath predicates arrive with U+2018/U+2019/U+201C/U+201D (participant[@typeCode=’SBJ’]). No XPath engine accepts them.",
+        "recommendation": "map ‘’“” to ' inside element-path and predicate text only, never inside quote/guidance provenance",
+        "notPatchedHere": "uniform across hundreds of paths; one compiler switch, not per-literal patches"
+      },
+      {
+        "id": "regression-guard",
+        "what": "assert that no string in any spec-build artifact matches ^\\$XDS\\w+\\s or \\s\\d{1,2}$ in an identifier slot, and that identifier slots never contain U+00A0 or an internal space",
+        "recommendation": "run the assertion in the build so this class of defect cannot come back silently"
+      }
+    ],
+    "verification": "After applying every correction, all 16 identifiers the gate could only resolve after normalisation resolve EXACTLY, and 14 of the 18 corrected $XDSDocumentEntry* parameter names are literally present as rim:Slot name=\"...\" in spec-source/golden/SOAP/ITI-18/. The remaining four ($XDSDocumentEntryEventCodeList, and the EntryType row which is additionally a spec defect) are derived from the raw HTML of page 54788213 and its footnote list."
+  },
+  "stats": {
+    "stringLeavesScanned": 243245,
+    "candidatesScanned": 209599,
+    "candidatesScannedNote": "identifier-shaped string leaves out of 243245 total strings across constants/datatypes/errors/fields/golden/structures/valuesets.json; plus targeted passes over every OID, URL, urn:uuid, <sup> footnote and element-path slot",
+    "corrected": 36,
+    "correctedOccurrences": 165,
+    "specDefects": 6,
+    "rejected": 71,
+    "rejectedNote": "counted as distinct rejected candidate literals where a count is known, plus 2 rejected classes (smart quotes, provenance slots) where the count is intentionally open-ended",
+    "artifactsTouched": [
+      "constants.json",
+      "errors.json",
+      "fields.json",
+      "valuesets.json"
+    ]
+  }
+}

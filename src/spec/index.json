@@ -6,32 +6,31 @@
     "errors": 39,
     "fixedValues": 1115,
     "goldenSamples": 62,
-    "messageStructures": 46,
+    "messageStructures": 55,
     "oids": 353,
     "quarantinedOids": 11,
-    "specNodes": 3444,
-    "specPages": 288,
+    "sampleDefects": 127,
+    "specDefects": 13,
+    "specNodes": 3510,
+    "specPages": 289,
+    "structuresVerifiedAgainstSample": 22,
     "useCases": 26,
     "valueSetBindings": 329,
     "valueSetConcepts": 44508,
     "valueSets": 123
   },
   "coverage": {
-    "missing": [
+    "missing": [],
+    "partial": [
+      "oru-vitals",
       "saml-sso"
     ],
-    "partial": [
-      "cda-rad-order",
-      "oru-vitals"
-    ],
-    "useCasesWithStructure": 25,
+    "useCasesWithStructure": 26,
     "useCasesWithoutGolden": [
       "oru-vitals",
       "saml-sso"
     ],
-    "useCasesWithoutStructure": [
-      "saml-sso"
-    ]
+    "useCasesWithoutStructure": []
   },
   "engine": "src/lib/structure.ts",
   "families": [
@@ -103,6 +102,7 @@
     },
     {
       "areas": [
+        "IHE ebRIM content model (derived)",
         "Immunization Card",
         "Immunization Summary",
         "Laboratory Orders",
@@ -116,10 +116,10 @@
       "file": "fields/xds.json",
       "id": "xds",
       "label": "IHE XDS.b / SOAP metadata",
-      "nodes": 197,
-      "pages": 19,
+      "nodes": 263,
+      "pages": 20,
       "segments": [],
-      "tables": 19
+      "tables": 24
     }
   ],
   "files": {
@@ -133,6 +133,8 @@
       "xds": "fields/xds.json"
     },
     "golden": "golden.json",
+    "sampleDefects": "sample-defects.json",
+    "specDefects": "spec-defects.json",
     "structures": "structures.json",
     "valueSetIndex": "valuesets/index.json"
   },
@@ -145,6 +147,8 @@
     "fields/hl7v2.json",
     "fields/xds.json",
     "golden.json",
+    "sample-defects.json",
+    "spec-defects.json",
     "structures.json",
     "valuesets/cs-adm-acknowledgmentcode.json",
     "valuesets/cs-adm-admissionmethod.json",
@@ -271,12 +275,13 @@
     "valuesets/type-of-the-social-history-observation.json",
     "valuesets/vital-signs-observations.json"
   ],
-  "generatedAt": "2026-09-15T19:44:12.004Z",
+  "generatedAt": "fixed",
   "generator": "scripts/compile-spec.mjs",
   "inputs": [
     {
       "bytes": 5231963,
       "error": null,
+      "kind": "extraction",
       "name": "spec-build/fields.json",
       "present": true,
       "sha256": "78cf7ab5f924f64aa56ac67059eeaa1c172d96069b78783dc3ea8acd12f12bde"
@@ -284,6 +289,7 @@
     {
       "bytes": 1074188,
       "error": null,
+      "kind": "extraction",
       "name": "spec-build/structures.json",
       "present": true,
       "sha256": "bb601e667abcfedc49ab3c30a815b836a53fd6c91ff614b64139be67f8eceb96"
@@ -291,6 +297,7 @@
     {
       "bytes": 3615287,
       "error": null,
+      "kind": "extraction",
       "name": "spec-build/valuesets.json",
       "present": true,
       "sha256": "66d89f8d544d6c4af03242cf203692cb2b857012e5f7534ac51c696d79c22e59"
@@ -298,6 +305,7 @@
     {
       "bytes": 205981,
       "error": null,
+      "kind": "extraction",
       "name": "spec-build/errors.json",
       "present": true,
       "sha256": "db16ffceb4d07c32f74b3c50c7a2531cb609289301cac9365ddae94acac68907"
@@ -305,6 +313,7 @@
     {
       "bytes": 1185263,
       "error": null,
+      "kind": "extraction",
       "name": "spec-build/constants.json",
       "present": true,
       "sha256": "6ac77712b2b04cac95434a442704b0f2f36c5525640bc047d2eff6681ff645bf"
@@ -312,6 +321,7 @@
     {
       "bytes": 152476,
       "error": null,
+      "kind": "extraction",
       "name": "spec-build/datatypes.json",
       "present": true,
       "sha256": "a3f26bf3ae96ae23582e8646f9e6020e5847ad7dbaf95f70a5ec304d575912bf"
@@ -319,12 +329,170 @@
     {
       "bytes": 738760,
       "error": null,
+      "kind": "extraction",
       "name": "spec-build/golden.json",
       "present": true,
       "sha256": "fd3e68342eb68fab16cfc225af8922e625c7a7d71006c2995e68617a42433063"
+    },
+    {
+      "bytes": 201252,
+      "error": null,
+      "kind": "repair-patch",
+      "name": "spec-build/patch-xds-ebrim.json",
+      "present": true,
+      "sha256": "7292a33ff3cd312d8eaea79c194c426160b3c89b3a7efdaf14bc9f0afa1e1bfa"
+    },
+    {
+      "bytes": 82509,
+      "error": null,
+      "kind": "repair-patch",
+      "name": "spec-build/patch-literals.json",
+      "present": true,
+      "sha256": "f7606b0f02600b45cc0d48bf087cb88cd86ccdcc4c5e847cf84cec83a1663585"
+    },
+    {
+      "bytes": 216141,
+      "error": null,
+      "kind": "repair-patch",
+      "name": "spec-build/patch-fhir-entries.json",
+      "present": true,
+      "sha256": "ebdabfb9c3a56282be90e95d084ef00b13c7ebc054021a722f17749ea72e502f"
+    },
+    {
+      "bytes": 109735,
+      "error": null,
+      "kind": "repair-patch",
+      "name": "spec-build/patch-cda.json",
+      "present": true,
+      "sha256": "5f010a832798b1727e668e149d87aa5e09df80696c8854e8a55f475724437032"
+    },
+    {
+      "bytes": 169655,
+      "error": null,
+      "kind": "repair-patch",
+      "name": "spec-build/patch-saml.json",
+      "present": true,
+      "sha256": "74c33eb2d04fda00ab7c3f00e485bac7fe771bafdba84ced4fe9e93b8d3d397f"
+    },
+    {
+      "bytes": 245654,
+      "error": null,
+      "kind": "repair-patch",
+      "name": "spec-build/sample-defects.json",
+      "present": true,
+      "sha256": "34d9745368bf8f26692ef9dc84ee8a597ccd4c122e5d71859a367e5efb721907"
     }
   ],
   "missingInputs": [],
+  "repairs": {
+    "cda": {
+      "headerElementsPerDocument": 27,
+      "headerModelsAttached": 13,
+      "noInfoMechanism": "no-info flag templateId",
+      "radOrderSectionsBuilt": 4,
+      "sectionsAdded": 7,
+      "sectionsCorrectedInPlace": 1,
+      "variantStructures": [
+        "cda-immunization-summary-full",
+        "cda-immunization-summary-noinfo",
+        "cda-iehr-summary-full",
+        "cda-iehr-summary-noinfo",
+        "cda-immunization-card-full",
+        "cda-immunization-card-noinfo"
+      ]
+    },
+    "fhir": {
+      "entriesCorrected": 26,
+      "entryListsReplaced": 8,
+      "entryRows": 100,
+      "twoFamilyRuleConfirmed": true,
+      "twoFamilyRuleViolations": 0,
+      "variantStructures": [
+        "fhir-rad-report-structured",
+        "fhir-rad-report-embedded-pdf"
+      ]
+    },
+    "literals": {
+      "artifactsTouched": [
+        "constants",
+        "errors",
+        "fields",
+        "valuesets"
+      ],
+      "correctionsApplied": 36,
+      "correctionsThatMatchedNothing": [],
+      "guardViolations": 0,
+      "normalisationRules": [
+        "identifier cells: U+200B and U+00AD are deleted; U+00A0 and whitespace inside a $XDS…/urn: token are deleted; in prose U+00A0 becomes a space",
+        "element paths and predicates: curly quotes are mapped to apostrophes and stray spaces around / and [ ] are removed — the verbatim cell survives in locatorRaw and in every provenance quote",
+        "provenance slots (quote, row, guidance, description, elementLocationRaw, …) are NEVER rewritten"
+      ],
+      "normalisedByCompilerRule": 0,
+      "slotsRewritten": 165,
+      "specDefectsShipped": 13
+    },
+    "patchesApplied": [
+      "spec-build/patch-xds-ebrim.json",
+      "spec-build/patch-literals.json",
+      "spec-build/patch-fhir-entries.json",
+      "spec-build/patch-cda.json",
+      "spec-build/patch-saml.json",
+      "spec-build/sample-defects.json"
+    ],
+    "patchesMissing": [],
+    "saml": {
+      "note": "No official SAML sample exists. Every member rests on one published skeleton plus prose.",
+      "structuresAdded": [
+        "saml-sso-response"
+      ],
+      "verifiedAgainstSample": false
+    },
+    "sampleDefects": {
+      "byConfidence": {
+        "high": 85,
+        "low": 3,
+        "medium": 39
+      },
+      "byDefectType": {
+        "duplicate-document-identifier": 8,
+        "filename-artifact": 1,
+        "inconsistent-internal-reference": 11,
+        "invalid-json": 6,
+        "invalid-wire-encoding": 2,
+        "malformed-uri": 4,
+        "missing-mandatory-element": 11,
+        "misspelled-element-name": 15,
+        "non-ascii-in-identifier": 1,
+        "placeholder-oid-in-copyable-position": 10,
+        "segment-terminator": 3,
+        "version-label-mismatch": 3,
+        "wrong-element-case": 2,
+        "wrong-json-cardinality": 46,
+        "wrong-json-datatype": 4
+      },
+      "byFormat": {
+        "cda": 13,
+        "fhir": 22,
+        "hl7v2": 3,
+        "soap-xds": 6
+      },
+      "cleanSamples": 16,
+      "defects": 127,
+      "fatal": 10,
+      "major": 65,
+      "minor": 52,
+      "samplesAudited": 60,
+      "samplesWithDefects": 44
+    },
+    "xdsEbrim": {
+      "fieldTablesAdded": 5,
+      "note": "The ebRIM content model below the SOAP Body is derived from the official samples; no cached Confluence page draws it. Those members carry `observed` cardinalities, not usage codes, and a resolution measurement taken against the same samples is not independent confirmation.",
+      "schemeRulesAttached": 26,
+      "schemesAsSpecNodes": 66,
+      "soapMembersGrafted": 57,
+      "structuresExtended": 5
+    }
+  },
   "usageLegend": {
     "codes": {
       "-": {
@@ -715,10 +883,25 @@
       "status": "complete",
       "statusReasons": [],
       "structureIds": [
-        "cda-iehr-summary"
+        "cda-iehr-summary",
+        "cda-iehr-summary-full",
+        "cda-iehr-summary-noinfo"
       ],
       "title": "CDA iEHR Summary (on demand)",
-      "variants": []
+      "variants": [
+        {
+          "direction": "request",
+          "id": "cda-iehr-summary-full",
+          "label": "Full (information available)",
+          "variant": "Full"
+        },
+        {
+          "direction": "request",
+          "id": "cda-iehr-summary-noinfo",
+          "label": "NoInfo (no information available)",
+          "variant": "NoInfo"
+        }
+      ]
     },
     {
       "areas": [
@@ -745,10 +928,25 @@
       "status": "complete",
       "statusReasons": [],
       "structureIds": [
-        "cda-immunization-card"
+        "cda-immunization-card",
+        "cda-immunization-card-full",
+        "cda-immunization-card-noinfo"
       ],
       "title": "CDA Immunization Card (on demand)",
-      "variants": []
+      "variants": [
+        {
+          "direction": "request",
+          "id": "cda-immunization-card-full",
+          "label": "Full (information available)",
+          "variant": "Full"
+        },
+        {
+          "direction": "request",
+          "id": "cda-immunization-card-noinfo",
+          "label": "NoInfo (no information available)",
+          "variant": "NoInfo"
+        }
+      ]
     },
     {
       "areas": [
@@ -782,10 +980,25 @@
       "status": "complete",
       "statusReasons": [],
       "structureIds": [
-        "cda-immunization-summary"
+        "cda-immunization-summary",
+        "cda-immunization-summary-full",
+        "cda-immunization-summary-noinfo"
       ],
       "title": "CDA Immunization Summary (on demand)",
-      "variants": []
+      "variants": [
+        {
+          "direction": "request",
+          "id": "cda-immunization-summary-full",
+          "label": "Full (information available)",
+          "variant": "Full"
+        },
+        {
+          "direction": "request",
+          "id": "cda-immunization-summary-noinfo",
+          "label": "NoInfo (no information available)",
+          "variant": "NoInfo"
+        }
+      ]
     },
     {
       "areas": [
@@ -1438,10 +1651,8 @@
       "specPages": [
         "33489120"
       ],
-      "status": "partial",
-      "statusReasons": [
-        "at least one compiled structure has low confidence"
-      ],
+      "status": "complete",
+      "statusReasons": [],
       "structureIds": [
         "cda-rad-order"
       ],
@@ -1531,7 +1742,8 @@
         "359432193"
       ],
       "specPages": [
-        "351502348"
+        "351502348",
+        "351698947"
       ],
       "status": "complete",
       "statusReasons": [],
@@ -1571,7 +1783,8 @@
         "68091912"
       ],
       "specPages": [
-        "63701020"
+        "63701020",
+        "68091912"
       ],
       "status": "complete",
       "statusReasons": [],
@@ -1623,6 +1836,7 @@
         "47153589"
       ],
       "specPages": [
+        "44008229",
         "44139001"
       ],
       "status": "complete",
@@ -1677,6 +1891,7 @@
         "47153589"
       ],
       "specPages": [
+        "44008229",
         "44171887"
       ],
       "status": "complete",
@@ -1731,7 +1946,8 @@
         "118162152"
       ],
       "specPages": [
-        "118161707"
+        "118161707",
+        "118161740"
       ],
       "status": "complete",
       "statusReasons": [],
@@ -1786,7 +2002,8 @@
         "118162152"
       ],
       "specPages": [
-        "117964890"
+        "117964890",
+        "118161740"
       ],
       "status": "complete",
       "statusReasons": [],
@@ -1821,6 +2038,7 @@
         "392626178"
       ],
       "specPages": [
+        "387383323",
         "387645441"
       ],
       "status": "complete",
@@ -1871,15 +2089,33 @@
         "415170561"
       ],
       "specPages": [
-        "413728794"
+        "413728794",
+        "414154754",
+        "414547969",
+        "414679041"
       ],
       "status": "complete",
       "statusReasons": [],
       "structureIds": [
-        "fhir-rad-report"
+        "fhir-rad-report",
+        "fhir-rad-report-structured",
+        "fhir-rad-report-embedded-pdf"
       ],
       "title": "FHIR Radiology Report Bundle",
-      "variants": []
+      "variants": [
+        {
+          "direction": "request",
+          "id": "fhir-rad-report-structured",
+          "label": "Structured report",
+          "variant": "structured"
+        },
+        {
+          "direction": "request",
+          "id": "fhir-rad-report-embedded-pdf",
+          "label": "Embedded PDF report",
+          "variant": "embeddedPdf"
+        }
+      ]
     },
     {
       "areas": [
@@ -1961,19 +2197,26 @@
       "goldenSamples": [],
       "id": "saml-sso",
       "relatedPages": [],
-      "specPages": [],
-      "status": "missing",
+      "specPages": [
+        "7766173",
+        "7766210",
+        "7766237",
+        "7766254"
+      ],
+      "status": "partial",
       "statusReasons": [
-        "no MessageStructure could be compiled from the inputs",
         "no golden sample: no sample of any kind ships in spec-source/golden/"
       ],
-      "structureIds": [],
+      "structureIds": [
+        "saml-sso-response"
+      ],
       "title": "SAML single sign-on",
       "variants": []
     },
     {
       "areas": [
-        "XDS Query Document Set"
+        "XDS Query Document Set",
+        "IHE ebRIM content model (derived)"
       ],
       "encoding": "soap-xml",
       "family": "xds",
@@ -1987,7 +2230,8 @@
       ],
       "id": "xds-iti18",
       "relatedPages": [
-        "54788213"
+        "54788213",
+        "ebrim"
       ],
       "specPages": [],
       "status": "complete",
@@ -2014,7 +2258,8 @@
     },
     {
       "areas": [
-        "Provide and Register – ITI-41"
+        "Provide and Register – ITI-41",
+        "IHE ebRIM content model (derived)"
       ],
       "encoding": "soap-xml",
       "family": "xds",
@@ -2036,7 +2281,8 @@
       "id": "xds-iti41",
       "relatedPages": [
         "17596480",
-        "17694733"
+        "17694733",
+        "ebrim"
       ],
       "specPages": [],
       "status": "complete",
@@ -2049,7 +2295,8 @@
     },
     {
       "areas": [
-        "XDS Query Document Set"
+        "XDS Query Document Set",
+        "IHE ebRIM content model (derived)"
       ],
       "encoding": "soap-xml",
       "family": "xds",
@@ -2063,7 +2310,8 @@
       ],
       "id": "xds-iti43",
       "relatedPages": [
-        "54788213"
+        "54788213",
+        "ebrim"
       ],
       "specPages": [],
       "status": "complete",

@@ -369,10 +369,30 @@ function buildSpecIndex() {
   const xdsNames = new Map(); // squashFootnote -> [literal, ...]
   const xdsNamesGlued = new Map(); // squashGluedFootnote -> [literal, ...]
   const xdsNamesExact = new Set();
-  const addXdsName = (literal) => {
+  /** exact literal -> strongest derivation seen for it ("confluence" | "confluence+sample" | "sample" | "standard") */
+  const xdsNameDerivation = new Map();
+  /** scheme/node UUID -> the compiled metadata attribute it identifies, with its derivation */
+  const xdsSchemeByUuid = new Map();
+
+  const DERIV_RANK = { confluence: 4, "confluence+sample": 3, standard: 2, sample: 1 };
+  const strongerDerivation = (a, b) => ((DERIV_RANK[a] || 0) >= (DERIV_RANK[b] || 0) ? a : b);
+  const normaliseDerivation = (node) => {
+    const d = node.derivation;
+    if (d === "confluence" || d === "confluence+sample" || d === "sample" || d === "standard") return d;
+    const p = node.provenance || {};
+    if (p.pageId && p.sample) return "confluence+sample";
+    if (p.pageId) return "confluence";
+    if (p.sample) return "sample";
+    return "unattributed";
+  };
+
+  const addXdsName = (literal, derivation) => {
     const lit = norm(literal);
     if (!lit) return;
     xdsNamesExact.add(lit);
+    if (derivation) {
+      xdsNameDerivation.set(lit, strongerDerivation(derivation, xdsNameDerivation.get(lit) || ""));
+    }
     const key = squashFootnote(lit);
     if (!key) return;
     if (!xdsNames.has(key)) xdsNames.set(key, []);
@@ -382,14 +402,56 @@ function buildSpecIndex() {
     if (!xdsNamesGlued.has(glued)) xdsNamesGlued.set(glued, []);
     if (!xdsNamesGlued.get(glued).includes(lit)) xdsNamesGlued.get(glued).push(lit);
   };
-  const collectXds = (node) => {
+  const collectXds = (node, pageId) => {
     const loc = node.locator;
-    if (loc && loc.kind === "xdsSlot" && loc.name) addXdsName(loc.name);
-    if (node.label) addXdsName(String(node.label).split("\n")[0]);
-    for (const c of node.children || []) collectXds(c);
+    const derivation = normaliseDerivation(node);
+    if (loc && loc.kind === "xdsSlot" && loc.name) addXdsName(loc.name, derivation);
+    if (loc && loc.kind === "xdsScheme" && loc.uuid) {
+      const uuid = String(loc.uuid).toLowerCase();
+      const prev = xdsSchemeByUuid.get(uuid);
+      const entry = {
+        uuid,
+        label: String(node.label || "").split("\n")[0],
+        derivation,
+        confidence: node.confidence || null,
+        conflict: node.conflict || null,
+        pageId: (node.provenance || {}).pageId || (pageId === "ebrim" ? null : pageId),
+        sample: (node.provenance || {}).sample || null,
+      };
+      if (!prev || strongerDerivation(derivation, prev.derivation) === derivation) xdsSchemeByUuid.set(uuid, entry);
+    }
+    if (node.label) addXdsName(String(node.label).split("\n")[0], derivation);
+    for (const c of node.children || []) collectXds(c, pageId);
+  };
+  for (const [pageId, page] of Object.entries(fields.xds.pages || {})) {
+    for (const table of page.tables || []) for (const node of table.nodes || []) collectXds(node, pageId);
+  }
+
+  /* fixedValues on the ebRIM nodes carry the UUIDs for objectType / status /
+   * associationType as well; index them the same way. */
+  const xdsFixedValues = new Map(); // "<elementPath>/@<attr>" -> [{value, derivation, ...}]
+  const collectXdsFixed = (node) => {
+    const derivation = normaliseDerivation(node);
+    for (const fv of node.fixedValues || []) {
+      /* value-less rows are kept ON PURPOSE: a compiled fixedValue that states
+       * a meaning and a page but no literal cannot validate anything, and the
+       * gate has to be able to say so. */
+      const key = (fv.elementPath || "") + "/@" + (fv.attribute || fv.target || "");
+      if (!xdsFixedValues.has(key)) xdsFixedValues.set(key, []);
+      xdsFixedValues.get(key).push({
+        value: fv.value == null || fv.value === "" ? null : String(fv.value),
+        derivation: fv.provenance && fv.provenance.pageId ? "confluence" : fv.provenance && fv.provenance.sample ? "sample" : derivation,
+        statementType: fv.statementType || null,
+        quote: (fv.provenance || {}).quote || null,
+        sample: (fv.provenance || {}).sample || null,
+        ownerConfidence: node.confidence || null,
+        ownerConfidenceReason: node.confidenceReason || null,
+      });
+    }
+    for (const c of node.children || []) collectXdsFixed(c);
   };
   for (const page of Object.values(fields.xds.pages || {})) {
-    for (const table of page.tables || []) for (const node of table.nodes || []) collectXds(node);
+    for (const table of page.tables || []) for (const node of table.nodes || []) collectXdsFixed(node);
   }
 
   /* ---- UUIDs the compiled spec mentions anywhere --------------------
@@ -411,6 +473,65 @@ function buildSpecIndex() {
     while ((m = uuidRe.exec(blob))) knownUuids.add(m[0].toLowerCase());
   }
 
+  /* ---- UUIDs the spec states STRUCTURALLY (a locator or a fixed value),
+   * as opposed to UUIDs that merely appear inside a prose sentence. The
+   * baseline gate treated any UUID anywhere in the bundle as "known", which
+   * means a UUID quoted inside a sentence explaining that it is WRONG still
+   * counted as resolved. Both figures are reported. ------------------- */
+  const uuidStructured = new Map(); // uuid -> { derivation, where, label, conflict, confidence }
+  const noteUuid = (value, info) => {
+    const m = String(value || "").toLowerCase().match(/urn:uuid:[0-9a-f-]{36}/);
+    if (!m) return;
+    const prev = uuidStructured.get(m[0]);
+    if (!prev || strongerDerivation(info.derivation, prev.derivation) === info.derivation) {
+      uuidStructured.set(m[0], { uuid: m[0], ...info });
+    }
+  };
+  for (const [uuid, s] of xdsSchemeByUuid) {
+    noteUuid(uuid, {
+      derivation: s.derivation,
+      where: "fields/xds.json locator.uuid",
+      label: s.label,
+      conflict: s.conflict,
+      confidence: s.confidence,
+      pageId: s.pageId,
+    });
+  }
+  for (const [key, list] of xdsFixedValues) {
+    for (const fv of list) {
+      noteUuid(fv.value, {
+        derivation: fv.derivation,
+        where: "fields/xds.json fixedValue " + key,
+        label: fv.statementType,
+        conflict: null,
+        confidence: null,
+      });
+    }
+  }
+  for (const structure of Object.values(structures)) {
+    for (const m of walkStructure(structure)) {
+      for (const fv of m.fixedValues || []) {
+        noteUuid(fv.value, {
+          derivation: (fv.provenance || {}).pageId ? "confluence" : (fv.provenance || {}).sample ? "sample" : "unattributed",
+          where: "structures.json " + structure.id + " fixedValue",
+          label: String(m.label || "").split("\n")[0],
+          conflict: null,
+          confidence: m.confidence || null,
+        });
+      }
+      const loc = m.locator || {};
+      if (loc.uuid) {
+        noteUuid(loc.uuid, {
+          derivation: (m.provenance || {}).pageId ? "confluence" : (m.provenance || {}).sample ? "sample" : "unattributed",
+          where: "structures.json " + structure.id + " locator.uuid",
+          label: String(m.label || "").split("\n")[0],
+          conflict: null,
+          confidence: m.confidence || null,
+        });
+      }
+    }
+  }
+
   return {
     structuresBundle,
     structures,
@@ -427,8 +548,45 @@ function buildSpecIndex() {
     xdsNames,
     xdsNamesGlued,
     xdsNamesExact,
+    xdsNameDerivation,
+    xdsSchemeByUuid,
+    xdsFixedValues,
+    uuidStructured,
     knownUuids,
   };
+}
+
+/**
+ * How does the compiled spec know this UUID?
+ * Returns { status, provenance, detail, conflict }.
+ */
+function classifyUuid(spec, raw) {
+  const uuid = String(raw || "").toLowerCase();
+  const hit = spec.uuidStructured.get(uuid);
+  if (hit) {
+    return {
+      status: "resolved",
+      provenance: hit.derivation === "unattributed" ? "unattributed" : hit.derivation,
+      detail:
+        (hit.label ? hit.label + " — " : "") +
+        hit.where +
+        (hit.derivation === "sample" ? " (READ OFF A GOLDEN SAMPLE — circular)" : ""),
+      conflict: hit.conflict || null,
+      confidence: hit.confidence || null,
+    };
+  }
+  if (spec.knownUuids.has(uuid)) {
+    return {
+      status: "resolved",
+      provenance: "prose-mention",
+      detail:
+        "the UUID appears in the compiled bundle ONLY inside narrative text (a provenance quote, guidance or confidenceReason), " +
+        "never as a locator or a fixed value. The baseline gate counts this as resolved; it is the weakest possible match and a " +
+        "validator cannot act on it",
+      conflict: null,
+    };
+  }
+  return { status: "unknown", provenance: "none", detail: null, conflict: null };
 }
 
 /* ------------------------------------------------------------------ */
@@ -460,33 +618,115 @@ function makeResult(sample, structureId, structureConfidence) {
   };
 }
 
-/** status: "resolved" | "normalised" | "unknown" */
-function record(result, kind, id, status, detail) {
+/**
+ * status: "resolved" | "normalised" | "unknown"
+ *
+ * meta (optional):
+ *   scope      "baseline" (default) — counted in `overall`, the apples-to-apples
+ *                                     figure comparable with the previous run
+ *              "extended"           — added by this pass; counted only in
+ *                                     `overallExtended`
+ *   provenance where the COMPILED RULE that resolved this identifier came from:
+ *              "confluence"        a cached Confluence page quote      (independent)
+ *              "confluence+sample" a Confluence row confirmed by a sample (independent)
+ *              "sample"            read off a golden sample only        (CIRCULAR)
+ *              "standard"          IHE/HL7 published constant, not NPHIES (independent
+ *                                  of the samples, but not NPHIES-confirmed)
+ *              "prose-mention"     the literal appears only inside narrative text
+ *                                  in the bundle (weakest possible match)
+ *              "none"              unresolved, or resolved with no provenance at all
+ */
+function record(result, kind, id, status, detail, meta) {
   const key = kind + "::" + id;
   let entry = result.elements.get(key);
   if (!entry) {
-    entry = { kind, id, status, occurrences: 0, detail: detail || null };
+    entry = {
+      kind,
+      id,
+      status,
+      occurrences: 0,
+      detail: detail || null,
+      scope: (meta && meta.scope) || "baseline",
+      provenance: (meta && meta.provenance) || (status === "unknown" ? "none" : "unattributed"),
+      ...(meta && meta.conflict ? { conflict: meta.conflict } : {}),
+    };
     result.elements.set(key, entry);
   } else if (status === "unknown" && entry.status !== "unknown") {
     entry.status = "unknown";
     entry.detail = detail || entry.detail;
+    entry.provenance = "none";
   }
   entry.occurrences++;
   return entry;
 }
 
+/** mismatch codes raised only by the checks this pass added */
+const EXTENDED_MISMATCH_CODES = new Set([
+  "xds-uuid-conflict",
+  "xds-fixedvalue-without-value",
+  "xds-fixedvalue-mismatch",
+  "xds-externalidentifier-name-unqualified",
+  "ebrim-externalidentifier-no-value",
+  "ebrim-dangling-reference",
+  "ebrim-child-order",
+  "xds-document-id-binding",
+  "cda-header-order",
+  "two-family-spec-inconsistent",
+  "two-family-mixed",
+]);
+
 function mismatch(result, severity, code, message, evidence) {
   result.structuralMismatches.push({
     severity,
     code,
+    scope: EXTENDED_MISMATCH_CODES.has(code) ? "extended" : "baseline",
     message,
     ...(evidence ? { evidence } : {}),
   });
 }
 
+const INDEPENDENT_PROVENANCE = new Set(["confluence", "confluence+sample", "standard"]);
+
 function finaliseResult(result) {
   result.kindTotals = {};
+  result.extended = { elementsFound: 0, elementsResolved: 0, elementsUnknown: 0 };
+  result.provenanceTotals = {};
   for (const entry of result.elements.values()) {
+    /* ---- extended-scope elements are tallied separately so `overall`
+     * stays comparable with the previous run ------------------------- */
+    if (entry.scope === "extended") {
+      result.extended.elementsFound++;
+      if (entry.status === "unknown") result.extended.elementsUnknown++;
+      else result.extended.elementsResolved++;
+      result.provenanceTotalsExtended = result.provenanceTotalsExtended || {};
+      const pt0 = (result.provenanceTotalsExtended[entry.provenance] =
+        result.provenanceTotalsExtended[entry.provenance] || { found: 0, resolved: 0 });
+      pt0.found++;
+      if (entry.status !== "unknown") pt0.resolved++;
+      const ktx = (result.kindTotalsExtended = result.kindTotalsExtended || {});
+      const kx = (ktx[entry.kind] = ktx[entry.kind] || { found: 0, resolved: 0, unknown: 0 });
+      kx.found++;
+      if (entry.status === "unknown") kx.unknown++;
+      else kx.resolved++;
+      if (entry.status === "unknown") {
+        result.elementsUnknownExtended = result.elementsUnknownExtended || [];
+        result.elementsUnknownExtended.push({
+          kind: entry.kind,
+          id: entry.id,
+          occurrences: entry.occurrences,
+          reason: entry.detail,
+        });
+      }
+      continue;
+    }
+    const pt = (result.provenanceTotals[entry.provenance] =
+      result.provenanceTotals[entry.provenance] || { found: 0, resolved: 0 });
+    pt.found++;
+    if (entry.status !== "unknown") pt.resolved++;
+    result.kindProvenance = result.kindProvenance || {};
+    const kp = (result.kindProvenance[entry.kind] = result.kindProvenance[entry.kind] || {});
+    kp[entry.provenance] = (kp[entry.provenance] || 0) + 1;
+
     result.elementsFound++;
     result.occurrences += entry.occurrences;
     const kt = (result.kindTotals[entry.kind] = result.kindTotals[entry.kind] || { found: 0, resolved: 0, unknown: 0 });
@@ -760,6 +1000,15 @@ function checkCda(spec, sample, text) {
     );
   }
 
+  /* ================================================================== *
+   * EXTENDED (this pass): header element ORDER, not merely presence.
+   * The compiled structure carries the normative ClinicalDocument sequence
+   * as an ORDERED member list (group "ClinicalDocument header (document
+   * order)"), with its own Confluence provenance — so this check is made
+   * against the spec, not against a sequence invented here.
+   * ================================================================== */
+  checkCdaHeaderOrder(spec, result, root, structure);
+
   // --- every templateId anywhere in the document ----------------------
   const sectionNodes = [];
   for (const node of walkXml(root)) {
@@ -857,6 +1106,104 @@ function checkCda(spec, sample, text) {
   }
 
   return finaliseResult(result);
+}
+
+/* ------------------------------------------------------------------ */
+/* EXTENDED: CDA header element ORDER                                   */
+/* ------------------------------------------------------------------ */
+
+/** the compiled ordered header sequence, or null if the structure has none */
+function compiledHeaderSequence(structure) {
+  if (!structure) return null;
+  for (const m of walkStructure(structure)) {
+    if (m.kind !== "group") continue;
+    if (!/document order/i.test(String(m.label || ""))) continue;
+    const members = structureMembers(m);
+    if (!members.length) continue;
+    return { group: m, sequence: members.map((x) => String(x.label || "").trim()) };
+  }
+  return null;
+}
+
+function checkCdaHeaderOrder(spec, result, root, structure) {
+  const EXT = { scope: "extended" };
+  const compiled = compiledHeaderSequence(structure);
+  if (!compiled) {
+    record(
+      result,
+      "cdaHeaderOrder",
+      "(no compiled sequence)",
+      "unknown",
+      "the compiled structure " +
+        (structure ? structure.id : "(none)") +
+        ' has no ordered "ClinicalDocument header (document order)" group, so header ORDER cannot be checked at all',
+      { ...EXT, provenance: "none" },
+    );
+    return;
+  }
+
+  const prov = memberProvenance(compiled.group);
+  const index = new Map();
+  compiled.sequence.forEach((label, i) => {
+    index.set(label, i);
+    index.set(label.split(":").pop(), i);
+  });
+
+  let last = -1;
+  let lastLabel = null;
+  let inverted = null;
+  let positioned = 0;
+  for (const child of root.children) {
+    const i = index.has(child.name) ? index.get(child.name) : index.get(child.local);
+    if (i === undefined) continue;
+    positioned++;
+    if (i < last && !inverted) inverted = { before: lastLabel, after: child.name };
+    if (i >= last) {
+      last = i;
+      lastLabel = child.name;
+    }
+  }
+
+  record(
+    result,
+    "cdaHeaderOrder",
+    structure.id,
+    inverted ? "unknown" : "resolved",
+    inverted
+      ? "<" + inverted.after + "> appears after <" + inverted.before + ">, inverting the compiled ClinicalDocument sequence"
+      : positioned + " header element(s) appear in the compiled normative order",
+    { ...EXT, provenance: prov },
+  );
+
+  if (inverted) {
+    mismatch(
+      result,
+      "error",
+      "cda-header-order",
+      "ClinicalDocument header is out of order: <" +
+        inverted.after +
+        "> appears after <" +
+        inverted.before +
+        ">. The compiled sequence is " +
+        compiled.sequence.join(" → "),
+      { specQuote: (compiled.group.provenance || {}).quote },
+    );
+  }
+
+  /* header elements the sample carries that the compiled sequence does not
+   * place at all — presence-only checking hid these. */
+  for (const child of root.children) {
+    if (index.has(child.name) || index.has(child.local)) continue;
+    record(
+      result,
+      "cdaHeaderOrder",
+      "unsequenced:" + child.name,
+      "unknown",
+      "<" + child.name + "> is present in the official sample but the compiled header sequence does not place it, " +
+        "so its position cannot be validated",
+      { ...EXT, provenance: "none" },
+    );
+  }
 }
 
 /* ------------------------------------------------------------------ */
@@ -975,6 +1322,20 @@ function checkFhir(spec, sample, text) {
     }
   }
 
+  /* ================================================================== *
+   * EXTENDED (this pass): the FHIR TWO-FAMILY rule, checked explicitly
+   * per sample as a single pass/fail fact rather than as two independent
+   * mismatches that are silently skipped when the compiled rule is absent.
+   *
+   * NPHIES FHIR splits into two families:
+   *   document family — Bundle.type = "document", first entry Composition
+   *   message  family — Bundle.type = "message",  first entry MessageHeader
+   * A bundle that mixes them (type "message" opening with a Composition, or
+   * type "document" opening with a MessageHeader) is structurally wrong even
+   * though every individual element resolves.
+   * ================================================================== */
+  checkFhirTwoFamily(result, structure, env, bundle, entries);
+
   const seenTypes = new Set();
   entries.forEach((entry, idx) => {
     const res = entry && entry.resource;
@@ -1051,6 +1412,89 @@ function checkFhir(spec, sample, text) {
   return finaliseResult(result);
 }
 
+const FHIR_FAMILIES = {
+  document: "Composition",
+  message: "MessageHeader",
+};
+
+function checkFhirTwoFamily(result, structure, env, bundle, entries) {
+  const EXT = { scope: "extended" };
+  const id = structure ? structure.id : "(no structure)";
+  const specType = env.bundleType || null;
+  const specFirst = (env.firstEntryRule && env.firstEntryRule.resourceType) || null;
+
+  if (!specType || !specFirst) {
+    record(
+      result,
+      "fhirTwoFamilyRule",
+      id,
+      "unknown",
+      "the compiled structure states " +
+        (specType ? "" : "no Bundle.type") +
+        (!specType && !specFirst ? " and " : "") +
+        (specFirst ? "" : "no first-entry rule") +
+        " — the two-family rule cannot be checked for this use case",
+      { ...EXT, provenance: "none" },
+    );
+    return;
+  }
+
+  /* is the compiled pair itself self-consistent? */
+  const expectedFirst = FHIR_FAMILIES[specType];
+  if (expectedFirst && expectedFirst !== specFirst) {
+    record(
+      result,
+      "fhirTwoFamilyRule",
+      id,
+      "unknown",
+      "THE COMPILED RULE IS INTERNALLY INCONSISTENT: it fixes Bundle.type to \"" +
+        specType +
+        '" but requires the first entry to be ' +
+        specFirst +
+        " — the " +
+        specType +
+        " family opens with " +
+        expectedFirst,
+      { ...EXT, provenance: "none" },
+    );
+    mismatch(
+      result,
+      "error",
+      "two-family-spec-inconsistent",
+      "compiled structure " + id + ' pairs Bundle.type "' + specType + '" with first entry ' + specFirst +
+        " — those belong to different NPHIES FHIR families",
+    );
+    return;
+  }
+
+  const actualType = bundle.type || null;
+  const actualFirst = entries[0] && entries[0].resource ? entries[0].resource.resourceType : null;
+  const typeOk = actualType === specType;
+  const firstOk = actualFirst === specFirst;
+
+  record(
+    result,
+    "fhirTwoFamilyRule",
+    id,
+    typeOk && firstOk ? "resolved" : "unknown",
+    typeOk && firstOk
+      ? 'Bundle.type "' + actualType + '" + first entry ' + actualFirst + " — consistent " + specType + " family"
+      : "family violated: Bundle.type is \"" + actualType + '" (compiled: "' + specType + '") and the first entry is ' +
+        actualFirst + " (compiled: " + specFirst + ")",
+    { ...EXT, provenance: memberProvenance({ provenance: (env.bundleTypeRule || {}).source || env.bundleTypeRule }) },
+  );
+
+  if (typeOk && !firstOk) {
+    mismatch(
+      result,
+      "error",
+      "two-family-mixed",
+      'Bundle.type is "' + actualType + '" (the ' + actualType + " family) but the bundle opens with " + actualFirst +
+        ", not " + specFirst,
+    );
+  }
+}
+
 /** removes `//...` line comments that sit OUTSIDE JSON string literals */
 function stripJsonComments(text) {
   let out = "";
@@ -1114,6 +1558,7 @@ function structureElementPaths(structure) {
   // whose label duplicates the document element.
   const paths = new Set();
   const names = new Set();
+  const nodeByPath = new Map();
   const localOf = (label) => String(label || "").split(":").pop().trim();
   const visit = (node, prefixPath) => {
     const local = localOf(node.label);
@@ -1122,11 +1567,24 @@ function structureElementPaths(structure) {
       next = prefixPath ? prefixPath + "/" + local : local;
       paths.add(next);
       names.add(local);
+      if (!nodeByPath.has(next)) nodeByPath.set(next, node);
     }
     for (const m of structureMembers(node)) visit(m, next);
   };
   visit(structure.root, "");
-  return { paths, names };
+  return { paths, names, nodeByPath };
+}
+
+/** provenance bucket for one compiled structure member */
+function memberProvenance(node) {
+  if (!node) return "unattributed";
+  const d = node.derivation;
+  if (d === "confluence" || d === "confluence+sample" || d === "sample" || d === "standard") return d;
+  const p = node.provenance || {};
+  if (p.pageId && p.sample) return "confluence+sample";
+  if (p.pageId) return "confluence";
+  if (p.sample || (node.samples && node.samples.length)) return "sample";
+  return "unattributed";
 }
 
 function checkSoap(spec, sample, text) {
@@ -1144,7 +1602,9 @@ function checkSoap(spec, sample, text) {
   if (!structure) mismatch(result, "blocker", "no-structure", picked.reason);
 
   const env = (structure && structure.envelope) || {};
-  const specPaths = structure ? structureElementPaths(structure) : { paths: new Set(), names: new Set() };
+  const specPaths = structure
+    ? structureElementPaths(structure)
+    : { paths: new Set(), names: new Set(), nodeByPath: new Map() };
 
   if (root.local !== "Envelope") {
     mismatch(
@@ -1203,7 +1663,9 @@ function checkSoap(spec, sample, text) {
     if (inEmbeddedDocument(node)) continue;
     const p = soapPath(node);
     if (specPaths.paths.has(p)) {
-      record(result, "soapPath", p, "resolved");
+      const specNode = specPaths.nodeByPath.get(p);
+      const prov = memberProvenance(specNode);
+      record(result, "soapPath", p, "resolved", null, { provenance: prov });
     } else if (specPaths.names.has(node.local)) {
       record(
         result,
@@ -1227,38 +1689,50 @@ function checkSoap(spec, sample, text) {
     // XDS metadata: Slot names, classification schemes, ExternalIdentifier names
     if (node.local === "Slot" && node.attrs.name) recordXdsName(spec, result, node.attrs.name, "xdsSlot");
     if (node.attrs.classificationScheme) {
-      const uuid = String(node.attrs.classificationScheme).toLowerCase();
+      const c = classifyUuid(spec, node.attrs.classificationScheme);
       record(
         result,
         "xdsClassificationScheme",
         node.attrs.classificationScheme,
-        spec.knownUuids.has(uuid) ? "resolved" : "unknown",
-        spec.knownUuids.has(uuid) ? null : "classification scheme UUID never mentioned anywhere in the compiled spec",
+        c.status,
+        c.status === "resolved" ? c.detail : "classification scheme UUID never mentioned anywhere in the compiled spec",
+        { provenance: c.provenance },
       );
     }
     if (node.local === "ExternalIdentifier" && node.attrs.identificationScheme) {
-      const uuid = String(node.attrs.identificationScheme).toLowerCase();
+      const c = classifyUuid(spec, node.attrs.identificationScheme);
       record(
         result,
         "xdsIdentificationScheme",
         node.attrs.identificationScheme,
-        spec.knownUuids.has(uuid) ? "resolved" : "unknown",
-        spec.knownUuids.has(uuid) ? null : "identification scheme UUID never mentioned anywhere in the compiled spec",
+        c.status,
+        c.status === "resolved" ? c.detail : "identification scheme UUID never mentioned anywhere in the compiled spec",
+        { provenance: c.provenance },
       );
     }
   }
+
+  /* ================================================================== *
+   * EXTENDED (this pass): resolve INSIDE the RegistryObjectList.
+   * The baseline gate only walked element paths and Slot names; it never
+   * looked at the ebRIM identity attributes that actually carry the XDS
+   * metadata model. Everything below is scope "extended" so the headline
+   * `overall` number stays comparable with the previous run.
+   * ================================================================== */
+  checkEbrim(spec, result, root, structure, inEmbeddedDocument);
 
   // ITI-18 query parameters live in rim:Slot/@name inside rim:AdhocQuery — already
   // covered above; also resolve the stored query id.
   for (const node of walkXml(root)) {
     if (node.local === "AdhocQuery" && node.attrs.id) {
-      const uuid = String(node.attrs.id).toLowerCase();
+      const c = classifyUuid(spec, node.attrs.id);
       record(
         result,
         "xdsStoredQueryId",
         node.attrs.id,
-        spec.knownUuids.has(uuid) ? "resolved" : "unknown",
-        spec.knownUuids.has(uuid) ? null : "stored query UUID not mentioned anywhere in the compiled spec",
+        c.status,
+        c.status === "resolved" ? c.detail : "stored query UUID not mentioned anywhere in the compiled spec",
+        { provenance: c.provenance },
       );
     }
   }
@@ -1266,23 +1740,491 @@ function checkSoap(spec, sample, text) {
   return finaliseResult(result);
 }
 
-function recordXdsName(spec, result, name, kind) {
+function recordXdsName(spec, result, name, kind, scope) {
   const literal = norm(name);
+  const meta = (lit) => ({
+    scope: scope || "baseline",
+    provenance: spec.xdsNameDerivation.get(lit) || "unattributed",
+  });
   if (spec.xdsNamesExact.has(literal)) {
-    record(result, kind, literal, "resolved");
+    record(result, kind, literal, "resolved", null, meta(literal));
     return;
   }
   const hit = spec.xdsNames.get(squashFootnote(literal));
   if (hit) {
-    record(result, kind, literal, "normalised", hit.join(" | "));
+    record(result, kind, literal, "normalised", hit.join(" | "), meta(hit[0]));
     return;
   }
   const glued = spec.xdsNamesGlued.get(squashGluedFootnote(literal));
   if (glued) {
-    record(result, kind, literal, "normalised", glued.join(" | "));
+    record(result, kind, literal, "normalised", glued.join(" | "), meta(glued[0]));
     return;
   }
-  record(result, kind, literal, "unknown", "no compiled XDS metadata attribute or query parameter with this name");
+  record(result, kind, literal, "unknown", "no compiled XDS metadata attribute or query parameter with this name", {
+    scope: scope || "baseline",
+  });
+}
+
+/* ------------------------------------------------------------------ */
+/* EXTENDED: ebRIM content model inside the RegistryObjectList          */
+/* ------------------------------------------------------------------ */
+
+const EBRIM_OBJECTS = new Set([
+  "ExtrinsicObject",
+  "RegistryPackage",
+  "Association",
+  "Classification",
+  "ExternalIdentifier",
+  "ObjectRef",
+  "RegistryObject",
+]);
+
+/**
+ * Resolves the identity attributes of every ebRIM RegistryObject against the
+ * compiled XDS content model, and checks the sample's own internal referential
+ * integrity (classifiedObject / sourceObject / targetObject must point at an id
+ * the same message declares — that is ebRIM law, not an NPHIES rule, and is
+ * recorded as provenance "standard").
+ */
+function checkEbrim(spec, result, root, structure, inEmbeddedDocument) {
+  const EXT = { scope: "extended" };
+  const declaredIds = new Set();
+  const objects = [];
+
+  for (const node of walkXml(root)) {
+    if (inEmbeddedDocument(node)) continue;
+    if (EBRIM_OBJECTS.has(node.local) || node.local === "RegistryObjectList") {
+      if (node.attrs.id) declaredIds.add(norm(node.attrs.id));
+      if (EBRIM_OBJECTS.has(node.local)) objects.push(node);
+    }
+  }
+  if (!objects.length) return;
+
+  /**
+   * Resolve an ebRIM identity attribute. Two ways the compiled spec can know
+   * it: as a scheme UUID, or as a fixedValue on rim:<Object>/@<attr>. The
+   * second matters because several of these are URNs, not UUIDs.
+   */
+  const fixedValueFor = (objectLocal, attr) =>
+    spec.xdsFixedValues.get("rim:" + objectLocal + "/@" + attr) || [];
+
+  const uuidAttr = (node, attr, kind, label) => {
+    const raw = node.attrs[attr];
+    if (!raw) return;
+    const fixed = fixedValueFor(node.local, attr);
+    const stated = fixed.filter((f) => f.value);
+    const hitFixed = stated.find((f) => f.value === norm(raw));
+    if (hitFixed) {
+      record(result, kind, raw, "resolved", "compiled fixed value on rim:" + node.local + "/@" + attr, {
+        ...EXT,
+        provenance: hitFixed.derivation,
+      });
+      return;
+    }
+    const c = classifyUuid(spec, raw);
+    if (c.status === "unknown" && fixed.length && !stated.length) {
+      /* The compiled spec HAS a rule for this attribute but the rule carries no
+       * value — it was compiled with `meaning` and provenance but the literal
+       * was dropped. Nothing can be validated against it. */
+      record(
+        result,
+        kind,
+        raw,
+        "unknown",
+        "the compiled spec declares " +
+          fixed.length +
+          " fixed value(s) for rim:" +
+          node.local +
+          "/@" +
+          attr +
+          " but EVERY ONE has a null `value` — the rule names the meanings and cites a page, yet states no literal, so nothing can be matched against it",
+        { ...EXT, provenance: "none" },
+      );
+      mismatch(
+        result,
+        "error",
+        "xds-fixedvalue-without-value",
+        "rim:" +
+          node.local +
+          "/@" +
+          attr +
+          " carries " +
+          fixed.length +
+          " compiled fixedValue row(s) with no `value` at all (meanings: " +
+          fixed.map((f) => f.statementType).join(", ") +
+          "); the official sample emits \"" +
+          raw +
+          '" and the compiled spec cannot confirm or reject it',
+      );
+      return;
+    }
+    if (c.status === "unknown" && stated.length) {
+      record(
+        result,
+        kind,
+        raw,
+        "unknown",
+        "the compiled fixed value(s) for rim:" +
+          node.local +
+          "/@" +
+          attr +
+          " are [" +
+          stated.map((f) => f.value).join(", ") +
+          "]; the official sample emits a different literal",
+        { ...EXT, provenance: "none" },
+      );
+      mismatch(
+        result,
+        "error",
+        "xds-fixedvalue-mismatch",
+        "rim:" + node.local + "/@" + attr + ' is "' + raw + '" but the compiled fixed value(s) are ' +
+          stated.map((f) => f.value).join(" | "),
+      );
+      return;
+    }
+    record(
+      result,
+      kind,
+      raw,
+      c.status,
+      c.status === "resolved"
+        ? c.detail
+        : label + " is neither a compiled fixed value nor a UUID the spec states structurally",
+      { ...EXT, provenance: c.provenance, ...(c.conflict ? { conflict: c.conflict } : {}) },
+    );
+    if (c.conflict) {
+      mismatch(
+        result,
+        "error",
+        "xds-uuid-conflict",
+        label +
+          ' is "' +
+          raw +
+          '" — the compiled spec records this as a CONFLICT that must not be auto-corrected: ' +
+          (c.conflict.action || "flag for a human") +
+          " (IHE standard value " +
+          (c.conflict.iheStandardValue || "?") +
+          ")",
+      );
+    }
+  };
+
+  /* ---- localised name / description under each RegistryObject -------- */
+  const localisedText = (parent, childLocal) => {
+    const holder = parent.children.find((c) => c.local === childLocal);
+    if (!holder) return null;
+    const ls = holder.children.find((c) => c.local === "LocalizedString");
+    return ls ? { value: norm(ls.attrs.value), charset: ls.attrs.charset || null, lang: ls.attrs.lang || null } : { value: null };
+  };
+
+  for (const obj of objects) {
+    /* identity attributes */
+    uuidAttr(obj, "objectType", "xdsObjectType", obj.local + "/@objectType");
+    uuidAttr(obj, "classificationNode", "xdsClassificationNode", obj.local + "/@classificationNode");
+
+    if (obj.attrs.status) {
+      const known =
+        /^urn:oasis:names:tc:ebxml-regrep:StatusType:/.test(obj.attrs.status) ||
+        spec.xdsNamesExact.has(norm(obj.attrs.status));
+      record(
+        result,
+        "xdsObjectStatus",
+        obj.attrs.status,
+        known ? "resolved" : "unknown",
+        known ? "ebRIM StatusType URN" : "status URN not recognised as an ebRIM StatusType and not in the compiled spec",
+        { ...EXT, provenance: known ? "standard" : "none" },
+      );
+    }
+    if (obj.local === "Association") uuidAttr(obj, "associationType", "xdsAssociationType", "Association/@associationType");
+
+    /* the ebRIM ATTRIBUTE SLOTS: which metadata attribute does each
+     * Classification / ExternalIdentifier actually carry? The compiled
+     * fields/xds.json maps the scheme UUID to the attribute NAME, and those
+     * rows come from Confluence — so this is an INDEPENDENT check even though
+     * the surrounding element tree is sample-derived. */
+    /* rim:Name on a <rim:Classification> is the DISPLAY NAME of the coded
+     * value ("Primary Healthcare"), i.e. value-level content, which this gate
+     * does not measure. On a <rim:ExternalIdentifier> it is the IHE-prescribed
+     * metadata ATTRIBUTE NAME ("XDSDocumentEntry.patientId") — a structural
+     * literal an HIS must emit exactly. Only the latter is recorded. */
+    if (obj.local === "ExternalIdentifier") {
+      const schemeUuid = String(obj.attrs.identificationScheme || "").toLowerCase();
+      const scheme = schemeUuid ? spec.xdsSchemeByUuid.get(schemeUuid) : null;
+      const nm = localisedText(obj, "Name");
+      if (nm && nm.value) {
+        const literal = nm.value;
+        const tail = literal.includes(".") ? literal.slice(literal.lastIndexOf(".") + 1) : literal;
+        if (spec.xdsNamesExact.has(literal)) {
+          record(result, "xdsExternalIdentifierName", literal, "resolved", null, {
+            ...EXT,
+            provenance: spec.xdsNameDerivation.get(literal) || "unattributed",
+          });
+        } else if (scheme && scheme.label && squash(scheme.label) === squash(tail)) {
+          /* The compiled spec names the attribute by its BARE form; the samples
+           * (and IHE ITI TF-3) emit the object-qualified form. An HIS that emits
+           * the compiled literal verbatim would be emitting the wrong name. */
+          record(
+            result,
+            "xdsExternalIdentifierName",
+            literal,
+            "normalised",
+            'the compiled spec names this attribute "' +
+              scheme.label +
+              '" (bare); the official samples emit the IHE object-qualified form "' +
+              literal +
+              '". The qualified literal is never stated in the compiled spec',
+            { ...EXT, provenance: scheme.derivation },
+          );
+          mismatch(
+            result,
+            "warn",
+            "xds-externalidentifier-name-unqualified",
+            'rim:ExternalIdentifier for scheme ' + schemeUuid + ' must carry rim:Name "' + literal +
+              '", but the compiled spec records the attribute only as "' + scheme.label + '"',
+          );
+        } else {
+          record(
+            result,
+            "xdsExternalIdentifierName",
+            literal,
+            "unknown",
+            "no compiled XDS metadata attribute matches this ExternalIdentifier name" +
+              (scheme ? ' (scheme ' + schemeUuid + ' is compiled as "' + scheme.label + '")' : ""),
+            { ...EXT, provenance: "none" },
+          );
+        }
+      }
+      if (!obj.attrs.value) {
+        mismatch(result, "error", "ebrim-externalidentifier-no-value", "<rim:ExternalIdentifier> has no @value attribute");
+      }
+    }
+
+    const desc = localisedText(obj, "Description");
+    if (desc && desc.value) {
+      record(result, "xdsDescription", obj.local + "/Description", "resolved", "ebRIM InternationalString", {
+        ...EXT,
+        provenance: "standard",
+      });
+    }
+
+    /* ---- referential integrity (ebRIM law) -------------------------- */
+    /* An Association whose type is NOT HasMember deliberately points OUTSIDE
+     * the submission: an RPLC targetObject is the entryUUID of the document
+     * already in the registry that this submission replaces. Such a reference
+     * is unresolvable within the message BY DESIGN and is not a defect. */
+    const assocType = obj.local === "Association" ? norm(obj.attrs.associationType) : null;
+    const pointsOutsideByDesign =
+      obj.local === "Association" && assocType && !/(^|:)HasMember$/.test(assocType);
+
+    for (const [attr, kind] of [
+      ["classifiedObject", "xdsRef/classifiedObject"],
+      ["registryObject", "xdsRef/registryObject"],
+      ["sourceObject", "xdsRef/sourceObject"],
+      ["targetObject", "xdsRef/targetObject"],
+    ]) {
+      const ref = norm(obj.attrs[attr]);
+      if (!ref) continue;
+      const external = pointsOutsideByDesign && attr === "targetObject";
+      const ok = declaredIds.has(ref);
+      if (external && !ok) {
+        record(
+          result,
+          "xdsObjectReference",
+          kind + " (external)",
+          "resolved",
+          "targetObject of a " + assocType + " association refers to an object already in the registry, not to this submission",
+          { ...EXT, provenance: "standard" },
+        );
+        continue;
+      }
+      record(result, "xdsObjectReference", kind, ok ? "resolved" : "unknown", ok ? null : "dangling reference", {
+        ...EXT,
+        provenance: "standard",
+      });
+      if (!ok) {
+        mismatch(
+          result,
+          "error",
+          "ebrim-dangling-reference",
+          "<" + obj.local + " " + attr + '="' + ref + '"> points at an id no RegistryObject in this message declares',
+        );
+      }
+    }
+  }
+
+  /* ---- ebRIM child order inside each RegistryObject ----------------- *
+   * ebRIM's own schema sequences RegistryObject children as
+   * Slot*, Name?, Description?, Classification*, ExternalIdentifier*.
+   * The official ITI-41 samples state this sequence in an inline comment.
+   * Recorded as provenance "standard": it is the ebXML RegRep schema, not a
+   * cached NPHIES page. */
+  const ORDER = ["Slot", "Name", "Description", "VersionInfo", "Classification", "ExternalIdentifier"];
+  for (const obj of objects) {
+    if (obj.local !== "ExtrinsicObject" && obj.local !== "RegistryPackage") continue;
+    let last = -1;
+    let lastName = null;
+    let inverted = null;
+    for (const child of obj.children) {
+      const idx = ORDER.indexOf(child.local);
+      if (idx < 0) continue;
+      if (idx < last && !inverted) inverted = { before: lastName, after: child.local };
+      else if (idx >= last) {
+        last = idx;
+        lastName = child.local;
+      }
+    }
+    record(
+      result,
+      "xdsEbrimChildOrder",
+      obj.local,
+      inverted ? "unknown" : "resolved",
+      inverted
+        ? "child <rim:" + inverted.after + "> appears after <rim:" + inverted.before + ">, which violates the ebRIM RegistryObject sequence " +
+          ORDER.filter((o) => o !== "VersionInfo").join(" → ")
+        : "children follow the ebRIM RegistryObject sequence",
+      { ...EXT, provenance: "standard" },
+    );
+    if (inverted) {
+      mismatch(
+        result,
+        "error",
+        "ebrim-child-order",
+        "<rim:" + obj.local + "> emits <rim:" + inverted.after + "> after <rim:" + inverted.before +
+          ">; ebRIM sequences RegistryObject children as Slot*, Name?, Description?, Classification*, ExternalIdentifier*",
+      );
+    }
+  }
+
+  /* ---- ITI-41: xdsb:Document/@id SHALL match an ExtrinsicObject @id -- *
+   * This one IS stated by the compiled structure's own notes. */
+  const note = ((structure && structure.notes) || []).find((n) => /@id SHALL match the ExtrinsicObject @id/.test(n));
+  if (note) {
+    const extrinsicIds = new Set(objects.filter((o) => o.local === "ExtrinsicObject").map((o) => norm(o.attrs.id)));
+    for (const node of walkXml(root)) {
+      if (node.local !== "Document" || !node.attrs.id) continue;
+      const ok = extrinsicIds.has(norm(node.attrs.id));
+      record(result, "xdsDocumentIdBinding", node.attrs.id, ok ? "resolved" : "unknown", ok ? null : "no matching ExtrinsicObject @id", {
+        ...EXT,
+        provenance: "confluence",
+      });
+      if (!ok) {
+        mismatch(
+          result,
+          "error",
+          "xds-document-id-binding",
+          '<xdsb:Document id="' + node.attrs.id + '"> does not match any ExtrinsicObject @id',
+          { specQuote: note },
+        );
+      }
+    }
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* EXTENDED: structures with NO official sample                         */
+/* ------------------------------------------------------------------ */
+
+/**
+ * A structure no golden sample exercises cannot be RESOLVED against anything.
+ * It can only be checked for INTERNAL CONSISTENCY. The result is reported in
+ * its own section and is deliberately NOT folded into any resolution rate:
+ * "internally consistent" is not "verified".
+ */
+function checkUnverifiedStructure(structure) {
+  const findings = [];
+  const add = (severity, code, message) => findings.push({ severity, code, message });
+  const nodes = [...walkStructure(structure)];
+  const env = structure.envelope || {};
+
+  /* 1. root element agrees with the declared envelope root */
+  const rootChild = structureMembers(structure.root)[0] || structure.root;
+  const rootLabel = String(rootChild.label || structure.root.label || "").trim();
+  if (env.rootElement && rootLabel && env.rootElement !== rootLabel) {
+    add("error", "root-mismatch", 'envelope.rootElement is "' + env.rootElement + '" but the tree root is "' + rootLabel + '"');
+  }
+
+  /* 2. every namespace prefix used by a label is declared in the envelope */
+  const declared = new Set((env.namespaces || []).map((n) => n.prefix));
+  const usedPrefixes = new Map();
+  for (const n of nodes) {
+    const label = String(n.label || "");
+    const m = label.match(/^@?xmlns:([A-Za-z_][\w.-]*)$/) || label.match(/^@?([A-Za-z_][\w.-]*):/);
+    if (!m) continue;
+    if (!usedPrefixes.has(m[1])) usedPrefixes.set(m[1], label);
+  }
+  for (const [prefix, example] of usedPrefixes) {
+    if (!declared.has(prefix)) {
+      add("error", "undeclared-prefix", 'prefix "' + prefix + ':" is used (e.g. ' + example + ") but envelope.namespaces does not declare it");
+    }
+  }
+  const unusedPrefixes = [...declared].filter((p) => !usedPrefixes.has(p));
+  if (unusedPrefixes.length) {
+    add(
+      "warn",
+      "unused-prefix",
+      "envelope.namespaces declares " + unusedPrefixes.join(", ") + " but no member label uses " +
+        (unusedPrefixes.length === 1 ? "it" : "them") +
+        " (they may still be needed by attribute VALUES such as xsi:type)",
+    );
+  }
+
+  /* 3. every member carries provenance */
+  const noProv = nodes.filter((n) => !(n.provenance && (n.provenance.pageId || n.provenance.sample || n.provenance.quote)));
+  if (noProv.length) {
+    add("error", "missing-provenance", noProv.length + " of " + nodes.length + " member(s) carry no provenance at all");
+  }
+
+  /* 4. attribute members must sit under an element member */
+  for (const n of nodes) {
+    if (!String(n.label || "").startsWith("@")) continue;
+    const owner = nodes.find((p) => structureMembers(p).includes(n));
+    if (!owner || String(owner.label || "").startsWith("@")) {
+      add("error", "orphan-attribute", 'attribute member "' + n.label + '" is not a child of an element member');
+    }
+  }
+
+  /* 5. usage cardinalities must be coherent */
+  for (const n of nodes) {
+    for (const u of n.usage || []) {
+      if (u.min != null && u.max != null && u.max !== 0 && u.min > u.max) {
+        add("error", "bad-cardinality", '"' + n.label + '" has min ' + u.min + " > max " + u.max);
+      }
+      if ((u.usage === "M" || u.usage === "R") && u.min === 0) {
+        add("warn", "usage-vs-min", '"' + n.label + '" is usage ' + u.usage + " but min is 0");
+      }
+    }
+  }
+
+  /* 6. a declared signature level must correspond to a signature member */
+  if (env.signatureLevel) {
+    const sig = nodes.find((n) => /Signature$/.test(String(n.label || "")));
+    if (!sig) {
+      add("error", "signature-missing", 'envelope.signatureLevel is "' + env.signatureLevel + '" but no member is a Signature element');
+    }
+  }
+
+  /* 7. duplicate sibling labels */
+  for (const n of nodes) {
+    const seen = new Set();
+    for (const m of structureMembers(n)) {
+      const l = String(m.label || "");
+      if (seen.has(l)) add("warn", "duplicate-sibling", 'two children of "' + n.label + '" share the label "' + l + '"');
+      seen.add(l);
+    }
+  }
+
+  return {
+    structureId: structure.id,
+    family: structure.family,
+    useCaseId: structure.useCaseId,
+    confidence: structure.confidence,
+    confidenceReason: structure.confidenceReason || null,
+    verifiedAgainstSample: structure.verifiedAgainstSample === true,
+    members: nodes.length,
+    status: "UNVERIFIED — no official sample exists; internal consistency only",
+    internallyConsistent: findings.filter((f) => f.severity === "error").length === 0,
+    findings,
+  };
 }
 
 /* ------------------------------------------------------------------ */
@@ -1346,16 +2288,22 @@ function main() {
 
   /* ---- aggregate ---------------------------------------------------- */
   const totals = { elementsFound: 0, elementsResolved: 0, elementsResolvedExact: 0, elementsResolvedNormalised: 0 };
+  const extendedTotals = { elementsFound: 0, elementsResolved: 0, elementsUnknown: 0 };
   const byFormat = {};
   const unresolvedIndex = new Map();
+  const unresolvedExtendedIndex = new Map();
   const mismatchIndex = new Map();
   const byKind = {};
+  const byKindExtended = {};
 
   for (const r of perSample) {
     totals.elementsFound += r.elementsFound;
     totals.elementsResolved += r.elementsResolved;
     totals.elementsResolvedExact += r.elementsResolvedExact;
     totals.elementsResolvedNormalised += r.elementsResolvedNormalised;
+    extendedTotals.elementsFound += (r.extended || {}).elementsFound || 0;
+    extendedTotals.elementsResolved += (r.extended || {}).elementsResolved || 0;
+    extendedTotals.elementsUnknown += (r.extended || {}).elementsUnknown || 0;
 
     const f = (byFormat[r.format] = byFormat[r.format] || {
       samples: 0,
@@ -1365,6 +2313,9 @@ function main() {
       elementsUnknown: 0,
       samplesWithoutStructure: 0,
       structuralMismatches: 0,
+      byProvenance: {},
+      extendedFound: 0,
+      extendedResolved: 0,
     });
     f.samples++;
     f.elementsFound += r.elementsFound;
@@ -1372,13 +2323,43 @@ function main() {
     f.elementsResolvedNormalised += r.elementsResolvedNormalised;
     f.elementsUnknown += r.elementsUnknownCount;
     f.structuralMismatches += r.structuralMismatches.length;
+    f.extendedFound += (r.extended || {}).elementsFound || 0;
+    f.extendedResolved += (r.extended || {}).elementsResolved || 0;
     if (!r.structureId) f.samplesWithoutStructure++;
+    for (const [prov, pt] of Object.entries(r.provenanceTotals || {})) {
+      const agg = (f.byProvenance[prov] = f.byProvenance[prov] || { found: 0, resolved: 0 });
+      agg.found += pt.found;
+      agg.resolved += pt.resolved;
+    }
+    for (const [kind, kp] of Object.entries(r.kindProvenance || {})) {
+      f.byKindProvenance = f.byKindProvenance || {};
+      const agg = (f.byKindProvenance[kind] = f.byKindProvenance[kind] || {});
+      for (const [prov, n] of Object.entries(kp)) agg[prov] = (agg[prov] || 0) + n;
+    }
 
     for (const [kind, kt] of Object.entries(r.kindTotals || {})) {
       const agg = (byKind[kind] = byKind[kind] || { found: 0, resolved: 0, unknown: 0 });
       agg.found += kt.found;
       agg.resolved += kt.resolved;
       agg.unknown += kt.unknown;
+    }
+    for (const [kind, kt] of Object.entries(r.kindTotalsExtended || {})) {
+      const agg = (byKindExtended[kind] = byKindExtended[kind] || { found: 0, resolved: 0, unknown: 0 });
+      agg.found += kt.found;
+      agg.resolved += kt.resolved;
+      agg.unknown += kt.unknown;
+    }
+    for (const u of r.elementsUnknownExtended || []) {
+      const key = u.kind + "::" + u.id;
+      let agg = unresolvedExtendedIndex.get(key);
+      if (!agg) {
+        agg = { kind: u.kind, identifier: u.id, samples: 0, occurrences: 0, reason: u.reason, formats: new Set(), exampleSamples: [] };
+        unresolvedExtendedIndex.set(key, agg);
+      }
+      agg.samples++;
+      agg.occurrences += u.occurrences;
+      agg.formats.add(r.format);
+      if (agg.exampleSamples.length < 3) agg.exampleSamples.push(r.fileName);
     }
 
     for (const u of r.elementsUnknown) {
@@ -1407,14 +2388,59 @@ function main() {
 
   for (const f of Object.values(byFormat)) {
     f.resolutionRate = f.elementsFound ? Number((f.elementsResolved / f.elementsFound).toFixed(4)) : 0;
+    /* ---- INDEPENDENCE: how much resolves against a rule that did NOT come
+     * from the golden samples themselves --------------------------------- */
+    let indResolved = 0;
+    let circResolved = 0;
+    let unattributed = 0;
+    let prose = 0;
+    for (const [prov, pt] of Object.entries(f.byProvenance)) {
+      if (INDEPENDENT_PROVENANCE.has(prov)) indResolved += pt.resolved;
+      else if (prov === "sample") circResolved += pt.resolved;
+      else if (prov === "prose-mention") prose += pt.resolved;
+      else if (prov === "unattributed") unattributed += pt.resolved;
+    }
+    const tagged = indResolved + circResolved + prose;
+    f.independent = tagged
+      ? {
+          provenanceTracked: true,
+          resolvedByIndependentRule: indResolved,
+          resolvedBySampleDerivedRule: circResolved,
+          resolvedByProseMentionOnly: prose,
+          resolvedByUnattributedRule: unattributed,
+          independentResolutionRate: f.elementsFound ? Number((indResolved / f.elementsFound).toFixed(4)) : 0,
+        }
+      : {
+          provenanceTracked: false,
+          note:
+            "This pass tags rule provenance for SOAP/XDS only, because that is where sample-derived structures live. " +
+            "The " +
+            "CDA, FHIR and HL7 v2 trees are compiled from Confluence tables rather than from the samples, so they are not " +
+            "circular in the same way — but this gate has NOT proved that per rule. Read no independence figure into this format.",
+          resolvedByUnattributedRule: unattributed,
+        };
   }
   for (const k of Object.values(byKind)) {
+    k.resolutionRate = k.found ? Number((k.resolved / k.found).toFixed(4)) : 0;
+  }
+
+  for (const k of Object.values(byKindExtended)) {
     k.resolutionRate = k.found ? Number((k.resolved / k.found).toFixed(4)) : 0;
   }
 
   const topUnresolved = [...unresolvedIndex.values()]
     .map((a) => ({ ...a, formats: [...a.formats].sort() }))
     .sort((a, b) => b.samples - a.samples || b.occurrences - a.occurrences || a.identifier.localeCompare(b.identifier));
+  const topUnresolvedExtended = [...unresolvedExtendedIndex.values()]
+    .map((a) => ({ ...a, formats: [...a.formats].sort() }))
+    .sort((a, b) => b.samples - a.samples || b.occurrences - a.occurrences || a.identifier.localeCompare(b.identifier));
+
+  /* ---- structures no golden sample exercises ------------------------- */
+  const sampledUseCaseIds = new Set(perSample.map((r) => r.useCaseId));
+  const unverifiedStructures = Object.values(spec.structures)
+    .filter((s) => !sampledUseCaseIds.has(s.useCaseId))
+    .map(checkUnverifiedStructure)
+    .sort((a, b) => a.structureId.localeCompare(b.structureId));
 
   /* ---- blockers ------------------------------------------------------ */
   const blockers = [];
@@ -1517,19 +2543,113 @@ function main() {
     );
   }
 
-  const circular = perSample.filter(
-    (r) => r.format === "soap-xds" && r.structureId && /derivedFrom/.test(
-      JSON.stringify((spec.structures[r.structureId] || {}).envelope || {}),
-    ),
-  );
-  if (circular.length) {
-    push(
-      "warn",
+  /* ---- CIRCULARITY, QUANTIFIED -------------------------------------- *
+   * The SOAP/XDS structures are partly derived from the very samples this
+   * gate measures them against. A resolution rate computed over those rules
+   * is self-confirming. This block reports both numbers and states plainly
+   * which one is honest. */
+  const soap = byFormat["soap-xds"];
+  const circularStructures = [...new Set(perSample.filter((r) => r.format === "soap-xds").map((r) => r.structureId))]
+    .filter(Boolean)
+    .map((id) => {
+      const s = spec.structures[id] || {};
+      const counts = { confluence: 0, "confluence+sample": 0, sample: 0, standard: 0, unattributed: 0 };
+      for (const m of walkStructure(s)) {
+        const p = memberProvenance(m);
+        counts[p] = (counts[p] || 0) + 1;
+      }
+      const total = Object.values(counts).reduce((a, b) => a + b, 0);
+      return {
+        structureId: id,
+        members: total,
+        byProvenance: counts,
+        sampleDerivedShare: total ? Number((counts.sample / total).toFixed(4)) : 0,
+        envelopeDerivedFrom: (s.envelope || {}).derivedFrom || null,
+        selfDeclaredCircular: ((s.notes || []).find((n) => /not independent confirmation/i.test(n)) || null),
+      };
+    })
+    .sort((a, b) => b.sampleDerivedShare - a.sampleDerivedShare);
+
+  const independence = soap
+    ? {
+        headline:
+          "SOAP/XDS resolves " +
+          (soap.resolutionRate * 100).toFixed(1) +
+          "% overall, but only " +
+          (soap.independent.independentResolutionRate * 100).toFixed(1) +
+          "% against rules that did NOT come from these same samples. The second number is the honest one.",
+        format: "soap-xds",
+        elementsFound: soap.elementsFound,
+        resolvedOverall: soap.elementsResolved,
+        resolutionRateOverall: soap.resolutionRate,
+        resolvedByIndependentRule: soap.independent.resolvedByIndependentRule,
+        independentResolutionRate: soap.independent.independentResolutionRate,
+        breakdown: soap.byProvenance,
+        byElementKind: Object.fromEntries(
+          Object.entries(soap.byKindProvenance || {}).map(([kind, counts]) => {
+            const total = Object.values(counts).reduce((a, b) => a + b, 0);
+            const ind = Object.entries(counts)
+              .filter(([p]) => INDEPENDENT_PROVENANCE.has(p))
+              .reduce((a, [, n]) => a + n, 0);
+            return [
+              kind,
+              {
+                found: total,
+                independent: ind,
+                circular: counts.sample || 0,
+                proseMentionOnly: counts["prose-mention"] || 0,
+                unattributed: counts.unattributed || 0,
+                independentShare: total ? Number((ind / total).toFixed(4)) : 0,
+              },
+            ];
+          }).sort((a, b) => a[1].independentShare - b[1].independentShare),
+        ),
+        provenanceMeaning: {
+          confluence: "INDEPENDENT — a cached Confluence page states it",
+          "confluence+sample": "INDEPENDENT — a Confluence row, confirmed against a sample",
+          standard: "INDEPENDENT of the samples — published IHE/ebRIM/HL7 constant, but NOT NPHIES-confirmed",
+          sample: "CIRCULAR — the rule was read off a golden sample, so resolving that sample proves nothing",
+          "prose-mention": "WEAKEST — the literal appears only inside narrative text in the bundle, never as a locator or fixed value",
+          unattributed: "the compiled member carries no provenance at all — treat as unverified",
+        },
+        perStructure: circularStructures,
+        alsoAppliesTo:
+          "The same reasoning applies to every format, but only SOAP/XDS has sample-derived structural members; the CDA, FHIR and HL7 v2 trees come from Confluence tables.",
+      }
+    : null;
+
+  /* this one leads the blocker list: it qualifies every SOAP number above it */
+  const pushFirst = (severity, area, title, detail) => blockers.unshift({ severity, area, title, detail });
+  if (soap && soap.independent.resolvedBySampleDerivedRule) {
+    pushFirst(
+      "blocker",
       "methodology",
-      "SOAP/XDS structures are themselves derived from these same golden samples",
-      "envelope.derivedFrom on " +
-        [...new Set(circular.map((r) => r.structureId))].join(", ") +
-        " cites spec-source/golden/SOAP/*. Any SOAP resolution number is partly circular and must not be read as independent confirmation. Only the XDS metadata attribute names (resolved against fields/xds.json, which comes from Confluence) are an independent measurement.",
+      "CIRCULARITY: " +
+        soap.independent.resolvedBySampleDerivedRule +
+        " of " +
+        soap.elementsFound +
+        " SOAP/XDS identifiers (" +
+        ((soap.independent.resolvedBySampleDerivedRule / soap.elementsFound) * 100).toFixed(1) +
+        "%) resolve ONLY against rules derived from these same golden samples",
+      "SOAP/XDS reads " +
+        (soap.resolutionRate * 100).toFixed(1) +
+        "% overall but " +
+        (soap.independent.independentResolutionRate * 100).toFixed(1) +
+        "% against independently-sourced rules. " +
+        circularStructures
+          .filter((c) => c.byProvenance.sample)
+          .map((c) => c.structureId + " (" + c.byProvenance.sample + "/" + c.members + " members sample-derived)")
+          .join(", ") +
+        ". The compiled structures say so themselves in envelope.derivedFrom and in their notes. Do not quote the overall SOAP figure as evidence that the spec is right.",
+    );
+  }
+  if (soap && soap.independent.resolvedByProseMentionOnly) {
+    push(
+      "error",
+      "methodology",
+      soap.independent.resolvedByProseMentionOnly +
+        " SOAP/XDS identifier(s) are counted resolved only because the literal appears inside NARRATIVE TEXT in the compiled bundle",
+      "The baseline gate matched UUIDs by regexing whole JSON blobs, so a UUID quoted inside a provenance quote, a guidance sentence or a confidenceReason counted as spec knowledge. A validator cannot act on a UUID that is not a locator or a fixed value. These are now labelled provenance \"prose-mention\".",
     );
   }
 
@@ -1601,6 +2721,47 @@ function main() {
     });
   }
 
+  const fixedValueless = [...mismatchIndex.values()].find((m) => m.code === "xds-fixedvalue-without-value");
+  if (fixedValueless) {
+    recommendations.push({
+      priority: recommendations.length + 1,
+      area: "xds",
+      action:
+        "rim:Association/@associationType compiles to three fixedValue rows that each carry a `meaning`, an `observedInSamples` count and a Confluence quote — but no `value`. The literal was dropped during compilation, so the compiled spec cannot confirm or reject the associationType an HIS emits, even though its confidenceReason discusses the HasMember bare-token-vs-URN conflict in detail. Re-extract the value column from page 17694743.",
+      firstTargets: fixedValueless.examples.map((e) => e.message),
+    });
+  }
+  const unqualified = [...mismatchIndex.values()].find((m) => m.code === "xds-externalidentifier-name-unqualified");
+  if (unqualified) {
+    recommendations.push({
+      priority: recommendations.length + 1,
+      area: "xds",
+      action:
+        "Every rim:ExternalIdentifier must carry the IHE object-qualified metadata name (XDSDocumentEntry.patientId, XDSSubmissionSet.sourceId, ...). The compiled spec stores only the bare attribute name (patientId, sourceId) as a locator; the qualified literal appears only inside guidance prose. An HIS generating rim:Name from the compiled label would emit the wrong name in every submission.",
+      firstTargets: unqualified.examples.map((e) => e.message),
+    });
+  }
+  if (soap && soap.independent.resolvedBySampleDerivedRule) {
+    recommendations.push({
+      priority: recommendations.length + 1,
+      area: "methodology",
+      action:
+        "Reduce SOAP/XDS circularity: " +
+        circularStructures
+          .filter((c) => c.byProvenance.sample)
+          .map((c) => c.structureId + " " + c.byProvenance.sample + "/" + c.members)
+          .join(", ") +
+        " members are sample-derived. Until those members are traced to a cached Confluence page, the honest SOAP number is " +
+        (soap.independent.independentResolutionRate * 100).toFixed(1) +
+        "%, not " +
+        (soap.resolutionRate * 100).toFixed(1) +
+        "%. soapPath is the worst kind at " +
+        ((independence.byElementKind.soapPath || { independentShare: 0 }).independentShare * 100).toFixed(1) +
+        "% independent.",
+      firstTargets: circularStructures.filter((c) => c.byProvenance.sample).map((c) => c.structureId),
+    });
+  }
+
   const report = {
     $schema: "nphies-workbench/gate-report@1",
     generatedAt: startedAt,
@@ -1612,6 +2773,10 @@ function main() {
       normalisedMatch: "the identifier exists in the compiled spec but only after stripping injected whitespace, trailing footnote digits or case differences — counted as resolved, reported as an extraction defect",
       structuralMismatch: "the element resolves but contradicts a compiled rule (order, usage X/NP, fixed value, bundle type, entry list membership)",
       notMeasured: "value-level conformance (code systems, value sets, datatypes, lengths) is out of scope for this gate",
+      scope:
+        "`overall` and `byFormat` count ONLY baseline-scope elements — the same identifiers the previous run counted — so the figures are directly comparable. Checks added by this pass are scope \"extended\" and are counted in `overallExtended` and `byElementKindExtended`.",
+      independence:
+        "Every resolved identifier is tagged with the PROVENANCE of the compiled rule that resolved it. A rule derived from a golden sample cannot confirm that same sample; see the `independence` section.",
     },
     overall: {
       samples: perSample.length,
@@ -1630,16 +2795,83 @@ function main() {
         ? Number((totals.elementsResolvedExact / totals.elementsFound).toFixed(4))
         : 0,
       distinctUnresolvedIdentifiers: topUnresolved.length,
-      structuralMismatches: perSample.reduce((n, r) => n + r.structuralMismatches.length, 0),
+      structuralMismatches: perSample.reduce(
+        (n, r) => n + r.structuralMismatches.filter((m) => m.scope !== "extended").length,
+        0,
+      ),
+      structuralMismatchesIncludingExtendedChecks: perSample.reduce((n, r) => n + r.structuralMismatches.length, 0),
       samplesFullyResolved: perSample.filter((r) => r.elementsUnknownCount === 0).length,
     },
+    independence,
+    overallExtended: {
+      note:
+        "baseline identifiers PLUS the checks this pass added (ebRIM content model, CDA header order, FHIR two-family rule). Not comparable with the previous run — compare `overall` for that.",
+      elementsFound: totals.elementsFound + extendedTotals.elementsFound,
+      resolved: totals.elementsResolved + extendedTotals.elementsResolved,
+      unresolved:
+        totals.elementsFound - totals.elementsResolved + extendedTotals.elementsUnknown,
+      resolutionRate:
+        totals.elementsFound + extendedTotals.elementsFound
+          ? Number(
+              ((totals.elementsResolved + extendedTotals.elementsResolved) /
+                (totals.elementsFound + extendedTotals.elementsFound)).toFixed(4),
+            )
+          : 0,
+      addedByThisPass: {
+        elementsFound: extendedTotals.elementsFound,
+        resolved: extendedTotals.elementsResolved,
+        unresolved: extendedTotals.elementsUnknown,
+        resolutionRate: extendedTotals.elementsFound
+          ? Number((extendedTotals.elementsResolved / extendedTotals.elementsFound).toFixed(4))
+          : 0,
+      },
+    },
+    coverageExtensions: [
+      {
+        area: "soap-xds",
+        check: "ebRIM content model inside RegistryObjectList",
+        what:
+          "@objectType, @classificationNode, @status, @associationType, the rim:Name of every Classification/ExternalIdentifier, rim:Description, referential integrity of classifiedObject/registryObject/sourceObject/targetObject, ebRIM child sequence, and the ITI-41 Document@id ↔ ExtrinsicObject@id binding",
+        wasPreviouslyBlind: "the baseline gate saw only element PATHS and Slot names; none of the ebRIM identity attributes were checked",
+        kinds: ["xdsObjectType", "xdsClassificationNode", "xdsObjectStatus", "xdsAssociationType", "xdsMetadataAttributeName", "xdsDescription", "xdsObjectReference", "xdsEbrimChildOrder", "xdsDocumentIdBinding"],
+      },
+      {
+        area: "cda",
+        check: "ClinicalDocument header element ORDER",
+        what:
+          "the sample's header children are checked against the ORDERED member list of the compiled \"ClinicalDocument header (document order)\" group, and any header element the compiled sequence does not place is reported as unsequenced",
+        wasPreviouslyBlind: "the baseline gate only asked whether each header element NAME was known somewhere in the spec",
+        kinds: ["cdaHeaderOrder"],
+      },
+      {
+        area: "fhir",
+        check: "two-family rule (Bundle.type + first entry) per sample",
+        what:
+          "document family = Bundle.type \"document\" opening with a Composition; message family = Bundle.type \"message\" opening with a MessageHeader. Checked as one fact per sample, including whether the COMPILED pair is itself self-consistent",
+        wasPreviouslyBlind:
+          "the baseline gate raised two independent mismatches and silently checked nothing when the compiled structure lacked either rule",
+        kinds: ["fhirTwoFamilyRule"],
+      },
+      {
+        area: "saml",
+        check: "internal consistency of structures with no golden sample",
+        what: "reported in `unverifiedStructures`; deliberately NOT counted as resolution — internally consistent is not verified",
+        wasPreviouslyBlind: "saml-sso was invisible to the gate entirely",
+        kinds: [],
+      },
+    ],
+    unverifiedStructures,
     byFormat,
     byElementKind: Object.fromEntries(
       Object.entries(byKind).sort((a, b) => a[1].resolutionRate - b[1].resolutionRate),
     ),
+    byElementKindExtended: Object.fromEntries(
+      Object.entries(byKindExtended).sort((a, b) => a[1].resolutionRate - b[1].resolutionRate),
+    ),
     perSample: perSample.sort((a, b) => a.resolutionRate - b.resolutionRate),
     topUnresolved: topUnresolved.slice(0, 120),
     topUnresolvedTruncated: Math.max(0, topUnresolved.length - 120),
+    topUnresolvedExtended: topUnresolvedExtended.slice(0, 120),
     mismatchSummary: [...mismatchIndex.values()].sort((a, b) => b.count - a.count),
     blockers,
     recommendations,
@@ -1659,7 +2891,8 @@ function main() {
       "    exact               " + o.resolvedExact + "  (" + (o.resolutionRateExact * 100).toFixed(1) + "%)\n" +
       "    after normalisation " + o.resolvedOnlyAfterNormalisation + "\n" +
       "  UNRESOLVED            " + o.unresolved + "  (" + o.distinctUnresolvedIdentifiers + " distinct)\n" +
-      "  structural mismatches " + o.structuralMismatches + "\n" +
+      "  structural mismatches " + o.structuralMismatches + "  (baseline checks; " +
+      o.structuralMismatchesIncludingExtendedChecks + " including this pass's new checks)\n" +
       "  fully resolved samples " + o.samplesFullyResolved + "/" + o.samples + "\n\n",
   );
   for (const [fmt, f] of Object.entries(byFormat).sort((a, b) => a[1].resolutionRate - b[1].resolutionRate)) {
@@ -1683,6 +2916,64 @@ function main() {
       "    " + String(u.samples).padStart(2) + " samples  " + u.kind + "  " + u.identifier + "\n",
     );
   }
+
+  if (independence) {
+    process.stdout.write(
+      "\n  INDEPENDENCE (soap-xds) — the honest number\n" +
+        "    overall resolution            " + (independence.resolutionRateOverall * 100).toFixed(1) + "%  " +
+        independence.resolvedOverall + "/" + independence.elementsFound + "\n" +
+        "    INDEPENDENTLY-SOURCED ONLY    " + (independence.independentResolutionRate * 100).toFixed(1) + "%  " +
+        independence.resolvedByIndependentRule + "/" + independence.elementsFound + "\n",
+    );
+    for (const [prov, pt] of Object.entries(independence.breakdown).sort((a, b) => b[1].found - a[1].found)) {
+      process.stdout.write("      " + prov.padEnd(20) + String(pt.resolved).padStart(5) + "/" + String(pt.found).padEnd(5) + "\n");
+    }
+    process.stdout.write("    by element kind (independent share)\n");
+    for (const [kind, k] of Object.entries(independence.byElementKind)) {
+      process.stdout.write(
+        "      " + kind.padEnd(26) + (k.independentShare * 100).toFixed(1).padStart(6) + "%   independent " +
+          String(k.independent).padStart(4) + "  circular " + String(k.circular).padStart(4) +
+          "  of " + k.found + "\n",
+      );
+    }
+  }
+
+  const ext = report.overallExtended;
+  process.stdout.write(
+    "\n  EXTENDED COVERAGE ADDED BY THIS PASS\n" +
+      "    new identifiers       " + ext.addedByThisPass.elementsFound + "\n" +
+      "    resolved              " + ext.addedByThisPass.resolved +
+      "  (" + (ext.addedByThisPass.resolutionRate * 100).toFixed(1) + "%)\n" +
+      "    unresolved            " + ext.addedByThisPass.unresolved + "\n" +
+      "    baseline + extended   " + (ext.resolutionRate * 100).toFixed(1) + "%  " + ext.resolved + "/" + ext.elementsFound + "\n",
+  );
+  for (const [kind, k] of Object.entries(report.byElementKindExtended)) {
+    process.stdout.write(
+      "      " + kind.padEnd(26) + (k.resolutionRate * 100).toFixed(1).padStart(6) + "%  " +
+        String(k.resolved).padStart(4) + "/" + String(k.found).padEnd(4) + "\n",
+    );
+  }
+  if (topUnresolvedExtended.length) {
+    process.stdout.write("\n    TOP UNRESOLVED (extended checks)\n");
+    for (const u of topUnresolvedExtended.slice(0, 10)) {
+      process.stdout.write("      " + String(u.samples).padStart(2) + " samples  " + u.kind + "  " + u.identifier + "\n");
+    }
+  }
+
+  if (unverifiedStructures.length) {
+    process.stdout.write("\n  UNVERIFIED STRUCTURES (no official sample — NOT counted as passing)\n");
+    for (const u of unverifiedStructures) {
+      process.stdout.write(
+        "    " + u.structureId.padEnd(22) + " members " + String(u.members).padStart(3) +
+          "  internally " + (u.internallyConsistent ? "consistent" : "INCONSISTENT") +
+          "  findings " + u.findings.length + "\n",
+      );
+      for (const f of u.findings.filter((x) => x.severity === "error").slice(0, 5)) {
+        process.stdout.write("        ERROR " + f.code + ": " + f.message + "\n");
+      }
+    }
+  }
+
   process.stdout.write("\n  wrote " + path.relative(ROOT, OUT_PATH) + "\n\n");
 }
 

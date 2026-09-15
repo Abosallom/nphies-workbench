@@ -43,10 +43,46 @@ export interface Provenance {
   row: string | null;
   /** VERBATIM text of the source row or sentence. */
   quote: string | null;
+  /**
+   * Set INSTEAD of `pageId` when the rule was read off an official sample because no
+   * Confluence page states it, e.g. `golden/SOAP/ITI-41/nphies ITI41 Discharge Summary
+   * v4.9beta1.xml`. `quote` is then the verbatim XML/JSON fragment. A rule with `sample`
+   * set and `pageId` null is NOT in the published spec — the UI must say so.
+   */
+  sample?: string | null;
 }
 
 /** How much the compiler trusts a record. */
 export type Confidence = "high" | "medium" | "low";
+
+/**
+ * How a rule was arrived at. Orthogonal to {@link Confidence}: a sample-derived rule can be
+ * high confidence (13 official samples agree) and still not be something Confluence says.
+ *
+ *   `confluence`         a Confluence page states it; `provenance.pageId` + `quote` prove it
+ *   `sample`             read off an official golden sample; `provenance.sample` names it
+ *   `confluence+sample`  stated by Confluence AND confirmed on the wire
+ *   `standard`           fixed by HL7/IHE/OASIS, neither in Confluence nor derivable
+ *   `inferred`           the compiler derived it from other compiled rules
+ */
+export type Derivation = "confluence" | "sample" | "confluence+sample" | "standard" | "inferred";
+
+/**
+ * The evidence attached to any shipped rule. Every `SpecNode` and every `StructureMember`
+ * the repair pass touched carries these, so the UI can tell an analyst how much to trust a
+ * given check. A rule a repair agent flagged low-confidence STAYS low-confidence: the
+ * compiler never launders one level into another.
+ */
+export interface Evidenced {
+  confidence?: Confidence;
+  /** True only when an official sample was checked and agrees. */
+  verifiedAgainstSample?: boolean;
+  derivation?: Derivation;
+  /** Why the confidence is what it is. Verbatim from the repair pass where it gave one. */
+  confidenceReason?: string | null;
+  /** Sample paths, relative to `spec-source/`, that exercise this rule. */
+  samples?: string[];
+}
 
 /* ========================================================================== *
  * Usage and cardinality
@@ -188,7 +224,39 @@ export interface XdsSlotLocator {
   name: string;
 }
 
-export type SpecLocator = Hl7FieldLocator | FhirPathLocator | CdaXPathLocator | XdsSlotLocator;
+/**
+ * An XDS metadata attribute that is NOT carried by a named slot but by an ebRIM
+ * classification / identification scheme UUID:
+ *
+ *   <rim:Classification classificationScheme="urn:uuid:41a5887f-…" nodeRepresentation="SUMMARIES">
+ *
+ * The UUID is the only thing that says which metadata attribute this is, so it is a fixed
+ * structural value in its own right — a message can neither be built nor checked without it.
+ * `attribute` is the IHE name the UUID denotes (`classCode`, `patientId`, …).
+ */
+export interface XdsSchemeLocator {
+  kind: "xdsScheme";
+  /**
+   * Which ebRIM attribute carries the UUID:
+   *   `classification`     rim:Classification/@classificationScheme
+   *   `identification`     rim:ExternalIdentifier/@identificationScheme
+   *   `classificationNode` rim:Classification/@classificationNode (types an object, carries no code)
+   */
+  scheme: "classification" | "identification" | "classificationNode";
+  /** e.g. `urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a`. Lower-case, as on the wire. */
+  uuid: string;
+  /** The metadata attribute the UUID denotes, e.g. `classCode`, `author`, `uniqueId`. */
+  attribute: string;
+  /** `DocumentEntry` | `SubmissionSet` | `Folder` — the ebRIM object the UUID classifies. */
+  appliesTo?: string;
+}
+
+export type SpecLocator =
+  | Hl7FieldLocator
+  | FhirPathLocator
+  | CdaXPathLocator
+  | XdsSlotLocator
+  | XdsSchemeLocator;
 
 /** Canonical, stable string form of a locator — safe as a Map key. */
 export function locatorKey(locator: SpecLocator): string {
@@ -207,6 +275,8 @@ export function locatorKey(locator: SpecLocator): string {
       }`;
     case "xdsSlot":
       return `xds:${locator.name}`;
+    case "xdsScheme":
+      return `xdsScheme:${locator.scheme}:${locator.uuid}`;
   }
 }
 
@@ -225,6 +295,8 @@ export function formatLocator(locator: SpecLocator): string {
       return locator.attribute ? `${locator.path}/@${locator.attribute}` : locator.path;
     case "xdsSlot":
       return locator.name;
+    case "xdsScheme":
+      return `${locator.attribute} (${locator.uuid})`;
   }
 }
 
@@ -238,6 +310,7 @@ export function familyOfLocator(locator: SpecLocator): SpecFamily {
     case "cdaXPath":
       return "cda";
     case "xdsSlot":
+    case "xdsScheme":
       return "xds";
   }
 }
@@ -301,7 +374,7 @@ export interface LengthConstraint {
  * ONE node type for every family. HL7 fields, FHIR elements, CDA elements and XDS slots
  * differ only in their `locator`.
  */
-export interface SpecNode {
+export interface SpecNode extends Evidenced {
   /** Stable id: `<pageId>:<tableIndex>:<rowIndex>`. */
   id: string;
   family: SpecFamily;
@@ -359,7 +432,7 @@ export interface SpecRef {
   ref: string;
 }
 
-interface StructureMemberBase {
+interface StructureMemberBase extends Evidenced {
   /** Stable id, unique within its MessageStructure. */
   id: string;
   label: string;
@@ -370,6 +443,19 @@ interface StructureMemberBase {
   /** Field tables that detail this member's contents. */
   specRefs?: SpecRef[];
   guidance?: string | null;
+  /**
+   * What the official samples actually show at this position. NEVER a rule: a `[0..n]` low
+   * bound here means "not in every sample", not "optional per NPHIES". Present only on
+   * members whose `derivation` is `sample`, where `usage` is deliberately left empty
+   * because no source states a requirement.
+   */
+  observed?: {
+    cardinality: string | null;
+    min: number | null;
+    max: MaxOccurs;
+    samples: number;
+    occurrences: number;
+  };
 }
 
 /**
@@ -401,10 +487,19 @@ export interface StructureEntry extends StructureMemberBase {
   position: number;
   /** `null` when no quotable sentence named the resource type; never guessed. */
   resourceType: string | null;
-  /** `stated` (the rule names it) or `guidance-quote` (lifted from a quoted sentence). */
-  resourceTypeSource: "stated" | "guidance-quote" | null;
+  /**
+   * How the resource type was established. A row LABEL is never a resource type: "Bundle
+   * entry(s) for Imaging Procedure" names a clinical role, and the type is whatever the
+   * profile constrains (`Procedure`). `profile-url` means the type was read off the
+   * profile the row cites, `sample` that only an official sample settles it.
+   */
+  resourceTypeSource: "stated" | "guidance-quote" | "profile-url" | "sample" | null;
+  /** NPHIES profile canonical URL the entry is pinned to, e.g. `.../patient|1.0`. */
+  profile?: string | null;
   locator: FhirPathLocator;
   orderingConstraint?: string | null;
+  /** Content variants this entry belongs to, when the bundle has mutually exclusive ones. */
+  variants?: string[];
 }
 
 /** One CDA section (or sub-section) at a position in the document body. */
@@ -429,7 +524,32 @@ export interface StructureElement extends StructureMemberBase {
   constraint?: { kind: string; attribute: string; value: string; documentTypeColumn?: string };
   /** Parenthetical note carried on the source line. */
   note?: string | null;
+  /**
+   * Namespace prefix the official messages use for this element, e.g. `rim`, `soap12`,
+   * `wsa`, `xop`. Set only where a verbatim source fragment showed it; `null` means the
+   * prefix was not asserted, NOT that the element is unprefixed.
+   */
+  xmlPrefix?: string | null;
+  /** What this member is for, where the source said so. Mirrors {@link SpecRole}. */
+  role?: SpecRole;
+  /**
+   * ebRIM classification / identification scheme UUIDs this element may carry. Set on
+   * `rim:Classification` and `rim:ExternalIdentifier` members, where the UUID — not the
+   * element name — is what says which metadata attribute is being expressed.
+   */
+  xdsSchemes?: XdsSchemeRule[];
   members?: StructureMember[];
+}
+
+/** One classification / identification scheme UUID a `rim:Classification` may carry. */
+export interface XdsSchemeRule extends Evidenced {
+  locator: XdsSchemeLocator;
+  /** `nodeRepresentation` | `valueAttribute` | `subAttributeSlots` | `none`. */
+  valueCarrier: string | null;
+  /** Child `rim:Slot` names this scheme requires, e.g. `codingScheme`. */
+  requiredChildSlots: string[];
+  usage: UsageRule[];
+  provenance: Provenance | null;
 }
 
 export type StructureMember =
@@ -481,6 +601,19 @@ export type EnvelopeSpec =
       wsAddressingAction: string | null;
       derivedFrom: string | null;
       serviceName: string | null;
+    }
+  | {
+      /** A SAML 2.0 SSO message. The EMR/HIS SENDS this, despite the element name. */
+      kind: "samlResponse";
+      samlVersion: string | null;
+      rootElement: string | null;
+      /** HTTP binding, `null` where the published pages do not state one. */
+      binding: string | null;
+      /** Which element the ds:Signature covers, e.g. `assertion`. */
+      signatureLevel: string | null;
+      /** Namespace prefixes the message must declare. */
+      namespaces: { prefix: string; uri: string }[];
+      specPage: { pageId: string; pageTitle: string | null } | null;
     };
 
 /**
@@ -494,14 +627,39 @@ export interface MessageStructure {
   /** e.g. `A01`, `structured`, `request`. `null` when the use case has one shape. */
   variant: string | null;
   variantLabel: string | null;
-  family: SpecFamily;
+  /**
+   * `saml` is admitted here although it is not a `SpecFamily`: saml-sso has no field tables
+   * and therefore no `SpecNode`s, but it is a real message shape. `UseCaseSummary.family`
+   * already admitted it. Do NOT relabel a SAML structure as `cda` to satisfy an older
+   * check: its locators are `cdaXPath` only because that is the XML locator kind on offer,
+   * so a consistency check comparing `family` with `familyOfLocator()` must exempt `saml`.
+   */
+  family: SpecFamily | "saml";
   encoding: MessageEncoding;
   title: string;
   /** `request` (what a hospital sends) or `response` (what NPHIES returns). */
   direction?: "request" | "response";
   confidence: Confidence;
+  /** True only when an official golden sample was checked against this structure. */
+  verifiedAgainstSample?: boolean;
+  confidenceReason?: string | null;
   envelope: EnvelopeSpec | null;
   specRefs?: SpecRef[];
+  /**
+   * A dimension the message varies along WITHOUT changing its element tree — currently only
+   * the NPHIES environment for saml-sso, where three leaf values move and nothing else. Use
+   * `variant` / `variantLabel` (separate `MessageStructure` records) when the tree itself
+   * differs, e.g. CDA Full vs NoInfo or the two radiology-report content variants.
+   */
+  variantAxis?: {
+    axis: string;
+    label: string;
+    values: string[];
+    /** Per value, the member ids whose fixed value changes, and to what. */
+    valuesByMember: Record<string, Record<string, { value: string; xpath?: string }>>;
+    note?: string | null;
+    provenance?: Provenance | null;
+  } | null;
   /** The message itself, as a non-repeating root group. */
   root: StructureGroup;
   /** Caveats a checker must surface rather than hide, e.g. "no golden sample exists". */
@@ -975,6 +1133,10 @@ export interface SpecManifest {
     golden: string;
     fields: Record<SpecFamily, string>;
     valueSetIndex: string;
+    /** Published-spec defects: "Confluence says authorSpeciality, the wire uses authorSpecialty". */
+    specDefects?: string;
+    /** Defects in the OFFICIAL samples themselves, so a checker does not copy them. */
+    sampleDefects?: string;
   };
   families: FamilySummary[];
   useCases: UseCaseSummary[];
@@ -988,6 +1150,41 @@ export interface SpecManifest {
   };
   warnings: SpecWarning[];
   files_written: string[];
+}
+
+/**
+ * Places the PUBLISHED SPEC is wrong or contradicts itself, and what the wire actually
+ * carries. These are not compiler failures: the stored Confluence literal is kept verbatim
+ * and the defect is surfaced, so the UI can say "Confluence says authorSpeciality, the wire
+ * uses authorSpecialty" instead of silently rewriting either side.
+ */
+export interface SpecDefectsBundle {
+  $schema: string;
+  generatedAt: string;
+  what: string;
+  defects: {
+    id: string;
+    /** What the Confluence page writes. Kept verbatim everywhere else in the bundle. */
+    confluenceSpelling: string;
+    /** What the official samples carry. `null` when no sample exercises the attribute. */
+    wireSpelling: string | null;
+    whatItIs: string;
+    /** True when the samples settle it. False when neither spelling can be confirmed. */
+    wireWins: boolean;
+    /** What a checker should do: accept, warn, or refuse to pick a winner. */
+    action: string;
+    confidence: Confidence;
+    confidenceReason?: string | null;
+    verifiedAgainstSample: boolean;
+    affectedPages: { pageId: string; title: string | null; row?: string | null }[];
+    provenance: Provenance | null;
+    evidence: unknown;
+  }[];
+  /** Pages that are empty, truncated or self-contradicting upstream. */
+  upstreamPageDefects: unknown[];
+  /** Questions only NPHIES can settle. Never guessed at by the compiler. */
+  openQuestions: unknown[];
+  counts: Record<string, number>;
 }
 
 export interface FieldTable {
@@ -1227,6 +1424,15 @@ export function loadConstants(): Promise<ConstantsBundle> {
 
 export function loadErrors(): Promise<Record<string, unknown>> {
   return loadFile<Record<string, unknown>>("errors.json");
+}
+
+export function loadSpecDefects(): Promise<SpecDefectsBundle> {
+  return loadFile<SpecDefectsBundle>("spec-defects.json");
+}
+
+/** Defects in the OFFICIAL samples. Shipped so a checker never copies a sample's mistake. */
+export function loadSampleDefects(): Promise<Record<string, unknown>> {
+  return loadFile<Record<string, unknown>>("sample-defects.json");
 }
 
 export function loadGolden(): Promise<Record<string, unknown>> {
