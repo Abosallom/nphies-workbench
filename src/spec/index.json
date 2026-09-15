@@ -10,8 +10,8 @@
     "oids": 353,
     "quarantinedOids": 11,
     "sampleDefects": 127,
-    "specDefects": 13,
-    "specNodes": 3510,
+    "specDefects": 15,
+    "specNodes": 3515,
     "specPages": 289,
     "structuresVerifiedAgainstSample": 22,
     "useCases": 26,
@@ -116,7 +116,7 @@
       "file": "fields/xds.json",
       "id": "xds",
       "label": "IHE XDS.b / SOAP metadata",
-      "nodes": 263,
+      "nodes": 268,
       "pages": 20,
       "segments": [],
       "tables": 24
@@ -275,7 +275,7 @@
     "valuesets/type-of-the-social-history-observation.json",
     "valuesets/vital-signs-observations.json"
   ],
-  "generatedAt": "fixed",
+  "generatedAt": "2026-09-15T20:48:22.758Z",
   "generator": "scripts/compile-spec.mjs",
   "inputs": [
     {
@@ -341,6 +341,14 @@
       "name": "spec-build/patch-xds-ebrim.json",
       "present": true,
       "sha256": "7292a33ff3cd312d8eaea79c194c426160b3c89b3a7efdaf14bc9f0afa1e1bfa"
+    },
+    {
+      "bytes": 40450,
+      "error": null,
+      "kind": "repair-patch",
+      "name": "spec-build/patch-xds-names.json",
+      "present": true,
+      "sha256": "61aeb9828ce26c9cff2456c8ae33cbf8620b1f4a8294a4829f1807d4ec41730d"
     },
     {
       "bytes": 82509,
@@ -429,10 +437,11 @@
       ],
       "normalisedByCompilerRule": 0,
       "slotsRewritten": 165,
-      "specDefectsShipped": 13
+      "specDefectsShipped": 15
     },
     "patchesApplied": [
       "spec-build/patch-xds-ebrim.json",
+      "spec-build/patch-xds-names.json",
       "spec-build/patch-literals.json",
       "spec-build/patch-fhir-entries.json",
       "spec-build/patch-cda.json",
@@ -491,6 +500,17 @@
       "schemesAsSpecNodes": 66,
       "soapMembersGrafted": 57,
       "structuresExtended": 5
+    },
+    "xdsNames": {
+      "attributeFixedValuesRecovered": 4,
+      "conflictsCarried": 1,
+      "externalIdentifierNamesRecovered": 5,
+      "externalIdentifierOccurrencesCovered": 59,
+      "identificationSchemesWithoutRecoveredName": [
+        "urn:uuid:f64ffdf0-4b97-4e06-b79f-a52b38ec2f8a",
+        "urn:uuid:75df8f67-9973-4fbe-a900-df66cefecc5a"
+      ],
+      "note": "Two rules that resolved against the golden samples while being wrong: rim:ExternalIdentifier/rim:Name carried the bare attribute label instead of the IHE object-qualified literal, and rim:Association/@associationType carried three fixedValue rows with no `value` at all. Both are now stated. The qualified names are SAMPLE-DERIVED — no cached Confluence page states the rim:Name rule — and the HasMember literal is a live page-vs-wire conflict carried for human review, not auto-corrected."
     }
   },
   "usageLegend": {
@@ -2338,6 +2358,14 @@
     }
   ],
   "warnings": [
+    {
+      "message": "identification scheme urn:uuid:f64ffdf0-4b97-4e06-b79f-a52b38ec2f8a (Folder.patientId) has no recovered rim:Name literal — no official sample carries it, so the compiled spec states only the bare attribute label and an emitter must NOT invent the object-qualified form",
+      "scope": "xds-names"
+    },
+    {
+      "message": "identification scheme urn:uuid:75df8f67-9973-4fbe-a900-df66cefecc5a (Folder.uniqueId) has no recovered rim:Name literal — no official sample carries it, so the compiled spec states only the bare attribute label and an emitter must NOT invent the object-qualified form",
+      "scope": "xds-names"
+    },
     {
       "detail": {
         "scope": [

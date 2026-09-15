@@ -1,0 +1,630 @@
+{
+  "$schema": "nphies-workbench/patch-xds-names@1",
+  "generatedAt": "2026-09-15T00:00:00Z",
+  "generator": "targeted XDS literal-recovery pass. Two rules in the compiled spec resolved against the golden samples while being wrong, and both are invisible to a resolution-rate metric: the ebRIM metadata attribute NAME an HIS must write into rim:ExternalIdentifier/rim:Name, and the literal value of rim:Association/@associationType. Every literal and every quote below was read out of spec-source/golden/SOAP/**.xml or spec-source/pages/17694743.json by script; nothing was retyped or recalled.",
+  "closes": "gate-report.json byElementKind.xdsAssociationType (12 found / 0 resolved, because all three compiled fixedValue rows carried a null `value`) and byElementKind.xdsExternalIdentifierName (59 found / 59 'normalised', 0 exact, because the compiled spec stored only the bare attribute label).",
+  "method": {
+    "task1": "Every <rim:ExternalIdentifier> in the 19 official SOAP messages was parsed with its @identificationScheme and its child rim:Name/rim:LocalizedString/@value. Each scheme UUID carries exactly ONE name literal across every sample, so the mapping is unambiguous. The literal is attached as a fixed value on the rim:Name element under the ExternalIdentifier, NOT as a rename of the attribute: the bare label (patientId, uniqueId, sourceId) stays the display label because that is what the NPHIES metadata-optionality pages call it.",
+    "task2": "The associationType table on page 17694743 was re-extracted cell by cell (its 'Meaning | Association Type' rows), and every <rim:Association> in the samples was scanned for @associationType. Page and wire agree on RPLC and disagree on HasMember. BOTH HasMember literals are carried as separate fixedValue rows with their own provenance and a shared conflict id; neither is auto-corrected.",
+    "provenance": "source.sample + a verbatim XML fragment where a sample is the only evidence; source.pageId + the verbatim table-row text where Confluence states it. An entry with source.sample and no pageId is a rule that is NOT in the published spec. Quotes from page 17694743 join a row's cells with ' | ', the same convention spec-build/patch-xds-ebrim.json already uses for that page; no stored quote from any earlier pass is rewritten.",
+    "whatWasNotDone": "No associationType literal was invented from recall. The IHE XFRM and APND forms are listed under `associationTypesNotStated` with the reason they are excluded, and are NOT compiled into fixedValues."
+  },
+  "externalIdentifierNames": [
+    {
+      "uuid": "urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427",
+      "appliesTo": "DocumentEntry",
+      "bareAttribute": "patientId",
+      "qualifiedName": "XDSDocumentEntry.patientId",
+      "iheNameInEbrimPatch": "XDSDocumentEntry.patientId",
+      "emitPath": "rim:ExternalIdentifier/rim:Name/rim:LocalizedString/@value",
+      "elementPath": "rim:ExternalIdentifier/rim:Name/rim:LocalizedString",
+      "attribute": "value",
+      "occurrenceCount": 13,
+      "sampleCount": 13,
+      "distinctNamesObserved": [
+        "XDSDocumentEntry.patientId"
+      ],
+      "exactMatchCount": 13,
+      "derivation": "sample",
+      "verifiedAgainstSample": true,
+      "confidence": "high",
+      "confidenceReason": "every one of the 13 rim:ExternalIdentifier elements carrying identificationScheme urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427 in the official samples emits exactly this literal in rim:Name/rim:LocalizedString/@value, with no variation, and it is the IHE ITI TF-3 object-qualified form of the attribute the ebRIM pass already mapped this UUID to (patientId). NO cached Confluence page states the rim:Name rule itself; 7 page(s) mention the qualified spelling in prose about query parameters and error codes, which corroborates the spelling but states no ebRIM requirement — this is a sample-derived rule, not a published one, and must not be presented as normative.",
+      "derivedFrom": [
+        "golden/SOAP/ITI-18/1 nphies ITI18 RegistryStoredQueryResponse v4.9beta1 - Returns Discharge Summary DocumentEntry - Kopie.xml",
+        "golden/SOAP/ITI-18/2 nphies ITI18 RegistryStoredQueryResponse v4.9beta1 - Query for the on-demand iEHR Summary of a patient.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Discharge Summary v4.9beta1 RPLC.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Discharge Summary v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Laboratory Order v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Laboratory Results v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Maternal Discharge Summary v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Newborn Discharge Summary v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Operative Notes v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Outpatient Encounter Summary v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Radiology Order v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Radiology Results Embedded PDF v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Radiology Results Structured v4.9beta1.xml"
+      ],
+      "source": {
+        "sample": "golden/SOAP/ITI-18/1 nphies ITI18 RegistryStoredQueryResponse v4.9beta1 - Returns Discharge Summary DocumentEntry - Kopie.xml",
+        "quote": "<rim:ExternalIdentifier id=\"ei01\" identificationScheme=\"urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427\" registryObject=\"urn:uuid:c704075c-f5f3-4161-a73f-33441987a06e\" value=\"30000999999999^^^&amp;2.16.840.1.113883.3.3731.1.1.100.1&amp;ISO\"><rim:Name><rim:LocalizedString value=\"XDSDocumentEntry.patientId\"/></rim:Name></rim:ExternalIdentifier>"
+      },
+      "corroboratingPages": [
+        {
+          "pageId": "17564468",
+          "pageTitle": "Responses/Error - Clinical Documents",
+          "row": null,
+          "quote": "For example: Two (2) $XDSDocumentEntryPatientId is interpreted as XDSDocumentEntry.patientId is “patient 1” AND “patient 2”.",
+          "quoteKind": "sentence",
+          "note": "prose mention of the qualified attribute name; states no rule about rim:Name"
+        },
+        {
+          "pageId": "17596782",
+          "pageTitle": "Responses/Error - Laboratory Orders",
+          "row": null,
+          "quote": "For example, two $XDSDocumentEntryPatientId is interpreted as XDSDocumentEntry.patientId is “patient 1” AND “patient 2”.",
+          "quoteKind": "sentence",
+          "note": "prose mention of the qualified attribute name; states no rule about rim:Name"
+        },
+        {
+          "pageId": "23232761",
+          "pageTitle": "Responses/Error - Laboratory Results",
+          "row": null,
+          "quote": "For example: Two (2) $XDSDocumentEntryPatientId is interpreted as XDSDocumentEntry.patientId is “patient 1” AND “patient 2”.",
+          "quoteKind": "sentence",
+          "note": "prose mention of the qualified attribute name; states no rule about rim:Name"
+        },
+        {
+          "pageId": "33357922",
+          "pageTitle": "Responses/Error - Radiology Orders",
+          "row": null,
+          "quote": "For example, two $XDSDocumentEntryPatientId is interpreted as XDSDocumentEntry.patientId is “patient 1” AND “patient 2”.",
+          "quoteKind": "sentence",
+          "note": "prose mention of the qualified attribute name; states no rule about rim:Name"
+        },
+        {
+          "pageId": "39157818",
+          "pageTitle": "Responses/Error - Radiology Results",
+          "row": null,
+          "quote": "For example: Two (2) $XDSDocumentEntryPatientId is interpreted as XDSDocumentEntry.patientId is “patient 1” AND “patient 2”.",
+          "quoteKind": "sentence",
+          "note": "prose mention of the qualified attribute name; states no rule about rim:Name"
+        },
+        {
+          "pageId": "54788213",
+          "pageTitle": "Query Header - XDS Query Document Set",
+          "row": null,
+          "quote": "straints on those query parameters. \n Parameter Name Attribute Optionality Multiple Allowed $XDSDocumentEntry PatientId XDSDocumentEntry.patientId Required No $XDSDocumentEntry Status 3 XDSDocumentEntry.status Required Yes $XDSDocumentEntry ClassCode 1 XDSDocumentEntry.classCode",
+          "quoteKind": "excerpt",
+          "note": "prose mention of the qualified attribute name; states no rule about rim:Name"
+        },
+        {
+          "pageId": "54788251",
+          "pageTitle": "Error response - XDS Query Document Set",
+          "row": null,
+          "quote": "For example, two $XDSDocumentEntryPatientId is interpreted as XDSDocumentEntry.patientId is \"patient 1\" AND \"patient 2\".",
+          "quoteKind": "sentence",
+          "note": "prose mention of the qualified attribute name; states no rule about rim:Name"
+        }
+      ]
+    },
+    {
+      "uuid": "urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab",
+      "appliesTo": "DocumentEntry",
+      "bareAttribute": "uniqueId",
+      "qualifiedName": "XDSDocumentEntry.uniqueId",
+      "iheNameInEbrimPatch": "XDSDocumentEntry.uniqueId",
+      "emitPath": "rim:ExternalIdentifier/rim:Name/rim:LocalizedString/@value",
+      "elementPath": "rim:ExternalIdentifier/rim:Name/rim:LocalizedString",
+      "attribute": "value",
+      "occurrenceCount": 13,
+      "sampleCount": 13,
+      "distinctNamesObserved": [
+        "XDSDocumentEntry.uniqueId"
+      ],
+      "exactMatchCount": 13,
+      "derivation": "sample",
+      "verifiedAgainstSample": true,
+      "confidence": "high",
+      "confidenceReason": "every one of the 13 rim:ExternalIdentifier elements carrying identificationScheme urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab in the official samples emits exactly this literal in rim:Name/rim:LocalizedString/@value, with no variation, and it is the IHE ITI TF-3 object-qualified form of the attribute the ebRIM pass already mapped this UUID to (uniqueId). NO cached Confluence page states the rim:Name rule itself; 2 page(s) mention the qualified spelling in prose about query parameters and error codes, which corroborates the spelling but states no ebRIM requirement — this is a sample-derived rule, not a published one, and must not be presented as normative.",
+      "derivedFrom": [
+        "golden/SOAP/ITI-18/1 nphies ITI18 RegistryStoredQueryResponse v4.9beta1 - Returns Discharge Summary DocumentEntry - Kopie.xml",
+        "golden/SOAP/ITI-18/2 nphies ITI18 RegistryStoredQueryResponse v4.9beta1 - Query for the on-demand iEHR Summary of a patient.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Discharge Summary v4.9beta1 RPLC.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Discharge Summary v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Laboratory Order v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Laboratory Results v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Maternal Discharge Summary v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Newborn Discharge Summary v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Operative Notes v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Outpatient Encounter Summary v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Radiology Order v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Radiology Results Embedded PDF v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Radiology Results Structured v4.9beta1.xml"
+      ],
+      "source": {
+        "sample": "golden/SOAP/ITI-18/1 nphies ITI18 RegistryStoredQueryResponse v4.9beta1 - Returns Discharge Summary DocumentEntry - Kopie.xml",
+        "quote": "<rim:ExternalIdentifier id=\"ei03\" identificationScheme=\"urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab\" registryObject=\"urn:uuid:c704075c-f5f3-4161-a73f-33441987a06e\" value=\"2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.100.1^DisSum123456789\"><rim:Name><rim:LocalizedString value=\"XDSDocumentEntry.uniqueId\"/></rim:Name></rim:ExternalIdentifier>"
+      },
+      "corroboratingPages": [
+        {
+          "pageId": "54755486",
+          "pageTitle": "Request - XDS Retrieve Document",
+          "row": null,
+          "quote": "This value corresponds to the XDSDocumentEntry.uniqueId .",
+          "quoteKind": "sentence",
+          "note": "prose mention of the qualified attribute name; states no rule about rim:Name"
+        },
+        {
+          "pageId": "54788311",
+          "pageTitle": "Responses/Error - XDS Retrieve Document",
+          "row": null,
+          "quote": "This value corresponds to the XDSDocumentEntry.uniqueId.",
+          "quoteKind": "sentence",
+          "note": "prose mention of the qualified attribute name; states no rule about rim:Name"
+        }
+      ]
+    },
+    {
+      "uuid": "urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8",
+      "appliesTo": "SubmissionSet",
+      "bareAttribute": "uniqueId",
+      "qualifiedName": "XDSSubmissionSet.uniqueId",
+      "iheNameInEbrimPatch": "XDSSubmissionSet.uniqueId",
+      "emitPath": "rim:ExternalIdentifier/rim:Name/rim:LocalizedString/@value",
+      "elementPath": "rim:ExternalIdentifier/rim:Name/rim:LocalizedString",
+      "attribute": "value",
+      "occurrenceCount": 11,
+      "sampleCount": 11,
+      "distinctNamesObserved": [
+        "XDSSubmissionSet.uniqueId"
+      ],
+      "exactMatchCount": 11,
+      "derivation": "sample",
+      "verifiedAgainstSample": true,
+      "confidence": "high",
+      "confidenceReason": "every one of the 11 rim:ExternalIdentifier elements carrying identificationScheme urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8 in the official samples emits exactly this literal in rim:Name/rim:LocalizedString/@value, with no variation, and it is the IHE ITI TF-3 object-qualified form of the attribute the ebRIM pass already mapped this UUID to (uniqueId). NO cached Confluence page states the rim:Name rule itself — this is a sample-derived rule, not a published one, and must not be presented as normative.",
+      "derivedFrom": [
+        "golden/SOAP/ITI-41/nphies ITI41 Discharge Summary v4.9beta1 RPLC.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Discharge Summary v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Laboratory Order v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Laboratory Results v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Maternal Discharge Summary v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Newborn Discharge Summary v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Operative Notes v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Outpatient Encounter Summary v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Radiology Order v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Radiology Results Embedded PDF v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Radiology Results Structured v4.9beta1.xml"
+      ],
+      "source": {
+        "sample": "golden/SOAP/ITI-41/nphies ITI41 Discharge Summary v4.9beta1 RPLC.xml",
+        "quote": "<rim:ExternalIdentifier id=\"ei03\" identificationScheme=\"urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8\" registryObject=\"urn:uuid:a6e06ca8-0c75-4064-9e5c-88b9045a96f6\" value=\"2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.300.112\"><rim:Name><rim:LocalizedString value=\"XDSSubmissionSet.uniqueId\"/></rim:Name></rim:ExternalIdentifier>"
+      },
+      "corroboratingPages": []
+    },
+    {
+      "uuid": "urn:uuid:554ac39e-e3fe-47fe-b233-965d2a147832",
+      "appliesTo": "SubmissionSet",
+      "bareAttribute": "sourceId",
+      "qualifiedName": "XDSSubmissionSet.sourceId",
+      "iheNameInEbrimPatch": "XDSSubmissionSet.sourceId",
+      "emitPath": "rim:ExternalIdentifier/rim:Name/rim:LocalizedString/@value",
+      "elementPath": "rim:ExternalIdentifier/rim:Name/rim:LocalizedString",
+      "attribute": "value",
+      "occurrenceCount": 11,
+      "sampleCount": 11,
+      "distinctNamesObserved": [
+        "XDSSubmissionSet.sourceId"
+      ],
+      "exactMatchCount": 11,
+      "derivation": "sample",
+      "verifiedAgainstSample": true,
+      "confidence": "high",
+      "confidenceReason": "every one of the 11 rim:ExternalIdentifier elements carrying identificationScheme urn:uuid:554ac39e-e3fe-47fe-b233-965d2a147832 in the official samples emits exactly this literal in rim:Name/rim:LocalizedString/@value, with no variation, and it is the IHE ITI TF-3 object-qualified form of the attribute the ebRIM pass already mapped this UUID to (sourceId). NO cached Confluence page states the rim:Name rule itself — this is a sample-derived rule, not a published one, and must not be presented as normative.",
+      "derivedFrom": [
+        "golden/SOAP/ITI-41/nphies ITI41 Discharge Summary v4.9beta1 RPLC.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Discharge Summary v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Laboratory Order v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Laboratory Results v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Maternal Discharge Summary v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Newborn Discharge Summary v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Operative Notes v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Outpatient Encounter Summary v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Radiology Order v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Radiology Results Embedded PDF v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Radiology Results Structured v4.9beta1.xml"
+      ],
+      "source": {
+        "sample": "golden/SOAP/ITI-41/nphies ITI41 Discharge Summary v4.9beta1 RPLC.xml",
+        "quote": "<rim:ExternalIdentifier id=\"ei04\" identificationScheme=\"urn:uuid:554ac39e-e3fe-47fe-b233-965d2a147832\" registryObject=\"urn:uuid:a6e06ca8-0c75-4064-9e5c-88b9045a96f6\" value=\"2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.200.89112\"><rim:Name><rim:LocalizedString value=\"XDSSubmissionSet.sourceId\"/></rim:Name></rim:ExternalIdentifier>"
+      },
+      "corroboratingPages": []
+    },
+    {
+      "uuid": "urn:uuid:6b5aea1a-874d-4603-a4bc-96a0a7b38446",
+      "appliesTo": "SubmissionSet",
+      "bareAttribute": "patientId",
+      "qualifiedName": "XDSSubmissionSet.patientId",
+      "iheNameInEbrimPatch": "XDSSubmissionSet.patientId",
+      "emitPath": "rim:ExternalIdentifier/rim:Name/rim:LocalizedString/@value",
+      "elementPath": "rim:ExternalIdentifier/rim:Name/rim:LocalizedString",
+      "attribute": "value",
+      "occurrenceCount": 11,
+      "sampleCount": 11,
+      "distinctNamesObserved": [
+        "XDSSubmissionSet.patientId"
+      ],
+      "exactMatchCount": 11,
+      "derivation": "sample",
+      "verifiedAgainstSample": true,
+      "confidence": "high",
+      "confidenceReason": "every one of the 11 rim:ExternalIdentifier elements carrying identificationScheme urn:uuid:6b5aea1a-874d-4603-a4bc-96a0a7b38446 in the official samples emits exactly this literal in rim:Name/rim:LocalizedString/@value, with no variation, and it is the IHE ITI TF-3 object-qualified form of the attribute the ebRIM pass already mapped this UUID to (patientId). NO cached Confluence page states the rim:Name rule itself — this is a sample-derived rule, not a published one, and must not be presented as normative.",
+      "derivedFrom": [
+        "golden/SOAP/ITI-41/nphies ITI41 Discharge Summary v4.9beta1 RPLC.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Discharge Summary v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Laboratory Order v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Laboratory Results v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Maternal Discharge Summary v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Newborn Discharge Summary v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Operative Notes v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Outpatient Encounter Summary v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Radiology Order v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Radiology Results Embedded PDF v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Radiology Results Structured v4.9beta1.xml"
+      ],
+      "source": {
+        "sample": "golden/SOAP/ITI-41/nphies ITI41 Discharge Summary v4.9beta1 RPLC.xml",
+        "quote": "<rim:ExternalIdentifier id=\"ei05\" identificationScheme=\"urn:uuid:6b5aea1a-874d-4603-a4bc-96a0a7b38446\" registryObject=\"urn:uuid:a6e06ca8-0c75-4064-9e5c-88b9045a96f6\" value=\"30000999999999^^^&amp;2.16.840.1.113883.3.3731.1.1.100.1&amp;ISO\"><rim:Name><rim:LocalizedString value=\"XDSSubmissionSet.patientId\"/></rim:Name></rim:ExternalIdentifier>"
+      },
+      "corroboratingPages": []
+    }
+  ],
+  "externalIdentifiersWithoutName": [],
+  "associationTypeAttribute": {
+    "elementPath": "rim:Association",
+    "attribute": "associationType",
+    "pageId": "17694743",
+    "pageTitle": "Associations",
+    "shallStatement": {
+      "pageId": "17694743",
+      "pageTitle": "Associations",
+      "row": "lead-in to the associationType table",
+      "quote": "The “associationType” attribute of an Association SHALL contain one of the following values:"
+    },
+    "tableHeader": [
+      "Meaning",
+      "Association Type"
+    ],
+    "values": [
+      {
+        "id": "hasmember-wire",
+        "value": "HasMember",
+        "meaning": "Membership in a Registry Package (SubmissionSet or Folder)",
+        "statementType": "fixedValueObservedNotStated",
+        "derivation": "sample",
+        "verifiedAgainstSample": true,
+        "observedIn": 11,
+        "sampleCount": 11,
+        "confidence": "low",
+        "confidenceReason": "page 17694743 says the value SHALL be the full ebXML RegRep URN urn:oasis:names:tc:ebxml-regrep:AssociationType:HasMember; all 11 official ITI-41 messages emit the bare ebRIM token \"HasMember\". The same page's RPLC row agrees with the one sample that exercises RPLC, so the disagreement is specific to HasMember and is not a general page-wide defect. Recorded because it is what the wire carries, NOT because a page states it.",
+        "conflictId": "xds-associationtype-hasmember",
+        "emitDefault": true,
+        "source": {
+          "sample": "golden/SOAP/ITI-41/nphies ITI41 Discharge Summary v4.9beta1 RPLC.xml",
+          "quote": "<rim:Association associationType=\"HasMember\" id=\"as01\" sourceObject=\"urn:uuid:a6e06ca8-0c75-4064-9e5c-88b9045a96f6\" targetObject=\"urn:uuid:c704075c-f5f3-4161-a73f-33441987a06e\">"
+        },
+        "derivedFrom": [
+          "golden/SOAP/ITI-41/nphies ITI41 Discharge Summary v4.9beta1 RPLC.xml",
+          "golden/SOAP/ITI-41/nphies ITI41 Discharge Summary v4.9beta1.xml",
+          "golden/SOAP/ITI-41/nphies ITI41 Laboratory Order v4.9beta1.xml",
+          "golden/SOAP/ITI-41/nphies ITI41 Laboratory Results v4.9beta1.xml",
+          "golden/SOAP/ITI-41/nphies ITI41 Maternal Discharge Summary v4.9beta1.xml",
+          "golden/SOAP/ITI-41/nphies ITI41 Newborn Discharge Summary v4.9beta1.xml",
+          "golden/SOAP/ITI-41/nphies ITI41 Operative Notes v4.9beta1.xml",
+          "golden/SOAP/ITI-41/nphies ITI41 Outpatient Encounter Summary v4.9beta1.xml",
+          "golden/SOAP/ITI-41/nphies ITI41 Radiology Order v4.9beta1.xml",
+          "golden/SOAP/ITI-41/nphies ITI41 Radiology Results Embedded PDF v4.9beta1.xml",
+          "golden/SOAP/ITI-41/nphies ITI41 Radiology Results Structured v4.9beta1.xml"
+        ]
+      },
+      {
+        "id": "hasmember-confluence",
+        "value": "urn:oasis:names:tc:ebxml-regrep:AssociationType:HasMember",
+        "meaning": "Membership in a Registry Package (SubmissionSet or Folder)",
+        "statementType": "fixedValueDeclaredNeverObserved",
+        "derivation": "confluence",
+        "verifiedAgainstSample": false,
+        "observedIn": 0,
+        "sampleCount": 0,
+        "confidence": "low",
+        "confidenceReason": "page 17694743 says the value SHALL be the full ebXML RegRep URN urn:oasis:names:tc:ebxml-regrep:AssociationType:HasMember; all 11 official ITI-41 messages emit the bare ebRIM token \"HasMember\". The same page's RPLC row agrees with the one sample that exercises RPLC, so the disagreement is specific to HasMember and is not a general page-wide defect. Recorded because page 17694743 states it, NOT because any message carries it.",
+        "conflictId": "xds-associationtype-hasmember",
+        "emitDefault": false,
+        "source": {
+          "pageId": "17694743",
+          "pageTitle": "Associations",
+          "row": "associationType table row 1",
+          "quote": "Membership in a Registry Package (SubmissionSet or Folder) | urn:oasis:names:tc:ebxml-regrep:AssociationType:HasMember"
+        },
+        "derivedFrom": []
+      },
+      {
+        "id": "rplc",
+        "value": "urn:ihe:iti:2007:AssociationType:RPLC",
+        "meaning": "Replace",
+        "statementType": "fixedValue",
+        "derivation": "confluence+sample",
+        "verifiedAgainstSample": true,
+        "observedIn": 1,
+        "sampleCount": 1,
+        "confidence": "high",
+        "confidenceReason": "page 17694743 states this literal and the one official message that replaces a document emits it byte-for-byte.",
+        "conflictId": null,
+        "emitDefault": true,
+        "source": {
+          "pageId": "17694743",
+          "pageTitle": "Associations",
+          "row": "associationType table row 2",
+          "quote": "Replace | urn:ihe:iti:2007:AssociationType:RPLC"
+        },
+        "corroboratingSample": {
+          "sample": "golden/SOAP/ITI-41/nphies ITI41 Discharge Summary v4.9beta1 RPLC.xml",
+          "quote": "<rim:Association id=\"as02\" status=\"urn:oasis:names:tc:ebxml-regrep:StatusType:Approved\" associationType=\"urn:ihe:iti:2007:AssociationType:RPLC\" targetObject=\"urn:uuid:3cce0135-cedb-4a26-ba00-8698ee8dde04\" sourceObject=\"urn:uuid:c704075c-f5f3-4161-a73f-33441987a06e\"/>"
+        },
+        "derivedFrom": [
+          "golden/SOAP/ITI-41/nphies ITI41 Discharge Summary v4.9beta1 RPLC.xml"
+        ]
+      },
+      {
+        "id": "issnapshotof",
+        "value": "urn:ihe:iti:2010:AssociationType:IsSnapshotOf",
+        "meaning": "Snapshot of On-Demand document entry\nNote: this associationType is used only in conjunction with the iEHR summary in R3",
+        "statementType": "fixedValueDeclaredNeverObserved",
+        "derivation": "confluence",
+        "verifiedAgainstSample": false,
+        "observedIn": 0,
+        "sampleCount": 0,
+        "confidence": "medium",
+        "confidenceReason": "page 17694743 states this literal, but NO official sample exercises an on-demand snapshot association, so the spelling is unconfirmed on the wire. Given that the page's HasMember literal does not match the wire, a checker must not treat this one as settled either.",
+        "conflictId": null,
+        "emitDefault": false,
+        "source": {
+          "pageId": "17694743",
+          "pageTitle": "Associations",
+          "row": "associationType table row 3",
+          "quote": "Snapshot of On-Demand document entry\nNote: this associationType is used only in conjunction with the iEHR summary in R3 | urn:ihe:iti:2010:AssociationType:IsSnapshotOf"
+        },
+        "derivedFrom": []
+      }
+    ],
+    "observedInSamples": [
+      {
+        "value": "HasMember",
+        "occurrences": 11,
+        "sampleCount": 11,
+        "source": {
+          "sample": "golden/SOAP/ITI-41/nphies ITI41 Discharge Summary v4.9beta1 RPLC.xml",
+          "quote": "<rim:Association associationType=\"HasMember\" id=\"as01\" sourceObject=\"urn:uuid:a6e06ca8-0c75-4064-9e5c-88b9045a96f6\" targetObject=\"urn:uuid:c704075c-f5f3-4161-a73f-33441987a06e\">"
+        },
+        "derivedFrom": [
+          "golden/SOAP/ITI-41/nphies ITI41 Discharge Summary v4.9beta1 RPLC.xml",
+          "golden/SOAP/ITI-41/nphies ITI41 Discharge Summary v4.9beta1.xml",
+          "golden/SOAP/ITI-41/nphies ITI41 Laboratory Order v4.9beta1.xml",
+          "golden/SOAP/ITI-41/nphies ITI41 Laboratory Results v4.9beta1.xml",
+          "golden/SOAP/ITI-41/nphies ITI41 Maternal Discharge Summary v4.9beta1.xml",
+          "golden/SOAP/ITI-41/nphies ITI41 Newborn Discharge Summary v4.9beta1.xml",
+          "golden/SOAP/ITI-41/nphies ITI41 Operative Notes v4.9beta1.xml",
+          "golden/SOAP/ITI-41/nphies ITI41 Outpatient Encounter Summary v4.9beta1.xml",
+          "golden/SOAP/ITI-41/nphies ITI41 Radiology Order v4.9beta1.xml",
+          "golden/SOAP/ITI-41/nphies ITI41 Radiology Results Embedded PDF v4.9beta1.xml",
+          "golden/SOAP/ITI-41/nphies ITI41 Radiology Results Structured v4.9beta1.xml"
+        ]
+      },
+      {
+        "value": "urn:ihe:iti:2007:AssociationType:RPLC",
+        "occurrences": 1,
+        "sampleCount": 1,
+        "source": {
+          "sample": "golden/SOAP/ITI-41/nphies ITI41 Discharge Summary v4.9beta1 RPLC.xml",
+          "quote": "<rim:Association id=\"as02\" status=\"urn:oasis:names:tc:ebxml-regrep:StatusType:Approved\" associationType=\"urn:ihe:iti:2007:AssociationType:RPLC\" targetObject=\"urn:uuid:3cce0135-cedb-4a26-ba00-8698ee8dde04\" sourceObject=\"urn:uuid:c704075c-f5f3-4161-a73f-33441987a06e\"/>"
+        },
+        "derivedFrom": [
+          "golden/SOAP/ITI-41/nphies ITI41 Discharge Summary v4.9beta1 RPLC.xml"
+        ]
+      }
+    ],
+    "confidence": "low",
+    "confidenceReason": "page 17694743 says the value SHALL be the full ebXML RegRep URN urn:oasis:names:tc:ebxml-regrep:AssociationType:HasMember; all 11 official ITI-41 messages emit the bare ebRIM token \"HasMember\". The same page's RPLC row agrees with the one sample that exercises RPLC, so the disagreement is specific to HasMember and is not a general page-wide defect.",
+    "foldersNote": {
+      "pageId": "17694743",
+      "pageTitle": "Associations",
+      "row": "closing note",
+      "quote": "Note: the concept of “Folders” is not used in nphies."
+    }
+  },
+  "associationTypesNotStated": [
+    {
+      "value": "urn:ihe:iti:2007:AssociationType:APND",
+      "meaning": "Append (IHE ITI TF-3)",
+      "why": "NOT compiled as a fixed value. Page 17694743 opens by naming an \"APPD\" association in prose but its SHALL-list of associationType values does not include any append literal, and no official sample carries one. The IHE spelling is APND, not APPD, so the page's prose is itself suspect. Nothing here is evidenced well enough to emit or to check against.",
+      "prose": "In an ITI-41 Provide and Register transaction, SubmissionSets and DocumentEntries as well as DocumentEntries to DocumentEntries (e.",
+      "source": {
+        "pageId": "17694743",
+        "pageTitle": "Associations",
+        "row": "opening paragraph",
+        "quote": "In an ITI-41 Provide and Register transaction, SubmissionSets and DocumentEntries as well as DocumentEntries to DocumentEntries (e."
+      },
+      "derivation": "standard",
+      "confidence": "low"
+    },
+    {
+      "value": "urn:ihe:iti:2007:AssociationType:XFRM",
+      "meaning": "Transform (IHE ITI TF-3)",
+      "why": "NOT compiled as a fixed value. Neither page 17694743 nor any other cached page mentions a transform association, and no official sample carries one. Listed only so a reader knows it was looked for and deliberately left out rather than overlooked.",
+      "prose": null,
+      "source": null,
+      "derivation": "standard",
+      "confidence": "low"
+    }
+  ],
+  "specDefects": [
+    {
+      "id": "xds-externalidentifier-name-unqualified",
+      "kind": "spec-vs-wire-conflict",
+      "confluenceSpelling": "patientId / uniqueId / sourceId (bare, as the metadata-optionality tables name them)",
+      "wireSpelling": "XDSDocumentEntry.patientId · XDSDocumentEntry.uniqueId · XDSSubmissionSet.patientId · XDSSubmissionSet.sourceId · XDSSubmissionSet.uniqueId",
+      "whatItIs": "the literal an HIS must write into rim:ExternalIdentifier/rim:Name/rim:LocalizedString/@value",
+      "wireWins": true,
+      "action": "Emit the object-qualified literal. The bare name is a correct label for the metadata attribute and is kept as such; it is NOT the string that goes on the wire. Both are now carried, on the same node.",
+      "confidence": "high",
+      "confidenceReason": "all 59 rim:ExternalIdentifier elements in the official samples carry the qualified form and none carries the bare form; the NPHIES optionality pages name the attribute in its bare form and never state what rim:Name must contain, so the two are not in real disagreement — the compiled spec was simply missing the wire literal.",
+      "verifiedAgainstSample": true,
+      "affectedPages": [
+        {
+          "pageId": "17596480",
+          "title": "Document Metadata Attribute Optionality for Provide and Register Document Set-b",
+          "row": "1.18 / 1.29"
+        },
+        {
+          "pageId": "17694733",
+          "title": "SubmissionSet Metadata Attribute Optionality for Provide and Register Document Set-b",
+          "row": "2.9 / 2.10 / 2.13"
+        }
+      ],
+      "provenance": {
+        "sample": "golden/SOAP/ITI-18/1 nphies ITI18 RegistryStoredQueryResponse v4.9beta1 - Returns Discharge Summary DocumentEntry - Kopie.xml",
+        "quote": "<rim:ExternalIdentifier id=\"ei01\" identificationScheme=\"urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427\" registryObject=\"urn:uuid:c704075c-f5f3-4161-a73f-33441987a06e\" value=\"30000999999999^^^&amp;2.16.840.1.113883.3.3731.1.1.100.1&amp;ISO\"><rim:Name><rim:LocalizedString value=\"XDSDocumentEntry.patientId\"/></rim:Name></rim:ExternalIdentifier>"
+      },
+      "evidence": {
+        "sampleOccurrences": 59,
+        "samples": [
+          "golden/SOAP/ITI-18/1 nphies ITI18 RegistryStoredQueryResponse v4.9beta1 - Returns Discharge Summary DocumentEntry - Kopie.xml",
+          "golden/SOAP/ITI-18/2 nphies ITI18 RegistryStoredQueryResponse v4.9beta1 - Query for the on-demand iEHR Summary of a patient.xml",
+          "golden/SOAP/ITI-41/nphies ITI41 Discharge Summary v4.9beta1 RPLC.xml",
+          "golden/SOAP/ITI-41/nphies ITI41 Discharge Summary v4.9beta1.xml",
+          "golden/SOAP/ITI-41/nphies ITI41 Laboratory Order v4.9beta1.xml",
+          "golden/SOAP/ITI-41/nphies ITI41 Laboratory Results v4.9beta1.xml",
+          "golden/SOAP/ITI-41/nphies ITI41 Maternal Discharge Summary v4.9beta1.xml",
+          "golden/SOAP/ITI-41/nphies ITI41 Newborn Discharge Summary v4.9beta1.xml",
+          "golden/SOAP/ITI-41/nphies ITI41 Operative Notes v4.9beta1.xml",
+          "golden/SOAP/ITI-41/nphies ITI41 Outpatient Encounter Summary v4.9beta1.xml",
+          "golden/SOAP/ITI-41/nphies ITI41 Radiology Order v4.9beta1.xml",
+          "golden/SOAP/ITI-41/nphies ITI41 Radiology Results Embedded PDF v4.9beta1.xml",
+          "golden/SOAP/ITI-41/nphies ITI41 Radiology Results Structured v4.9beta1.xml"
+        ],
+        "pairs": [
+          {
+            "bare": "patientId",
+            "appliesTo": "DocumentEntry",
+            "qualified": "XDSDocumentEntry.patientId",
+            "occurrences": 13
+          },
+          {
+            "bare": "uniqueId",
+            "appliesTo": "DocumentEntry",
+            "qualified": "XDSDocumentEntry.uniqueId",
+            "occurrences": 13
+          },
+          {
+            "bare": "uniqueId",
+            "appliesTo": "SubmissionSet",
+            "qualified": "XDSSubmissionSet.uniqueId",
+            "occurrences": 11
+          },
+          {
+            "bare": "sourceId",
+            "appliesTo": "SubmissionSet",
+            "qualified": "XDSSubmissionSet.sourceId",
+            "occurrences": 11
+          },
+          {
+            "bare": "patientId",
+            "appliesTo": "SubmissionSet",
+            "qualified": "XDSSubmissionSet.patientId",
+            "occurrences": 11
+          }
+        ]
+      }
+    },
+    {
+      "id": "xds-associationtype-hasmember",
+      "kind": "spec-vs-wire-conflict",
+      "confluenceSpelling": "urn:oasis:names:tc:ebxml-regrep:AssociationType:HasMember",
+      "wireSpelling": "HasMember",
+      "whatItIs": "the associationType that links a DocumentEntry to its SubmissionSet",
+      "wireWins": false,
+      "action": "CARRY BOTH, AUTO-CORRECT NEITHER. A checker SHALL accept either literal and raise a warning naming the other; an emitter SHALL default to the observed bare token \"HasMember\" because all 11 official messages use it, and SHALL say so. NPHIES must settle which the registry requires.",
+      "confidence": "low",
+      "confidenceReason": "page 17694743 says the value SHALL be the full ebXML RegRep URN urn:oasis:names:tc:ebxml-regrep:AssociationType:HasMember; all 11 official ITI-41 messages emit the bare ebRIM token \"HasMember\". The same page's RPLC row agrees with the one sample that exercises RPLC, so the disagreement is specific to HasMember and is not a general page-wide defect.",
+      "verifiedAgainstSample": true,
+      "affectedPages": [
+        {
+          "pageId": "17694743",
+          "title": "Associations",
+          "row": "associationType table row 1"
+        }
+      ],
+      "provenance": {
+        "pageId": "17694743",
+        "pageTitle": "Associations",
+        "row": "associationType table row 1",
+        "quote": "Membership in a Registry Package (SubmissionSet or Folder) | urn:oasis:names:tc:ebxml-regrep:AssociationType:HasMember"
+      },
+      "evidence": {
+        "sampleOccurrences": 11,
+        "samples": [
+          "golden/SOAP/ITI-41/nphies ITI41 Discharge Summary v4.9beta1 RPLC.xml",
+          "golden/SOAP/ITI-41/nphies ITI41 Discharge Summary v4.9beta1.xml",
+          "golden/SOAP/ITI-41/nphies ITI41 Laboratory Order v4.9beta1.xml",
+          "golden/SOAP/ITI-41/nphies ITI41 Laboratory Results v4.9beta1.xml",
+          "golden/SOAP/ITI-41/nphies ITI41 Maternal Discharge Summary v4.9beta1.xml",
+          "golden/SOAP/ITI-41/nphies ITI41 Newborn Discharge Summary v4.9beta1.xml",
+          "golden/SOAP/ITI-41/nphies ITI41 Operative Notes v4.9beta1.xml",
+          "golden/SOAP/ITI-41/nphies ITI41 Outpatient Encounter Summary v4.9beta1.xml",
+          "golden/SOAP/ITI-41/nphies ITI41 Radiology Order v4.9beta1.xml",
+          "golden/SOAP/ITI-41/nphies ITI41 Radiology Results Embedded PDF v4.9beta1.xml",
+          "golden/SOAP/ITI-41/nphies ITI41 Radiology Results Structured v4.9beta1.xml"
+        ],
+        "wire": {
+          "sample": "golden/SOAP/ITI-41/nphies ITI41 Discharge Summary v4.9beta1 RPLC.xml",
+          "quote": "<rim:Association associationType=\"HasMember\" id=\"as01\" sourceObject=\"urn:uuid:a6e06ca8-0c75-4064-9e5c-88b9045a96f6\" targetObject=\"urn:uuid:c704075c-f5f3-4161-a73f-33441987a06e\">"
+        },
+        "confluence": {
+          "pageId": "17694743",
+          "pageTitle": "Associations",
+          "row": "associationType table row 1",
+          "quote": "Membership in a Registry Package (SubmissionSet or Folder) | urn:oasis:names:tc:ebxml-regrep:AssociationType:HasMember"
+        }
+      }
+    }
+  ],
+  "openQuestions": [
+    {
+      "id": "xds-associationtype-hasmember",
+      "severity": "high",
+      "question": "Does the nphies registry require rim:Association/@associationType to be the full ebXML RegRep URN urn:oasis:names:tc:ebxml-regrep:AssociationType:HasMember, as page 17694743 states, or the bare token \"HasMember\", as all 11 official ITI-41 messages emit?",
+      "why": "An emitter has to write one of them. Until NPHIES answers, the workbench carries both, defaults to the observed bare token, and warns.",
+      "askedOf": "NPHIES",
+      "supersedes": "hasmember-literal"
+    },
+    {
+      "id": "xds-associationtype-append",
+      "severity": "medium",
+      "question": "Page 17694743 names an \"APPD\" association in prose but omits any append literal from its SHALL-list of associationType values. Is an append association supported, and if so is the literal urn:ihe:iti:2007:AssociationType:APND?",
+      "why": "No sample exercises one, so the workbench neither emits nor accepts an append association. The page contradicts itself and only NPHIES can settle it.",
+      "askedOf": "NPHIES"
+    }
+  ],
+  "stats": {
+    "externalIdentifierNamesRecovered": 5,
+    "externalIdentifierOccurrencesCovered": 59,
+    "externalIdentifiersWithoutName": 0,
+    "associationTypeFixedValuesRecovered": 4,
+    "associationTypeOccurrencesCovered": 12,
+    "associationTypeLiteralsObserved": [
+      "HasMember",
+      "urn:ihe:iti:2007:AssociationType:RPLC"
+    ],
+    "conflictsCarriedForHumanReview": 1
+  }
+}

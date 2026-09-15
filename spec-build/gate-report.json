@@ -1,6 +1,6 @@
 {
   "$schema": "nphies-workbench/gate-report@1",
-  "generatedAt": "2026-09-15T20:37:32.643Z",
+  "generatedAt": "2026-09-15T20:48:26.776Z",
   "generator": "scripts/gate-golden.mjs",
   "what": "Resolution gate: every structural element present in an OFFICIAL NPHIES sample must be KNOWN to the compiled spec in src/spec/. Unresolved identifiers mean the compiled spec is incomplete, not that the sample is wrong.",
   "method": {
@@ -26,7 +26,7 @@
     "resolutionRateExact": 0.9997,
     "distinctUnresolvedIdentifiers": 1,
     "structuralMismatches": 17,
-    "structuralMismatchesIncludingExtendedChecks": 88,
+    "structuralMismatchesIncludingExtendedChecks": 17,
     "samplesFullyResolved": 59
   },
   "independence": {
@@ -178,14 +178,14 @@
   "overallExtended": {
     "note": "baseline identifiers PLUS the checks this pass added (ebRIM content model, CDA header order, FHIR two-family rule). Not comparable with the previous run — compare `overall` for that.",
     "elementsFound": 3169,
-    "resolved": 3156,
-    "unresolved": 13,
-    "resolutionRate": 0.9959,
+    "resolved": 3168,
+    "unresolved": 1,
+    "resolutionRate": 0.9997,
     "addedByThisPass": {
       "elementsFound": 263,
-      "resolved": 251,
-      "unresolved": 12,
-      "resolutionRate": 0.9544
+      "resolved": 263,
+      "unresolved": 0,
+      "resolutionRate": 1
     }
   },
   "coverageExtensions": [
@@ -400,7 +400,7 @@
       "elementsResolvedNormalised": 0,
       "elementsUnknown": 0,
       "samplesWithoutStructure": 0,
-      "structuralMismatches": 73,
+      "structuralMismatches": 2,
       "byProvenance": {
         "confluence": {
           "found": 359,
@@ -416,7 +416,7 @@
         }
       },
       "extendedFound": 226,
-      "extendedResolved": 214,
+      "extendedResolved": 226,
       "byKindProvenance": {
         "soapPath": {
           "confluence": 212,
@@ -529,12 +529,6 @@
     }
   },
   "byElementKindExtended": {
-    "xdsAssociationType": {
-      "found": 12,
-      "resolved": 0,
-      "unknown": 12,
-      "resolutionRate": 0
-    },
     "cdaHeaderOrder": {
       "found": 16,
       "resolved": 16,
@@ -586,6 +580,12 @@
     "xdsClassificationNode": {
       "found": 11,
       "resolved": 11,
+      "unknown": 0,
+      "resolutionRate": 1
+    },
+    "xdsAssociationType": {
+      "found": 12,
+      "resolved": 12,
       "unknown": 0,
       "resolutionRate": 1
     },
@@ -4140,18 +4140,6 @@
           "code": "root-element",
           "scope": "baseline",
           "message": "document element is <soap:envelope>, expected <Envelope> — XML element names are case-sensitive, so this is not a SOAP envelope"
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427 must carry rim:Name \"XDSDocumentEntry.patientId\", but the compiled spec records the attribute only as \"patientId\""
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab must carry rim:Name \"XDSDocumentEntry.uniqueId\", but the compiled spec records the attribute only as \"uniqueId\""
         }
       ],
       "parseNotes": [],
@@ -4223,7 +4211,7 @@
           "found": 5,
           "resolved": 5
         },
-        "confluence+sample": {
+        "sample": {
           "found": 2,
           "resolved": 2
         }
@@ -4360,18 +4348,6 @@
           "code": "root-element",
           "scope": "baseline",
           "message": "document element is <soap:envelope>, expected <Envelope> — XML element names are case-sensitive, so this is not a SOAP envelope"
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427 must carry rim:Name \"XDSDocumentEntry.patientId\", but the compiled spec records the attribute only as \"patientId\""
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab must carry rim:Name \"XDSDocumentEntry.uniqueId\", but the compiled spec records the attribute only as \"uniqueId\""
         }
       ],
       "parseNotes": [],
@@ -4443,7 +4419,7 @@
           "found": 4,
           "resolved": 4
         },
-        "confluence+sample": {
+        "sample": {
           "found": 2,
           "resolved": 2
         }
@@ -4497,50 +4473,7 @@
       "elementsUnknown": [],
       "elementsIgnoredByNphies": [],
       "normalisedMatches": [],
-      "structuralMismatches": [
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427 must carry rim:Name \"XDSDocumentEntry.patientId\", but the compiled spec records the attribute only as \"patientId\""
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab must carry rim:Name \"XDSDocumentEntry.uniqueId\", but the compiled spec records the attribute only as \"uniqueId\""
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8 must carry rim:Name \"XDSSubmissionSet.uniqueId\", but the compiled spec records the attribute only as \"uniqueId\""
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:554ac39e-e3fe-47fe-b233-965d2a147832 must carry rim:Name \"XDSSubmissionSet.sourceId\", but the compiled spec records the attribute only as \"sourceId\""
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:6b5aea1a-874d-4603-a4bc-96a0a7b38446 must carry rim:Name \"XDSSubmissionSet.patientId\", but the compiled spec records the attribute only as \"patientId\""
-        },
-        {
-          "severity": "error",
-          "code": "xds-fixedvalue-without-value",
-          "scope": "extended",
-          "message": "rim:Association/@associationType carries 3 compiled fixedValue row(s) with no `value` at all (meanings: fixedValue, fixedValue, fixedValueDeclaredNeverObserved); the official sample emits \"HasMember\" and the compiled spec cannot confirm or reject it"
-        },
-        {
-          "severity": "error",
-          "code": "xds-fixedvalue-without-value",
-          "scope": "extended",
-          "message": "rim:Association/@associationType carries 3 compiled fixedValue row(s) with no `value` at all (meanings: fixedValue, fixedValue, fixedValueDeclaredNeverObserved); the official sample emits \"urn:ihe:iti:2007:AssociationType:RPLC\" and the compiled spec cannot confirm or reject it"
-        }
-      ],
+      "structuralMismatches": [],
       "parseNotes": [],
       "structureSelection": "single structure for use case",
       "kindTotals": {
@@ -4567,8 +4500,8 @@
       },
       "extended": {
         "elementsFound": 21,
-        "elementsResolved": 19,
-        "elementsUnknown": 2
+        "elementsResolved": 21,
+        "elementsUnknown": 0
       },
       "provenanceTotals": {
         "confluence": {
@@ -4603,24 +4536,16 @@
       },
       "provenanceTotalsExtended": {
         "sample": {
-          "found": 2,
-          "resolved": 2
+          "found": 8,
+          "resolved": 8
         },
         "standard": {
           "found": 10,
           "resolved": 10
         },
         "confluence": {
-          "found": 2,
-          "resolved": 2
-        },
-        "confluence+sample": {
-          "found": 5,
-          "resolved": 5
-        },
-        "none": {
-          "found": 2,
-          "resolved": 0
+          "found": 3,
+          "resolved": 3
         }
       },
       "kindTotalsExtended": {
@@ -4656,8 +4581,8 @@
         },
         "xdsAssociationType": {
           "found": 2,
-          "resolved": 0,
-          "unknown": 2
+          "resolved": 2,
+          "unknown": 0
         },
         "xdsEbrimChildOrder": {
           "found": 2,
@@ -4669,21 +4594,7 @@
           "resolved": 1,
           "unknown": 0
         }
-      },
-      "elementsUnknownExtended": [
-        {
-          "kind": "xdsAssociationType",
-          "id": "HasMember",
-          "occurrences": 1,
-          "reason": "the compiled spec declares 3 fixed value(s) for rim:Association/@associationType but EVERY ONE has a null `value` — the rule names the meanings and cites a page, yet states no literal, so nothing can be matched against it"
-        },
-        {
-          "kind": "xdsAssociationType",
-          "id": "urn:ihe:iti:2007:AssociationType:RPLC",
-          "occurrences": 1,
-          "reason": "the compiled spec declares 3 fixed value(s) for rim:Association/@associationType but EVERY ONE has a null `value` — the rule names the meanings and cites a page, yet states no literal, so nothing can be matched against it"
-        }
-      ]
+      }
     },
     {
       "path": "golden/SOAP/ITI-41/nphies ITI41 Discharge Summary v4.9beta1.xml",
@@ -4705,44 +4616,7 @@
       "elementsUnknown": [],
       "elementsIgnoredByNphies": [],
       "normalisedMatches": [],
-      "structuralMismatches": [
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427 must carry rim:Name \"XDSDocumentEntry.patientId\", but the compiled spec records the attribute only as \"patientId\""
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab must carry rim:Name \"XDSDocumentEntry.uniqueId\", but the compiled spec records the attribute only as \"uniqueId\""
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8 must carry rim:Name \"XDSSubmissionSet.uniqueId\", but the compiled spec records the attribute only as \"uniqueId\""
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:554ac39e-e3fe-47fe-b233-965d2a147832 must carry rim:Name \"XDSSubmissionSet.sourceId\", but the compiled spec records the attribute only as \"sourceId\""
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:6b5aea1a-874d-4603-a4bc-96a0a7b38446 must carry rim:Name \"XDSSubmissionSet.patientId\", but the compiled spec records the attribute only as \"patientId\""
-        },
-        {
-          "severity": "error",
-          "code": "xds-fixedvalue-without-value",
-          "scope": "extended",
-          "message": "rim:Association/@associationType carries 3 compiled fixedValue row(s) with no `value` at all (meanings: fixedValue, fixedValue, fixedValueDeclaredNeverObserved); the official sample emits \"HasMember\" and the compiled spec cannot confirm or reject it"
-        }
-      ],
+      "structuralMismatches": [],
       "parseNotes": [],
       "structureSelection": "single structure for use case",
       "kindTotals": {
@@ -4769,8 +4643,8 @@
       },
       "extended": {
         "elementsFound": 19,
-        "elementsResolved": 18,
-        "elementsUnknown": 1
+        "elementsResolved": 19,
+        "elementsUnknown": 0
       },
       "provenanceTotals": {
         "confluence": {
@@ -4805,8 +4679,8 @@
       },
       "provenanceTotalsExtended": {
         "sample": {
-          "found": 2,
-          "resolved": 2
+          "found": 8,
+          "resolved": 8
         },
         "standard": {
           "found": 9,
@@ -4815,14 +4689,6 @@
         "confluence": {
           "found": 2,
           "resolved": 2
-        },
-        "confluence+sample": {
-          "found": 5,
-          "resolved": 5
-        },
-        "none": {
-          "found": 1,
-          "resolved": 0
         }
       },
       "kindTotalsExtended": {
@@ -4858,8 +4724,8 @@
         },
         "xdsAssociationType": {
           "found": 1,
-          "resolved": 0,
-          "unknown": 1
+          "resolved": 1,
+          "unknown": 0
         },
         "xdsEbrimChildOrder": {
           "found": 2,
@@ -4871,15 +4737,7 @@
           "resolved": 1,
           "unknown": 0
         }
-      },
-      "elementsUnknownExtended": [
-        {
-          "kind": "xdsAssociationType",
-          "id": "HasMember",
-          "occurrences": 1,
-          "reason": "the compiled spec declares 3 fixed value(s) for rim:Association/@associationType but EVERY ONE has a null `value` — the rule names the meanings and cites a page, yet states no literal, so nothing can be matched against it"
-        }
-      ]
+      }
     },
     {
       "path": "golden/SOAP/ITI-41/nphies ITI41 Laboratory Order v4.9beta1.xml",
@@ -4901,44 +4759,7 @@
       "elementsUnknown": [],
       "elementsIgnoredByNphies": [],
       "normalisedMatches": [],
-      "structuralMismatches": [
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427 must carry rim:Name \"XDSDocumentEntry.patientId\", but the compiled spec records the attribute only as \"patientId\""
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab must carry rim:Name \"XDSDocumentEntry.uniqueId\", but the compiled spec records the attribute only as \"uniqueId\""
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8 must carry rim:Name \"XDSSubmissionSet.uniqueId\", but the compiled spec records the attribute only as \"uniqueId\""
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:554ac39e-e3fe-47fe-b233-965d2a147832 must carry rim:Name \"XDSSubmissionSet.sourceId\", but the compiled spec records the attribute only as \"sourceId\""
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:6b5aea1a-874d-4603-a4bc-96a0a7b38446 must carry rim:Name \"XDSSubmissionSet.patientId\", but the compiled spec records the attribute only as \"patientId\""
-        },
-        {
-          "severity": "error",
-          "code": "xds-fixedvalue-without-value",
-          "scope": "extended",
-          "message": "rim:Association/@associationType carries 3 compiled fixedValue row(s) with no `value` at all (meanings: fixedValue, fixedValue, fixedValueDeclaredNeverObserved); the official sample emits \"HasMember\" and the compiled spec cannot confirm or reject it"
-        }
-      ],
+      "structuralMismatches": [],
       "parseNotes": [],
       "structureSelection": "single structure for use case",
       "kindTotals": {
@@ -4965,8 +4786,8 @@
       },
       "extended": {
         "elementsFound": 19,
-        "elementsResolved": 18,
-        "elementsUnknown": 1
+        "elementsResolved": 19,
+        "elementsUnknown": 0
       },
       "provenanceTotals": {
         "confluence": {
@@ -5001,8 +4822,8 @@
       },
       "provenanceTotalsExtended": {
         "sample": {
-          "found": 2,
-          "resolved": 2
+          "found": 8,
+          "resolved": 8
         },
         "standard": {
           "found": 9,
@@ -5011,14 +4832,6 @@
         "confluence": {
           "found": 2,
           "resolved": 2
-        },
-        "confluence+sample": {
-          "found": 5,
-          "resolved": 5
-        },
-        "none": {
-          "found": 1,
-          "resolved": 0
         }
       },
       "kindTotalsExtended": {
@@ -5054,8 +4867,8 @@
         },
         "xdsAssociationType": {
           "found": 1,
-          "resolved": 0,
-          "unknown": 1
+          "resolved": 1,
+          "unknown": 0
         },
         "xdsEbrimChildOrder": {
           "found": 2,
@@ -5067,15 +4880,7 @@
           "resolved": 1,
           "unknown": 0
         }
-      },
-      "elementsUnknownExtended": [
-        {
-          "kind": "xdsAssociationType",
-          "id": "HasMember",
-          "occurrences": 1,
-          "reason": "the compiled spec declares 3 fixed value(s) for rim:Association/@associationType but EVERY ONE has a null `value` — the rule names the meanings and cites a page, yet states no literal, so nothing can be matched against it"
-        }
-      ]
+      }
     },
     {
       "path": "golden/SOAP/ITI-41/nphies ITI41 Laboratory Results v4.9beta1.xml",
@@ -5097,44 +4902,7 @@
       "elementsUnknown": [],
       "elementsIgnoredByNphies": [],
       "normalisedMatches": [],
-      "structuralMismatches": [
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427 must carry rim:Name \"XDSDocumentEntry.patientId\", but the compiled spec records the attribute only as \"patientId\""
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab must carry rim:Name \"XDSDocumentEntry.uniqueId\", but the compiled spec records the attribute only as \"uniqueId\""
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8 must carry rim:Name \"XDSSubmissionSet.uniqueId\", but the compiled spec records the attribute only as \"uniqueId\""
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:554ac39e-e3fe-47fe-b233-965d2a147832 must carry rim:Name \"XDSSubmissionSet.sourceId\", but the compiled spec records the attribute only as \"sourceId\""
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:6b5aea1a-874d-4603-a4bc-96a0a7b38446 must carry rim:Name \"XDSSubmissionSet.patientId\", but the compiled spec records the attribute only as \"patientId\""
-        },
-        {
-          "severity": "error",
-          "code": "xds-fixedvalue-without-value",
-          "scope": "extended",
-          "message": "rim:Association/@associationType carries 3 compiled fixedValue row(s) with no `value` at all (meanings: fixedValue, fixedValue, fixedValueDeclaredNeverObserved); the official sample emits \"HasMember\" and the compiled spec cannot confirm or reject it"
-        }
-      ],
+      "structuralMismatches": [],
       "parseNotes": [],
       "structureSelection": "single structure for use case",
       "kindTotals": {
@@ -5161,8 +4929,8 @@
       },
       "extended": {
         "elementsFound": 19,
-        "elementsResolved": 18,
-        "elementsUnknown": 1
+        "elementsResolved": 19,
+        "elementsUnknown": 0
       },
       "provenanceTotals": {
         "confluence": {
@@ -5197,8 +4965,8 @@
       },
       "provenanceTotalsExtended": {
         "sample": {
-          "found": 2,
-          "resolved": 2
+          "found": 8,
+          "resolved": 8
         },
         "standard": {
           "found": 9,
@@ -5207,14 +4975,6 @@
         "confluence": {
           "found": 2,
           "resolved": 2
-        },
-        "confluence+sample": {
-          "found": 5,
-          "resolved": 5
-        },
-        "none": {
-          "found": 1,
-          "resolved": 0
         }
       },
       "kindTotalsExtended": {
@@ -5250,8 +5010,8 @@
         },
         "xdsAssociationType": {
           "found": 1,
-          "resolved": 0,
-          "unknown": 1
+          "resolved": 1,
+          "unknown": 0
         },
         "xdsEbrimChildOrder": {
           "found": 2,
@@ -5263,15 +5023,7 @@
           "resolved": 1,
           "unknown": 0
         }
-      },
-      "elementsUnknownExtended": [
-        {
-          "kind": "xdsAssociationType",
-          "id": "HasMember",
-          "occurrences": 1,
-          "reason": "the compiled spec declares 3 fixed value(s) for rim:Association/@associationType but EVERY ONE has a null `value` — the rule names the meanings and cites a page, yet states no literal, so nothing can be matched against it"
-        }
-      ]
+      }
     },
     {
       "path": "golden/SOAP/ITI-41/nphies ITI41 Maternal Discharge Summary v4.9beta1.xml",
@@ -5293,44 +5045,7 @@
       "elementsUnknown": [],
       "elementsIgnoredByNphies": [],
       "normalisedMatches": [],
-      "structuralMismatches": [
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427 must carry rim:Name \"XDSDocumentEntry.patientId\", but the compiled spec records the attribute only as \"patientId\""
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab must carry rim:Name \"XDSDocumentEntry.uniqueId\", but the compiled spec records the attribute only as \"uniqueId\""
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8 must carry rim:Name \"XDSSubmissionSet.uniqueId\", but the compiled spec records the attribute only as \"uniqueId\""
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:554ac39e-e3fe-47fe-b233-965d2a147832 must carry rim:Name \"XDSSubmissionSet.sourceId\", but the compiled spec records the attribute only as \"sourceId\""
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:6b5aea1a-874d-4603-a4bc-96a0a7b38446 must carry rim:Name \"XDSSubmissionSet.patientId\", but the compiled spec records the attribute only as \"patientId\""
-        },
-        {
-          "severity": "error",
-          "code": "xds-fixedvalue-without-value",
-          "scope": "extended",
-          "message": "rim:Association/@associationType carries 3 compiled fixedValue row(s) with no `value` at all (meanings: fixedValue, fixedValue, fixedValueDeclaredNeverObserved); the official sample emits \"HasMember\" and the compiled spec cannot confirm or reject it"
-        }
-      ],
+      "structuralMismatches": [],
       "parseNotes": [],
       "structureSelection": "single structure for use case",
       "kindTotals": {
@@ -5357,8 +5072,8 @@
       },
       "extended": {
         "elementsFound": 19,
-        "elementsResolved": 18,
-        "elementsUnknown": 1
+        "elementsResolved": 19,
+        "elementsUnknown": 0
       },
       "provenanceTotals": {
         "confluence": {
@@ -5393,8 +5108,8 @@
       },
       "provenanceTotalsExtended": {
         "sample": {
-          "found": 2,
-          "resolved": 2
+          "found": 8,
+          "resolved": 8
         },
         "standard": {
           "found": 9,
@@ -5403,14 +5118,6 @@
         "confluence": {
           "found": 2,
           "resolved": 2
-        },
-        "confluence+sample": {
-          "found": 5,
-          "resolved": 5
-        },
-        "none": {
-          "found": 1,
-          "resolved": 0
         }
       },
       "kindTotalsExtended": {
@@ -5446,8 +5153,8 @@
         },
         "xdsAssociationType": {
           "found": 1,
-          "resolved": 0,
-          "unknown": 1
+          "resolved": 1,
+          "unknown": 0
         },
         "xdsEbrimChildOrder": {
           "found": 2,
@@ -5459,15 +5166,7 @@
           "resolved": 1,
           "unknown": 0
         }
-      },
-      "elementsUnknownExtended": [
-        {
-          "kind": "xdsAssociationType",
-          "id": "HasMember",
-          "occurrences": 1,
-          "reason": "the compiled spec declares 3 fixed value(s) for rim:Association/@associationType but EVERY ONE has a null `value` — the rule names the meanings and cites a page, yet states no literal, so nothing can be matched against it"
-        }
-      ]
+      }
     },
     {
       "path": "golden/SOAP/ITI-41/nphies ITI41 Newborn Discharge Summary v4.9beta1.xml",
@@ -5489,44 +5188,7 @@
       "elementsUnknown": [],
       "elementsIgnoredByNphies": [],
       "normalisedMatches": [],
-      "structuralMismatches": [
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427 must carry rim:Name \"XDSDocumentEntry.patientId\", but the compiled spec records the attribute only as \"patientId\""
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab must carry rim:Name \"XDSDocumentEntry.uniqueId\", but the compiled spec records the attribute only as \"uniqueId\""
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8 must carry rim:Name \"XDSSubmissionSet.uniqueId\", but the compiled spec records the attribute only as \"uniqueId\""
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:554ac39e-e3fe-47fe-b233-965d2a147832 must carry rim:Name \"XDSSubmissionSet.sourceId\", but the compiled spec records the attribute only as \"sourceId\""
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:6b5aea1a-874d-4603-a4bc-96a0a7b38446 must carry rim:Name \"XDSSubmissionSet.patientId\", but the compiled spec records the attribute only as \"patientId\""
-        },
-        {
-          "severity": "error",
-          "code": "xds-fixedvalue-without-value",
-          "scope": "extended",
-          "message": "rim:Association/@associationType carries 3 compiled fixedValue row(s) with no `value` at all (meanings: fixedValue, fixedValue, fixedValueDeclaredNeverObserved); the official sample emits \"HasMember\" and the compiled spec cannot confirm or reject it"
-        }
-      ],
+      "structuralMismatches": [],
       "parseNotes": [],
       "structureSelection": "single structure for use case",
       "kindTotals": {
@@ -5553,8 +5215,8 @@
       },
       "extended": {
         "elementsFound": 19,
-        "elementsResolved": 18,
-        "elementsUnknown": 1
+        "elementsResolved": 19,
+        "elementsUnknown": 0
       },
       "provenanceTotals": {
         "confluence": {
@@ -5589,8 +5251,8 @@
       },
       "provenanceTotalsExtended": {
         "sample": {
-          "found": 2,
-          "resolved": 2
+          "found": 8,
+          "resolved": 8
         },
         "standard": {
           "found": 9,
@@ -5599,14 +5261,6 @@
         "confluence": {
           "found": 2,
           "resolved": 2
-        },
-        "confluence+sample": {
-          "found": 5,
-          "resolved": 5
-        },
-        "none": {
-          "found": 1,
-          "resolved": 0
         }
       },
       "kindTotalsExtended": {
@@ -5642,8 +5296,8 @@
         },
         "xdsAssociationType": {
           "found": 1,
-          "resolved": 0,
-          "unknown": 1
+          "resolved": 1,
+          "unknown": 0
         },
         "xdsEbrimChildOrder": {
           "found": 2,
@@ -5655,15 +5309,7 @@
           "resolved": 1,
           "unknown": 0
         }
-      },
-      "elementsUnknownExtended": [
-        {
-          "kind": "xdsAssociationType",
-          "id": "HasMember",
-          "occurrences": 1,
-          "reason": "the compiled spec declares 3 fixed value(s) for rim:Association/@associationType but EVERY ONE has a null `value` — the rule names the meanings and cites a page, yet states no literal, so nothing can be matched against it"
-        }
-      ]
+      }
     },
     {
       "path": "golden/SOAP/ITI-41/nphies ITI41 Operative Notes v4.9beta1.xml",
@@ -5685,44 +5331,7 @@
       "elementsUnknown": [],
       "elementsIgnoredByNphies": [],
       "normalisedMatches": [],
-      "structuralMismatches": [
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427 must carry rim:Name \"XDSDocumentEntry.patientId\", but the compiled spec records the attribute only as \"patientId\""
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab must carry rim:Name \"XDSDocumentEntry.uniqueId\", but the compiled spec records the attribute only as \"uniqueId\""
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8 must carry rim:Name \"XDSSubmissionSet.uniqueId\", but the compiled spec records the attribute only as \"uniqueId\""
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:554ac39e-e3fe-47fe-b233-965d2a147832 must carry rim:Name \"XDSSubmissionSet.sourceId\", but the compiled spec records the attribute only as \"sourceId\""
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:6b5aea1a-874d-4603-a4bc-96a0a7b38446 must carry rim:Name \"XDSSubmissionSet.patientId\", but the compiled spec records the attribute only as \"patientId\""
-        },
-        {
-          "severity": "error",
-          "code": "xds-fixedvalue-without-value",
-          "scope": "extended",
-          "message": "rim:Association/@associationType carries 3 compiled fixedValue row(s) with no `value` at all (meanings: fixedValue, fixedValue, fixedValueDeclaredNeverObserved); the official sample emits \"HasMember\" and the compiled spec cannot confirm or reject it"
-        }
-      ],
+      "structuralMismatches": [],
       "parseNotes": [],
       "structureSelection": "single structure for use case",
       "kindTotals": {
@@ -5749,8 +5358,8 @@
       },
       "extended": {
         "elementsFound": 19,
-        "elementsResolved": 18,
-        "elementsUnknown": 1
+        "elementsResolved": 19,
+        "elementsUnknown": 0
       },
       "provenanceTotals": {
         "confluence": {
@@ -5785,8 +5394,8 @@
       },
       "provenanceTotalsExtended": {
         "sample": {
-          "found": 2,
-          "resolved": 2
+          "found": 8,
+          "resolved": 8
         },
         "standard": {
           "found": 9,
@@ -5795,14 +5404,6 @@
         "confluence": {
           "found": 2,
           "resolved": 2
-        },
-        "confluence+sample": {
-          "found": 5,
-          "resolved": 5
-        },
-        "none": {
-          "found": 1,
-          "resolved": 0
         }
       },
       "kindTotalsExtended": {
@@ -5838,8 +5439,8 @@
         },
         "xdsAssociationType": {
           "found": 1,
-          "resolved": 0,
-          "unknown": 1
+          "resolved": 1,
+          "unknown": 0
         },
         "xdsEbrimChildOrder": {
           "found": 2,
@@ -5851,15 +5452,7 @@
           "resolved": 1,
           "unknown": 0
         }
-      },
-      "elementsUnknownExtended": [
-        {
-          "kind": "xdsAssociationType",
-          "id": "HasMember",
-          "occurrences": 1,
-          "reason": "the compiled spec declares 3 fixed value(s) for rim:Association/@associationType but EVERY ONE has a null `value` — the rule names the meanings and cites a page, yet states no literal, so nothing can be matched against it"
-        }
-      ]
+      }
     },
     {
       "path": "golden/SOAP/ITI-41/nphies ITI41 Outpatient Encounter Summary v4.9beta1.xml",
@@ -5881,44 +5474,7 @@
       "elementsUnknown": [],
       "elementsIgnoredByNphies": [],
       "normalisedMatches": [],
-      "structuralMismatches": [
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427 must carry rim:Name \"XDSDocumentEntry.patientId\", but the compiled spec records the attribute only as \"patientId\""
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab must carry rim:Name \"XDSDocumentEntry.uniqueId\", but the compiled spec records the attribute only as \"uniqueId\""
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8 must carry rim:Name \"XDSSubmissionSet.uniqueId\", but the compiled spec records the attribute only as \"uniqueId\""
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:554ac39e-e3fe-47fe-b233-965d2a147832 must carry rim:Name \"XDSSubmissionSet.sourceId\", but the compiled spec records the attribute only as \"sourceId\""
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:6b5aea1a-874d-4603-a4bc-96a0a7b38446 must carry rim:Name \"XDSSubmissionSet.patientId\", but the compiled spec records the attribute only as \"patientId\""
-        },
-        {
-          "severity": "error",
-          "code": "xds-fixedvalue-without-value",
-          "scope": "extended",
-          "message": "rim:Association/@associationType carries 3 compiled fixedValue row(s) with no `value` at all (meanings: fixedValue, fixedValue, fixedValueDeclaredNeverObserved); the official sample emits \"HasMember\" and the compiled spec cannot confirm or reject it"
-        }
-      ],
+      "structuralMismatches": [],
       "parseNotes": [],
       "structureSelection": "single structure for use case",
       "kindTotals": {
@@ -5945,8 +5501,8 @@
       },
       "extended": {
         "elementsFound": 19,
-        "elementsResolved": 18,
-        "elementsUnknown": 1
+        "elementsResolved": 19,
+        "elementsUnknown": 0
       },
       "provenanceTotals": {
         "confluence": {
@@ -5981,8 +5537,8 @@
       },
       "provenanceTotalsExtended": {
         "sample": {
-          "found": 2,
-          "resolved": 2
+          "found": 8,
+          "resolved": 8
         },
         "standard": {
           "found": 9,
@@ -5991,14 +5547,6 @@
         "confluence": {
           "found": 2,
           "resolved": 2
-        },
-        "confluence+sample": {
-          "found": 5,
-          "resolved": 5
-        },
-        "none": {
-          "found": 1,
-          "resolved": 0
         }
       },
       "kindTotalsExtended": {
@@ -6034,8 +5582,8 @@
         },
         "xdsAssociationType": {
           "found": 1,
-          "resolved": 0,
-          "unknown": 1
+          "resolved": 1,
+          "unknown": 0
         },
         "xdsEbrimChildOrder": {
           "found": 2,
@@ -6047,15 +5595,7 @@
           "resolved": 1,
           "unknown": 0
         }
-      },
-      "elementsUnknownExtended": [
-        {
-          "kind": "xdsAssociationType",
-          "id": "HasMember",
-          "occurrences": 1,
-          "reason": "the compiled spec declares 3 fixed value(s) for rim:Association/@associationType but EVERY ONE has a null `value` — the rule names the meanings and cites a page, yet states no literal, so nothing can be matched against it"
-        }
-      ]
+      }
     },
     {
       "path": "golden/SOAP/ITI-41/nphies ITI41 Radiology Order v4.9beta1.xml",
@@ -6077,44 +5617,7 @@
       "elementsUnknown": [],
       "elementsIgnoredByNphies": [],
       "normalisedMatches": [],
-      "structuralMismatches": [
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427 must carry rim:Name \"XDSDocumentEntry.patientId\", but the compiled spec records the attribute only as \"patientId\""
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab must carry rim:Name \"XDSDocumentEntry.uniqueId\", but the compiled spec records the attribute only as \"uniqueId\""
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8 must carry rim:Name \"XDSSubmissionSet.uniqueId\", but the compiled spec records the attribute only as \"uniqueId\""
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:554ac39e-e3fe-47fe-b233-965d2a147832 must carry rim:Name \"XDSSubmissionSet.sourceId\", but the compiled spec records the attribute only as \"sourceId\""
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:6b5aea1a-874d-4603-a4bc-96a0a7b38446 must carry rim:Name \"XDSSubmissionSet.patientId\", but the compiled spec records the attribute only as \"patientId\""
-        },
-        {
-          "severity": "error",
-          "code": "xds-fixedvalue-without-value",
-          "scope": "extended",
-          "message": "rim:Association/@associationType carries 3 compiled fixedValue row(s) with no `value` at all (meanings: fixedValue, fixedValue, fixedValueDeclaredNeverObserved); the official sample emits \"HasMember\" and the compiled spec cannot confirm or reject it"
-        }
-      ],
+      "structuralMismatches": [],
       "parseNotes": [],
       "structureSelection": "single structure for use case",
       "kindTotals": {
@@ -6141,8 +5644,8 @@
       },
       "extended": {
         "elementsFound": 19,
-        "elementsResolved": 18,
-        "elementsUnknown": 1
+        "elementsResolved": 19,
+        "elementsUnknown": 0
       },
       "provenanceTotals": {
         "confluence": {
@@ -6177,8 +5680,8 @@
       },
       "provenanceTotalsExtended": {
         "sample": {
-          "found": 2,
-          "resolved": 2
+          "found": 8,
+          "resolved": 8
         },
         "standard": {
           "found": 9,
@@ -6187,14 +5690,6 @@
         "confluence": {
           "found": 2,
           "resolved": 2
-        },
-        "confluence+sample": {
-          "found": 5,
-          "resolved": 5
-        },
-        "none": {
-          "found": 1,
-          "resolved": 0
         }
       },
       "kindTotalsExtended": {
@@ -6230,8 +5725,8 @@
         },
         "xdsAssociationType": {
           "found": 1,
-          "resolved": 0,
-          "unknown": 1
+          "resolved": 1,
+          "unknown": 0
         },
         "xdsEbrimChildOrder": {
           "found": 2,
@@ -6243,15 +5738,7 @@
           "resolved": 1,
           "unknown": 0
         }
-      },
-      "elementsUnknownExtended": [
-        {
-          "kind": "xdsAssociationType",
-          "id": "HasMember",
-          "occurrences": 1,
-          "reason": "the compiled spec declares 3 fixed value(s) for rim:Association/@associationType but EVERY ONE has a null `value` — the rule names the meanings and cites a page, yet states no literal, so nothing can be matched against it"
-        }
-      ]
+      }
     },
     {
       "path": "golden/SOAP/ITI-41/nphies ITI41 Radiology Results Embedded PDF v4.9beta1.xml",
@@ -6274,44 +5761,7 @@
       "elementsUnknown": [],
       "elementsIgnoredByNphies": [],
       "normalisedMatches": [],
-      "structuralMismatches": [
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427 must carry rim:Name \"XDSDocumentEntry.patientId\", but the compiled spec records the attribute only as \"patientId\""
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab must carry rim:Name \"XDSDocumentEntry.uniqueId\", but the compiled spec records the attribute only as \"uniqueId\""
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8 must carry rim:Name \"XDSSubmissionSet.uniqueId\", but the compiled spec records the attribute only as \"uniqueId\""
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:554ac39e-e3fe-47fe-b233-965d2a147832 must carry rim:Name \"XDSSubmissionSet.sourceId\", but the compiled spec records the attribute only as \"sourceId\""
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:6b5aea1a-874d-4603-a4bc-96a0a7b38446 must carry rim:Name \"XDSSubmissionSet.patientId\", but the compiled spec records the attribute only as \"patientId\""
-        },
-        {
-          "severity": "error",
-          "code": "xds-fixedvalue-without-value",
-          "scope": "extended",
-          "message": "rim:Association/@associationType carries 3 compiled fixedValue row(s) with no `value` at all (meanings: fixedValue, fixedValue, fixedValueDeclaredNeverObserved); the official sample emits \"HasMember\" and the compiled spec cannot confirm or reject it"
-        }
-      ],
+      "structuralMismatches": [],
       "parseNotes": [],
       "structureSelection": "single structure for use case",
       "kindTotals": {
@@ -6338,8 +5788,8 @@
       },
       "extended": {
         "elementsFound": 19,
-        "elementsResolved": 18,
-        "elementsUnknown": 1
+        "elementsResolved": 19,
+        "elementsUnknown": 0
       },
       "provenanceTotals": {
         "confluence": {
@@ -6374,8 +5824,8 @@
       },
       "provenanceTotalsExtended": {
         "sample": {
-          "found": 2,
-          "resolved": 2
+          "found": 8,
+          "resolved": 8
         },
         "standard": {
           "found": 9,
@@ -6384,14 +5834,6 @@
         "confluence": {
           "found": 2,
           "resolved": 2
-        },
-        "confluence+sample": {
-          "found": 5,
-          "resolved": 5
-        },
-        "none": {
-          "found": 1,
-          "resolved": 0
         }
       },
       "kindTotalsExtended": {
@@ -6427,8 +5869,8 @@
         },
         "xdsAssociationType": {
           "found": 1,
-          "resolved": 0,
-          "unknown": 1
+          "resolved": 1,
+          "unknown": 0
         },
         "xdsEbrimChildOrder": {
           "found": 2,
@@ -6440,15 +5882,7 @@
           "resolved": 1,
           "unknown": 0
         }
-      },
-      "elementsUnknownExtended": [
-        {
-          "kind": "xdsAssociationType",
-          "id": "HasMember",
-          "occurrences": 1,
-          "reason": "the compiled spec declares 3 fixed value(s) for rim:Association/@associationType but EVERY ONE has a null `value` — the rule names the meanings and cites a page, yet states no literal, so nothing can be matched against it"
-        }
-      ]
+      }
     },
     {
       "path": "golden/SOAP/ITI-41/nphies ITI41 Radiology Results Structured v4.9beta1.xml",
@@ -6471,44 +5905,7 @@
       "elementsUnknown": [],
       "elementsIgnoredByNphies": [],
       "normalisedMatches": [],
-      "structuralMismatches": [
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427 must carry rim:Name \"XDSDocumentEntry.patientId\", but the compiled spec records the attribute only as \"patientId\""
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab must carry rim:Name \"XDSDocumentEntry.uniqueId\", but the compiled spec records the attribute only as \"uniqueId\""
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8 must carry rim:Name \"XDSSubmissionSet.uniqueId\", but the compiled spec records the attribute only as \"uniqueId\""
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:554ac39e-e3fe-47fe-b233-965d2a147832 must carry rim:Name \"XDSSubmissionSet.sourceId\", but the compiled spec records the attribute only as \"sourceId\""
-        },
-        {
-          "severity": "warn",
-          "code": "xds-externalidentifier-name-unqualified",
-          "scope": "extended",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:6b5aea1a-874d-4603-a4bc-96a0a7b38446 must carry rim:Name \"XDSSubmissionSet.patientId\", but the compiled spec records the attribute only as \"patientId\""
-        },
-        {
-          "severity": "error",
-          "code": "xds-fixedvalue-without-value",
-          "scope": "extended",
-          "message": "rim:Association/@associationType carries 3 compiled fixedValue row(s) with no `value` at all (meanings: fixedValue, fixedValue, fixedValueDeclaredNeverObserved); the official sample emits \"HasMember\" and the compiled spec cannot confirm or reject it"
-        }
-      ],
+      "structuralMismatches": [],
       "parseNotes": [],
       "structureSelection": "single structure for use case",
       "kindTotals": {
@@ -6535,8 +5932,8 @@
       },
       "extended": {
         "elementsFound": 19,
-        "elementsResolved": 18,
-        "elementsUnknown": 1
+        "elementsResolved": 19,
+        "elementsUnknown": 0
       },
       "provenanceTotals": {
         "confluence": {
@@ -6571,8 +5968,8 @@
       },
       "provenanceTotalsExtended": {
         "sample": {
-          "found": 2,
-          "resolved": 2
+          "found": 8,
+          "resolved": 8
         },
         "standard": {
           "found": 9,
@@ -6581,14 +5978,6 @@
         "confluence": {
           "found": 2,
           "resolved": 2
-        },
-        "confluence+sample": {
-          "found": 5,
-          "resolved": 5
-        },
-        "none": {
-          "found": 1,
-          "resolved": 0
         }
       },
       "kindTotalsExtended": {
@@ -6624,8 +6013,8 @@
         },
         "xdsAssociationType": {
           "found": 1,
-          "resolved": 0,
-          "unknown": 1
+          "resolved": 1,
+          "unknown": 0
         },
         "xdsEbrimChildOrder": {
           "found": 2,
@@ -6637,15 +6026,7 @@
           "resolved": 1,
           "unknown": 0
         }
-      },
-      "elementsUnknownExtended": [
-        {
-          "kind": "xdsAssociationType",
-          "id": "HasMember",
-          "occurrences": 1,
-          "reason": "the compiled spec declares 3 fixed value(s) for rim:Association/@associationType but EVERY ONE has a null `value` — the rule names the meanings and cites a page, yet states no literal, so nothing can be matched against it"
-        }
-      ]
+      }
     },
     {
       "path": "golden/SOAP/ITI-43/1 nphies ITI43 RetrieveDocumentSetRequest v4.9beta1 - retrieval of 2 documents.xml",
@@ -6862,77 +6243,8 @@
     }
   ],
   "topUnresolvedTruncated": 0,
-  "topUnresolvedExtended": [
-    {
-      "kind": "xdsAssociationType",
-      "identifier": "HasMember",
-      "samples": 11,
-      "occurrences": 11,
-      "reason": "the compiled spec declares 3 fixed value(s) for rim:Association/@associationType but EVERY ONE has a null `value` — the rule names the meanings and cites a page, yet states no literal, so nothing can be matched against it",
-      "formats": [
-        "soap-xds"
-      ],
-      "exampleSamples": [
-        "nphies ITI41 Discharge Summary v4.9beta1 RPLC.xml",
-        "nphies ITI41 Discharge Summary v4.9beta1.xml",
-        "nphies ITI41 Laboratory Order v4.9beta1.xml"
-      ]
-    },
-    {
-      "kind": "xdsAssociationType",
-      "identifier": "urn:ihe:iti:2007:AssociationType:RPLC",
-      "samples": 1,
-      "occurrences": 1,
-      "reason": "the compiled spec declares 3 fixed value(s) for rim:Association/@associationType but EVERY ONE has a null `value` — the rule names the meanings and cites a page, yet states no literal, so nothing can be matched against it",
-      "formats": [
-        "soap-xds"
-      ],
-      "exampleSamples": [
-        "nphies ITI41 Discharge Summary v4.9beta1 RPLC.xml"
-      ]
-    }
-  ],
+  "topUnresolvedExtended": [],
   "mismatchSummary": [
-    {
-      "severity": "warn",
-      "code": "xds-externalidentifier-name-unqualified",
-      "count": 59,
-      "samples": 0,
-      "examples": [
-        {
-          "sample": "1 nphies ITI18 RegistryStoredQueryResponse v4.9beta1 - Returns Discharge Summary DocumentEntry - Kopie.xml",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427 must carry rim:Name \"XDSDocumentEntry.patientId\", but the compiled spec records the attribute only as \"patientId\""
-        },
-        {
-          "sample": "1 nphies ITI18 RegistryStoredQueryResponse v4.9beta1 - Returns Discharge Summary DocumentEntry - Kopie.xml",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab must carry rim:Name \"XDSDocumentEntry.uniqueId\", but the compiled spec records the attribute only as \"uniqueId\""
-        },
-        {
-          "sample": "2 nphies ITI18 RegistryStoredQueryResponse v4.9beta1 - Query for the on-demand iEHR Summary of a patient.xml",
-          "message": "rim:ExternalIdentifier for scheme urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427 must carry rim:Name \"XDSDocumentEntry.patientId\", but the compiled spec records the attribute only as \"patientId\""
-        }
-      ]
-    },
-    {
-      "severity": "error",
-      "code": "xds-fixedvalue-without-value",
-      "count": 12,
-      "samples": 0,
-      "examples": [
-        {
-          "sample": "nphies ITI41 Discharge Summary v4.9beta1 RPLC.xml",
-          "message": "rim:Association/@associationType carries 3 compiled fixedValue row(s) with no `value` at all (meanings: fixedValue, fixedValue, fixedValueDeclaredNeverObserved); the official sample emits \"HasMember\" and the compiled spec cannot confirm or reject it"
-        },
-        {
-          "sample": "nphies ITI41 Discharge Summary v4.9beta1 RPLC.xml",
-          "message": "rim:Association/@associationType carries 3 compiled fixedValue row(s) with no `value` at all (meanings: fixedValue, fixedValue, fixedValueDeclaredNeverObserved); the official sample emits \"urn:ihe:iti:2007:AssociationType:RPLC\" and the compiled spec cannot confirm or reject it"
-        },
-        {
-          "sample": "nphies ITI41 Discharge Summary v4.9beta1.xml",
-          "message": "rim:Association/@associationType carries 3 compiled fixedValue row(s) with no `value` at all (meanings: fixedValue, fixedValue, fixedValueDeclaredNeverObserved); the official sample emits \"HasMember\" and the compiled spec cannot confirm or reject it"
-        }
-      ]
-    },
     {
       "severity": "error",
       "code": "bundle-profile",
@@ -7066,12 +6378,6 @@
     {
       "severity": "error",
       "area": "structure",
-      "title": "xds-fixedvalue-without-value × 12",
-      "detail": "nphies ITI41 Discharge Summary v4.9beta1 RPLC.xml: rim:Association/@associationType carries 3 compiled fixedValue row(s) with no `value` at all (meanings: fixedValue, fixedValue, fixedValueDeclaredNeverObserved); the official sample emits \"HasMember\" and the compiled spec cannot confirm or reject it | nphies ITI41 Discharge Summary v4.9beta1 RPLC.xml: rim:Association/@associationType carries 3 compiled fixedValue row(s) with no `value` at all (meanings: fixedValue, fixedValue, fixedValueDeclaredNeverObserved); the official sample emits \"urn:ihe:iti:2007:AssociationType:RPLC\" and the compiled spec cannot confirm or reject it | nphies ITI41 Discharge Summary v4.9beta1.xml: rim:Association/@associationType carries 3 compiled fixedValue row(s) with no `value` at all (meanings: fixedValue, fixedValue, fixedValueDeclaredNeverObserved); the official sample emits \"HasMember\" and the compiled spec cannot confirm or reject it"
-    },
-    {
-      "severity": "error",
-      "area": "structure",
       "title": "bundle-profile × 4",
       "detail": "MedicationDispenseBundle-UncontrolledMed_22052025.json: Bundle.meta.profile is http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/medicationdispensed|1.0 but the compiled fixed value is http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/bundleDispense|1.0 | MedicationDispenseBundle_Compound-UncontrolledMed_22052025.json: Bundle.meta.profile is http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/medicationdispensed|1.0 but the compiled fixed value is http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/bundleDispense|1.0 | MedicationDispenseBundle_Raqeeb_NormalDosing_CodeAuthenticated_18052025.json: Bundle.meta.profile is http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/medicationdispensed|1.0 but the compiled fixed value is http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/bundleDispense|1.0"
     },
@@ -7112,26 +6418,6 @@
     },
     {
       "priority": 2,
-      "area": "xds",
-      "action": "rim:Association/@associationType compiles to three fixedValue rows that each carry a `meaning`, an `observedInSamples` count and a Confluence quote — but no `value`. The literal was dropped during compilation, so the compiled spec cannot confirm or reject the associationType an HIS emits, even though its confidenceReason discusses the HasMember bare-token-vs-URN conflict in detail. Re-extract the value column from page 17694743.",
-      "firstTargets": [
-        "rim:Association/@associationType carries 3 compiled fixedValue row(s) with no `value` at all (meanings: fixedValue, fixedValue, fixedValueDeclaredNeverObserved); the official sample emits \"HasMember\" and the compiled spec cannot confirm or reject it",
-        "rim:Association/@associationType carries 3 compiled fixedValue row(s) with no `value` at all (meanings: fixedValue, fixedValue, fixedValueDeclaredNeverObserved); the official sample emits \"urn:ihe:iti:2007:AssociationType:RPLC\" and the compiled spec cannot confirm or reject it",
-        "rim:Association/@associationType carries 3 compiled fixedValue row(s) with no `value` at all (meanings: fixedValue, fixedValue, fixedValueDeclaredNeverObserved); the official sample emits \"HasMember\" and the compiled spec cannot confirm or reject it"
-      ]
-    },
-    {
-      "priority": 3,
-      "area": "xds",
-      "action": "Every rim:ExternalIdentifier must carry the IHE object-qualified metadata name (XDSDocumentEntry.patientId, XDSSubmissionSet.sourceId, ...). The compiled spec stores only the bare attribute name (patientId, sourceId) as a locator; the qualified literal appears only inside guidance prose. An HIS generating rim:Name from the compiled label would emit the wrong name in every submission.",
-      "firstTargets": [
-        "rim:ExternalIdentifier for scheme urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427 must carry rim:Name \"XDSDocumentEntry.patientId\", but the compiled spec records the attribute only as \"patientId\"",
-        "rim:ExternalIdentifier for scheme urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab must carry rim:Name \"XDSDocumentEntry.uniqueId\", but the compiled spec records the attribute only as \"uniqueId\"",
-        "rim:ExternalIdentifier for scheme urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427 must carry rim:Name \"XDSDocumentEntry.patientId\", but the compiled spec records the attribute only as \"patientId\""
-      ]
-    },
-    {
-      "priority": 4,
       "area": "methodology",
       "action": "Reduce SOAP/XDS circularity: xds-iti41 36/51, xds-iti18-response 17/25, xds-iti18-request 3/13, xds-iti43-response 1/15 members are sample-derived. Until those members are traced to a cached Confluence page, the honest SOAP number is 55.0%, not 100.0%. soapPath is the worst kind at 32.7% independent.",
       "firstTargets": [

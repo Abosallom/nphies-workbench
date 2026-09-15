@@ -371,6 +371,7 @@ const goldenIn = inputs.golden.data;
 
 const PATCH_NAMES = [
   'patch-xds-ebrim',
+  'patch-xds-names',
   'patch-literals',
   'patch-fhir-entries',
   'patch-cda',
@@ -386,6 +387,7 @@ for (const name of PATCH_NAMES) {
 const patchData = (name) => patches[name]?.data ?? null;
 
 const xdsPatch = patchData('patch-xds-ebrim');
+const xdsNamesPatch = patchData('patch-xds-names');
 const literalsPatch = patchData('patch-literals');
 const fhirEntriesPatch = patchData('patch-fhir-entries');
 const cdaPatch = patchData('patch-cda');
@@ -906,6 +908,86 @@ function ebrimNode(id, fields) {
   };
 }
 
+// ---------------------------------------------------------------------------
+// patch-xds-names: the two XDS literals that "resolved" while being WRONG
+//
+// Both were invisible to a resolution-rate metric, and both would have made every emitted
+// XDS message invalid:
+//
+//   (1) rim:ExternalIdentifier/rim:Name. The compiled spec named each metadata attribute by
+//       the BARE label the NPHIES optionality tables use (`patientId`, `uniqueId`,
+//       `sourceId`). The wire carries the IHE object-qualified form
+//       (`XDSDocumentEntry.patientId`, `XDSSubmissionSet.sourceId`, …). An HIS generating
+//       rim:Name from the compiled label would emit the wrong name in EVERY submission.
+//       The fix keeps the bare label as the display label and attaches the qualified
+//       literal as the fixed value of the element that actually carries it.
+//
+//   (2) rim:Association/@associationType. Three fixedValue rows compiled with a `meaning`,
+//       an occurrence count and a page citation but NO `value` — so the spec could neither
+//       emit nor check an Association. The literals are recovered here from page 17694743
+//       and from the samples. Page and wire DISAGREE on HasMember; both literals are
+//       carried as separate rows with their own provenance and a shared conflict id, and
+//       neither is auto-corrected.
+//
+// Sample-derived stays sample-derived: a name literal that no Confluence page states keeps
+// `derivation: "sample"` and a `provenance.sample`, so the UI can say the rule is not in the
+// published spec. Nothing is laundered into normative.
+// ---------------------------------------------------------------------------
+
+/** scheme UUID (lower-case) -> the recovered rim:Name record. */
+const xdsQualifiedNameByUuid = new Map();
+for (const rec of Array.isArray(xdsNamesPatch?.externalIdentifierNames) ? xdsNamesPatch.externalIdentifierNames : []) {
+  if (!rec?.uuid || !rec?.qualifiedName) {
+    warn('xds-names', 'an externalIdentifierNames entry has no uuid/qualifiedName and was skipped');
+    continue;
+  }
+  xdsQualifiedNameByUuid.set(String(rec.uuid).toLowerCase(), rec);
+}
+
+/**
+ * `rim:<Object>/@<attr>` -> recovered fixed-value rows. Keyed exactly the way the golden
+ * gate looks them up, so a row it can match is a row this compiler actually shipped.
+ */
+const xdsAttributeValueOverrides = new Map();
+{
+  const attr = xdsNamesPatch?.associationTypeAttribute;
+  if (attr?.elementPath && attr?.attribute && Array.isArray(attr.values)) {
+    xdsAttributeValueOverrides.set(`${attr.elementPath}/@${attr.attribute}`, attr);
+  }
+}
+let xdsNamesApplied = { names: 0, occurrences: 0, attributeValues: 0, unmatchedNames: [] };
+
+/** One fixedValue row for a recovered `rim:<Object>/@<attr>` literal. */
+function recoveredAttributeFixedValue(spec, row) {
+  return {
+    value: row.value ?? null,
+    target: spec.attribute,
+    statementType: row.statementType ?? (Number(row.observedIn) > 0 ? 'fixedValue' : 'fixedValueDeclaredNeverObserved'),
+    scope: 'attribute',
+    elementPath: spec.elementPath,
+    attribute: spec.attribute,
+    component: null,
+    provenance: provenance(row.source),
+    meaning: row.meaning ?? null,
+    observedInSamples: typeof row.observedIn === 'number' ? row.observedIn : null,
+    note: row.note ?? null,
+    // Kept SEPARATE from `provenance`: where a page states a literal the wire also carries,
+    // both sources are shown rather than one standing in for the other.
+    corroboratingSample: row.corroboratingSample ? provenance(row.corroboratingSample) : null,
+    /** Non-null when this literal is in conflict with another row for the same attribute. */
+    conflictId: row.conflictId ?? null,
+    /** True for the literal an emitter should write by default. */
+    emitDefault: row.emitDefault === true,
+    ...evidence({
+      confidence: row.confidence,
+      verifiedAgainstSample: Number(row.observedIn) > 0,
+      derivation: row.derivation,
+      confidenceReason: row.confidenceReason,
+      samples: row.derivedFrom,
+    }),
+  };
+}
+
 function buildEbrimFieldPage() {
   if (!xdsPatch) return null;
   const tables = [];
@@ -921,6 +1003,75 @@ function buildEbrimFieldPage() {
     const schemeKind = sch.kind === 'identification' ? 'identification' : 'classification';
     const attributeName = schemeKind === 'classification' ? 'classificationScheme' : 'identificationScheme';
     const observed = Number(sch.sampleCount) > 0;
+    // The IHE object-qualified metadata name this scheme's rim:Name must carry. Recovered
+    // from the samples: it is what an emitter writes, and the bare `sch.attribute` is not.
+    const qualified = schemeKind === 'identification' ? xdsQualifiedNameByUuid.get(String(sch.uuid).toLowerCase()) : undefined;
+    if (qualified) {
+      xdsNamesApplied.names += 1;
+      xdsNamesApplied.occurrences += Number(qualified.occurrenceCount) || 0;
+    }
+    const nameFixedValue = qualified
+      ? {
+          value: qualified.qualifiedName,
+          target: qualified.emitPath ?? 'rim:Name/rim:LocalizedString/@value',
+          statementType: 'ebrimMetadataAttributeName',
+          scope: 'attribute',
+          elementPath: qualified.elementPath ?? 'rim:ExternalIdentifier/rim:Name/rim:LocalizedString',
+          attribute: qualified.attribute ?? 'value',
+          component: null,
+          provenance: provenance(qualified.source),
+          meaning: `the IHE object-qualified name of ${sch.appliesTo ?? 'DocumentEntry'}.${sch.attribute}`,
+          observedInSamples: typeof qualified.occurrenceCount === 'number' ? qualified.occurrenceCount : null,
+          note: null,
+          /** Pages that merely MENTION the spelling in prose. Corroboration, never the rule. */
+          corroboratingPages: Array.isArray(qualified.corroboratingPages)
+            ? qualified.corroboratingPages.map((pg) => provenance(pg))
+            : [],
+          ...evidence({
+            confidence: qualified.confidence,
+            verifiedAgainstSample: qualified.verifiedAgainstSample === true,
+            derivation: qualified.derivation ?? 'sample',
+            confidenceReason: qualified.confidenceReason,
+            samples: qualified.derivedFrom,
+          }),
+        }
+      : null;
+    // A child node for the element that actually carries the literal. It is a real element
+    // an emitter must produce, and giving it its own node is what makes the qualified name
+    // a stated fact of the compiled spec rather than a sentence inside guidance prose.
+    // `locator` is null ON PURPOSE: rim:Name/rim:LocalizedString/@value is not a rim:Slot,
+    // and inventing an `xdsSlot` locator for it would make an emitter write
+    // <rim:Slot name="XDSDocumentEntry.patientId">. `locatorRaw` carries the real path.
+    const nameChildNode = qualified
+      ? ebrimNode(`${EBRIM_PAGE_ID}:0:${i}:name`, {
+          label: qualified.qualifiedName,
+          locator: null,
+          locatorRaw: qualified.emitPath ?? 'rim:ExternalIdentifier/rim:Name/rim:LocalizedString/@value',
+          role: 'structural',
+          roleConfidence: 'high',
+          usage: usageFromCode('M', { min: 1, max: 1 }),
+          guidance:
+            `The ebRIM metadata attribute name for ${sch.appliesTo ?? 'DocumentEntry'}.${sch.attribute}. ` +
+            `A <rim:ExternalIdentifier identificationScheme="${sch.uuid}"> SHALL carry ` +
+            `<rim:Name><rim:LocalizedString value="${qualified.qualifiedName}"/></rim:Name>. ` +
+            `The compiled attribute label "${sch.attribute}" is the name NPHIES uses in its metadata-optionality ` +
+            `tables — it is NOT the literal that goes on the wire.`,
+          fixedValues: [nameFixedValue],
+          provenance: provenance(qualified.source),
+          ...evidence({
+            confidence: qualified.confidence,
+            verifiedAgainstSample: qualified.verifiedAgainstSample === true,
+            derivation: qualified.derivation ?? 'sample',
+            confidenceReason: qualified.confidenceReason,
+            samples: qualified.derivedFrom,
+          }),
+          bareAttribute: sch.attribute,
+          qualifiedName: qualified.qualifiedName,
+          corroboratingPages: Array.isArray(qualified.corroboratingPages)
+            ? qualified.corroboratingPages.map((pg) => provenance(pg))
+            : [],
+        })
+      : null;
     schemeNodes.push(
       ebrimNode(`${EBRIM_PAGE_ID}:0:${i}`, {
         label: sch.attribute,
@@ -941,6 +1092,9 @@ function buildEbrimFieldPage() {
           Array.isArray(sch.requiredChildSlots) && sch.requiredChildSlots.length
             ? `Requires child rim:Slot(s): ${sch.requiredChildSlots.join(', ')}.`
             : null,
+          qualified
+            ? `Its <rim:Name> SHALL carry the object-qualified literal "${qualified.qualifiedName}", not the bare label "${sch.attribute}".`
+            : null,
         ]
           .filter(Boolean)
           .join(' '),
@@ -955,6 +1109,7 @@ function buildEbrimFieldPage() {
             component: null,
             provenance: provenance(sch.source),
           },
+          ...(nameFixedValue ? [nameFixedValue] : []),
         ],
         provenance: provenance(sch.source) ?? provenance(sch.nphiesOptionality?.source),
         ...evidence({
@@ -969,8 +1124,31 @@ function buildEbrimFieldPage() {
         observedNames: Array.isArray(sch.observedNames) ? sch.observedNames : [],
         occurrenceCount: typeof sch.occurrenceCount === 'number' ? sch.occurrenceCount : null,
         ...(sch.nphiesOptionality?.source ? { optionalityProvenance: provenance(sch.nphiesOptionality.source) } : {}),
+        // The label stays BARE (that is what NPHIES calls the attribute); the wire literal
+        // is carried alongside it so neither side has to be guessed at.
+        ...(qualified ? { qualifiedName: qualified.qualifiedName } : {}),
+        children: nameChildNode ? [nameChildNode] : [],
       }),
     );
+  }
+  // An identification scheme with no recovered rim:Name is a scheme whose wire literal we
+  // still do not know. Say so rather than letting the bare label pass for one.
+  for (const sch of Array.isArray(xdsPatch.schemes) ? xdsPatch.schemes : []) {
+    if (sch?.kind !== 'identification' || !sch?.uuid) continue;
+    if (xdsQualifiedNameByUuid.has(String(sch.uuid).toLowerCase())) continue;
+    xdsNamesApplied.unmatchedNames.push(String(sch.uuid).toLowerCase());
+    warn(
+      'xds-names',
+      `identification scheme ${sch.uuid} (${sch.appliesTo ?? '?'}.${sch.attribute}) has no recovered rim:Name literal — ` +
+        'no official sample carries it, so the compiled spec states only the bare attribute label and an emitter must NOT ' +
+        'invent the object-qualified form',
+    );
+  }
+  for (const uuid of xdsQualifiedNameByUuid.keys()) {
+    const known = (Array.isArray(xdsPatch.schemes) ? xdsPatch.schemes : []).some(
+      (s) => String(s?.uuid ?? '').toLowerCase() === uuid,
+    );
+    if (!known) warn('xds-names', `recovered rim:Name for scheme ${uuid}, which patch-xds-ebrim.json does not map — not compiled`);
   }
   if (schemeNodes.length) {
     tables.push({
@@ -983,7 +1161,7 @@ function buildEbrimFieldPage() {
       notes: [],
       nodes: schemeNodes,
     });
-    nodeCount += schemeNodes.length;
+    nodeCount += schemeNodes.reduce((n, node) => n + 1 + (node.children?.length ?? 0), 0);
   }
 
   /* ---- table 1: ebRIM slots ------------------------------------------------- */
@@ -1202,6 +1380,40 @@ function buildEbrimFieldPage() {
     const obj = xdsPatch.ebrimModel?.[objectName];
     for (const attr of Array.isArray(obj?.attributes) ? obj.attributes : []) {
       if (!attr?.attribute) continue;
+      const elementPath = `rim:${objectName}`;
+      // Where a literal-recovery pass recovered the actual values for this attribute, its
+      // rows REPLACE the value-less ones, each with its own provenance. The earlier pass's
+      // rows recorded what a value MEANS and how many samples carried it but never what any
+      // value IS, and they all shared one quote — the HasMember row's — so a reader could
+      // not tell which evidence backed which literal.
+      const recovered = xdsAttributeValueOverrides.get(`${elementPath}/@${attr.attribute}`);
+      const fixedValues = recovered
+        ? recovered.values.map((row) => recoveredAttributeFixedValue({ elementPath, attribute: attr.attribute }, row))
+        : (Array.isArray(attr.fixedValues) ? attr.fixedValues : []).map((fv) => ({
+            value: fv.value ?? null,
+            target: attr.attribute,
+            statementType: Number(fv.observedIn) > 0 ? 'fixedValue' : 'fixedValueDeclaredNeverObserved',
+            scope: 'attribute',
+            elementPath,
+            attribute: attr.attribute,
+            component: null,
+            // Per-row source where the patch gave one; the attribute-level source only as a
+            // fallback. Attributing every row to one row's quote is how the associationType
+            // literals went missing without anything noticing.
+            provenance: provenance(fv.source, attr.source),
+            meaning: fv.meaning ?? null,
+            observedInSamples: typeof fv.observedIn === 'number' ? fv.observedIn : null,
+            note: fv.note ?? null,
+          }));
+      if (recovered) xdsNamesApplied.attributeValues += fixedValues.length;
+      const valueless = fixedValues.filter((fv) => fv.value === null || fv.value === '');
+      if (valueless.length) {
+        warn(
+          'xds-ebrim',
+          `rim:${objectName}/@${attr.attribute} compiles ${valueless.length} fixedValue row(s) with no literal — ` +
+            'the compiled spec can neither emit nor check this attribute',
+        );
+      }
       attrNodes.push(
         ebrimNode(`${EBRIM_PAGE_ID}:4:${attrIndex}`, {
           label: `${objectName}/@${attr.attribute}`,
@@ -1210,28 +1422,30 @@ function buildEbrimFieldPage() {
           role: 'structural',
           roleConfidence: attr.confidence ?? 'high',
           usage: attr.required ? usageFromCode('M', { min: 1, max: 1 }) : usageFromCode('O', { min: 0, max: 1 }),
-          guidance: [attr.carries, attr.valueFormat ? `Format: ${attr.valueFormat}` : null].filter(Boolean).join(' '),
-          fixedValues: (Array.isArray(attr.fixedValues) ? attr.fixedValues : []).map((fv) => ({
-            value: fv.value,
-            target: attr.attribute,
-            statementType: Number(fv.observedIn) > 0 ? 'fixedValue' : 'fixedValueDeclaredNeverObserved',
-            scope: 'attribute',
-            elementPath: `rim:${objectName}`,
-            attribute: attr.attribute,
-            component: null,
-            provenance: provenance(attr.source),
-            meaning: fv.meaning ?? null,
-            observedInSamples: typeof fv.observedIn === 'number' ? fv.observedIn : null,
-            note: fv.note ?? null,
-          })),
+          guidance: [
+            attr.carries,
+            attr.valueFormat ? `Format: ${attr.valueFormat}` : null,
+            recovered?.shallStatement?.quote ?? null,
+          ]
+            .filter(Boolean)
+            .join(' '),
+          fixedValues,
           provenance: provenance(attr.source),
           ...evidence({
             confidence: attr.confidence,
-            verifiedAgainstSample: Boolean(attr.source?.sample) || (Array.isArray(attr.fixedValues) && attr.fixedValues.some((f) => Number(f.observedIn) > 0)),
+            verifiedAgainstSample: Boolean(attr.source?.sample) || fixedValues.some((f) => Number(f.observedInSamples) > 0),
             derivation: attr.source?.pageId ? 'confluence+sample' : 'sample',
             confidenceReason: attr.confidenceReason,
           }),
           ebrimObject: objectName,
+          // Ids of the conflicts these literals are caught in, so a checker can look the
+          // disagreement up in spec-defects.json instead of silently picking a side.
+          ...(recovered
+            ? {
+                conflictIds: [...new Set(fixedValues.map((f) => f.conflictId).filter(Boolean))],
+                shallStatement: provenance(recovered.shallStatement),
+              }
+            : {}),
         }),
       );
       attrIndex += 1;
@@ -2181,26 +2395,49 @@ function applyEbrimToXdsStructures(structures) {
     if (!schemesByObject.has(key)) schemesByObject.set(key, []);
     schemesByObject.get(key).push(sch);
   }
-  const schemeRule = (sch) => ({
-    locator: {
-      kind: 'xdsScheme',
-      scheme: sch.kind === 'identification' ? 'identification' : 'classification',
-      uuid: String(sch.uuid).toLowerCase(),
-      attribute: sch.attribute,
-      ...(sch.appliesTo ? { appliesTo: sch.appliesTo } : {}),
-    },
-    valueCarrier: sch.valueCarrier ?? null,
-    requiredChildSlots: Array.isArray(sch.requiredChildSlots) ? sch.requiredChildSlots : [],
-    usage: ebrimUsage(sch.nphiesOptionality, null),
-    provenance: provenance(sch.source) ?? provenance(sch.nphiesOptionality?.source),
-    ...evidence({
-      confidence: sch.confidence,
-      verifiedAgainstSample: Number(sch.sampleCount) > 0,
-      derivation: sch.nphiesOptionality ? 'confluence+sample' : 'sample',
-      confidenceReason: sch.confidenceReason,
-      samples: sch.derivedFrom,
-    }),
-  });
+  const schemeRule = (sch) => {
+    // The literal an emitter must write into this ExternalIdentifier's rim:Name. Without it
+    // the structure says which UUID to use but not what to name it, and an emitter reading
+    // `locator.attribute` would write the bare form the wire never carries.
+    const qualified = xdsQualifiedNameByUuid.get(String(sch.uuid).toLowerCase());
+    return {
+      locator: {
+        kind: 'xdsScheme',
+        scheme: sch.kind === 'identification' ? 'identification' : 'classification',
+        uuid: String(sch.uuid).toLowerCase(),
+        attribute: sch.attribute,
+        ...(sch.appliesTo ? { appliesTo: sch.appliesTo } : {}),
+      },
+      valueCarrier: sch.valueCarrier ?? null,
+      requiredChildSlots: Array.isArray(sch.requiredChildSlots) ? sch.requiredChildSlots : [],
+      usage: ebrimUsage(sch.nphiesOptionality, null),
+      provenance: provenance(sch.source) ?? provenance(sch.nphiesOptionality?.source),
+      ...evidence({
+        confidence: sch.confidence,
+        verifiedAgainstSample: Number(sch.sampleCount) > 0,
+        derivation: sch.nphiesOptionality ? 'confluence+sample' : 'sample',
+        confidenceReason: sch.confidenceReason,
+        samples: sch.derivedFrom,
+      }),
+      ...(qualified
+        ? {
+            metadataName: {
+              value: qualified.qualifiedName,
+              bareAttribute: sch.attribute,
+              emitPath: qualified.emitPath ?? 'rim:ExternalIdentifier/rim:Name/rim:LocalizedString/@value',
+              provenance: provenance(qualified.source),
+              ...evidence({
+                confidence: qualified.confidence,
+                verifiedAgainstSample: qualified.verifiedAgainstSample === true,
+                derivation: qualified.derivation ?? 'sample',
+                confidenceReason: qualified.confidenceReason,
+                samples: qualified.derivedFrom,
+              }),
+            },
+          }
+        : {}),
+    };
+  };
 
   let grafted = 0;
   let touched = 0;
@@ -3348,6 +3585,21 @@ const { index: valueSetIndex, files: valueSetFiles } = compileValueSets();
 // rewriting either side. Where no sample settles it, no winner is picked.
 // ---------------------------------------------------------------------------
 
+/** Open questions an later pass restated with more evidence, and the text it replaced. */
+const supersededOpenQuestions = new Set(
+  (xdsNamesPatch?.openQuestions ?? []).map((q) => q?.supersedes).filter(Boolean),
+);
+const supersededOpenQuestionText = new Map(
+  (xdsPatch?.openQuestions ?? [])
+    .filter((q) => supersededOpenQuestions.has(q?.id))
+    .map((q) => [q.id, q.question ?? null]),
+);
+for (const id of supersededOpenQuestions) {
+  if (!supersededOpenQuestionText.has(id)) {
+    warn('xds-names', `open question "${id}" is marked superseded but no earlier patch asks it — nothing was replaced`);
+  }
+}
+
 function buildSpecDefects() {
   const defects = [];
   for (const [i, d] of (literalsPatch?.specDefects ?? []).entries()) {
@@ -3408,6 +3660,38 @@ function buildSpecDefects() {
     });
   }
 
+  // Two XDS literals the compiled spec got wrong while still "resolving" against the golden
+  // samples: the bare-vs-object-qualified rim:ExternalIdentifier name, and the HasMember
+  // associationType where page 17694743 and all 11 samples disagree. Both sides of each are
+  // carried; neither is rewritten.
+  for (const d of xdsNamesPatch?.specDefects ?? []) {
+    if (!d?.id) continue;
+    defects.push({
+      id: String(d.id).startsWith('xds-') ? String(d.id) : `xds-${d.id}`,
+      kind: d.kind ?? 'spec-vs-wire-conflict',
+      confluenceSpelling: d.confluenceSpelling ?? null,
+      wireSpelling: d.wireSpelling ?? null,
+      whatItIs: d.whatItIs ?? null,
+      wireWins: d.wireWins === true,
+      action: d.action ?? null,
+      affectedPages: (d.affectedPages ?? []).map((pg) => ({
+        pageId: String(pg.pageId),
+        title: pg.title ?? null,
+        row: pg.row ?? null,
+      })),
+      affectedSpecBuildPaths: ['spec-build/patch-xds-names.json'],
+      provenance: provenance(d.provenance),
+      evidence: d.evidence ?? null,
+      ...evidence({
+        confidence: d.confidence,
+        verifiedAgainstSample: d.verifiedAgainstSample === true,
+        derivation: d.provenance?.pageId ? 'confluence+sample' : 'sample',
+        confidenceReason: d.confidenceReason,
+        samples: d.evidence?.samples,
+      }),
+    });
+  }
+
   // A section templateId OID is not globally unique in this spec: resolving by OID alone
   // silently accepts a Key Images section where a Request section belongs.
   for (const col of cdaPatch?.oidCollisions?.collisions ?? []) {
@@ -3445,7 +3729,20 @@ function buildSpecDefects() {
       evidence: d.evidence ?? null,
     })),
     openQuestions: [
-      ...(xdsPatch?.openQuestions ?? []).map((q) => ({ area: 'xds', ...q })),
+      // An earlier pass could only ask the HasMember question in the abstract; the literal
+      // pass asks it with both literals compiled and says what the workbench does meanwhile.
+      // Showing an analyst the same unanswered question twice is noise, so the superseded
+      // entry drops out — its text is carried on the entry that replaces it.
+      ...(xdsPatch?.openQuestions ?? [])
+        .filter((q) => !supersededOpenQuestions.has(q?.id))
+        .map((q) => ({ area: 'xds', ...q })),
+      ...(xdsNamesPatch?.openQuestions ?? []).map((q) => ({
+        area: 'xds',
+        ...q,
+        ...(q?.supersedes
+          ? { supersedes: q.supersedes, supersededText: supersededOpenQuestionText.get(q.supersedes) ?? null }
+          : {}),
+      })),
       ...(samlPatch?.knownGaps ?? []).map((g) => ({ area: 'saml', id: g.id, severity: g.severity, question: g.gap, why: g.effect ?? null })),
     ],
     /** Literals the compiler corrected on the way in, and the rule that stops them coming back. */
@@ -3462,7 +3759,10 @@ function buildSpecDefects() {
       specVsWireConflicts: defects.filter((d) => d.kind === 'spec-vs-wire-conflict').length,
       templateIdCollisions: defects.filter((d) => d.kind === 'templateid-collision').length,
       upstreamPageDefects: (cdaPatch?.upstreamDefects ?? []).length,
-      openQuestions: (xdsPatch?.openQuestions ?? []).length + (samlPatch?.knownGaps ?? []).length,
+      openQuestions:
+        (xdsPatch?.openQuestions ?? []).filter((q) => !supersededOpenQuestions.has(q?.id)).length +
+        (xdsNamesPatch?.openQuestions ?? []).length +
+        (samlPatch?.knownGaps ?? []).length,
       lowConfidence: defects.filter((d) => d.confidence === 'low').length,
     },
   };
@@ -3568,6 +3868,15 @@ const manifest = {
       note:
         'The ebRIM content model below the SOAP Body is derived from the official samples; no cached Confluence page draws it. Those members carry `observed` cardinalities, not usage codes, and a resolution measurement taken against the same samples is not independent confirmation.',
     },
+    xdsNames: {
+      externalIdentifierNamesRecovered: xdsNamesApplied.names,
+      externalIdentifierOccurrencesCovered: xdsNamesApplied.occurrences,
+      identificationSchemesWithoutRecoveredName: xdsNamesApplied.unmatchedNames,
+      attributeFixedValuesRecovered: xdsNamesApplied.attributeValues,
+      conflictsCarried: xdsNamesPatch?.stats?.conflictsCarriedForHumanReview ?? 0,
+      note:
+        'Two rules that resolved against the golden samples while being wrong: rim:ExternalIdentifier/rim:Name carried the bare attribute label instead of the IHE object-qualified literal, and rim:Association/@associationType carried three fixedValue rows with no `value` at all. Both are now stated. The qualified names are SAMPLE-DERIVED — no cached Confluence page states the rim:Name rule — and the HasMember literal is a live page-vs-wire conflict carried for human review, not auto-corrected.',
+    },
     cda: {
       headerModelsAttached: cdaPatchApplied.headerGroups,
       headerElementsPerDocument: cdaPatch?.headerModel?.elements?.length ?? 0,
@@ -3651,6 +3960,7 @@ process.stdout.write(
     }`,
     `  literal fixes:      ${literalCorrectionSummary.applied} corrections / ${literalCorrectionSummary.occurrences} slots, ${literalGuardViolations.length} guard violation(s)`,
     `  ebRIM:              ${manifest.repairs.xdsEbrim.schemesAsSpecNodes} spec nodes, ${ebrimGraft.grafted} SOAP members, ${ebrimGraft.schemesAttached} scheme rules`,
+    `  XDS literals:       ${xdsNamesApplied.names} rim:Name literals (${xdsNamesApplied.occurrences} sample occurrences), ${xdsNamesApplied.attributeValues} associationType fixed values`,
     `  spec defects:       ${specDefectsBundle.counts.defects}   sample defects: ${manifest.counts.sampleDefects}`,
     `  missing inputs:     ${manifest.missingInputs.length ? manifest.missingInputs.join(', ') : 'none'}`,
     `  warnings:           ${warnings.length}`,
