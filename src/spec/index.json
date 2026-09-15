@@ -1,0 +1,2130 @@
+{
+  "$schema": "nphies-workbench/spec-bundle@1",
+  "bundleVersion": 1,
+  "counts": {
+    "datatypes": 42,
+    "errors": 39,
+    "fixedValues": 1115,
+    "goldenSamples": 62,
+    "messageStructures": 46,
+    "oids": 353,
+    "quarantinedOids": 11,
+    "specNodes": 3444,
+    "specPages": 288,
+    "useCases": 26,
+    "valueSetBindings": 329,
+    "valueSetConcepts": 44508,
+    "valueSets": 123
+  },
+  "coverage": {
+    "missing": [
+      "saml-sso"
+    ],
+    "partial": [
+      "cda-rad-order",
+      "oru-vitals"
+    ],
+    "useCasesWithStructure": 25,
+    "useCasesWithoutGolden": [
+      "oru-vitals",
+      "saml-sso"
+    ],
+    "useCasesWithoutStructure": [
+      "saml-sso"
+    ]
+  },
+  "engine": "src/lib/structure.ts",
+  "families": [
+    {
+      "areas": [
+        "ADT",
+        "Vital Signs - ORU"
+      ],
+      "file": "fields/hl7v2.json",
+      "id": "hl7v2",
+      "label": "HL7 v2.5.1 (ADT / ORU / ACK)",
+      "nodes": 754,
+      "pages": 24,
+      "segments": [
+        "AL1",
+        "DG1",
+        "ERR",
+        "EVN",
+        "MRG",
+        "MSA",
+        "MSH",
+        "NTE",
+        "OBR",
+        "OBX",
+        "PD1",
+        "PID",
+        "PR1",
+        "PV1",
+        "PV2"
+      ],
+      "tables": 33
+    },
+    {
+      "areas": [
+        "FHIR Laboratory Orders",
+        "FHIR Laboratory Results",
+        "FHIR Radiology Orders",
+        "FHIR Radiology Report",
+        "Medication Prescription and Dispense (Raqeeb)",
+        "Medications Prescription and Dispense"
+      ],
+      "file": "fields/fhir.json",
+      "id": "fhir",
+      "label": "FHIR R4 (medications, laboratory, radiology)",
+      "nodes": 1053,
+      "pages": 103,
+      "segments": [],
+      "tables": 112
+    },
+    {
+      "areas": [
+        "Clinical Documents",
+        "Immunization Card",
+        "Immunization Summary",
+        "Laboratory Orders",
+        "Laboratory Results",
+        "Notifications",
+        "Radiology Orders",
+        "Radiology Results",
+        "iEHR Summary"
+      ],
+      "file": "fields/cda.json",
+      "id": "cda",
+      "label": "HL7 CDA R2 clinical documents",
+      "nodes": 1440,
+      "pages": 142,
+      "segments": [],
+      "tables": 142
+    },
+    {
+      "areas": [
+        "Immunization Card",
+        "Immunization Summary",
+        "Laboratory Orders",
+        "Laboratory Results",
+        "Provide and Register – ITI-41",
+        "Radiology Orders",
+        "Radiology Results",
+        "XDS Query Document Set",
+        "iEHR Summary"
+      ],
+      "file": "fields/xds.json",
+      "id": "xds",
+      "label": "IHE XDS.b / SOAP metadata",
+      "nodes": 197,
+      "pages": 19,
+      "segments": [],
+      "tables": 19
+    }
+  ],
+  "files": {
+    "constants": "constants.json",
+    "datatypes": "datatypes.json",
+    "errors": "errors.json",
+    "fields": {
+      "cda": "fields/cda.json",
+      "fhir": "fields/fhir.json",
+      "hl7v2": "fields/hl7v2.json",
+      "xds": "fields/xds.json"
+    },
+    "golden": "golden.json",
+    "structures": "structures.json",
+    "valueSetIndex": "valuesets/index.json"
+  },
+  "files_written": [
+    "constants.json",
+    "datatypes.json",
+    "errors.json",
+    "fields/cda.json",
+    "fields/fhir.json",
+    "fields/hl7v2.json",
+    "fields/xds.json",
+    "golden.json",
+    "structures.json",
+    "valuesets/cs-adm-acknowledgmentcode.json",
+    "valuesets/cs-adm-admissionmethod.json",
+    "valuesets/cs-adm-admitsource.json",
+    "valuesets/cs-adm-caremodality.json",
+    "valuesets/cs-adm-caretype.json",
+    "valuesets/cs-adm-classcode.json",
+    "valuesets/cs-adm-confidentialitycode.json",
+    "valuesets/cs-adm-contenttype.json",
+    "valuesets/cs-adm-country.json",
+    "valuesets/cs-adm-criticalcaretype.json",
+    "valuesets/cs-adm-diagnosticreportstatus.json",
+    "valuesets/cs-adm-dischargedisposition.json",
+    "valuesets/cs-adm-edarrivalmode.json",
+    "valuesets/cs-adm-eddisposition.json",
+    "valuesets/cs-adm-eventtype.json",
+    "valuesets/cs-adm-externalreferralflag.json",
+    "valuesets/cs-adm-facilitysector.json",
+    "valuesets/cs-adm-facilitytypeofcare.json",
+    "valuesets/cs-adm-formatcode.json",
+    "valuesets/cs-adm-gender.json",
+    "valuesets/cs-adm-hajjflag.json",
+    "valuesets/cs-adm-intendedlos.json",
+    "valuesets/cs-adm-issuetype.json",
+    "valuesets/cs-adm-maritalstatus.json",
+    "valuesets/cs-adm-medicalunitidentifier.json",
+    "valuesets/cs-adm-mimetype.json",
+    "valuesets/cs-adm-nametype.json",
+    "valuesets/cs-adm-nationality.json",
+    "valuesets/cs-adm-orderpriority.json",
+    "valuesets/cs-adm-orderstatus.json",
+    "valuesets/cs-adm-overridesecurejustificat.json",
+    "valuesets/cs-adm-patientclass.json",
+    "valuesets/cs-adm-postaladdress.json",
+    "valuesets/cs-adm-practitionercategory.json",
+    "valuesets/cs-adm-practitionerspecialty.json",
+    "valuesets/cs-adm-practitionertype.json",
+    "valuesets/cs-adm-preferredlanguage.json",
+    "valuesets/cs-adm-readmissionflag.json",
+    "valuesets/cs-adm-religion.json",
+    "valuesets/cs-adm-securecodestatus.json",
+    "valuesets/cs-adm-speciality.json",
+    "valuesets/cs-adm-triagecategory.json",
+    "valuesets/cs-adm-typeofcontact.json",
+    "valuesets/cs-allergy-drug.json",
+    "valuesets/cs-allergy-food.json",
+    "valuesets/cs-allergy-severity.json",
+    "valuesets/cs-allergy-substance.json",
+    "valuesets/cs-allergy-type.json",
+    "valuesets/cs-clinical-confidentialflag.json",
+    "valuesets/cs-clinical-deliverymethod.json",
+    "valuesets/cs-clinical-diagnosistype.json",
+    "valuesets/cs-clinical-principaldiagnosis.json",
+    "valuesets/cs-clinical-procedure.json",
+    "valuesets/cs-clinical-procedurepriority.json",
+    "valuesets/cs-clinical-procedureranking.json",
+    "valuesets/cs-clinical-proceduretype.json",
+    "valuesets/cs-lab-observationunit.json",
+    "valuesets/cs-lab-ordersandresults.json",
+    "valuesets/cs-lab-serology.json",
+    "valuesets/cs-lab-specimen-source.json",
+    "valuesets/cs-med-approachsite.json",
+    "valuesets/cs-med-brandname.json",
+    "valuesets/cs-med-doseform.json",
+    "valuesets/cs-med-durationunit.json",
+    "valuesets/cs-med-eventtiming.json",
+    "valuesets/cs-med-frequencyprecondition.json",
+    "valuesets/cs-med-genericname.json",
+    "valuesets/cs-med-quantityunit.json",
+    "valuesets/cs-obs-bloodgroup.json",
+    "valuesets/cs-obs-timeunit.json",
+    "valuesets/cs-vax-bodysiteofadministration.json",
+    "valuesets/cs-vax-brandname.json",
+    "valuesets/cs-vax-genericname.json",
+    "valuesets/cs-vax-manufacturer.json",
+    "valuesets/cs-vax-purpose.json",
+    "valuesets/cs-vax-reasonnotgiven.json",
+    "valuesets/cs-vax-routeofadministration.json",
+    "valuesets/data-types.json",
+    "valuesets/detailed-pregnancy-data.json",
+    "valuesets/dispense-item-type.json",
+    "valuesets/dispense-status.json",
+    "valuesets/hl7-media-types.json",
+    "valuesets/iherolecode.json",
+    "valuesets/imaging-procedures.json",
+    "valuesets/index.json",
+    "valuesets/ksa-antimicrobial.json",
+    "valuesets/ksa-body-regions.json",
+    "valuesets/ksa-height-units.json",
+    "valuesets/ksa-medication-package-form.json",
+    "valuesets/ksa-medication-prescription-type-raqeeb.json",
+    "valuesets/ksa-medication-prescription-type.json",
+    "valuesets/ksa-organism.json",
+    "valuesets/ksa-reason-medicinal-product-requested.json",
+    "valuesets/ksa-vaccine-risk-factors-allergies.json",
+    "valuesets/ksa-vaccine-risk-factors-medications.json",
+    "valuesets/ksa-vaccine-risk-factors-problems.json",
+    "valuesets/ksa-weight-units.json",
+    "valuesets/laboratory-department.json",
+    "valuesets/laboratory-order-priority.json",
+    "valuesets/laboratory-specimen-type.json",
+    "valuesets/license-validity.json",
+    "valuesets/local-118063524-1.json",
+    "valuesets/local-17629689-1.json",
+    "valuesets/loinc-codes.json",
+    "valuesets/medication-frequency.json",
+    "valuesets/modalities.json",
+    "valuesets/nphies-fhir-observation-status.json",
+    "valuesets/nphies-hl7-observation-interpretation-susceptibility.json",
+    "valuesets/order-status.json",
+    "valuesets/override-securecode-justification-raqeeb.json",
+    "valuesets/pregnancy-status.json",
+    "valuesets/pregnancy-summary.json",
+    "valuesets/prescription-category.json",
+    "valuesets/prescription-status.json",
+    "valuesets/qualifier-of-detection.json",
+    "valuesets/radiology-report-titles.json",
+    "valuesets/reference-range.json",
+    "valuesets/securecode-status-raqeeb.json",
+    "valuesets/snomed-codes.json",
+    "valuesets/specimen-collection-method.json",
+    "valuesets/specimen-risk.json",
+    "valuesets/status-code.json",
+    "valuesets/type-of-the-social-history-observation.json",
+    "valuesets/vital-signs-observations.json"
+  ],
+  "generatedAt": "2026-09-15T19:44:12.004Z",
+  "generator": "scripts/compile-spec.mjs",
+  "inputs": [
+    {
+      "bytes": 5231963,
+      "error": null,
+      "name": "spec-build/fields.json",
+      "present": true,
+      "sha256": "78cf7ab5f924f64aa56ac67059eeaa1c172d96069b78783dc3ea8acd12f12bde"
+    },
+    {
+      "bytes": 1074188,
+      "error": null,
+      "name": "spec-build/structures.json",
+      "present": true,
+      "sha256": "bb601e667abcfedc49ab3c30a815b836a53fd6c91ff614b64139be67f8eceb96"
+    },
+    {
+      "bytes": 3615287,
+      "error": null,
+      "name": "spec-build/valuesets.json",
+      "present": true,
+      "sha256": "66d89f8d544d6c4af03242cf203692cb2b857012e5f7534ac51c696d79c22e59"
+    },
+    {
+      "bytes": 205981,
+      "error": null,
+      "name": "spec-build/errors.json",
+      "present": true,
+      "sha256": "db16ffceb4d07c32f74b3c50c7a2531cb609289301cac9365ddae94acac68907"
+    },
+    {
+      "bytes": 1185263,
+      "error": null,
+      "name": "spec-build/constants.json",
+      "present": true,
+      "sha256": "6ac77712b2b04cac95434a442704b0f2f36c5525640bc047d2eff6681ff645bf"
+    },
+    {
+      "bytes": 152476,
+      "error": null,
+      "name": "spec-build/datatypes.json",
+      "present": true,
+      "sha256": "a3f26bf3ae96ae23582e8646f9e6020e5847ad7dbaf95f70a5ec304d575912bf"
+    },
+    {
+      "bytes": 738760,
+      "error": null,
+      "name": "spec-build/golden.json",
+      "present": true,
+      "sha256": "fd3e68342eb68fab16cfc225af8922e625c7a7d71006c2995e68617a42433063"
+    }
+  ],
+  "missingInputs": [],
+  "usageLegend": {
+    "codes": {
+      "-": {
+        "meaning": "segment is not present in this message",
+        "validator": "error-if-present"
+      },
+      "I": {
+        "meaning": "ignored (accepted then discarded by NPHIES)",
+        "validator": "ignored"
+      },
+      "M": {
+        "meaning": "mandatory",
+        "validator": "error-if-missing"
+      },
+      "NP": {
+        "meaning": "SHALL NOT be present",
+        "validator": "error-if-present"
+      },
+      "O": {
+        "meaning": "optional",
+        "validator": "ok"
+      },
+      "R": {
+        "meaning": "required",
+        "validator": "error-if-missing"
+      },
+      "R2": {
+        "meaning": "required if known",
+        "validator": "warn-if-missing"
+      },
+      "X": {
+        "meaning": "not used",
+        "validator": "warn-if-present"
+      }
+    },
+    "note": "M, X and NP are pinned by cross-tabbing usage against the cardinality column; see structures.json#usageLegend for the extractor's own record.",
+    "source": {
+      "pageId": "171278410",
+      "pageTitle": "Usage Legend",
+      "quote": "R = required, R2 = required if known, O = optional, I = ignored",
+      "row": "legend"
+    }
+  },
+  "useCases": [
+    {
+      "areas": [
+        "ADT"
+      ],
+      "encoding": "hl7v2-er7",
+      "family": "hl7v2",
+      "goldenMissing": null,
+      "goldenSampleCount": 3,
+      "goldenSamples": [
+        "golden/HL7 v2.5.1/ADT/ADT_sample03.txt",
+        "golden/HL7 v2.5.1/ADT/ADT_sample04.txt",
+        "golden/HL7 v2.5.1/ADT/ADT_sample08.txt"
+      ],
+      "id": "adt",
+      "relatedPages": [
+        "7766314",
+        "7766363",
+        "7766378",
+        "7766393",
+        "7766408",
+        "7766425",
+        "7766452",
+        "7766469",
+        "7766496",
+        "7766519",
+        "7766542",
+        "7766578",
+        "7766593",
+        "7766610"
+      ],
+      "specPages": [
+        "7766314",
+        "7766363",
+        "7766378",
+        "7766393",
+        "7766408",
+        "7766425",
+        "7766452",
+        "7766469",
+        "7766496",
+        "7766519",
+        "7766542",
+        "7766578",
+        "7766593",
+        "7766610"
+      ],
+      "status": "complete",
+      "statusReasons": [],
+      "structureIds": [
+        "adt-a01",
+        "adt-a02",
+        "adt-a03",
+        "adt-a04",
+        "adt-a05",
+        "adt-a06",
+        "adt-a07",
+        "adt-a08",
+        "adt-a11",
+        "adt-a12",
+        "adt-a13",
+        "adt-a31",
+        "adt-a38",
+        "adt-a45",
+        "adt-a50",
+        "adt-ack",
+        "adt-nack"
+      ],
+      "title": "ADT — Admit/Discharge/Transfer notifications",
+      "variants": [
+        {
+          "direction": "request",
+          "id": "adt-a01",
+          "label": "Admit/Visit Notification",
+          "variant": "A01"
+        },
+        {
+          "direction": "request",
+          "id": "adt-a02",
+          "label": "Transfer a patient",
+          "variant": "A02"
+        },
+        {
+          "direction": "request",
+          "id": "adt-a03",
+          "label": "Discharge/end visit",
+          "variant": "A03"
+        },
+        {
+          "direction": "request",
+          "id": "adt-a04",
+          "label": "Register a patient",
+          "variant": "A04"
+        },
+        {
+          "direction": "request",
+          "id": "adt-a05",
+          "label": "Pre-admit a patient",
+          "variant": "A05"
+        },
+        {
+          "direction": "request",
+          "id": "adt-a06",
+          "label": "Change an outpatient to an inpatient",
+          "variant": "A06"
+        },
+        {
+          "direction": "request",
+          "id": "adt-a07",
+          "label": "Change an inpatient to outpatient",
+          "variant": "A07"
+        },
+        {
+          "direction": "request",
+          "id": "adt-a08",
+          "label": "Update patient information",
+          "variant": "A08"
+        },
+        {
+          "direction": "request",
+          "id": "adt-a11",
+          "label": "Cancel admit/visit notification",
+          "variant": "A11"
+        },
+        {
+          "direction": "request",
+          "id": "adt-a12",
+          "label": "Cancel transfer",
+          "variant": "A12"
+        },
+        {
+          "direction": "request",
+          "id": "adt-a13",
+          "label": "Cancel discharge/end visit",
+          "variant": "A13"
+        },
+        {
+          "direction": "request",
+          "id": "adt-a31",
+          "label": "Update person information",
+          "variant": "A31"
+        },
+        {
+          "direction": "request",
+          "id": "adt-a38",
+          "label": "Cancel pre-admit",
+          "variant": "A38"
+        },
+        {
+          "direction": "request",
+          "id": "adt-a45",
+          "label": "Move visit information",
+          "variant": "A45"
+        },
+        {
+          "direction": "request",
+          "id": "adt-a50",
+          "label": "Change visit number",
+          "variant": "A50"
+        },
+        {
+          "direction": "response",
+          "id": "adt-ack",
+          "label": "Positive Acknowledgment",
+          "variant": "ACK-positive"
+        },
+        {
+          "direction": "response",
+          "id": "adt-nack",
+          "label": "Negative Acknowledgment",
+          "variant": "ACK-negative"
+        }
+      ]
+    },
+    {
+      "areas": [
+        "Clinical Documents"
+      ],
+      "encoding": "cda-xml",
+      "family": "cda",
+      "goldenMissing": null,
+      "goldenSampleCount": 1,
+      "goldenSamples": [
+        "golden/CDA/nphies Discharge Summary v4.9beta1.xml"
+      ],
+      "id": "cda-discharge-summary",
+      "relatedPages": [
+        "15859808",
+        "15859889",
+        "15859899",
+        "15859939",
+        "15859954",
+        "15860060",
+        "15860077",
+        "15860116",
+        "15860129",
+        "15860144",
+        "15860200",
+        "15860238",
+        "15860253",
+        "15860274",
+        "15860318",
+        "15860328",
+        "15860385",
+        "15892634",
+        "15892870",
+        "15892888",
+        "15892943",
+        "15893008",
+        "15893092",
+        "15893106",
+        "15893129",
+        "15893139",
+        "15893208",
+        "15893220",
+        "15893257",
+        "15925379",
+        "15925510",
+        "15925558",
+        "15925612",
+        "15925742",
+        "15925752",
+        "15925799",
+        "15958062",
+        "15958089",
+        "15958126",
+        "15958267",
+        "15958278",
+        "15958291",
+        "15958521",
+        "15958559",
+        "16711712",
+        "16711732",
+        "16711770",
+        "16712147",
+        "16712261",
+        "16744449",
+        "16744463",
+        "16744499",
+        "16744509",
+        "16744593",
+        "16744928",
+        "16744968",
+        "16745055",
+        "16777251",
+        "16777295",
+        "16777360",
+        "16777378",
+        "16777726",
+        "16777736",
+        "16777781",
+        "16810010",
+        "16810024",
+        "16810097",
+        "16810111",
+        "16810154",
+        "16810173",
+        "16810590",
+        "16810620",
+        "16810696",
+        "17203712",
+        "17301851",
+        "17563962",
+        "17564260",
+        "17564389",
+        "17596755",
+        "17597275",
+        "17597322",
+        "17597341",
+        "17597489",
+        "17629252",
+        "17629267",
+        "17629329",
+        "17629845",
+        "17629859",
+        "17629931",
+        "17630100",
+        "17694890",
+        "17695143",
+        "17695325",
+        "17695480"
+      ],
+      "specPages": [
+        "15860077",
+        "15860116",
+        "15860129",
+        "15860200",
+        "15860238",
+        "15860253",
+        "15860318",
+        "15860328",
+        "15892634",
+        "15893092",
+        "15893106",
+        "15893129",
+        "15893139",
+        "15893208",
+        "15893220",
+        "15925742",
+        "15925752",
+        "15925799",
+        "15958521",
+        "15958559"
+      ],
+      "status": "complete",
+      "statusReasons": [],
+      "structureIds": [
+        "cda-discharge-summary"
+      ],
+      "title": "CDA Discharge Summary",
+      "variants": []
+    },
+    {
+      "areas": [
+        "iEHR Summary"
+      ],
+      "encoding": "cda-xml",
+      "family": "cda",
+      "goldenMissing": null,
+      "goldenSampleCount": 2,
+      "goldenSamples": [
+        "golden/CDA/On-demand documents as response/nphies iEHR Summary v4.9beta1 Full.xml",
+        "golden/CDA/On-demand documents as response/nphies iEHR Summary v4.9beta1 NoInfo.xml"
+      ],
+      "id": "cda-iehr-summary",
+      "relatedPages": [
+        "54723003",
+        "54755652"
+      ],
+      "specPages": [
+        "15860116",
+        "15860144",
+        "15860200",
+        "15860238",
+        "15860274",
+        "15893092",
+        "15893106",
+        "15893129",
+        "15893139",
+        "15925742",
+        "16744928",
+        "16777726",
+        "54723003"
+      ],
+      "status": "complete",
+      "statusReasons": [],
+      "structureIds": [
+        "cda-iehr-summary"
+      ],
+      "title": "CDA iEHR Summary (on demand)",
+      "variants": []
+    },
+    {
+      "areas": [
+        "Immunization Card"
+      ],
+      "encoding": "cda-xml",
+      "family": "cda",
+      "goldenMissing": null,
+      "goldenSampleCount": 2,
+      "goldenSamples": [
+        "golden/CDA/On-demand documents as response/nphies Immunization Card v4.9beta1 Full.xml",
+        "golden/CDA/On-demand documents as response/nphies Immunization Card v4.9beta1 NoInfo.xml"
+      ],
+      "id": "cda-immunization-card",
+      "relatedPages": [
+        "53379828",
+        "53477639"
+      ],
+      "specPages": [
+        "15893092",
+        "16744968",
+        "53379828"
+      ],
+      "status": "complete",
+      "statusReasons": [],
+      "structureIds": [
+        "cda-immunization-card"
+      ],
+      "title": "CDA Immunization Card (on demand)",
+      "variants": []
+    },
+    {
+      "areas": [
+        "Immunization Summary"
+      ],
+      "encoding": "cda-xml",
+      "family": "cda",
+      "goldenMissing": null,
+      "goldenSampleCount": 2,
+      "goldenSamples": [
+        "golden/CDA/On-demand documents as response/nphies Immunization Summary v4.9beta1 Full.xml",
+        "golden/CDA/On-demand documents as response/nphies Immunization Summary v4.9beta1 NoInfo.xml"
+      ],
+      "id": "cda-immunization-summary",
+      "relatedPages": [
+        "53379331",
+        "53477475"
+      ],
+      "specPages": [
+        "15860116",
+        "15860385",
+        "15893092",
+        "15925742",
+        "16744928",
+        "16744968",
+        "16777736",
+        "16777781",
+        "16810590",
+        "53477475"
+      ],
+      "status": "complete",
+      "statusReasons": [],
+      "structureIds": [
+        "cda-immunization-summary"
+      ],
+      "title": "CDA Immunization Summary (on demand)",
+      "variants": []
+    },
+    {
+      "areas": [
+        "Laboratory Orders"
+      ],
+      "encoding": "cda-xml",
+      "family": "cda",
+      "goldenMissing": null,
+      "goldenSampleCount": 1,
+      "goldenSamples": [
+        "golden/CDA/nphies Laboratory Order v4.9beta1.xml"
+      ],
+      "id": "cda-lab-order",
+      "relatedPages": [
+        "17564169",
+        "17564231",
+        "17564241",
+        "17596837",
+        "17629662",
+        "17629689",
+        "17695242"
+      ],
+      "specPages": [
+        "17596837",
+        "17695242"
+      ],
+      "status": "complete",
+      "statusReasons": [],
+      "structureIds": [
+        "cda-lab-order"
+      ],
+      "title": "CDA Laboratory Order",
+      "variants": []
+    },
+    {
+      "areas": [
+        "Laboratory Results"
+      ],
+      "encoding": "cda-xml",
+      "family": "cda",
+      "goldenMissing": null,
+      "goldenSampleCount": 1,
+      "goldenSamples": [
+        "golden/CDA/nphies Laboratory Results v4.9beta1.xml"
+      ],
+      "id": "cda-lab-result",
+      "relatedPages": [
+        "20578437",
+        "23134365",
+        "23134431",
+        "23134490",
+        "23134502",
+        "23167172",
+        "23167398",
+        "23199883",
+        "23199895",
+        "23199954",
+        "23200020",
+        "23232729"
+      ],
+      "specPages": [
+        "23134431",
+        "23199954"
+      ],
+      "status": "complete",
+      "statusReasons": [],
+      "structureIds": [
+        "cda-lab-result"
+      ],
+      "title": "CDA Laboratory Results",
+      "variants": []
+    },
+    {
+      "areas": [
+        "Clinical Documents"
+      ],
+      "encoding": "cda-xml",
+      "family": "cda",
+      "goldenMissing": null,
+      "goldenSampleCount": 1,
+      "goldenSamples": [
+        "golden/CDA/nphies Maternal Discharge Summary v4.9beta1.xml"
+      ],
+      "id": "cda-maternal-discharge",
+      "relatedPages": [
+        "15859808",
+        "15859889",
+        "15859899",
+        "15859939",
+        "15859954",
+        "15860060",
+        "15860077",
+        "15860116",
+        "15860129",
+        "15860144",
+        "15860200",
+        "15860238",
+        "15860253",
+        "15860274",
+        "15860318",
+        "15860328",
+        "15860385",
+        "15892634",
+        "15892870",
+        "15892888",
+        "15892943",
+        "15893008",
+        "15893092",
+        "15893106",
+        "15893129",
+        "15893139",
+        "15893208",
+        "15893220",
+        "15893257",
+        "15925379",
+        "15925510",
+        "15925558",
+        "15925612",
+        "15925742",
+        "15925752",
+        "15925799",
+        "15958062",
+        "15958089",
+        "15958126",
+        "15958267",
+        "15958278",
+        "15958291",
+        "15958521",
+        "15958559",
+        "16711712",
+        "16711732",
+        "16711770",
+        "16712147",
+        "16712261",
+        "16744449",
+        "16744463",
+        "16744499",
+        "16744509",
+        "16744593",
+        "16744928",
+        "16744968",
+        "16745055",
+        "16777251",
+        "16777295",
+        "16777360",
+        "16777378",
+        "16777726",
+        "16777736",
+        "16777781",
+        "16810010",
+        "16810024",
+        "16810097",
+        "16810111",
+        "16810154",
+        "16810173",
+        "16810590",
+        "16810620",
+        "16810696",
+        "17203712",
+        "17301851",
+        "17563962",
+        "17564260",
+        "17564389",
+        "17596755",
+        "17597275",
+        "17597322",
+        "17597341",
+        "17597489",
+        "17629252",
+        "17629267",
+        "17629329",
+        "17629845",
+        "17629859",
+        "17629931",
+        "17630100",
+        "17694890",
+        "17695143",
+        "17695325",
+        "17695480"
+      ],
+      "specPages": [
+        "15860077",
+        "15860116",
+        "15860129",
+        "15860200",
+        "15860238",
+        "15860253",
+        "15860318",
+        "15860328",
+        "15860385",
+        "15893092",
+        "15893106",
+        "15893129",
+        "15893139",
+        "15893208",
+        "15893220",
+        "15893257",
+        "15925379",
+        "15925742",
+        "15925752",
+        "15925799",
+        "15958521",
+        "15958559",
+        "16744449",
+        "16810010"
+      ],
+      "status": "complete",
+      "statusReasons": [],
+      "structureIds": [
+        "cda-maternal-discharge"
+      ],
+      "title": "CDA Maternal Discharge Summary",
+      "variants": []
+    },
+    {
+      "areas": [
+        "Clinical Documents"
+      ],
+      "encoding": "cda-xml",
+      "family": "cda",
+      "goldenMissing": null,
+      "goldenSampleCount": 1,
+      "goldenSamples": [
+        "golden/CDA/nphies Newborn Discharge Summary v4.9beta1.xml"
+      ],
+      "id": "cda-newborn-discharge",
+      "relatedPages": [
+        "15859808",
+        "15859889",
+        "15859899",
+        "15859939",
+        "15859954",
+        "15860060",
+        "15860077",
+        "15860116",
+        "15860129",
+        "15860144",
+        "15860200",
+        "15860238",
+        "15860253",
+        "15860274",
+        "15860318",
+        "15860328",
+        "15860385",
+        "15892634",
+        "15892870",
+        "15892888",
+        "15892943",
+        "15893008",
+        "15893092",
+        "15893106",
+        "15893129",
+        "15893139",
+        "15893208",
+        "15893220",
+        "15893257",
+        "15925379",
+        "15925510",
+        "15925558",
+        "15925612",
+        "15925742",
+        "15925752",
+        "15925799",
+        "15958062",
+        "15958089",
+        "15958126",
+        "15958267",
+        "15958278",
+        "15958291",
+        "15958521",
+        "15958559",
+        "16711712",
+        "16711732",
+        "16711770",
+        "16712147",
+        "16712261",
+        "16744449",
+        "16744463",
+        "16744499",
+        "16744509",
+        "16744593",
+        "16744928",
+        "16744968",
+        "16745055",
+        "16777251",
+        "16777295",
+        "16777360",
+        "16777378",
+        "16777726",
+        "16777736",
+        "16777781",
+        "16810010",
+        "16810024",
+        "16810097",
+        "16810111",
+        "16810154",
+        "16810173",
+        "16810590",
+        "16810620",
+        "16810696",
+        "17203712",
+        "17301851",
+        "17563962",
+        "17564260",
+        "17564389",
+        "17596755",
+        "17597275",
+        "17597322",
+        "17597341",
+        "17597489",
+        "17629252",
+        "17629267",
+        "17629329",
+        "17629845",
+        "17629859",
+        "17629931",
+        "17630100",
+        "17694890",
+        "17695143",
+        "17695325",
+        "17695480"
+      ],
+      "specPages": [
+        "15859808",
+        "15860077",
+        "15860116",
+        "15860129",
+        "15860200",
+        "15860238",
+        "15860253",
+        "15860318",
+        "15860328",
+        "15860385",
+        "15893092",
+        "15893106",
+        "15893129",
+        "15893139",
+        "15893208",
+        "15893220",
+        "15893257",
+        "15925742",
+        "15925752",
+        "15925799",
+        "15958521",
+        "15958559",
+        "16744449",
+        "16810010",
+        "16810024"
+      ],
+      "status": "complete",
+      "statusReasons": [],
+      "structureIds": [
+        "cda-newborn-discharge"
+      ],
+      "title": "CDA Newborn Discharge Summary",
+      "variants": []
+    },
+    {
+      "areas": [
+        "Clinical Documents"
+      ],
+      "encoding": "cda-xml",
+      "family": "cda",
+      "goldenMissing": null,
+      "goldenSampleCount": 1,
+      "goldenSamples": [
+        "golden/CDA/nphies Operative Notes v4.9beta1.xml"
+      ],
+      "id": "cda-operative-notes",
+      "relatedPages": [
+        "15859808",
+        "15859889",
+        "15859899",
+        "15859939",
+        "15859954",
+        "15860060",
+        "15860077",
+        "15860116",
+        "15860129",
+        "15860144",
+        "15860200",
+        "15860238",
+        "15860253",
+        "15860274",
+        "15860318",
+        "15860328",
+        "15860385",
+        "15892634",
+        "15892870",
+        "15892888",
+        "15892943",
+        "15893008",
+        "15893092",
+        "15893106",
+        "15893129",
+        "15893139",
+        "15893208",
+        "15893220",
+        "15893257",
+        "15925379",
+        "15925510",
+        "15925558",
+        "15925612",
+        "15925742",
+        "15925752",
+        "15925799",
+        "15958062",
+        "15958089",
+        "15958126",
+        "15958267",
+        "15958278",
+        "15958291",
+        "15958521",
+        "15958559",
+        "16711712",
+        "16711732",
+        "16711770",
+        "16712147",
+        "16712261",
+        "16744449",
+        "16744463",
+        "16744499",
+        "16744509",
+        "16744593",
+        "16744928",
+        "16744968",
+        "16745055",
+        "16777251",
+        "16777295",
+        "16777360",
+        "16777378",
+        "16777726",
+        "16777736",
+        "16777781",
+        "16810010",
+        "16810024",
+        "16810097",
+        "16810111",
+        "16810154",
+        "16810173",
+        "16810590",
+        "16810620",
+        "16810696",
+        "17203712",
+        "17301851",
+        "17563962",
+        "17564260",
+        "17564389",
+        "17596755",
+        "17597275",
+        "17597322",
+        "17597341",
+        "17597489",
+        "17629252",
+        "17629267",
+        "17629329",
+        "17629845",
+        "17629859",
+        "17629931",
+        "17630100",
+        "17694890",
+        "17695143",
+        "17695325",
+        "17695480"
+      ],
+      "specPages": [
+        "15860116",
+        "15860238",
+        "15860253",
+        "15893129",
+        "15958089",
+        "16711712",
+        "16711732",
+        "16711770",
+        "16744463",
+        "16744499",
+        "16744509",
+        "16744593",
+        "16777251",
+        "16777295",
+        "16777360",
+        "16777378",
+        "16810097",
+        "16810111",
+        "16810154",
+        "16810173"
+      ],
+      "status": "complete",
+      "statusReasons": [],
+      "structureIds": [
+        "cda-operative-notes"
+      ],
+      "title": "CDA Operative Notes",
+      "variants": []
+    },
+    {
+      "areas": [
+        "Clinical Documents"
+      ],
+      "encoding": "cda-xml",
+      "family": "cda",
+      "goldenMissing": null,
+      "goldenSampleCount": 1,
+      "goldenSamples": [
+        "golden/CDA/nphies Outpatient Encounter Summary v4.9beta1.xml"
+      ],
+      "id": "cda-outpatient-encounter",
+      "relatedPages": [
+        "15859808",
+        "15859889",
+        "15859899",
+        "15859939",
+        "15859954",
+        "15860060",
+        "15860077",
+        "15860116",
+        "15860129",
+        "15860144",
+        "15860200",
+        "15860238",
+        "15860253",
+        "15860274",
+        "15860318",
+        "15860328",
+        "15860385",
+        "15892634",
+        "15892870",
+        "15892888",
+        "15892943",
+        "15893008",
+        "15893092",
+        "15893106",
+        "15893129",
+        "15893139",
+        "15893208",
+        "15893220",
+        "15893257",
+        "15925379",
+        "15925510",
+        "15925558",
+        "15925612",
+        "15925742",
+        "15925752",
+        "15925799",
+        "15958062",
+        "15958089",
+        "15958126",
+        "15958267",
+        "15958278",
+        "15958291",
+        "15958521",
+        "15958559",
+        "16711712",
+        "16711732",
+        "16711770",
+        "16712147",
+        "16712261",
+        "16744449",
+        "16744463",
+        "16744499",
+        "16744509",
+        "16744593",
+        "16744928",
+        "16744968",
+        "16745055",
+        "16777251",
+        "16777295",
+        "16777360",
+        "16777378",
+        "16777726",
+        "16777736",
+        "16777781",
+        "16810010",
+        "16810024",
+        "16810097",
+        "16810111",
+        "16810154",
+        "16810173",
+        "16810590",
+        "16810620",
+        "16810696",
+        "17203712",
+        "17301851",
+        "17563962",
+        "17564260",
+        "17564389",
+        "17596755",
+        "17597275",
+        "17597322",
+        "17597341",
+        "17597489",
+        "17629252",
+        "17629267",
+        "17629329",
+        "17629845",
+        "17629859",
+        "17629931",
+        "17630100",
+        "17694890",
+        "17695143",
+        "17695325",
+        "17695480"
+      ],
+      "specPages": [
+        "15860077",
+        "15860116",
+        "15860129",
+        "15860144",
+        "15860200",
+        "15860238",
+        "15860253",
+        "15860274",
+        "15893008",
+        "15893092",
+        "15893106",
+        "15893129",
+        "15893139",
+        "15925742",
+        "15925752",
+        "15958062"
+      ],
+      "status": "complete",
+      "statusReasons": [],
+      "structureIds": [
+        "cda-outpatient-encounter"
+      ],
+      "title": "CDA Outpatient Encounter Summary",
+      "variants": []
+    },
+    {
+      "areas": [
+        "Radiology Orders"
+      ],
+      "encoding": "cda-xml",
+      "family": "cda",
+      "goldenMissing": null,
+      "goldenSampleCount": 1,
+      "goldenSamples": [
+        "golden/CDA/nphies Radiology Order v4.9beta1.xml"
+      ],
+      "id": "cda-rad-order",
+      "relatedPages": [
+        "33489172",
+        "33554777",
+        "33554798",
+        "33587391",
+        "33587412",
+        "33587554"
+      ],
+      "specPages": [
+        "33489120"
+      ],
+      "status": "partial",
+      "statusReasons": [
+        "at least one compiled structure has low confidence"
+      ],
+      "structureIds": [
+        "cda-rad-order"
+      ],
+      "title": "CDA Radiology Order",
+      "variants": []
+    },
+    {
+      "areas": [
+        "Radiology Results"
+      ],
+      "encoding": "cda-xml",
+      "family": "cda",
+      "goldenMissing": null,
+      "goldenSampleCount": 2,
+      "goldenSamples": [
+        "golden/CDA/nphies Radiology Results Embedded PDF v4.9beta1.xml",
+        "golden/CDA/nphies Radiology Results Structured v4.9beta1.xml"
+      ],
+      "id": "cda-rad-result",
+      "relatedPages": [
+        "35094798",
+        "36143107",
+        "38895676",
+        "38928391",
+        "39026737",
+        "39157765",
+        "39157775",
+        "39157785",
+        "39157796",
+        "39157806",
+        "39223298",
+        "39223310",
+        "39256069",
+        "39256079",
+        "39256089",
+        "39288886"
+      ],
+      "specPages": [
+        "38895676",
+        "39157765",
+        "39157775",
+        "39223298",
+        "39223310",
+        "39256089",
+        "39288886"
+      ],
+      "status": "complete",
+      "statusReasons": [],
+      "structureIds": [
+        "cda-rad-result-embedded-pdf",
+        "cda-rad-result-structured"
+      ],
+      "title": "CDA Radiology Results",
+      "variants": [
+        {
+          "direction": "request",
+          "id": "cda-rad-result-embedded-pdf",
+          "label": "Radiology Results (embedded PDF)",
+          "variant": "embedded-pdf"
+        },
+        {
+          "direction": "request",
+          "id": "cda-rad-result-structured",
+          "label": "Radiology Results (structured)",
+          "variant": "structured"
+        }
+      ]
+    },
+    {
+      "areas": [
+        "FHIR Laboratory Orders"
+      ],
+      "encoding": "fhir-json",
+      "family": "fhir",
+      "goldenMissing": null,
+      "goldenSampleCount": 2,
+      "goldenSamples": [
+        "golden/FHIR-attachments/LaboratoryOrderBundle_27012026.json",
+        "golden/FHIR-attachments/LaboratoryOrderBundle_30092025.json"
+      ],
+      "id": "fhir-lab-order",
+      "relatedPages": [
+        "351502348",
+        "351797257",
+        "358580229",
+        "359071746",
+        "359432193"
+      ],
+      "specPages": [
+        "351502348"
+      ],
+      "status": "complete",
+      "statusReasons": [],
+      "structureIds": [
+        "fhir-lab-order"
+      ],
+      "title": "FHIR Laboratory Order Bundle",
+      "variants": []
+    },
+    {
+      "areas": [
+        "FHIR Laboratory Results"
+      ],
+      "encoding": "fhir-json",
+      "family": "fhir",
+      "goldenMissing": null,
+      "goldenSampleCount": 3,
+      "goldenSamples": [
+        "golden/FHIR-attachments/LaboratoryReportBundle_AuthorPerson_27012026.json",
+        "golden/FHIR-attachments/LaboratoryReportBundle_AuthorPerson_30102025.json",
+        "golden/FHIR/Lab Results/LaboratoryResultBundle_AuthorPerson_30102025.json"
+      ],
+      "id": "fhir-lab-result",
+      "relatedPages": [
+        "63701020",
+        "67960992",
+        "67961103",
+        "67993636",
+        "67993689",
+        "67993712",
+        "67993727",
+        "67993763",
+        "67993867",
+        "68026475",
+        "68026521",
+        "68026555",
+        "68091912"
+      ],
+      "specPages": [
+        "63701020"
+      ],
+      "status": "complete",
+      "statusReasons": [],
+      "structureIds": [
+        "fhir-lab-result"
+      ],
+      "title": "FHIR Laboratory Report Bundle",
+      "variants": []
+    },
+    {
+      "areas": [
+        "Medications Prescription and Dispense"
+      ],
+      "encoding": "fhir-json",
+      "family": "fhir",
+      "goldenMissing": null,
+      "goldenSampleCount": 2,
+      "goldenSamples": [
+        "golden/FHIR/Nphies (Uncontrolled Meds)/MedicationDispenseBundle-UncontrolledMed_22052025.json",
+        "golden/FHIR/Nphies (Uncontrolled Meds)/MedicationDispenseBundle_Compound-UncontrolledMed_22052025.json"
+      ],
+      "id": "fhir-med-dispense",
+      "relatedPages": [
+        "44008128",
+        "44008229",
+        "44138987",
+        "44139001",
+        "44171887",
+        "44171985",
+        "45023239",
+        "45023260",
+        "45056002",
+        "45056084",
+        "45056095",
+        "45121621",
+        "47054851",
+        "47054876",
+        "47055060",
+        "47055161",
+        "47087850",
+        "47087960",
+        "47120493",
+        "47153159",
+        "47153341",
+        "47153355",
+        "47153366",
+        "47153376",
+        "47153513",
+        "47153589"
+      ],
+      "specPages": [
+        "44139001"
+      ],
+      "status": "complete",
+      "statusReasons": [],
+      "structureIds": [
+        "fhir-med-dispense"
+      ],
+      "title": "FHIR Medication Dispense (uncontrolled)",
+      "variants": []
+    },
+    {
+      "areas": [
+        "Medications Prescription and Dispense"
+      ],
+      "encoding": "fhir-json",
+      "family": "fhir",
+      "goldenMissing": null,
+      "goldenSampleCount": 4,
+      "goldenSamples": [
+        "golden/FHIR/Nphies (Uncontrolled Meds)/MedicationRequestBundle_NarrativeDosing-UncontrolledMed_22052025.json",
+        "golden/FHIR/Nphies (Uncontrolled Meds)/MedicationRequestBundle_Structured-NormalDosing-UncontrolledMed_22052025.json",
+        "golden/FHIR/Nphies (Uncontrolled Meds)/MedicationRequestBundle_Structured-SplitDosing-UncontrolledMed_22052025.json",
+        "golden/FHIR/Nphies (Uncontrolled Meds)/MedicationRequestBundle_Structured-TaperedDosing-UncontrolledMed_22052025.json"
+      ],
+      "id": "fhir-med-prescribe",
+      "relatedPages": [
+        "44008128",
+        "44008229",
+        "44138987",
+        "44139001",
+        "44171887",
+        "44171985",
+        "45023239",
+        "45023260",
+        "45056002",
+        "45056084",
+        "45056095",
+        "45121621",
+        "47054851",
+        "47054876",
+        "47055060",
+        "47055161",
+        "47087850",
+        "47087960",
+        "47120493",
+        "47153159",
+        "47153341",
+        "47153355",
+        "47153366",
+        "47153376",
+        "47153513",
+        "47153589"
+      ],
+      "specPages": [
+        "44171887"
+      ],
+      "status": "complete",
+      "statusReasons": [],
+      "structureIds": [
+        "fhir-med-prescribe"
+      ],
+      "title": "FHIR Medication Prescription (uncontrolled)",
+      "variants": []
+    },
+    {
+      "areas": [
+        "Medication Prescription and Dispense (Raqeeb)"
+      ],
+      "encoding": "fhir-json",
+      "family": "fhir",
+      "goldenMissing": null,
+      "goldenSampleCount": 2,
+      "goldenSamples": [
+        "golden/FHIR/Raqeeb (Controlled,Narcotic & Restricted Meds)/MedicationDispenseBundle_Raqeeb_NormalDosing_CodeAuthenticated_18052025.json",
+        "golden/FHIR/Raqeeb (Controlled,Narcotic & Restricted Meds)/MedicationDispenseBundle_Raqeeb_NormalDosing_CodeOverride_18052025.json"
+      ],
+      "id": "fhir-med-raqeeb-dispense",
+      "relatedPages": [
+        "117964890",
+        "117965118",
+        "117965227",
+        "117965295",
+        "117965377",
+        "117965427",
+        "117965491",
+        "117965564",
+        "118063472",
+        "118063485",
+        "118063498",
+        "118063511",
+        "118063524",
+        "118063634",
+        "118063746",
+        "118063759",
+        "118063772",
+        "118063872",
+        "118128831",
+        "118129076",
+        "118129183",
+        "118129269",
+        "118129284",
+        "118161707",
+        "118161740",
+        "118161914",
+        "118162085",
+        "118162152"
+      ],
+      "specPages": [
+        "118161707"
+      ],
+      "status": "complete",
+      "statusReasons": [],
+      "structureIds": [
+        "fhir-med-raqeeb-dispense"
+      ],
+      "title": "FHIR Medication Dispense (Raqeeb controlled)",
+      "variants": []
+    },
+    {
+      "areas": [
+        "Medication Prescription and Dispense (Raqeeb)"
+      ],
+      "encoding": "fhir-json",
+      "family": "fhir",
+      "goldenMissing": null,
+      "goldenSampleCount": 3,
+      "goldenSamples": [
+        "golden/FHIR/Raqeeb (Controlled,Narcotic & Restricted Meds)/MedicationRequestBundle_Raqeeb_NormalDosing_19052025.json",
+        "golden/FHIR/Raqeeb (Controlled,Narcotic & Restricted Meds)/MedicationRequestBundle_Raqeeb_SplitDosing_19052025.json",
+        "golden/FHIR/Raqeeb (Controlled,Narcotic & Restricted Meds)/MedicationRequestBundle_Raqeeb_TaperedDosing_19052025.json"
+      ],
+      "id": "fhir-med-raqeeb-prescribe",
+      "relatedPages": [
+        "117964890",
+        "117965118",
+        "117965227",
+        "117965295",
+        "117965377",
+        "117965427",
+        "117965491",
+        "117965564",
+        "118063472",
+        "118063485",
+        "118063498",
+        "118063511",
+        "118063524",
+        "118063634",
+        "118063746",
+        "118063759",
+        "118063772",
+        "118063872",
+        "118128831",
+        "118129076",
+        "118129183",
+        "118129269",
+        "118129284",
+        "118161707",
+        "118161740",
+        "118161914",
+        "118162085",
+        "118162152"
+      ],
+      "specPages": [
+        "117964890"
+      ],
+      "status": "complete",
+      "statusReasons": [],
+      "structureIds": [
+        "fhir-med-raqeeb-prescribe"
+      ],
+      "title": "FHIR Medication Prescription (Raqeeb controlled)",
+      "variants": []
+    },
+    {
+      "areas": [
+        "FHIR Radiology Orders"
+      ],
+      "encoding": "fhir-json",
+      "family": "fhir",
+      "goldenMissing": null,
+      "goldenSampleCount": 4,
+      "goldenSamples": [
+        "golden/FHIR-attachments/RadiologyOrderBundle_AuthorDevice_EmbeddedPDF_NoImages_27012026.json",
+        "golden/FHIR-attachments/RadiologyOrderBundle_AuthorDevice_EmbeddedPDF_NoImages_30092025.json",
+        "golden/FHIR-attachments/RadiologyOrderBundle_AuthorPerson_Structured_2xServiceRequests_2xProcedures_2xImagingStudies_27012026.json",
+        "golden/FHIR-attachments/RadiologyOrderBundle_AuthorPerson_Structured_2xServiceRequests_2xProcedures_2xImagingStudies_30092025.json"
+      ],
+      "id": "fhir-rad-order",
+      "relatedPages": [
+        "387645441",
+        "390299687",
+        "390627332",
+        "390627341",
+        "391020558",
+        "391020567",
+        "392626178"
+      ],
+      "specPages": [
+        "387645441"
+      ],
+      "status": "complete",
+      "statusReasons": [],
+      "structureIds": [
+        "fhir-rad-order"
+      ],
+      "title": "FHIR Radiology Order Bundle",
+      "variants": []
+    },
+    {
+      "areas": [
+        "FHIR Radiology Report"
+      ],
+      "encoding": "fhir-json",
+      "family": "fhir",
+      "goldenMissing": null,
+      "goldenSampleCount": 2,
+      "goldenSamples": [
+        "golden/FHIR-attachments/RadiologyReportBundle_AuthorDevice_EmbeddedPDF_NoImages_09022026.json",
+        "golden/FHIR-attachments/RadiologyReportBundle_AuthorPerson_Structured_2xServiceRequests_2xProcedures_2xImagingStudies_09022026.json"
+      ],
+      "id": "fhir-rad-report",
+      "relatedPages": [
+        "412778514",
+        "413499402",
+        "413696011",
+        "413728794",
+        "413827076",
+        "413892621",
+        "413958156",
+        "413990915",
+        "414253059",
+        "414449674",
+        "414547978",
+        "414613506",
+        "414613515",
+        "414646295",
+        "414744577",
+        "414744586",
+        "414777345",
+        "414875649",
+        "414875658",
+        "415006721",
+        "415039489",
+        "415039498",
+        "415137793",
+        "415170561"
+      ],
+      "specPages": [
+        "413728794"
+      ],
+      "status": "complete",
+      "statusReasons": [],
+      "structureIds": [
+        "fhir-rad-report"
+      ],
+      "title": "FHIR Radiology Report Bundle",
+      "variants": []
+    },
+    {
+      "areas": [
+        "Vital Signs - ORU"
+      ],
+      "encoding": "hl7v2-er7",
+      "family": "hl7v2",
+      "goldenMissing": {
+        "note": "The HL7 v2.5.1 folder ships ADT only (A01/A03/A08). No ORU^R01 vitals message exists anywhere in the golden set, so ORU structure must be taken from the Confluence segment tables alone and marked lower-confidence.",
+        "reason": "no sample of any kind ships in spec-source/golden/"
+      },
+      "goldenSampleCount": 0,
+      "goldenSamples": [],
+      "id": "oru-vitals",
+      "relatedPages": [
+        "171180143",
+        "171180201",
+        "171180238",
+        "171212900",
+        "171213031",
+        "171246311",
+        "171246336",
+        "171246357",
+        "171278410",
+        "171278519"
+      ],
+      "specPages": [
+        "171180143",
+        "171180201",
+        "171180238",
+        "171212900",
+        "171213031",
+        "171246311",
+        "171246336",
+        "171246357",
+        "171278410",
+        "171278519"
+      ],
+      "status": "partial",
+      "statusReasons": [
+        "no golden sample: no sample of any kind ships in spec-source/golden/"
+      ],
+      "structureIds": [
+        "oru-r01",
+        "oru-ack",
+        "oru-nack"
+      ],
+      "title": "ORU^R01 — Vital signs",
+      "variants": [
+        {
+          "direction": "request",
+          "id": "oru-r01",
+          "label": "Vital signs observation result",
+          "variant": "R01"
+        },
+        {
+          "direction": "response",
+          "id": "oru-ack",
+          "label": "Positive Acknowledgment",
+          "variant": "ACK-positive"
+        },
+        {
+          "direction": "response",
+          "id": "oru-nack",
+          "label": "Negative Acknowledgment",
+          "variant": "ACK-negative"
+        }
+      ]
+    },
+    {
+      "areas": [],
+      "encoding": "saml-xml",
+      "family": "saml",
+      "goldenMissing": {
+        "note": "No SAML assertion or SSO exchange ships in the golden set. Note also that NONE of the SOAP envelopes here carry a WS-Security header, so the golden samples give no evidence at all about the security header's shape.",
+        "reason": "no sample of any kind ships in spec-source/golden/"
+      },
+      "goldenSampleCount": 0,
+      "goldenSamples": [],
+      "id": "saml-sso",
+      "relatedPages": [],
+      "specPages": [],
+      "status": "missing",
+      "statusReasons": [
+        "no MessageStructure could be compiled from the inputs",
+        "no golden sample: no sample of any kind ships in spec-source/golden/"
+      ],
+      "structureIds": [],
+      "title": "SAML single sign-on",
+      "variants": []
+    },
+    {
+      "areas": [
+        "XDS Query Document Set"
+      ],
+      "encoding": "soap-xml",
+      "family": "xds",
+      "goldenMissing": null,
+      "goldenSampleCount": 4,
+      "goldenSamples": [
+        "golden/SOAP/ITI-18/1 nphies ITI18 RegistryStoredQueryRequest v4.9beta1 - Specific query for Discharge Summaries of a certain author.xml",
+        "golden/SOAP/ITI-18/1 nphies ITI18 RegistryStoredQueryResponse v4.9beta1 - Returns Discharge Summary DocumentEntry - Kopie.xml",
+        "golden/SOAP/ITI-18/2 nphies ITI18 RegistryStoredQueryRequest v4.9beta1 - Query for the on-demand iEHR Summary of a patient.xml",
+        "golden/SOAP/ITI-18/2 nphies ITI18 RegistryStoredQueryResponse v4.9beta1 - Query for the on-demand iEHR Summary of a patient.xml"
+      ],
+      "id": "xds-iti18",
+      "relatedPages": [
+        "54788213"
+      ],
+      "specPages": [],
+      "status": "complete",
+      "statusReasons": [],
+      "structureIds": [
+        "xds-iti18-request",
+        "xds-iti18-response"
+      ],
+      "title": "XDS ITI-18 Registry Stored Query",
+      "variants": [
+        {
+          "direction": "request",
+          "id": "xds-iti18-request",
+          "label": "Request",
+          "variant": "request"
+        },
+        {
+          "direction": "response",
+          "id": "xds-iti18-response",
+          "label": "Response",
+          "variant": "response"
+        }
+      ]
+    },
+    {
+      "areas": [
+        "Provide and Register – ITI-41"
+      ],
+      "encoding": "soap-xml",
+      "family": "xds",
+      "goldenMissing": null,
+      "goldenSampleCount": 11,
+      "goldenSamples": [
+        "golden/SOAP/ITI-41/nphies ITI41 Discharge Summary v4.9beta1 RPLC.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Discharge Summary v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Laboratory Order v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Laboratory Results v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Maternal Discharge Summary v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Newborn Discharge Summary v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Operative Notes v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Outpatient Encounter Summary v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Radiology Order v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Radiology Results Embedded PDF v4.9beta1.xml",
+        "golden/SOAP/ITI-41/nphies ITI41 Radiology Results Structured v4.9beta1.xml"
+      ],
+      "id": "xds-iti41",
+      "relatedPages": [
+        "17596480",
+        "17694733"
+      ],
+      "specPages": [],
+      "status": "complete",
+      "statusReasons": [],
+      "structureIds": [
+        "xds-iti41"
+      ],
+      "title": "XDS ITI-41 Provide and Register Document Set-b",
+      "variants": []
+    },
+    {
+      "areas": [
+        "XDS Query Document Set"
+      ],
+      "encoding": "soap-xml",
+      "family": "xds",
+      "goldenMissing": null,
+      "goldenSampleCount": 4,
+      "goldenSamples": [
+        "golden/SOAP/ITI-43/1 nphies ITI43 RetrieveDocumentSetRequest v4.9beta1 - retrieval of 2 documents.xml",
+        "golden/SOAP/ITI-43/1 nphies ITI43 RetrieveDocumentSetResponse v4.9beta1 - retrieval of 2 documents.xml",
+        "golden/SOAP/ITI-43/2 nphies ITI43 RetrieveDocumentSetRequest v4.9beta1 - retrieval of on-demand iEHR Summary.xml",
+        "golden/SOAP/ITI-43/2 nphies ITI43 RetrieveDocumentSetResponse v4.9beta1 - retrieval of on-demand iEHR Summary.xml"
+      ],
+      "id": "xds-iti43",
+      "relatedPages": [
+        "54788213"
+      ],
+      "specPages": [],
+      "status": "complete",
+      "statusReasons": [],
+      "structureIds": [
+        "xds-iti43-request",
+        "xds-iti43-response"
+      ],
+      "title": "XDS ITI-43 Retrieve Document Set",
+      "variants": [
+        {
+          "direction": "request",
+          "id": "xds-iti43-request",
+          "label": "Request",
+          "variant": "request"
+        },
+        {
+          "direction": "response",
+          "id": "xds-iti43-response",
+          "label": "Response",
+          "variant": "response"
+        }
+      ]
+    }
+  ],
+  "warnings": [
+    {
+      "detail": {
+        "scope": [
+          "ADT"
+        ]
+      },
+      "message": "no HL7 field table resolved for segment \"SFT\"",
+      "scope": "structures"
+    },
+    {
+      "detail": {
+        "scope": [
+          "ADT"
+        ]
+      },
+      "message": "no HL7 field table resolved for segment \"SFT\"",
+      "scope": "structures"
+    },
+    {
+      "detail": {
+        "scope": [
+          "Vital Signs - ORU"
+        ]
+      },
+      "message": "no HL7 field table resolved for segment \"SFT\"",
+      "scope": "structures"
+    },
+    {
+      "detail": {
+        "scope": [
+          "Vital Signs - ORU"
+        ]
+      },
+      "message": "no HL7 field table resolved for segment \"SFT\"",
+      "scope": "structures"
+    }
+  ]
+}

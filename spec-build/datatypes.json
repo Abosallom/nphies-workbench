@@ -1,0 +1,4826 @@
+{
+  "$schema": "nphies-workbench/datatypes/v1",
+  "artifact": "datatypes.json",
+  "purpose": "HL7 v2.5.1 composite-datatype component dictionary for NPHIES message construction and structural validation. Layer 1 is the HL7 v2.5.1 standard component layout (provenance \"hl7-base\"); layer 2 is the NPHIES overlay extracted from the Confluence spec (provenance \"nphies-table\" / \"nphies-guidance\"), every overlay item carrying a verbatim quote.",
+  "hl7Version": "2.5.1",
+  "provenanceLegend": {
+    "hl7-base": "HL7 v2.5.1 Chapter 2A standard datatype definition. Authored from the standard, NOT extracted from the NPHIES Confluence space.",
+    "nphies-table": "Extracted from a table in the NPHIES Confluence space (accepted-component sub-table, or a comma-separated per-component length cell).",
+    "nphies-guidance": "Extracted from NPHIES Confluence guidance prose and mapped onto a base-layer component index."
+  },
+  "readingRules": [
+    "Component indexes are ALWAYS the HL7 v2.5.1 indexes. NPHIES sub-tables list only the components NPHIES accepts; they never re-number.",
+    "A comma-separated \"length\" cell is a per-component length list, aligned with the components the field guidance names in order - not with components 1..N.",
+    "Anything marked \"uncertain\": true is advisory. Do not raise a structural error on it.",
+    "CM and Varies have no fixed component layout and assert nothing."
+  ],
+  "delimiters": {
+    "segmentTerminator": {
+      "char": "\r",
+      "name": "Carriage return",
+      "codepoint": "0x0D",
+      "note": "Always <CR>. Never configurable. Golden ADT_sample03/04 use \\r; ADT_sample08 uses \\n only (see goldenValidation.notes)."
+    },
+    "fieldSeparator": {
+      "char": "|",
+      "name": "Field Separator",
+      "declaredIn": "MSH-1",
+      "note": "MSH-1 IS the separator character itself; MSH-2 begins immediately after it."
+    },
+    "componentSeparator": {
+      "char": "^",
+      "name": "Component Separator",
+      "declaredIn": "MSH-2 position 1"
+    },
+    "repetitionSeparator": {
+      "char": "~",
+      "name": "Repetition Separator",
+      "declaredIn": "MSH-2 position 2"
+    },
+    "escapeCharacter": {
+      "char": "\\",
+      "name": "Escape Character",
+      "declaredIn": "MSH-2 position 3"
+    },
+    "subcomponentSeparator": {
+      "char": "&",
+      "name": "Subcomponent Separator",
+      "declaredIn": "MSH-2 position 4"
+    },
+    "truncationCharacter": {
+      "char": "#",
+      "name": "Truncation Character",
+      "declaredIn": "MSH-2 position 5 (optional)",
+      "note": "Optional 5th character, added in v2.5.1. NPHIES golden samples send only 4 characters (^~\\&)."
+    },
+    "recommendedMsh2": "^~\\&",
+    "parsingOrder": [
+      "split message on segment terminator",
+      "split segment on fieldSeparator",
+      "split field on repetitionSeparator",
+      "split repetition on componentSeparator",
+      "split component on subcomponentSeparator",
+      "then unescape"
+    ],
+    "source": {
+      "pageId": "171278410",
+      "pageTitle": "ORU - MSH",
+      "row": "MSH.1 / MSH.2",
+      "quote": "MSH.1 Field Separator: \"Definition: This field contains the separator between the segment ID and the first real field, MSH-2 Encoding Characters. As such it serves as the separator and defines the character to be used as a separator for the rest of the message. Recommended value is “|”\"\nMSH.2 Encoding Characters: \"Definition: This field contains five characters in the following order: the component separator, repetition separator, escape character, subcomponent separator, and truncation character. Recommended value is |^~\\&|\""
+    },
+    "specInconsistency": "MSH.2 guidance says 'five characters' but the recommended value it gives ('^~\\&') is FOUR. HL7 v2.5.1 makes the 5th (truncation) character optional. Emit 4; accept 4 or 5."
+  },
+  "escapes": {
+    "rule": "The escape character (default \\) delimits an escape sequence that ends with the same character. Escape ONLY inside data content, never the structural delimiters themselves.",
+    "mustEscapeInData": [
+      {
+        "raw": "|",
+        "sequence": "\\F\\",
+        "meaning": "field separator"
+      },
+      {
+        "raw": "^",
+        "sequence": "\\S\\",
+        "meaning": "component separator"
+      },
+      {
+        "raw": "&",
+        "sequence": "\\T\\",
+        "meaning": "subcomponent separator"
+      },
+      {
+        "raw": "~",
+        "sequence": "\\R\\",
+        "meaning": "repetition separator"
+      },
+      {
+        "raw": "\\",
+        "sequence": "\\E\\",
+        "meaning": "escape character"
+      }
+    ],
+    "otherSequences": [
+      {
+        "sequence": "\\Xdddd...\\",
+        "meaning": "hexadecimal data"
+      },
+      {
+        "sequence": "\\Cxxyy\\",
+        "meaning": "single-byte character set escape"
+      },
+      {
+        "sequence": "\\Mxxyyzz\\",
+        "meaning": "multi-byte character set escape"
+      },
+      {
+        "sequence": "\\Zdddd\\",
+        "meaning": "locally defined escape sequence"
+      },
+      {
+        "sequence": "\\H\\ / \\N\\",
+        "meaning": "start / end highlighting (FT, TX only)"
+      },
+      {
+        "sequence": "\\.br\\ \\.sp\\ \\.fi\\ \\.nf\\ \\.in\\ \\.ti\\ \\.ce\\",
+        "meaning": "FT formatting commands (FT datatype only)"
+      }
+    ],
+    "emitterOrder": [
+      "escape \\ first (\\E\\)",
+      "then | ^ & ~",
+      "never escape the delimiters that carry structure"
+    ],
+    "notEscaped": [
+      "MSH-1 and MSH-2 themselves are never escaped - they declare the delimiters"
+    ],
+    "provenance": "hl7-base"
+  },
+  "datatypes": {
+    "CE": {
+      "name": "CE",
+      "description": "Coded Element",
+      "category": "composite",
+      "usedByNphies": true,
+      "provenance": "hl7-base",
+      "baseStandard": "HL7 v2.5.1 Chapter 2A",
+      "components": [
+        {
+          "index": 1,
+          "name": "Identifier",
+          "datatype": "ST",
+          "maxLength": 20,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 2,
+          "name": "Text",
+          "datatype": "ST",
+          "maxLength": 199,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 3,
+          "name": "Name of Coding System",
+          "datatype": "ID",
+          "maxLength": 20,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 4,
+          "name": "Alternate Identifier",
+          "datatype": "ST",
+          "maxLength": 20,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 5,
+          "name": "Alternate Text",
+          "datatype": "ST",
+          "maxLength": 199,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 6,
+          "name": "Name of Alternate Coding System",
+          "datatype": "ID",
+          "maxLength": 20,
+          "provenance": "hl7-base"
+        }
+      ],
+      "nphiesConstraints": [
+        {
+          "id": "7766452/Table-11.1",
+          "kind": "accepted-component-list",
+          "anchor": "#Table-11.1",
+          "parentField": "PV2.3",
+          "parentFieldName": "Admit Reason",
+          "semantics": "These are the ONLY components NPHIES accepts for this field. Component indexes are the HL7 v2.5.1 indexes of the named components - the table is a SELECTION, not a re-numbering. Components not listed are not accepted by NPHIES for this field.",
+          "acceptedComponents": [
+            {
+              "component": "1",
+              "nameInTable": "Identifier",
+              "resolvedDatatype": "ST",
+              "resolution": "direct",
+              "maxLength": 50
+            },
+            {
+              "component": "2",
+              "nameInTable": "Text",
+              "resolvedDatatype": "ST",
+              "resolution": "direct",
+              "maxLength": 2000
+            },
+            {
+              "component": "3",
+              "nameInTable": "Name of Coding System",
+              "resolvedDatatype": "ID",
+              "resolution": "direct",
+              "maxLengthCellIsConstraint": true,
+              "fixedValue": "2.16.840.1.113883.6.135",
+              "constraintKind": "fixed-oid"
+            },
+            {
+              "component": "4",
+              "nameInTable": "Alternate Identifier",
+              "resolvedDatatype": "ST",
+              "resolution": "direct",
+              "maxLength": 50
+            },
+            {
+              "component": "5",
+              "nameInTable": "Alternate Text",
+              "resolvedDatatype": "ST",
+              "resolution": "direct",
+              "maxLength": 2000
+            },
+            {
+              "component": "6",
+              "nameInTable": "Name of Alternate Coding System",
+              "resolvedDatatype": "ID",
+              "resolution": "direct",
+              "maxLength": 100
+            }
+          ],
+          "provenance": "nphies-table",
+          "source": {
+            "pageId": "7766452",
+            "pageTitle": "PV2",
+            "row": "Table 11.1 (PV2.3)",
+            "quote": "Field | Length\nIdentifier | 50\nText | 2000\nName of Coding System | 2.16.840.1.113883.6.135\nAlternate Identifier | 50\nAlternate Text | 2000\nName of Alternate Coding System | 100"
+          }
+        },
+        {
+          "id": "7766469/Table-12.1",
+          "kind": "accepted-component-list",
+          "anchor": "#Table-12.1",
+          "parentField": "AL1.3",
+          "parentFieldName": "Allergen Code Mnemonic Description",
+          "semantics": "These are the ONLY components NPHIES accepts for this field. Component indexes are the HL7 v2.5.1 indexes of the named components - the table is a SELECTION, not a re-numbering. Components not listed are not accepted by NPHIES for this field.",
+          "acceptedComponents": [
+            {
+              "component": "1",
+              "nameInTable": "Identifier",
+              "resolvedDatatype": "ST",
+              "resolution": "direct",
+              "maxLength": 50
+            },
+            {
+              "component": "2",
+              "nameInTable": "Text",
+              "resolvedDatatype": "ST",
+              "resolution": "direct",
+              "maxLength": 2000
+            },
+            {
+              "component": "3",
+              "nameInTable": "Name of Coding System",
+              "resolvedDatatype": "ID",
+              "resolution": "direct",
+              "maxLengthCellIsConstraint": true,
+              "fixedValue": "2.16.840.1.113883.6.96",
+              "constraintKind": "fixed-oid"
+            },
+            {
+              "component": "4",
+              "nameInTable": "Alternate Identifier",
+              "resolvedDatatype": "ST",
+              "resolution": "direct",
+              "maxLength": 50
+            },
+            {
+              "component": "5",
+              "nameInTable": "Alternate Text",
+              "resolvedDatatype": "ST",
+              "resolution": "direct",
+              "maxLength": 2000
+            },
+            {
+              "component": "6",
+              "nameInTable": "Name of Alternate Coding System",
+              "resolvedDatatype": "ID",
+              "resolution": "direct",
+              "maxLength": 100
+            }
+          ],
+          "provenance": "nphies-table",
+          "source": {
+            "pageId": "7766469",
+            "pageTitle": "AL1",
+            "row": "Table 12.1 (AL1.3)",
+            "quote": "Field | Length\nIdentifier | 50\nText | 2000\nName of Coding System | 2.16.840.1.113883.6.96\nAlternate Identifier | 50\nAlternate Text | 2000\nName of Alternate Coding System | 100"
+          }
+        },
+        {
+          "id": "7766496/Table-13.1",
+          "kind": "accepted-component-list",
+          "anchor": "#Table-13.1",
+          "parentField": "DG1.3",
+          "parentFieldName": "Diagnosis Code",
+          "semantics": "These are the ONLY components NPHIES accepts for this field. Component indexes are the HL7 v2.5.1 indexes of the named components - the table is a SELECTION, not a re-numbering. Components not listed are not accepted by NPHIES for this field.",
+          "acceptedComponents": [
+            {
+              "component": "1",
+              "nameInTable": "Identifier",
+              "resolvedDatatype": "ST",
+              "resolution": "direct",
+              "maxLength": 50
+            },
+            {
+              "component": "2",
+              "nameInTable": "Text",
+              "resolvedDatatype": "ST",
+              "resolution": "direct",
+              "maxLength": 2000
+            },
+            {
+              "component": "3",
+              "nameInTable": "Name of Coding System",
+              "resolvedDatatype": "ID",
+              "resolution": "direct",
+              "maxLengthCellIsConstraint": true,
+              "fixedValue": "2.16.840.1.113883.6.135",
+              "constraintKind": "fixed-oid"
+            },
+            {
+              "component": "4",
+              "nameInTable": "Alternate Identifier",
+              "resolvedDatatype": "ST",
+              "resolution": "direct",
+              "maxLength": 50
+            },
+            {
+              "component": "5",
+              "nameInTable": "Alternate Text",
+              "resolvedDatatype": "ST",
+              "resolution": "direct",
+              "maxLength": 2000
+            },
+            {
+              "component": "6",
+              "nameInTable": "Name of Alternate Coding System",
+              "resolvedDatatype": "ID",
+              "resolution": "direct",
+              "maxLength": 100
+            }
+          ],
+          "provenance": "nphies-table",
+          "source": {
+            "pageId": "7766496",
+            "pageTitle": "DG1",
+            "row": "Table 13.1 (DG1.3)",
+            "quote": "Field | Length\nIdentifier | 50\nText | 2000\nName of Coding System | 2.16.840.1.113883.6.135\nAlternate Identifier | 50\nAlternate Text | 2000\nName of Alternate Coding System | 100"
+          }
+        },
+        {
+          "id": "7766519/Table-14.1",
+          "kind": "accepted-component-list",
+          "anchor": "#Table-14.1",
+          "parentField": "PR1.3",
+          "parentFieldName": "Procedure Code",
+          "semantics": "These are the ONLY components NPHIES accepts for this field. Component indexes are the HL7 v2.5.1 indexes of the named components - the table is a SELECTION, not a re-numbering. Components not listed are not accepted by NPHIES for this field.",
+          "acceptedComponents": [
+            {
+              "component": "1",
+              "nameInTable": "Identifier",
+              "resolvedDatatype": "ST",
+              "resolution": "direct",
+              "maxLength": 50
+            },
+            {
+              "component": "2",
+              "nameInTable": "Text",
+              "resolvedDatatype": "ST",
+              "resolution": "direct",
+              "maxLength": 2000
+            },
+            {
+              "component": "3",
+              "nameInTable": "Name of Coding System",
+              "resolvedDatatype": "ID",
+              "resolution": "direct",
+              "maxLengthCellIsConstraint": true,
+              "constraintText": "If code element belongs to the Australian Classification of Health Interventions (ACHI) = 2.16.840.1.113883.3.3731.50.2\nIf code element belongs to The Australian Schedule of Dental Services and Glossary (ADA) = 2.16.840.1.113883.3.3731.50.3\nIf code element belongs to “Imaging Procedure” value set= 2.16.840.1.113883.3.3731.1.204.15",
+              "constraintKind": "conditional-fixed-value"
+            },
+            {
+              "component": "4",
+              "nameInTable": "Alternate Identifier",
+              "resolvedDatatype": "ST",
+              "resolution": "direct",
+              "maxLength": 50
+            },
+            {
+              "component": "5",
+              "nameInTable": "Alternate Text",
+              "resolvedDatatype": "ST",
+              "resolution": "direct",
+              "maxLength": 2000
+            },
+            {
+              "component": "6",
+              "nameInTable": "Name of Alternate Coding System",
+              "resolvedDatatype": "ID",
+              "resolution": "direct",
+              "maxLength": 100
+            }
+          ],
+          "provenance": "nphies-table",
+          "source": {
+            "pageId": "7766519",
+            "pageTitle": "PR1",
+            "row": "Table 14.1 (PR1.3)",
+            "quote": "Field | Length\nIdentifier | 50\nText | 2000\nName of Coding System | If code element belongs to the Australian Classification of Health Interventions (ACHI) = 2.16.840.1.113883.3.3731.50.2\nIf code element belongs to The Australian Schedule of Dental Services and Glossary (ADA) = 2.16.840.1.113883.3.3731.50.3\nIf code element belongs to “Imaging Procedure” value set= 2.16.840.1.113883.3.3731.1.204.15\nAlternate Identifier | 50\nAlternate Text | 2000\nName of Alternate Coding System | 100"
+          }
+        },
+        {
+          "id": "7766519/Table-14.2",
+          "kind": "accepted-component-list",
+          "anchor": "#Table-14.2",
+          "parentField": "PR1.15",
+          "parentFieldName": "Associated Diagnosis Code",
+          "semantics": "These are the ONLY components NPHIES accepts for this field. Component indexes are the HL7 v2.5.1 indexes of the named components - the table is a SELECTION, not a re-numbering. Components not listed are not accepted by NPHIES for this field.",
+          "acceptedComponents": [
+            {
+              "component": "1",
+              "nameInTable": "Identifier",
+              "resolvedDatatype": "ST",
+              "resolution": "direct",
+              "maxLength": 50
+            },
+            {
+              "component": "2",
+              "nameInTable": "Text",
+              "resolvedDatatype": "ST",
+              "resolution": "direct",
+              "maxLength": 2000
+            },
+            {
+              "component": "3",
+              "nameInTable": "Name of Coding System",
+              "resolvedDatatype": "ID",
+              "resolution": "direct",
+              "maxLengthCellIsConstraint": true,
+              "fixedValue": "2.16.840.1.113883.6.135",
+              "constraintKind": "fixed-oid"
+            },
+            {
+              "component": "4",
+              "nameInTable": "Alternate Identifier",
+              "resolvedDatatype": "ST",
+              "resolution": "direct",
+              "maxLength": 50
+            },
+            {
+              "component": "5",
+              "nameInTable": "Alternate Text",
+              "resolvedDatatype": "ST",
+              "resolution": "direct",
+              "maxLength": 2000
+            },
+            {
+              "component": "6",
+              "nameInTable": "Name of Alternate Coding System",
+              "resolvedDatatype": "ID",
+              "resolution": "direct",
+              "maxLength": 100
+            }
+          ],
+          "provenance": "nphies-table",
+          "source": {
+            "pageId": "7766519",
+            "pageTitle": "PR1",
+            "row": "Table 14.2 (PR1.15)",
+            "quote": "Field | Length\nIdentifier | 50\nText | 2000\nName of Coding System | 2.16.840.1.113883.6.135\nAlternate Identifier | 50\nAlternate Text | 2000\nName of Alternate Coding System | 100"
+          }
+        }
+      ],
+      "nphiesPerComponentLengths": [
+        {
+          "field": "OBR.4",
+          "fieldName": "Universal Service Identifier",
+          "datatype": "CE",
+          "rawLengthCell": "50, 2000, 100",
+          "values": [
+            50,
+            2000,
+            100
+          ],
+          "provenance": "nphies-table",
+          "assignments": [
+            {
+              "component": "1",
+              "nameInGuidance": "Identifier",
+              "maxLength": 50
+            },
+            {
+              "component": "2",
+              "nameInGuidance": "Text",
+              "maxLength": 2000
+            },
+            {
+              "component": "3",
+              "nameInGuidance": "Name of Coding System",
+              "maxLength": 100
+            }
+          ],
+          "mapping": "positional over the components the field guidance names, in guidance order (NOT components 1..N - the lists skip components the guidance does not name)",
+          "uncertain": false,
+          "source": {
+            "pageId": "171180143",
+            "pageTitle": "OBR",
+            "row": "OBR.4",
+            "quote": "50, 2000, 100"
+          }
+        },
+        {
+          "field": "NTE.4",
+          "fieldName": "Comment Type",
+          "datatype": "CE",
+          "rawLengthCell": "50, 200, 100",
+          "values": [
+            50,
+            200,
+            100
+          ],
+          "provenance": "nphies-table",
+          "assignments": [
+            {
+              "component": "1",
+              "nameInGuidance": "Identifier",
+              "maxLength": 50
+            },
+            {
+              "component": "2",
+              "nameInGuidance": "Text",
+              "maxLength": 200
+            },
+            {
+              "component": "3",
+              "nameInGuidance": "Name of Coding System",
+              "maxLength": 100
+            }
+          ],
+          "mapping": "positional over the components the field guidance names, in guidance order (NOT components 1..N - the lists skip components the guidance does not name)",
+          "uncertain": false,
+          "source": {
+            "pageId": "171180201",
+            "pageTitle": "OBX-NTE",
+            "row": "NTE.4",
+            "quote": "50, 200, 100"
+          }
+        },
+        {
+          "field": "NTE.4",
+          "fieldName": "Comment Type",
+          "datatype": "CE",
+          "rawLengthCell": "50, 200, 100",
+          "values": [
+            50,
+            200,
+            100
+          ],
+          "provenance": "nphies-table",
+          "assignments": [
+            {
+              "component": "1",
+              "nameInGuidance": "Identifier",
+              "maxLength": 50
+            },
+            {
+              "component": "2",
+              "nameInGuidance": "Text",
+              "maxLength": 200
+            },
+            {
+              "component": "3",
+              "nameInGuidance": "Name of Coding System",
+              "maxLength": 100
+            }
+          ],
+          "mapping": "positional over the components the field guidance names, in guidance order (NOT components 1..N - the lists skip components the guidance does not name)",
+          "uncertain": false,
+          "source": {
+            "pageId": "171246336",
+            "pageTitle": "OBR-NTE",
+            "row": "NTE.4",
+            "quote": "50, 200, 100"
+          }
+        },
+        {
+          "field": "OBX.3",
+          "fieldName": "Observation Identifier",
+          "datatype": "CE",
+          "rawLengthCell": "50, 200, 100",
+          "values": [
+            50,
+            200,
+            100
+          ],
+          "provenance": "nphies-table",
+          "assignments": [
+            {
+              "component": "1",
+              "nameInGuidance": "Identifier",
+              "maxLength": 50
+            },
+            {
+              "component": "2",
+              "nameInGuidance": "Text",
+              "maxLength": 200
+            },
+            {
+              "component": "3",
+              "nameInGuidance": "Name of Coding System",
+              "maxLength": 100
+            }
+          ],
+          "mapping": "positional over the components the field guidance names, in guidance order (NOT components 1..N - the lists skip components the guidance does not name)",
+          "uncertain": false,
+          "source": {
+            "pageId": "171246357",
+            "pageTitle": "OBX",
+            "row": "OBX.3",
+            "quote": "50, 200, 100"
+          }
+        },
+        {
+          "field": "OBX.6",
+          "fieldName": "Units",
+          "datatype": "CE",
+          "rawLengthCell": "50, 2000, 100",
+          "values": [
+            50,
+            2000,
+            100
+          ],
+          "provenance": "nphies-table",
+          "assignments": [
+            {
+              "component": "1",
+              "nameInGuidance": "Identifier",
+              "maxLength": 50
+            },
+            {
+              "component": "2",
+              "nameInGuidance": "Text",
+              "maxLength": 2000
+            },
+            {
+              "component": "3",
+              "nameInGuidance": "Name of Coding System",
+              "maxLength": 100
+            }
+          ],
+          "mapping": "positional over the components the field guidance names, in guidance order (NOT components 1..N - the lists skip components the guidance does not name)",
+          "uncertain": false,
+          "source": {
+            "pageId": "171246357",
+            "pageTitle": "OBX",
+            "row": "OBX.6",
+            "quote": "50, 2000, 100"
+          }
+        }
+      ],
+      "nphiesComponentRules": [
+        {
+          "field": "NTE.4",
+          "fieldName": "Comment Type",
+          "component": "1",
+          "nameInGuidance": "Identifier",
+          "resolution": "direct",
+          "resolvedDatatype": "ST",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "fixed-value",
+          "fixedValue": "RE",
+          "source": {
+            "pageId": "171180201",
+            "pageTitle": "OBX-NTE",
+            "row": "NTE.4",
+            "quote": "· Element “Identifier” SHALL be set to a “RE”"
+          },
+          "alsoStatedOn": [
+            {
+              "pageId": "171246336",
+              "pageTitle": "OBR-NTE"
+            }
+          ]
+        },
+        {
+          "field": "NTE.4",
+          "fieldName": "Comment Type",
+          "component": "2",
+          "nameInGuidance": "Text",
+          "resolution": "direct",
+          "resolvedDatatype": "ST",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "fixed-value",
+          "fixedValue": "Remark",
+          "source": {
+            "pageId": "171180201",
+            "pageTitle": "OBX-NTE",
+            "row": "NTE.4",
+            "quote": "· Element “Text” SHALL be set to “Remark”"
+          },
+          "alsoStatedOn": [
+            {
+              "pageId": "171246336",
+              "pageTitle": "OBR-NTE"
+            }
+          ]
+        },
+        {
+          "field": "NTE.4",
+          "fieldName": "Comment Type",
+          "component": "3",
+          "nameInGuidance": "Name Of Coding System",
+          "resolution": "direct",
+          "resolvedDatatype": "ID",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "fixed-value",
+          "fixedValue": "2.16.840.1.113883.21.238",
+          "source": {
+            "pageId": "171180201",
+            "pageTitle": "OBX-NTE",
+            "row": "NTE.4",
+            "quote": "· Element “Name Of Coding System” SHALL be set to “2.16.840.1.113883.21.238”"
+          },
+          "alsoStatedOn": [
+            {
+              "pageId": "171246336",
+              "pageTitle": "OBR-NTE"
+            }
+          ]
+        },
+        {
+          "field": "OBR.4",
+          "fieldName": "Universal Service Identifier",
+          "component": "1",
+          "nameInGuidance": "Identifier",
+          "resolution": "direct",
+          "resolvedDatatype": "ST",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "fixed-value",
+          "fixedValue": "85353-1",
+          "source": {
+            "pageId": "171180143",
+            "pageTitle": "OBR",
+            "row": "OBR.4",
+            "quote": "· Element “Identifier” SHALL be set to “85353-1”"
+          }
+        },
+        {
+          "field": "OBR.4",
+          "fieldName": "Universal Service Identifier",
+          "component": "2",
+          "nameInGuidance": "Text",
+          "resolution": "direct",
+          "resolvedDatatype": "ST",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "fixed-value",
+          "fixedValue": "Vital Signs Panel",
+          "source": {
+            "pageId": "171180143",
+            "pageTitle": "OBR",
+            "row": "OBR.4",
+            "quote": "· Element “Text” SHALL be set to “Vital Signs Panel”"
+          }
+        },
+        {
+          "field": "OBR.4",
+          "fieldName": "Universal Service Identifier",
+          "component": "3",
+          "nameInGuidance": "Name Of Coding System",
+          "resolution": "direct",
+          "resolvedDatatype": "ID",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "fixed-value",
+          "fixedValue": "2.16.840.1.113883.6.1",
+          "source": {
+            "pageId": "171180143",
+            "pageTitle": "OBR",
+            "row": "OBR.4",
+            "quote": "· Element “Name Of Coding System” SHALL be set to “2.16.840.1.113883.6.1”"
+          }
+        },
+        {
+          "field": "OBX.3",
+          "fieldName": "Observation Identifier",
+          "component": "1",
+          "nameInGuidance": "Identifier",
+          "resolution": "direct",
+          "resolvedDatatype": "ST",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "value-source",
+          "valueSource": "a value from the below table, column “Code",
+          "source": {
+            "pageId": "171246357",
+            "pageTitle": "OBX",
+            "row": "OBX.3",
+            "quote": "· Element “Identifier” SHALL be set to a value from the below table, column “Code”"
+          }
+        },
+        {
+          "field": "OBX.3",
+          "fieldName": "Observation Identifier",
+          "component": "2",
+          "nameInGuidance": "Text",
+          "resolution": "direct",
+          "resolvedDatatype": "ST",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "value-source",
+          "valueSource": "a value from the below table, column “Description",
+          "source": {
+            "pageId": "171246357",
+            "pageTitle": "OBX",
+            "row": "OBX.3",
+            "quote": "· Element “Text” SHALL be set to a value from the below table, column “Description”"
+          }
+        },
+        {
+          "field": "OBX.3",
+          "fieldName": "Observation Identifier",
+          "component": "3",
+          "nameInGuidance": "Name Of Coding System",
+          "resolution": "direct",
+          "resolvedDatatype": "ID",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "fixed-value",
+          "fixedValue": "2.16.840.1.113883.6.1",
+          "source": {
+            "pageId": "171246357",
+            "pageTitle": "OBX",
+            "row": "OBX.3",
+            "quote": "· Element “Name Of Coding System” SHALL be set to “2.16.840.1.113883.6.1”"
+          }
+        },
+        {
+          "field": "OBX.6",
+          "fieldName": "Units",
+          "component": "2",
+          "nameInGuidance": "Text",
+          "resolution": "direct",
+          "resolvedDatatype": "ST",
+          "modality": "MAY",
+          "provenance": "nphies-guidance",
+          "constraint": "value-source",
+          "valueSource": "a description out of the “KSA Laboratory Observation Units” value set",
+          "source": {
+            "pageId": "171246357",
+            "pageTitle": "OBX",
+            "row": "OBX.6",
+            "quote": "· Element “Text” MAY be set to a description out of the “KSA Laboratory Observation Units” value set."
+          }
+        },
+        {
+          "field": "OBX.6",
+          "fieldName": "Units",
+          "component": "3",
+          "nameInGuidance": "Name Of Coding System",
+          "resolution": "direct",
+          "resolvedDatatype": "ID",
+          "modality": "MAY",
+          "provenance": "nphies-guidance",
+          "constraint": "fixed-value",
+          "fixedValue": "2.16.840.1.113883.6.8",
+          "source": {
+            "pageId": "171246357",
+            "pageTitle": "OBX",
+            "row": "OBX.6",
+            "quote": "· Element “Name Of Coding System” MAY be set to “2.16.840.1.113883.6.8”"
+          }
+        }
+      ]
+    },
+    "CM": {
+      "name": "CM",
+      "description": "Composite (legacy, field-specific layout)",
+      "category": "composite",
+      "usedByNphies": true,
+      "provenance": "hl7-base",
+      "baseStandard": "HL7 v2.5.1 Chapter 2A",
+      "componentsKnown": false,
+      "components": [],
+      "note": "CM has no fixed component layout in HL7 v2.5.1 - it is a withdrawn placeholder whose components are defined per-field. The NPHIES spec never defines them. Every field NPHIES types as CM carries usage 'I' (ignored), so no structural component rule is asserted.",
+      "uncertain": true,
+      "nphiesCmFields": [
+        "OBR.23 Charge to Practice",
+        "OBR.26 Parent Result",
+        "OBR.29 Parent Report",
+        "OBR.32 Principal Result Interpreter",
+        "OBR.33 Assistant Result Interpreter",
+        "OBR.34 Technician",
+        "OBR.35 Transcriptionist"
+      ]
+    },
+    "CP": {
+      "name": "CP",
+      "description": "Composite Price",
+      "category": "composite",
+      "usedByNphies": true,
+      "provenance": "hl7-base",
+      "baseStandard": "HL7 v2.5.1 Chapter 2A",
+      "components": [
+        {
+          "index": 1,
+          "name": "Price",
+          "datatype": "MO",
+          "maxLength": 20,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 2,
+          "name": "Price Type",
+          "datatype": "ID",
+          "maxLength": 2,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 3,
+          "name": "From Value",
+          "datatype": "NM",
+          "maxLength": 16,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 4,
+          "name": "To Value",
+          "datatype": "NM",
+          "maxLength": 16,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 5,
+          "name": "Range Units",
+          "datatype": "CE",
+          "maxLength": 483,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 6,
+          "name": "Range Type",
+          "datatype": "ID",
+          "maxLength": 12,
+          "provenance": "hl7-base"
+        }
+      ]
+    },
+    "CQ": {
+      "name": "CQ",
+      "description": "Composite Quantity with Units",
+      "category": "composite",
+      "usedByNphies": true,
+      "provenance": "hl7-base",
+      "baseStandard": "HL7 v2.5.1 Chapter 2A",
+      "components": [
+        {
+          "index": 1,
+          "name": "Quantity",
+          "datatype": "NM",
+          "maxLength": 16,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 2,
+          "name": "Units",
+          "datatype": "CE",
+          "maxLength": 483,
+          "provenance": "hl7-base"
+        }
+      ]
+    },
+    "CWE": {
+      "name": "CWE",
+      "description": "Coded With Exceptions",
+      "category": "composite",
+      "usedByNphies": true,
+      "provenance": "hl7-base",
+      "baseStandard": "HL7 v2.5.1 Chapter 2A",
+      "components": [
+        {
+          "index": 1,
+          "name": "Identifier",
+          "datatype": "ST",
+          "maxLength": 20,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 2,
+          "name": "Text",
+          "datatype": "ST",
+          "maxLength": 199,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 3,
+          "name": "Name of Coding System",
+          "datatype": "ID",
+          "maxLength": 20,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 4,
+          "name": "Alternate Identifier",
+          "datatype": "ST",
+          "maxLength": 20,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 5,
+          "name": "Alternate Text",
+          "datatype": "ST",
+          "maxLength": 199,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 6,
+          "name": "Name of Alternate Coding System",
+          "datatype": "ID",
+          "maxLength": 20,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 7,
+          "name": "Coding System Version ID",
+          "datatype": "ST",
+          "maxLength": 10,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 8,
+          "name": "Alternate Coding System Version ID",
+          "datatype": "ST",
+          "maxLength": 10,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 9,
+          "name": "Original Text",
+          "datatype": "ST",
+          "maxLength": 199,
+          "provenance": "hl7-base"
+        }
+      ]
+    },
+    "CX": {
+      "name": "CX",
+      "description": "Extended Composite ID with Check Digit",
+      "category": "composite",
+      "usedByNphies": true,
+      "provenance": "hl7-base",
+      "baseStandard": "HL7 v2.5.1 Chapter 2A",
+      "components": [
+        {
+          "index": 1,
+          "name": "ID Number",
+          "datatype": "ST",
+          "maxLength": 15,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 2,
+          "name": "Check Digit",
+          "datatype": "ST",
+          "maxLength": 1,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 3,
+          "name": "Check Digit Scheme",
+          "datatype": "ID",
+          "maxLength": 3,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 4,
+          "name": "Assigning Authority",
+          "datatype": "HD",
+          "maxLength": 227,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 5,
+          "name": "Identifier Type Code",
+          "datatype": "ID",
+          "maxLength": 5,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 6,
+          "name": "Assigning Facility",
+          "datatype": "HD",
+          "maxLength": 227,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 7,
+          "name": "Effective Date",
+          "datatype": "DT",
+          "maxLength": 8,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 8,
+          "name": "Expiration Date",
+          "datatype": "DT",
+          "maxLength": 8,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 9,
+          "name": "Assigning Jurisdiction",
+          "datatype": "CWE",
+          "maxLength": 705,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 10,
+          "name": "Assigning Agency or Department",
+          "datatype": "CWE",
+          "maxLength": 705,
+          "provenance": "hl7-base"
+        }
+      ],
+      "nphiesConstraints": [
+        {
+          "id": "7766425/Table-10.2",
+          "kind": "accepted-component-list",
+          "anchor": "#Table-10.2",
+          "parentField": "PV1.5",
+          "parentFieldName": "Pre-admit Number",
+          "semantics": "These are the ONLY components NPHIES accepts for this field. Component indexes are the HL7 v2.5.1 indexes of the named components - the table is a SELECTION, not a re-numbering. Components not listed are not accepted by NPHIES for this field.",
+          "acceptedComponents": [
+            {
+              "component": "1",
+              "nameInTable": "ID Number",
+              "resolvedDatatype": "ST",
+              "resolution": "direct",
+              "maxLength": 50
+            },
+            {
+              "component": "4.2",
+              "nameInTable": "Assigning Authority Universal ID",
+              "resolvedDatatype": "ST",
+              "resolution": "Assigning Authority (CX.4) -> Universal ID",
+              "maxLengthCellIsConstraint": true,
+              "constraintText": "Participant OID",
+              "constraintKind": "named-value"
+            },
+            {
+              "component": "5",
+              "nameInTable": "Identifier Type Code",
+              "resolvedDatatype": "ID",
+              "resolution": "direct",
+              "maxLength": 50
+            }
+          ],
+          "provenance": "nphies-table",
+          "source": {
+            "pageId": "7766425",
+            "pageTitle": "PV1",
+            "row": "Table 10.2 (PV1.5)",
+            "quote": "Field | Length\nID Number | 50\nAssigning Authority Universal ID | Participant OID\nIdentifier Type Code | 50"
+          }
+        }
+      ],
+      "nphiesPerComponentLengths": [
+        {
+          "field": "PV1.5",
+          "fieldName": "Pre-admit Number",
+          "datatype": "CX",
+          "rawLengthCell": "50, 250",
+          "values": [
+            50,
+            250
+          ],
+          "provenance": "nphies-table",
+          "assignments": [
+            {
+              "component": "1",
+              "nameInGuidance": "ID Number",
+              "maxLength": 50
+            },
+            {
+              "component": "4",
+              "nameInGuidance": "Assigning Authority",
+              "maxLength": 250
+            }
+          ],
+          "mapping": "positional over the components the field guidance names, in guidance order (NOT components 1..N - the lists skip components the guidance does not name)",
+          "uncertain": true,
+          "uncertaintyReason": "The guidance for this field names THREE components (ID Number, Assigning Authority, Identifier Type Code) but the length cell carries only TWO values. Mapping to ID Number and Assigning Authority is the best reading; treat as advisory, not enforceable.",
+          "source": {
+            "pageId": "171246311",
+            "pageTitle": "ORU - PV1",
+            "row": "PV1.5",
+            "quote": "50, 250"
+          }
+        }
+      ],
+      "nphiesComponentRules": [
+        {
+          "field": "MRG.1",
+          "fieldName": "Prior Patient Identifier List",
+          "component": "4.2",
+          "nameInGuidance": "Assigning Authority",
+          "resolution": "direct",
+          "resolvedDatatype": "ST",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "redirected": "Guidance names the container \"Assigning Authority\" (CX.4, an HD) but states a bare OID. An OID is the value of the HD Universal ID subcomponent, so the rule is attached there. Confirmed by the golden ADT samples, where this OID appears in the 2nd subcomponent.",
+          "constraint": "fixed-value",
+          "fixedValue": "2.16.840.1.113883.3.3731.1.1.100.1",
+          "source": {
+            "pageId": "7766314",
+            "pageTitle": "Segment Description",
+            "row": "MRG.1",
+            "quote": "Assigning Authority must be 2.16.840.1.113883.3.3731.1.1.100.1"
+          },
+          "alsoStatedOn": [
+            {
+              "pageId": "7766542",
+              "pageTitle": "MRG"
+            }
+          ]
+        },
+        {
+          "field": "MRG.1",
+          "fieldName": "Prior Patient Identifier List",
+          "component": "4.3",
+          "nameInGuidance": "Universal ID",
+          "resolution": "via Assigning Authority (CX.4)",
+          "resolvedDatatype": "ID",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "redirected": "Guidance says \"Universal ID must be ISO\", but ISO is a value of HL7 Table 0301 Universal ID TYPE, not of Universal ID. Rule attached to the Universal ID Type subcomponent. Confirmed by the golden ADT samples (PID.3 = ...&2.16.840.1.113883.3.3731.1.1.100.1&ISO: OID in subcomponent 2, ISO in subcomponent 3).",
+          "constraint": "fixed-value",
+          "fixedValue": "ISO",
+          "source": {
+            "pageId": "7766314",
+            "pageTitle": "Segment Description",
+            "row": "MRG.1",
+            "quote": "Universal ID must be ISO"
+          },
+          "alsoStatedOn": [
+            {
+              "pageId": "7766542",
+              "pageTitle": "MRG"
+            }
+          ]
+        },
+        {
+          "field": "PID.3",
+          "fieldName": "Patient Identifier List",
+          "component": "1",
+          "nameInGuidance": "ID Number",
+          "resolution": "direct",
+          "resolvedDatatype": "ST",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "value-source",
+          "valueSource": "Health ID of the patient",
+          "source": {
+            "pageId": "171212900",
+            "pageTitle": "ORU - PID",
+            "row": "PID.3",
+            "quote": "· Element “ID Number” SHALL be set to the Health ID of the patient. This ID is obtained from NHIC Patient Registry."
+          }
+        },
+        {
+          "field": "PID.3",
+          "fieldName": "Patient Identifier List",
+          "component": "4",
+          "nameInGuidance": "Assigning Authority",
+          "resolution": "direct",
+          "resolvedDatatype": "HD",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "value-source",
+          "valueSource": "National HealthID Directory OID with the following sub-elements:",
+          "source": {
+            "pageId": "171212900",
+            "pageTitle": "ORU - PID",
+            "row": "PID.3",
+            "quote": "· Element “Assigning Authority” SHALL be set to the National HealthID Directory OID with the following sub-elements:"
+          }
+        },
+        {
+          "field": "PID.3",
+          "fieldName": "Patient Identifier List",
+          "component": "4.2",
+          "nameInGuidance": "Universal ID",
+          "resolution": "via Assigning Authority (CX.4)",
+          "resolvedDatatype": "ST",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "fixed-value",
+          "fixedValue": "2.16.840.1.113883.3.3731.1.1.100.1",
+          "source": {
+            "pageId": "171212900",
+            "pageTitle": "ORU - PID",
+            "row": "PID.3",
+            "quote": "o Sub-Element “Universal ID” SHALL be set to “2.16.840.1.113883.3.3731.1.1.100.1”"
+          },
+          "alsoStatedOn": [
+            {
+              "pageId": "7766314",
+              "pageTitle": "Segment Description"
+            },
+            {
+              "pageId": "7766393",
+              "pageTitle": "PID"
+            }
+          ]
+        },
+        {
+          "field": "PID.3",
+          "fieldName": "Patient Identifier List",
+          "component": "4.3",
+          "nameInGuidance": "Universal ID Type",
+          "resolution": "via Assigning Authority (CX.4)",
+          "resolvedDatatype": "ID",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "fixed-value",
+          "fixedValue": "ISO",
+          "source": {
+            "pageId": "171212900",
+            "pageTitle": "ORU - PID",
+            "row": "PID.3",
+            "quote": "o Sub-Element “Universal ID Type” SHALL be set to “ISO”"
+          },
+          "alsoStatedOn": [
+            {
+              "pageId": "7766314",
+              "pageTitle": "Segment Description"
+            },
+            {
+              "pageId": "7766393",
+              "pageTitle": "PID"
+            }
+          ]
+        },
+        {
+          "field": "PV1.5",
+          "fieldName": "Pre-admit Number",
+          "component": "1",
+          "nameInGuidance": "ID Number",
+          "resolution": "direct",
+          "resolvedDatatype": "ST",
+          "modality": "MAY",
+          "provenance": "nphies-guidance",
+          "constraint": "optional",
+          "source": {
+            "pageId": "171246311",
+            "pageTitle": "ORU - PV1",
+            "row": "PV1.5",
+            "quote": "· Element “ID Number” MAY be present"
+          }
+        },
+        {
+          "field": "PV1.5",
+          "fieldName": "Pre-admit Number",
+          "component": "4",
+          "nameInGuidance": "Assigning Authority",
+          "resolution": "direct",
+          "resolvedDatatype": "HD",
+          "modality": "MAY",
+          "provenance": "nphies-guidance",
+          "constraint": "optional",
+          "source": {
+            "pageId": "171246311",
+            "pageTitle": "ORU - PV1",
+            "row": "PV1.5",
+            "quote": "· Element “Assigning Authority” MAY be present"
+          }
+        },
+        {
+          "field": "PV1.5",
+          "fieldName": "Pre-admit Number",
+          "component": "4.2",
+          "nameInGuidance": "Universal ID",
+          "resolution": "via Assigning Authority (CX.4)",
+          "resolvedDatatype": "ST",
+          "modality": "MAY",
+          "provenance": "nphies-guidance",
+          "constraint": "value-source",
+          "valueSource": "National Organization OID issued",
+          "source": {
+            "pageId": "171246311",
+            "pageTitle": "ORU - PV1",
+            "row": "PV1.5",
+            "quote": "o Element “Universal ID” MAY be set to the National Organization OID issued."
+          }
+        },
+        {
+          "field": "PV1.5",
+          "fieldName": "Pre-admit Number",
+          "component": "4.3",
+          "nameInGuidance": "Universal ID Type",
+          "resolution": "via Assigning Authority (CX.4)",
+          "resolvedDatatype": "ID",
+          "modality": "MAY",
+          "provenance": "nphies-guidance",
+          "constraint": "fixed-value",
+          "fixedValue": "ISO",
+          "source": {
+            "pageId": "171246311",
+            "pageTitle": "ORU - PV1",
+            "row": "PV1.5",
+            "quote": "o Element “Universal ID Type” MAY be set to “ISO”"
+          }
+        },
+        {
+          "field": "PV1.5",
+          "fieldName": "Pre-admit Number",
+          "component": "5",
+          "nameInGuidance": "Identifier Type Code",
+          "resolution": "direct",
+          "resolvedDatatype": "ID",
+          "modality": "MAY",
+          "provenance": "nphies-guidance",
+          "constraint": "optional",
+          "source": {
+            "pageId": "171246311",
+            "pageTitle": "ORU - PV1",
+            "row": "PV1.5",
+            "quote": "· Element “Identifier Type Code” MAY be present"
+          }
+        },
+        {
+          "field": "PV1.19",
+          "fieldName": "Visit Number",
+          "component": "1",
+          "nameInGuidance": "ID Number",
+          "resolution": "direct",
+          "resolvedDatatype": "ST",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "required",
+          "source": {
+            "pageId": "171246311",
+            "pageTitle": "ORU - PV1",
+            "row": "PV1.19",
+            "quote": "· Element “ID Number” SHALL be present"
+          }
+        },
+        {
+          "field": "PV1.19",
+          "fieldName": "Visit Number",
+          "component": "4",
+          "nameInGuidance": "Assigning Authority",
+          "resolution": "direct",
+          "resolvedDatatype": "HD",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "required",
+          "source": {
+            "pageId": "171246311",
+            "pageTitle": "ORU - PV1",
+            "row": "PV1.19",
+            "quote": "· Element “Assigning Authority” SHALL be present"
+          }
+        },
+        {
+          "field": "PV1.19",
+          "fieldName": "Visit Number",
+          "component": "4.2",
+          "nameInGuidance": "Universal ID",
+          "resolution": "via Assigning Authority (CX.4)",
+          "resolvedDatatype": "ST",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "value-source",
+          "valueSource": "National Organization OID",
+          "source": {
+            "pageId": "171246311",
+            "pageTitle": "ORU - PV1",
+            "row": "PV1.19",
+            "quote": "o Sub-Element “Universal ID” SHALL be set to National Organization OID"
+          }
+        },
+        {
+          "field": "PV1.19",
+          "fieldName": "Visit Number",
+          "component": "4.3",
+          "nameInGuidance": "Universal ID Type",
+          "resolution": "via Assigning Authority (CX.4)",
+          "resolvedDatatype": "ID",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "fixed-value",
+          "fixedValue": "ISO",
+          "source": {
+            "pageId": "171246311",
+            "pageTitle": "ORU - PV1",
+            "row": "PV1.19",
+            "quote": "o Sub-Element “Universal ID Type” SHALL be set to “ISO”"
+          }
+        },
+        {
+          "field": "PV1.19",
+          "fieldName": "Visit Number",
+          "component": "5",
+          "nameInGuidance": "Identifier Type Code",
+          "resolution": "direct",
+          "resolvedDatatype": "ID",
+          "modality": "MAY",
+          "provenance": "nphies-guidance",
+          "constraint": "optional",
+          "source": {
+            "pageId": "171246311",
+            "pageTitle": "ORU - PV1",
+            "row": "PV1.19",
+            "quote": "· Element “Identifier Type Code” MAY be present"
+          }
+        }
+      ]
+    },
+    "DLD": {
+      "name": "DLD",
+      "description": "Discharge Location and Date",
+      "category": "composite",
+      "usedByNphies": true,
+      "provenance": "hl7-base",
+      "baseStandard": "HL7 v2.5.1 Chapter 2A",
+      "components": [
+        {
+          "index": 1,
+          "name": "Discharge Location",
+          "datatype": "IS",
+          "maxLength": 20,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 2,
+          "name": "Effective Date",
+          "datatype": "TS",
+          "maxLength": 26,
+          "provenance": "hl7-base"
+        }
+      ]
+    },
+    "DLN": {
+      "name": "DLN",
+      "description": "Driver's License Number",
+      "category": "composite",
+      "usedByNphies": true,
+      "provenance": "hl7-base",
+      "baseStandard": "HL7 v2.5.1 Chapter 2A",
+      "components": [
+        {
+          "index": 1,
+          "name": "License Number",
+          "datatype": "ST",
+          "maxLength": 20,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 2,
+          "name": "Issuing State, Province, Country",
+          "datatype": "IS",
+          "maxLength": 20,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 3,
+          "name": "Expiration Date",
+          "datatype": "DT",
+          "maxLength": 8,
+          "provenance": "hl7-base"
+        }
+      ]
+    },
+    "DR": {
+      "name": "DR",
+      "description": "Date/Time Range",
+      "category": "composite",
+      "usedByNphies": false,
+      "provenance": "hl7-base",
+      "baseStandard": "HL7 v2.5.1 Chapter 2A",
+      "components": [
+        {
+          "index": 1,
+          "name": "Range Start Date/Time",
+          "datatype": "TS",
+          "maxLength": 26,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 2,
+          "name": "Range End Date/Time",
+          "datatype": "TS",
+          "maxLength": 26,
+          "provenance": "hl7-base"
+        }
+      ]
+    },
+    "DT": {
+      "name": "DT",
+      "description": "Date  format YYYY[MM[DD]]",
+      "category": "primitive",
+      "usedByNphies": true,
+      "provenance": "hl7-base",
+      "baseStandard": "HL7 v2.5.1 Chapter 2A",
+      "maxLength": 8
+    },
+    "DTM": {
+      "name": "DTM",
+      "description": "Date/Time  format YYYY[MM[DD[HH[MM[SS[.S[S[S[S]]]]]]]]][+/-ZZZZ]",
+      "category": "primitive",
+      "usedByNphies": false,
+      "provenance": "hl7-base",
+      "baseStandard": "HL7 v2.5.1 Chapter 2A",
+      "maxLength": 24
+    },
+    "EI": {
+      "name": "EI",
+      "description": "Entity Identifier",
+      "category": "composite",
+      "usedByNphies": true,
+      "provenance": "hl7-base",
+      "baseStandard": "HL7 v2.5.1 Chapter 2A",
+      "components": [
+        {
+          "index": 1,
+          "name": "Entity Identifier",
+          "datatype": "ST",
+          "maxLength": 199,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 2,
+          "name": "Namespace ID",
+          "datatype": "IS",
+          "maxLength": 20,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 3,
+          "name": "Universal ID",
+          "datatype": "ST",
+          "maxLength": 199,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 4,
+          "name": "Universal ID Type",
+          "datatype": "ID",
+          "maxLength": 6,
+          "provenance": "hl7-base"
+        }
+      ],
+      "nphiesPerComponentLengths": [
+        {
+          "field": "OBR.2",
+          "fieldName": "Placer Order Number",
+          "datatype": "EI",
+          "rawLengthCell": "250, 250",
+          "values": [
+            250,
+            250
+          ],
+          "provenance": "nphies-table",
+          "assignments": [
+            {
+              "component": "1",
+              "nameInGuidance": "Entity Identifier",
+              "maxLength": 250
+            },
+            {
+              "component": "3",
+              "nameInGuidance": "Universal ID",
+              "maxLength": 250
+            }
+          ],
+          "mapping": "positional over the components the field guidance names, in guidance order (NOT components 1..N - the lists skip components the guidance does not name)",
+          "uncertain": false,
+          "source": {
+            "pageId": "171180143",
+            "pageTitle": "OBR",
+            "row": "OBR.2",
+            "quote": "250, 250"
+          }
+        },
+        {
+          "field": "OBR.3",
+          "fieldName": "Filler Order Number",
+          "datatype": "EI",
+          "rawLengthCell": "250, 250",
+          "values": [
+            250,
+            250
+          ],
+          "provenance": "nphies-table",
+          "assignments": [
+            {
+              "component": "1",
+              "nameInGuidance": "Entity Identifier",
+              "maxLength": 250
+            },
+            {
+              "component": "3",
+              "nameInGuidance": "Universal ID",
+              "maxLength": 250
+            }
+          ],
+          "mapping": "positional over the components the field guidance names, in guidance order (NOT components 1..N - the lists skip components the guidance does not name)",
+          "uncertain": false,
+          "source": {
+            "pageId": "171180143",
+            "pageTitle": "OBR",
+            "row": "OBR.3",
+            "quote": "250, 250"
+          }
+        }
+      ],
+      "nphiesComponentRules": [
+        {
+          "field": "OBR.2",
+          "fieldName": "Placer Order Number",
+          "component": "1",
+          "nameInGuidance": "Entity Identifier",
+          "resolution": "direct",
+          "resolvedDatatype": "ST",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "required",
+          "source": {
+            "pageId": "171180143",
+            "pageTitle": "OBR",
+            "row": "OBR.2",
+            "quote": "· Element “Entity Identifier” SHALL be present"
+          }
+        },
+        {
+          "field": "OBR.2",
+          "fieldName": "Placer Order Number",
+          "component": "3",
+          "nameInGuidance": "Universal ID",
+          "resolution": "direct",
+          "resolvedDatatype": "ST",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "value-source",
+          "valueSource": "National Organization OID issued",
+          "source": {
+            "pageId": "171180143",
+            "pageTitle": "OBR",
+            "row": "OBR.2",
+            "quote": "· Element “Universal ID” SHALL be set to the National Organization OID issued"
+          }
+        },
+        {
+          "field": "OBR.3",
+          "fieldName": "Filler Order Number",
+          "component": "1",
+          "nameInGuidance": "Entity Identifier",
+          "resolution": "direct",
+          "resolvedDatatype": "ST",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "required",
+          "source": {
+            "pageId": "171180143",
+            "pageTitle": "OBR",
+            "row": "OBR.3",
+            "quote": "· Element “Entity Identifier” SHALL be present"
+          }
+        },
+        {
+          "field": "OBR.3",
+          "fieldName": "Filler Order Number",
+          "component": "3",
+          "nameInGuidance": "Universal ID",
+          "resolution": "direct",
+          "resolvedDatatype": "ST",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "value-source",
+          "valueSource": "National Organization OID issued",
+          "source": {
+            "pageId": "171180143",
+            "pageTitle": "OBR",
+            "row": "OBR.3",
+            "quote": "· Element “Universal ID” SHALL be set to the National Organization OID issued"
+          }
+        }
+      ]
+    },
+    "ELD": {
+      "name": "ELD",
+      "description": "Error Location and Description",
+      "category": "composite",
+      "usedByNphies": true,
+      "provenance": "hl7-base",
+      "baseStandard": "HL7 v2.5.1 Chapter 2A",
+      "note": "Retained for backward compatibility only as of v2.5; ERR.1 keeps it. New senders use ERR.2 (ERL) + ERR.3 (CWE).",
+      "components": [
+        {
+          "index": 1,
+          "name": "Segment ID",
+          "datatype": "ST",
+          "maxLength": 3,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 2,
+          "name": "Segment Sequence",
+          "datatype": "NM",
+          "maxLength": 2,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 3,
+          "name": "Field Position",
+          "datatype": "NM",
+          "maxLength": 2,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 4,
+          "name": "Code Identifying Error",
+          "datatype": "CE",
+          "maxLength": 483,
+          "provenance": "hl7-base"
+        }
+      ]
+    },
+    "ERL": {
+      "name": "ERL",
+      "description": "Error Location",
+      "category": "composite",
+      "usedByNphies": true,
+      "provenance": "hl7-base",
+      "baseStandard": "HL7 v2.5.1 Chapter 2A",
+      "components": [
+        {
+          "index": 1,
+          "name": "Segment ID",
+          "datatype": "ST",
+          "maxLength": 3,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 2,
+          "name": "Segment Sequence",
+          "datatype": "NM",
+          "maxLength": 2,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 3,
+          "name": "Field Position",
+          "datatype": "NM",
+          "maxLength": 3,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 4,
+          "name": "Field Repetition",
+          "datatype": "NM",
+          "maxLength": 2,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 5,
+          "name": "Component Number",
+          "datatype": "NM",
+          "maxLength": 2,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 6,
+          "name": "Sub-Component Number",
+          "datatype": "NM",
+          "maxLength": 2,
+          "provenance": "hl7-base"
+        }
+      ]
+    },
+    "FC": {
+      "name": "FC",
+      "description": "Financial Class",
+      "category": "composite",
+      "usedByNphies": true,
+      "provenance": "hl7-base",
+      "baseStandard": "HL7 v2.5.1 Chapter 2A",
+      "components": [
+        {
+          "index": 1,
+          "name": "Financial Class Code",
+          "datatype": "IS",
+          "maxLength": 20,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 2,
+          "name": "Effective Date",
+          "datatype": "TS",
+          "maxLength": 26,
+          "provenance": "hl7-base"
+        }
+      ]
+    },
+    "FN": {
+      "name": "FN",
+      "description": "Family Name",
+      "category": "composite",
+      "usedByNphies": false,
+      "provenance": "hl7-base",
+      "baseStandard": "HL7 v2.5.1 Chapter 2A",
+      "components": [
+        {
+          "index": 1,
+          "name": "Surname",
+          "datatype": "ST",
+          "maxLength": 50,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 2,
+          "name": "Own Surname Prefix",
+          "datatype": "ST",
+          "maxLength": 20,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 3,
+          "name": "Own Surname",
+          "datatype": "ST",
+          "maxLength": 50,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 4,
+          "name": "Surname Prefix From Partner/Spouse",
+          "datatype": "ST",
+          "maxLength": 20,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 5,
+          "name": "Surname From Partner/Spouse",
+          "datatype": "ST",
+          "maxLength": 50,
+          "provenance": "hl7-base"
+        }
+      ]
+    },
+    "FT": {
+      "name": "FT",
+      "description": "Formatted Text Data",
+      "category": "primitive",
+      "usedByNphies": true,
+      "provenance": "hl7-base",
+      "baseStandard": "HL7 v2.5.1 Chapter 2A",
+      "maxLength": 65536
+    },
+    "HD": {
+      "name": "HD",
+      "description": "Hierarchic Designator",
+      "category": "composite",
+      "usedByNphies": true,
+      "provenance": "hl7-base",
+      "baseStandard": "HL7 v2.5.1 Chapter 2A",
+      "components": [
+        {
+          "index": 1,
+          "name": "Namespace ID",
+          "datatype": "IS",
+          "maxLength": 20,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 2,
+          "name": "Universal ID",
+          "datatype": "ST",
+          "maxLength": 199,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 3,
+          "name": "Universal ID Type",
+          "datatype": "ID",
+          "maxLength": 6,
+          "provenance": "hl7-base"
+        }
+      ],
+      "nphiesComponentRules": [
+        {
+          "field": "EVN.7",
+          "fieldName": "Event Facility",
+          "component": "2",
+          "nameInGuidance": "Universal ID",
+          "resolution": "direct",
+          "resolvedDatatype": "ST",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "value-source",
+          "valueSource": "NHIC Organization ID and it cannot exceed 50 characters",
+          "source": {
+            "pageId": "7766314",
+            "pageTitle": "Segment Description",
+            "row": "EVN.7",
+            "quote": "Universal ID = NHIC Organization ID and it cannot exceed 50 characters."
+          },
+          "alsoStatedOn": [
+            {
+              "pageId": "7766378",
+              "pageTitle": "EVN"
+            }
+          ]
+        },
+        {
+          "field": "MSH.3",
+          "fieldName": "Sending Application",
+          "component": "1",
+          "nameInGuidance": "Namespace ID",
+          "resolution": "direct",
+          "resolvedDatatype": "IS",
+          "modality": "SHALL NOT",
+          "provenance": "nphies-guidance",
+          "constraint": "must-be-absent",
+          "source": {
+            "pageId": "171278410",
+            "pageTitle": "ORU - MSH",
+            "row": "MSH.3",
+            "quote": "· Element “Namespace ID” SHALL NOT be present"
+          }
+        },
+        {
+          "field": "MSH.3",
+          "fieldName": "Sending Application",
+          "component": "2",
+          "nameInGuidance": "Universal ID",
+          "resolution": "direct",
+          "resolvedDatatype": "ST",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "value-source",
+          "valueSource": "National Organization OID issued",
+          "source": {
+            "pageId": "171278410",
+            "pageTitle": "ORU - MSH",
+            "row": "MSH.3",
+            "quote": "· Element “Universal ID” SHALL be set to the National Organization OID issued."
+          }
+        },
+        {
+          "field": "MSH.3",
+          "fieldName": "Sending Application",
+          "component": "2",
+          "nameInGuidance": "Universal ID",
+          "resolution": "direct",
+          "resolvedDatatype": "ST",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "value-source",
+          "valueSource": "participant application OID issued",
+          "source": {
+            "pageId": "7766314",
+            "pageTitle": "Segment Description",
+            "row": "MSH.3",
+            "quote": "Universal ID = participant application OID issued"
+          },
+          "alsoStatedOn": [
+            {
+              "pageId": "7766363",
+              "pageTitle": "MSH"
+            }
+          ]
+        },
+        {
+          "field": "MSH.3",
+          "fieldName": "Sending Application",
+          "component": "3",
+          "nameInGuidance": "Universal ID Type",
+          "resolution": "direct",
+          "resolvedDatatype": "ID",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "fixed-value",
+          "fixedValue": "ISO",
+          "source": {
+            "pageId": "171278410",
+            "pageTitle": "ORU - MSH",
+            "row": "MSH.3",
+            "quote": "· Element “Universal ID Type” SHALL be set to “ISO”"
+          }
+        },
+        {
+          "field": "MSH.4",
+          "fieldName": "Sending Facility",
+          "component": "1",
+          "nameInGuidance": "Namespace ID",
+          "resolution": "direct",
+          "resolvedDatatype": "IS",
+          "modality": "SHALL NOT",
+          "provenance": "nphies-guidance",
+          "constraint": "must-be-absent",
+          "source": {
+            "pageId": "171278410",
+            "pageTitle": "ORU - MSH",
+            "row": "MSH.4",
+            "quote": "· Element “Namespace ID” SHALL NOT be present."
+          }
+        },
+        {
+          "field": "MSH.4",
+          "fieldName": "Sending Facility",
+          "component": "2",
+          "nameInGuidance": "Universal ID",
+          "resolution": "direct",
+          "resolvedDatatype": "ST",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "value-source",
+          "valueSource": "identifier value out of the KSA-Wide Healthcare Provider Directory",
+          "source": {
+            "pageId": "171278410",
+            "pageTitle": "ORU - MSH",
+            "row": "MSH.4",
+            "quote": "· Element “Universal ID” SHALL be set to the identifier value out of the KSA-Wide Healthcare Provider Directory"
+          }
+        },
+        {
+          "field": "MSH.4",
+          "fieldName": "Sending Facility",
+          "component": "2",
+          "nameInGuidance": "Universal ID",
+          "resolution": "direct",
+          "resolvedDatatype": "ST",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "value-source",
+          "valueSource": "NHIC Organization ID and it cannot exceed 50 characters",
+          "source": {
+            "pageId": "7766314",
+            "pageTitle": "Segment Description",
+            "row": "MSH.4",
+            "quote": "Universal ID = NHIC Organization ID and it cannot exceed 50 characters"
+          },
+          "alsoStatedOn": [
+            {
+              "pageId": "7766363",
+              "pageTitle": "MSH"
+            }
+          ]
+        },
+        {
+          "field": "MSH.4",
+          "fieldName": "Sending Facility",
+          "component": "3",
+          "nameInGuidance": "Universal ID Type",
+          "resolution": "direct",
+          "resolvedDatatype": "ID",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "fixed-value",
+          "fixedValue": "ISO",
+          "source": {
+            "pageId": "171278410",
+            "pageTitle": "ORU - MSH",
+            "row": "MSH.4",
+            "quote": "· Element “Universal ID Type” SHALL be set to “ISO”"
+          }
+        },
+        {
+          "field": "MSH.5",
+          "fieldName": "Receiving Application",
+          "component": "1",
+          "nameInGuidance": "Namespace ID",
+          "resolution": "direct",
+          "resolvedDatatype": "IS",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "required",
+          "source": {
+            "pageId": "171278410",
+            "pageTitle": "ORU - MSH",
+            "row": "MSH.5",
+            "quote": "· Element “Namespace ID” SHALL be present and set to “nphies”."
+          }
+        },
+        {
+          "field": "MSH.5",
+          "fieldName": "Receiving Application",
+          "component": "2",
+          "nameInGuidance": "Universal ID",
+          "resolution": "direct",
+          "resolvedDatatype": "ST",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "fixed-value",
+          "fixedValue": "2.16.840.1.113883.3.3731.1.2.2",
+          "source": {
+            "pageId": "171278410",
+            "pageTitle": "ORU - MSH",
+            "row": "MSH.5",
+            "quote": "· Element “Universal ID” SHALL be set to “2.16.840.1.113883.3.3731.1.2.2”"
+          },
+          "alsoStatedOn": [
+            {
+              "pageId": "7766314",
+              "pageTitle": "Segment Description"
+            },
+            {
+              "pageId": "7766363",
+              "pageTitle": "MSH"
+            }
+          ]
+        },
+        {
+          "field": "MSH.5",
+          "fieldName": "Receiving Application",
+          "component": "3",
+          "nameInGuidance": "Universal ID Type",
+          "resolution": "direct",
+          "resolvedDatatype": "ID",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "fixed-value",
+          "fixedValue": "ISO",
+          "source": {
+            "pageId": "171278410",
+            "pageTitle": "ORU - MSH",
+            "row": "MSH.5",
+            "quote": "· Element “Universal ID Type” SHALL be set to “ISO”"
+          }
+        }
+      ]
+    },
+    "ID": {
+      "name": "ID",
+      "description": "Coded Value for HL7-Defined Tables",
+      "category": "primitive",
+      "usedByNphies": true,
+      "provenance": "hl7-base",
+      "baseStandard": "HL7 v2.5.1 Chapter 2A",
+      "maxLength": 15
+    },
+    "IS": {
+      "name": "IS",
+      "description": "Coded Value for User-Defined Tables",
+      "category": "primitive",
+      "usedByNphies": true,
+      "provenance": "hl7-base",
+      "baseStandard": "HL7 v2.5.1 Chapter 2A",
+      "maxLength": 20
+    },
+    "MO": {
+      "name": "MO",
+      "description": "Money",
+      "category": "composite",
+      "usedByNphies": false,
+      "provenance": "hl7-base",
+      "baseStandard": "HL7 v2.5.1 Chapter 2A",
+      "components": [
+        {
+          "index": 1,
+          "name": "Quantity",
+          "datatype": "NM",
+          "maxLength": 16,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 2,
+          "name": "Denomination",
+          "datatype": "ID",
+          "maxLength": 3,
+          "provenance": "hl7-base"
+        }
+      ]
+    },
+    "MSG": {
+      "name": "MSG",
+      "description": "Message Type",
+      "category": "composite",
+      "usedByNphies": true,
+      "provenance": "hl7-base",
+      "baseStandard": "HL7 v2.5.1 Chapter 2A",
+      "components": [
+        {
+          "index": 1,
+          "name": "Message Code",
+          "datatype": "ID",
+          "maxLength": 3,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 2,
+          "name": "Trigger Event",
+          "datatype": "ID",
+          "maxLength": 3,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 3,
+          "name": "Message Structure",
+          "datatype": "ID",
+          "maxLength": 7,
+          "provenance": "hl7-base"
+        }
+      ]
+    },
+    "NM": {
+      "name": "NM",
+      "description": "Numeric",
+      "category": "primitive",
+      "usedByNphies": true,
+      "provenance": "hl7-base",
+      "baseStandard": "HL7 v2.5.1 Chapter 2A",
+      "maxLength": 16
+    },
+    "OSD": {
+      "name": "OSD",
+      "description": "Order Sequence Definition",
+      "category": "composite",
+      "usedByNphies": false,
+      "provenance": "hl7-base",
+      "baseStandard": "HL7 v2.5.1 Chapter 2A",
+      "components": [
+        {
+          "index": 1,
+          "name": "Sequence/Results Flag",
+          "datatype": "ID",
+          "maxLength": 1,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 2,
+          "name": "Placer Order Number: Entity Identifier",
+          "datatype": "ST",
+          "maxLength": 15,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 3,
+          "name": "Placer Order Number: Namespace ID",
+          "datatype": "IS",
+          "maxLength": 6,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 4,
+          "name": "Filler Order Number: Entity Identifier",
+          "datatype": "ST",
+          "maxLength": 15,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 5,
+          "name": "Filler Order Number: Namespace ID",
+          "datatype": "IS",
+          "maxLength": 6,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 6,
+          "name": "Sequence Condition Value",
+          "datatype": "ST",
+          "maxLength": 12,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 7,
+          "name": "Maximum Number of Repeats",
+          "datatype": "NM",
+          "maxLength": 3,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 8,
+          "name": "Placer Order Number: Universal ID",
+          "datatype": "ST",
+          "maxLength": 15,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 9,
+          "name": "Placer Order Number: Universal ID Type",
+          "datatype": "ID",
+          "maxLength": 6,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 10,
+          "name": "Filler Order Number: Universal ID",
+          "datatype": "ST",
+          "maxLength": 15,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 11,
+          "name": "Filler Order Number: Universal ID Type",
+          "datatype": "ID",
+          "maxLength": 6,
+          "provenance": "hl7-base"
+        }
+      ]
+    },
+    "PL": {
+      "name": "PL",
+      "description": "Person Location",
+      "category": "composite",
+      "usedByNphies": true,
+      "provenance": "hl7-base",
+      "baseStandard": "HL7 v2.5.1 Chapter 2A",
+      "components": [
+        {
+          "index": 1,
+          "name": "Point of Care",
+          "datatype": "IS",
+          "maxLength": 20,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 2,
+          "name": "Room",
+          "datatype": "IS",
+          "maxLength": 20,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 3,
+          "name": "Bed",
+          "datatype": "IS",
+          "maxLength": 20,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 4,
+          "name": "Facility",
+          "datatype": "HD",
+          "maxLength": 227,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 5,
+          "name": "Location Status",
+          "datatype": "IS",
+          "maxLength": 20,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 6,
+          "name": "Person Location Type",
+          "datatype": "IS",
+          "maxLength": 20,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 7,
+          "name": "Building",
+          "datatype": "IS",
+          "maxLength": 20,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 8,
+          "name": "Floor",
+          "datatype": "IS",
+          "maxLength": 20,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 9,
+          "name": "Location Description",
+          "datatype": "ST",
+          "maxLength": 199,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 10,
+          "name": "Comprehensive Location Identifier",
+          "datatype": "EI",
+          "maxLength": 427,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 11,
+          "name": "Assigning Authority for Location",
+          "datatype": "HD",
+          "maxLength": 227,
+          "provenance": "hl7-base"
+        }
+      ],
+      "nphiesConstraints": [
+        {
+          "id": "7766425/Table-10.1",
+          "kind": "accepted-component-list",
+          "anchor": "#Table-10.1",
+          "parentField": "PV1.3",
+          "parentFieldName": "Assigned Patient Location",
+          "semantics": "These are the ONLY components NPHIES accepts for this field. Component indexes are the HL7 v2.5.1 indexes of the named components - the table is a SELECTION, not a re-numbering. Components not listed are not accepted by NPHIES for this field.",
+          "acceptedComponents": [
+            {
+              "component": "1",
+              "nameInTable": "Point of Care",
+              "resolvedDatatype": "IS",
+              "resolution": "direct",
+              "maxLength": 50
+            },
+            {
+              "component": "2",
+              "nameInTable": "Room",
+              "resolvedDatatype": "IS",
+              "resolution": "direct",
+              "maxLength": 50
+            },
+            {
+              "component": "3",
+              "nameInTable": "Bed",
+              "resolvedDatatype": "IS",
+              "resolution": "direct",
+              "maxLength": 50
+            },
+            {
+              "component": "4.2",
+              "nameInTable": "Facility Universal ID",
+              "resolvedDatatype": "ST",
+              "resolution": "Facility (PL.4) -> Universal ID",
+              "maxLengthCellIsConstraint": true,
+              "constraintText": "Participant NHIC Organization ID",
+              "constraintKind": "named-value"
+            },
+            {
+              "component": "7",
+              "nameInTable": "Building",
+              "resolvedDatatype": "IS",
+              "resolution": "direct",
+              "maxLength": 50
+            },
+            {
+              "component": "8",
+              "nameInTable": "Floor",
+              "resolvedDatatype": "IS",
+              "resolution": "direct",
+              "maxLength": 50
+            },
+            {
+              "component": "9",
+              "nameInTable": "Location Description",
+              "resolvedDatatype": "ST",
+              "resolution": "direct",
+              "maxLength": 50
+            }
+          ],
+          "provenance": "nphies-table",
+          "source": {
+            "pageId": "7766425",
+            "pageTitle": "PV1",
+            "row": "Table 10.1 (PV1.3)",
+            "quote": "Field | Length\nPoint of Care | 50\nRoom | 50\nBed | 50\nFacility Universal ID | Participant NHIC Organization ID\nBuilding | 50\nFloor | 50\nLocation Description | 50"
+          }
+        }
+      ]
+    },
+    "PT": {
+      "name": "PT",
+      "description": "Processing Type",
+      "category": "composite",
+      "usedByNphies": true,
+      "provenance": "hl7-base",
+      "baseStandard": "HL7 v2.5.1 Chapter 2A",
+      "components": [
+        {
+          "index": 1,
+          "name": "Processing ID",
+          "datatype": "ID",
+          "maxLength": 1,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 2,
+          "name": "Processing Mode",
+          "datatype": "ID",
+          "maxLength": 1,
+          "provenance": "hl7-base"
+        }
+      ]
+    },
+    "RI": {
+      "name": "RI",
+      "description": "Repeat Interval",
+      "category": "composite",
+      "usedByNphies": false,
+      "provenance": "hl7-base",
+      "baseStandard": "HL7 v2.5.1 Chapter 2A",
+      "components": [
+        {
+          "index": 1,
+          "name": "Repeat Pattern",
+          "datatype": "IS",
+          "maxLength": 6,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 2,
+          "name": "Explicit Time Interval",
+          "datatype": "ST",
+          "maxLength": 80,
+          "provenance": "hl7-base"
+        }
+      ]
+    },
+    "SAD": {
+      "name": "SAD",
+      "description": "Street Address",
+      "category": "composite",
+      "usedByNphies": false,
+      "provenance": "hl7-base",
+      "baseStandard": "HL7 v2.5.1 Chapter 2A",
+      "components": [
+        {
+          "index": 1,
+          "name": "Street or Mailing Address",
+          "datatype": "ST",
+          "maxLength": 120,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 2,
+          "name": "Street Name",
+          "datatype": "ST",
+          "maxLength": 50,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 3,
+          "name": "Dwelling Number",
+          "datatype": "ST",
+          "maxLength": 12,
+          "provenance": "hl7-base"
+        }
+      ]
+    },
+    "SI": {
+      "name": "SI",
+      "description": "Sequence ID",
+      "category": "primitive",
+      "usedByNphies": true,
+      "provenance": "hl7-base",
+      "baseStandard": "HL7 v2.5.1 Chapter 2A",
+      "maxLength": 4
+    },
+    "SPS": {
+      "name": "SPS",
+      "description": "Specimen Source",
+      "category": "composite",
+      "usedByNphies": true,
+      "provenance": "hl7-base",
+      "baseStandard": "HL7 v2.5.1 Chapter 2A",
+      "note": "Retained for backward compatibility only as of v2.5.",
+      "components": [
+        {
+          "index": 1,
+          "name": "Specimen Source Name or Code",
+          "datatype": "CWE",
+          "maxLength": 705,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 2,
+          "name": "Additives",
+          "datatype": "CWE",
+          "maxLength": 705,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 3,
+          "name": "Specimen Collection Method",
+          "datatype": "TX",
+          "maxLength": 200,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 4,
+          "name": "Body Site",
+          "datatype": "CWE",
+          "maxLength": 705,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 5,
+          "name": "Site Modifier",
+          "datatype": "CWE",
+          "maxLength": 705,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 6,
+          "name": "Collection Method Modifier Code",
+          "datatype": "CWE",
+          "maxLength": 705,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 7,
+          "name": "Specimen Role",
+          "datatype": "CWE",
+          "maxLength": 705,
+          "provenance": "hl7-base"
+        }
+      ]
+    },
+    "ST": {
+      "name": "ST",
+      "description": "String Data",
+      "category": "primitive",
+      "usedByNphies": true,
+      "provenance": "hl7-base",
+      "baseStandard": "HL7 v2.5.1 Chapter 2A",
+      "maxLength": 199
+    },
+    "TM": {
+      "name": "TM",
+      "description": "Time  format HH[MM[SS[.S[S[S[S]]]]]][+/-ZZZZ]",
+      "category": "primitive",
+      "usedByNphies": false,
+      "provenance": "hl7-base",
+      "baseStandard": "HL7 v2.5.1 Chapter 2A",
+      "maxLength": 16
+    },
+    "TQ": {
+      "name": "TQ",
+      "description": "Timing/Quantity",
+      "category": "composite",
+      "usedByNphies": true,
+      "provenance": "hl7-base",
+      "baseStandard": "HL7 v2.5.1 Chapter 2A",
+      "note": "Retained for backward compatibility only as of v2.5; replaced by the TQ1/TQ2 segments.",
+      "components": [
+        {
+          "index": 1,
+          "name": "Quantity",
+          "datatype": "CQ",
+          "maxLength": 267,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 2,
+          "name": "Interval",
+          "datatype": "RI",
+          "maxLength": 206,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 3,
+          "name": "Duration",
+          "datatype": "ST",
+          "maxLength": 6,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 4,
+          "name": "Start Date/Time",
+          "datatype": "TS",
+          "maxLength": 26,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 5,
+          "name": "End Date/Time",
+          "datatype": "TS",
+          "maxLength": 26,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 6,
+          "name": "Priority",
+          "datatype": "ST",
+          "maxLength": 6,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 7,
+          "name": "Condition",
+          "datatype": "ST",
+          "maxLength": 199,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 8,
+          "name": "Text",
+          "datatype": "TX",
+          "maxLength": 200,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 9,
+          "name": "Conjunction",
+          "datatype": "ID",
+          "maxLength": 1,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 10,
+          "name": "Order Sequencing",
+          "datatype": "OSD",
+          "maxLength": 110,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 11,
+          "name": "Occurrence Duration",
+          "datatype": "CE",
+          "maxLength": 483,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 12,
+          "name": "Total Occurrences",
+          "datatype": "NM",
+          "maxLength": 4,
+          "provenance": "hl7-base"
+        }
+      ]
+    },
+    "TS": {
+      "name": "TS",
+      "description": "Time Stamp",
+      "category": "composite",
+      "usedByNphies": true,
+      "provenance": "hl7-base",
+      "baseStandard": "HL7 v2.5.1 Chapter 2A",
+      "components": [
+        {
+          "index": 1,
+          "name": "Time",
+          "datatype": "DTM",
+          "maxLength": 24,
+          "note": "YYYY[MM[DD[HH[MM[SS[.S[S[S[S]]]]]]]]][+/-ZZZZ]",
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 2,
+          "name": "Degree of Precision",
+          "datatype": "ID",
+          "maxLength": 1,
+          "note": "Retained for backward compatibility only as of v2.3",
+          "provenance": "hl7-base"
+        }
+      ]
+    },
+    "TX": {
+      "name": "TX",
+      "description": "Text Data",
+      "category": "primitive",
+      "usedByNphies": true,
+      "provenance": "hl7-base",
+      "baseStandard": "HL7 v2.5.1 Chapter 2A",
+      "maxLength": 65536
+    },
+    "VID": {
+      "name": "VID",
+      "description": "Version Identifier",
+      "category": "composite",
+      "usedByNphies": true,
+      "provenance": "hl7-base",
+      "baseStandard": "HL7 v2.5.1 Chapter 2A",
+      "components": [
+        {
+          "index": 1,
+          "name": "Version ID",
+          "datatype": "ID",
+          "maxLength": 5,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 2,
+          "name": "Internationalization Code",
+          "datatype": "CE",
+          "maxLength": 483,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 3,
+          "name": "International Version ID",
+          "datatype": "CE",
+          "maxLength": 483,
+          "provenance": "hl7-base"
+        }
+      ]
+    },
+    "Varies": {
+      "name": "Varies",
+      "description": "Datatype varies; determined at runtime by another field",
+      "category": "variable",
+      "usedByNphies": true,
+      "provenance": "hl7-base",
+      "componentsKnown": false,
+      "components": [],
+      "uncertain": true,
+      "note": "Used only by OBX.5 Observation Value, whose actual datatype is named by OBX.2 Value Type. The NPHIES OBX page states the per-type length as 'NM=16 / ST=199'."
+    },
+    "XAD": {
+      "name": "XAD",
+      "description": "Extended Address",
+      "category": "composite",
+      "usedByNphies": true,
+      "provenance": "hl7-base",
+      "baseStandard": "HL7 v2.5.1 Chapter 2A",
+      "components": [
+        {
+          "index": 1,
+          "name": "Street Address",
+          "datatype": "SAD",
+          "maxLength": 184,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 2,
+          "name": "Other Designation",
+          "datatype": "ST",
+          "maxLength": 120,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 3,
+          "name": "City",
+          "datatype": "ST",
+          "maxLength": 50,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 4,
+          "name": "State or Province",
+          "datatype": "ST",
+          "maxLength": 50,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 5,
+          "name": "Zip or Postal Code",
+          "datatype": "ST",
+          "maxLength": 12,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 6,
+          "name": "Country",
+          "datatype": "ID",
+          "maxLength": 3,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 7,
+          "name": "Address Type",
+          "datatype": "ID",
+          "maxLength": 3,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 8,
+          "name": "Other Geographic Designation",
+          "datatype": "ST",
+          "maxLength": 50,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 9,
+          "name": "County/Parish Code",
+          "datatype": "IS",
+          "maxLength": 20,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 10,
+          "name": "Census Tract",
+          "datatype": "IS",
+          "maxLength": 20,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 11,
+          "name": "Address Representation Code",
+          "datatype": "ID",
+          "maxLength": 1,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 12,
+          "name": "Address Validity Range",
+          "datatype": "DR",
+          "maxLength": 53,
+          "note": "Retained for backward compatibility only as of v2.5",
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 13,
+          "name": "Effective Date",
+          "datatype": "TS",
+          "maxLength": 26,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 14,
+          "name": "Expiration Date",
+          "datatype": "TS",
+          "maxLength": 26,
+          "provenance": "hl7-base"
+        }
+      ]
+    },
+    "XCN": {
+      "name": "XCN",
+      "description": "Extended Composite ID Number and Name for Persons",
+      "category": "composite",
+      "usedByNphies": true,
+      "provenance": "hl7-base",
+      "baseStandard": "HL7 v2.5.1 Chapter 2A",
+      "components": [
+        {
+          "index": 1,
+          "name": "ID Number",
+          "datatype": "ST",
+          "maxLength": 15,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 2,
+          "name": "Family Name",
+          "datatype": "FN",
+          "maxLength": 194,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 3,
+          "name": "Given Name",
+          "datatype": "ST",
+          "maxLength": 30,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 4,
+          "name": "Second and Further Given Names or Initials Thereof",
+          "datatype": "ST",
+          "maxLength": 30,
+          "note": "Called \"Middle Initial or Name\" in HL7 v2.3 and in the NPHIES Table 9.1 wording",
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 5,
+          "name": "Suffix (e.g., JR or III)",
+          "datatype": "ST",
+          "maxLength": 20,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 6,
+          "name": "Prefix (e.g., DR)",
+          "datatype": "ST",
+          "maxLength": 20,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 7,
+          "name": "Degree (e.g., MD)",
+          "datatype": "IS",
+          "maxLength": 5,
+          "note": "Retained for backward compatibility only as of v2.5",
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 8,
+          "name": "Source Table",
+          "datatype": "IS",
+          "maxLength": 4,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 9,
+          "name": "Assigning Authority",
+          "datatype": "HD",
+          "maxLength": 227,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 10,
+          "name": "Name Type Code",
+          "datatype": "ID",
+          "maxLength": 1,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 11,
+          "name": "Identifier Check Digit",
+          "datatype": "ST",
+          "maxLength": 1,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 12,
+          "name": "Check Digit Scheme",
+          "datatype": "ID",
+          "maxLength": 3,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 13,
+          "name": "Identifier Type Code",
+          "datatype": "ID",
+          "maxLength": 5,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 14,
+          "name": "Assigning Facility",
+          "datatype": "HD",
+          "maxLength": 227,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 15,
+          "name": "Name Representation Code",
+          "datatype": "ID",
+          "maxLength": 1,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 16,
+          "name": "Name Context",
+          "datatype": "CE",
+          "maxLength": 483,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 17,
+          "name": "Name Validity Range",
+          "datatype": "DR",
+          "maxLength": 53,
+          "note": "Retained for backward compatibility only as of v2.5",
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 18,
+          "name": "Name Assembly Order",
+          "datatype": "ID",
+          "maxLength": 1,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 19,
+          "name": "Effective Date",
+          "datatype": "TS",
+          "maxLength": 26,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 20,
+          "name": "Expiration Date",
+          "datatype": "TS",
+          "maxLength": 26,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 21,
+          "name": "Professional Suffix",
+          "datatype": "ST",
+          "maxLength": 199,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 22,
+          "name": "Assigning Jurisdiction",
+          "datatype": "CWE",
+          "maxLength": 705,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 23,
+          "name": "Assigning Agency or Department",
+          "datatype": "CWE",
+          "maxLength": 705,
+          "provenance": "hl7-base"
+        }
+      ],
+      "nphiesConstraints": [
+        {
+          "id": "7766408/Table-9.1",
+          "kind": "accepted-component-list",
+          "anchor": "#Table-9.1",
+          "parentField": "PD1.4",
+          "parentFieldName": "Patient Primary Care Provider Name and ID Number",
+          "semantics": "These are the ONLY components NPHIES accepts for this field. Component indexes are the HL7 v2.5.1 indexes of the named components - the table is a SELECTION, not a re-numbering. Components not listed are not accepted by NPHIES for this field.",
+          "acceptedComponents": [
+            {
+              "component": "1",
+              "nameInTable": "ID Number",
+              "resolvedDatatype": "ST",
+              "resolution": "direct",
+              "maxLength": 32
+            },
+            {
+              "component": "2",
+              "nameInTable": "Family Name",
+              "resolvedDatatype": "FN",
+              "resolution": "direct",
+              "maxLength": 32
+            },
+            {
+              "component": "3",
+              "nameInTable": "Given Name",
+              "resolvedDatatype": "ST",
+              "resolution": "direct",
+              "maxLength": 32
+            },
+            {
+              "component": "4",
+              "nameInTable": "Middle Initial or Name",
+              "resolvedDatatype": "ST",
+              "resolution": "direct",
+              "maxLength": 32
+            },
+            {
+              "component": "9.2",
+              "nameInTable": "Assigning Authority Universal ID",
+              "resolvedDatatype": "ST",
+              "resolution": "Assigning Authority (XCN.9) -> Universal ID",
+              "maxLengthCellIsConstraint": true,
+              "fixedValue": "2.16.840.1.113883.3.3731.1.2.1",
+              "constraintKind": "fixed-oid"
+            }
+          ],
+          "provenance": "nphies-table",
+          "source": {
+            "pageId": "7766408",
+            "pageTitle": "PD1",
+            "row": "Table 9.1 (PD1.4)",
+            "quote": "Field | Length\nID Number | 32\nFamily Name | 32\nGiven Name | 32\nMiddle Initial or Name | 32\nAssigning Authority Universal ID | 2.16.840.1.113883.3.3731.1.2.1"
+          }
+        }
+      ],
+      "nphiesPerComponentLengths": [
+        {
+          "field": "OBR.16",
+          "fieldName": "Ordering Provider",
+          "datatype": "XCN",
+          "rawLengthCell": "50, 100, 100, 100, 20, 20, 250",
+          "values": [
+            50,
+            100,
+            100,
+            100,
+            20,
+            20,
+            250
+          ],
+          "provenance": "nphies-table",
+          "assignments": [
+            {
+              "component": "1",
+              "nameInGuidance": "ID Number",
+              "maxLength": 50
+            },
+            {
+              "component": "2",
+              "nameInGuidance": "Family Name",
+              "maxLength": 100
+            },
+            {
+              "component": "3",
+              "nameInGuidance": "Given Name",
+              "maxLength": 100
+            },
+            {
+              "component": "4",
+              "nameInGuidance": "Second and Further Given Names",
+              "maxLength": 100
+            },
+            {
+              "component": "5",
+              "nameInGuidance": "Suffix",
+              "maxLength": 20
+            },
+            {
+              "component": "6",
+              "nameInGuidance": "Prefix",
+              "maxLength": 20
+            },
+            {
+              "component": "9",
+              "nameInGuidance": "Assigning Authority",
+              "maxLength": 250
+            }
+          ],
+          "mapping": "positional over the components the field guidance names, in guidance order (NOT components 1..N - the lists skip components the guidance does not name)",
+          "uncertain": false,
+          "source": {
+            "pageId": "171180143",
+            "pageTitle": "OBR",
+            "row": "OBR.16",
+            "quote": "50, 100, 100, 100, 20, 20, 250"
+          }
+        }
+      ],
+      "nphiesComponentRules": [
+        {
+          "field": "DG1.16",
+          "fieldName": "Diagnosing Clinician",
+          "component": "9.2",
+          "nameInGuidance": "Assigning Authority Universal ID",
+          "resolution": "Assigning Authority (XCN.9) -> Universal ID",
+          "resolvedDatatype": "ST",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "fixed-value",
+          "fixedValue": "2.16.840.1.113883.3.3731.1.2.1",
+          "source": {
+            "pageId": "7766314",
+            "pageTitle": "Segment Description",
+            "row": "DG1.16",
+            "quote": "Assigning Authority Universal ID must be set to “2.16.840.1.113883.3.3731.1.2.1”"
+          },
+          "alsoStatedOn": [
+            {
+              "pageId": "7766496",
+              "pageTitle": "DG1"
+            }
+          ]
+        },
+        {
+          "field": "OBR.16",
+          "fieldName": "Ordering Provider",
+          "component": "1",
+          "nameInGuidance": "ID Number",
+          "resolution": "direct",
+          "resolvedDatatype": "ST",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "value-source",
+          "valueSource": "National Provider ID of the provider IF KNOWN",
+          "source": {
+            "pageId": "171180143",
+            "pageTitle": "OBR",
+            "row": "OBR.16",
+            "quote": "· Element “ID Number” SHALL be set to the National Provider ID of the provider IF KNOWN"
+          }
+        },
+        {
+          "field": "OBR.16",
+          "fieldName": "Ordering Provider",
+          "component": "2",
+          "nameInGuidance": "Family Name",
+          "resolution": "direct",
+          "resolvedDatatype": "FN",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "required-if-known",
+          "source": {
+            "pageId": "171180143",
+            "pageTitle": "OBR",
+            "row": "OBR.16",
+            "quote": "· Element “Family Name” SHALL be present IF KNOWN"
+          }
+        },
+        {
+          "field": "OBR.16",
+          "fieldName": "Ordering Provider",
+          "component": "2.1",
+          "nameInGuidance": "Surname",
+          "resolution": "via Family Name (XCN.2)",
+          "resolvedDatatype": "ST",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "required",
+          "source": {
+            "pageId": "171180143",
+            "pageTitle": "OBR",
+            "row": "OBR.16",
+            "quote": "o Sub-Element “Surname” SHALL be present and contain the family name"
+          }
+        },
+        {
+          "field": "OBR.16",
+          "fieldName": "Ordering Provider",
+          "component": "3",
+          "nameInGuidance": "Given Name",
+          "resolution": "direct",
+          "resolvedDatatype": "ST",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "required-if-known",
+          "source": {
+            "pageId": "171180143",
+            "pageTitle": "OBR",
+            "row": "OBR.16",
+            "quote": "· Element “Given Name” SHALL be present IF KNOWN"
+          }
+        },
+        {
+          "field": "OBR.16",
+          "fieldName": "Ordering Provider",
+          "component": "4",
+          "nameInGuidance": "Second and Further Given Names",
+          "resolution": "direct",
+          "resolvedDatatype": "ST",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "required-if-known",
+          "source": {
+            "pageId": "171180143",
+            "pageTitle": "OBR",
+            "row": "OBR.16",
+            "quote": "· Element “Second and Further Given Names” SHALL be present IF KNOWN"
+          }
+        },
+        {
+          "field": "OBR.16",
+          "fieldName": "Ordering Provider",
+          "component": "5",
+          "nameInGuidance": "Suffix",
+          "resolution": "direct",
+          "resolvedDatatype": "ST",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "required-if-known",
+          "source": {
+            "pageId": "171180143",
+            "pageTitle": "OBR",
+            "row": "OBR.16",
+            "quote": "· Element “Suffix” SHALL be present IF KNOWN"
+          }
+        },
+        {
+          "field": "OBR.16",
+          "fieldName": "Ordering Provider",
+          "component": "6",
+          "nameInGuidance": "Prefix",
+          "resolution": "direct",
+          "resolvedDatatype": "ST",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "required-if-known",
+          "source": {
+            "pageId": "171180143",
+            "pageTitle": "OBR",
+            "row": "OBR.16",
+            "quote": "· Element “Prefix” SHALL be present IF KNOWN"
+          }
+        },
+        {
+          "field": "OBR.16",
+          "fieldName": "Ordering Provider",
+          "component": "9",
+          "nameInGuidance": "Assigning Authority",
+          "resolution": "direct",
+          "resolvedDatatype": "HD",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "value-source",
+          "valueSource": "National Provider Directory OID with the following sub-elements:",
+          "source": {
+            "pageId": "171180143",
+            "pageTitle": "OBR",
+            "row": "OBR.16",
+            "quote": "· Element “Assigning Authority” SHALL be set to the National Provider Directory OID with the following sub-elements:"
+          }
+        },
+        {
+          "field": "OBR.16",
+          "fieldName": "Ordering Provider",
+          "component": "9.2",
+          "nameInGuidance": "Universal ID",
+          "resolution": "via Assigning Authority (XCN.9)",
+          "resolvedDatatype": "ST",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "fixed-value",
+          "fixedValue": "2.16.840.1.113883.3.3731.1.2.1",
+          "source": {
+            "pageId": "171180143",
+            "pageTitle": "OBR",
+            "row": "OBR.16",
+            "quote": "o Sub-Element “Universal ID” SHALL be set to “2.16.840.1.113883.3.3731.1.2.1”"
+          }
+        },
+        {
+          "field": "PD1.4",
+          "fieldName": "Patient Primary Care Provider Name and ID Number",
+          "component": "1",
+          "nameInGuidance": "ID Number",
+          "resolution": "direct",
+          "resolvedDatatype": "ST",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "value-source",
+          "valueSource": "National Provider Identifier",
+          "source": {
+            "pageId": "7766314",
+            "pageTitle": "Segment Description",
+            "row": "PD1.4",
+            "quote": "Provider ID Number must be National Provider Identifier."
+          },
+          "alsoStatedOn": [
+            {
+              "pageId": "7766408",
+              "pageTitle": "PD1"
+            }
+          ]
+        },
+        {
+          "field": "PD1.4",
+          "fieldName": "Patient Primary Care Provider Name and ID Number",
+          "component": "9.2",
+          "nameInGuidance": "Assigning Authority Universal ID",
+          "resolution": "Assigning Authority (XCN.9) -> Universal ID",
+          "resolvedDatatype": "ST",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "fixed-value",
+          "fixedValue": "2.16.840.1.113883.3.3731.1.2.1",
+          "source": {
+            "pageId": "7766314",
+            "pageTitle": "Segment Description",
+            "row": "PD1.4",
+            "quote": "Provider Store requires the ID Number and Assigning Authority Universal ID must be set to “2.16.840.1.113883.3.3731.1.2.1”. Provider Store accept the following:"
+          },
+          "alsoStatedOn": [
+            {
+              "pageId": "7766408",
+              "pageTitle": "PD1"
+            }
+          ]
+        },
+        {
+          "field": "PR1.8",
+          "fieldName": "Anesthesiologist",
+          "component": "9.2",
+          "nameInGuidance": "Assigning Authority Universal ID",
+          "resolution": "Assigning Authority (XCN.9) -> Universal ID",
+          "resolvedDatatype": "ST",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "fixed-value",
+          "fixedValue": "2.16.840.1.113883.3.3731.1.2.1",
+          "source": {
+            "pageId": "7766314",
+            "pageTitle": "Segment Description",
+            "row": "PR1.8",
+            "quote": "Assigning Authority Universal ID must be set to “2.16.840.1.113883.3.3731.1.2.1”"
+          },
+          "alsoStatedOn": [
+            {
+              "pageId": "7766519",
+              "pageTitle": "PR1"
+            }
+          ]
+        },
+        {
+          "field": "PR1.11",
+          "fieldName": "Surgeon",
+          "component": "9.2",
+          "nameInGuidance": "Assigning Authority Universal ID",
+          "resolution": "Assigning Authority (XCN.9) -> Universal ID",
+          "resolvedDatatype": "ST",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "fixed-value",
+          "fixedValue": "2.16.840.1.113883.3.3731.1.2.1",
+          "source": {
+            "pageId": "7766314",
+            "pageTitle": "Segment Description",
+            "row": "PR1.11",
+            "quote": "Assigning Authority Universal ID must be set to “2.16.840.1.113883.3.3731.1.2.1”"
+          },
+          "alsoStatedOn": [
+            {
+              "pageId": "7766519",
+              "pageTitle": "PR1"
+            }
+          ]
+        },
+        {
+          "field": "PR1.12",
+          "fieldName": "Procedure Practitioner",
+          "component": "9.2",
+          "nameInGuidance": "Assigning Authority Universal ID",
+          "resolution": "Assigning Authority (XCN.9) -> Universal ID",
+          "resolvedDatatype": "ST",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "fixed-value",
+          "fixedValue": "2.16.840.1.113883.3.3731.1.2.1",
+          "source": {
+            "pageId": "7766314",
+            "pageTitle": "Segment Description",
+            "row": "PR1.12",
+            "quote": "Assigning Authority Universal ID must be set to “2.16.840.1.113883.3.3731.1.2.1”"
+          },
+          "alsoStatedOn": [
+            {
+              "pageId": "7766519",
+              "pageTitle": "PR1"
+            }
+          ]
+        },
+        {
+          "field": "PV1.7",
+          "fieldName": "Attending Doctor",
+          "component": "9.2",
+          "nameInGuidance": "Assigning Authority Universal ID",
+          "resolution": "Assigning Authority (XCN.9) -> Universal ID",
+          "resolvedDatatype": "ST",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "fixed-value",
+          "fixedValue": "2.16.840.1.113883.3.3731.1.2.1",
+          "source": {
+            "pageId": "7766314",
+            "pageTitle": "Segment Description",
+            "row": "PV1.7",
+            "quote": "Assigning Authority Universal ID must be set to “2.16.840.1.113883.3.3731.1.2.1”"
+          },
+          "alsoStatedOn": [
+            {
+              "pageId": "7766425",
+              "pageTitle": "PV1"
+            }
+          ]
+        },
+        {
+          "field": "PV1.8",
+          "fieldName": "Referring Doctor",
+          "component": "9.2",
+          "nameInGuidance": "Assigning Authority Universal ID",
+          "resolution": "Assigning Authority (XCN.9) -> Universal ID",
+          "resolvedDatatype": "ST",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "fixed-value",
+          "fixedValue": "2.16.840.1.113883.3.3731.1.2.1",
+          "source": {
+            "pageId": "7766314",
+            "pageTitle": "Segment Description",
+            "row": "PV1.8",
+            "quote": "Assigning Authority Universal ID must be set to “2.16.840.1.113883.3.3731.1.2.1”"
+          },
+          "alsoStatedOn": [
+            {
+              "pageId": "7766425",
+              "pageTitle": "PV1"
+            }
+          ]
+        },
+        {
+          "field": "PV1.9",
+          "fieldName": "Consulting Doctor",
+          "component": "9.2",
+          "nameInGuidance": "Assigning Authority Universal ID",
+          "resolution": "Assigning Authority (XCN.9) -> Universal ID",
+          "resolvedDatatype": "ST",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "fixed-value",
+          "fixedValue": "2.16.840.1.113883.3.3731.1.2.1",
+          "source": {
+            "pageId": "7766314",
+            "pageTitle": "Segment Description",
+            "row": "PV1.9",
+            "quote": "Assigning Authority Universal ID must be set to “2.16.840.1.113883.3.3731.1.2.1”"
+          },
+          "alsoStatedOn": [
+            {
+              "pageId": "7766425",
+              "pageTitle": "PV1"
+            }
+          ]
+        }
+      ]
+    },
+    "XON": {
+      "name": "XON",
+      "description": "Extended Composite Name and Identification Number for Organizations",
+      "category": "composite",
+      "usedByNphies": true,
+      "provenance": "hl7-base",
+      "baseStandard": "HL7 v2.5.1 Chapter 2A",
+      "components": [
+        {
+          "index": 1,
+          "name": "Organization Name",
+          "datatype": "ST",
+          "maxLength": 50,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 2,
+          "name": "Organization Name Type Code",
+          "datatype": "IS",
+          "maxLength": 20,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 3,
+          "name": "ID Number",
+          "datatype": "NM",
+          "maxLength": 4,
+          "note": "Retained for backward compatibility only as of v2.5; replaced by XON.10 Organization Identifier",
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 4,
+          "name": "Check Digit",
+          "datatype": "NM",
+          "maxLength": 1,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 5,
+          "name": "Check Digit Scheme",
+          "datatype": "ID",
+          "maxLength": 3,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 6,
+          "name": "Assigning Authority",
+          "datatype": "HD",
+          "maxLength": 227,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 7,
+          "name": "Identifier Type Code",
+          "datatype": "ID",
+          "maxLength": 5,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 8,
+          "name": "Assigning Facility",
+          "datatype": "HD",
+          "maxLength": 227,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 9,
+          "name": "Name Representation Code",
+          "datatype": "ID",
+          "maxLength": 1,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 10,
+          "name": "Organization Identifier",
+          "datatype": "ST",
+          "maxLength": 20,
+          "provenance": "hl7-base"
+        }
+      ],
+      "nphiesComponentRules": [
+        {
+          "field": "PD1.3",
+          "fieldName": "Patient Primary Facility",
+          "component": "3",
+          "nameInGuidance": "ID Number",
+          "resolution": "direct",
+          "resolvedDatatype": "NM",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "value-source",
+          "valueSource": "NHIC Organization ID",
+          "source": {
+            "pageId": "7766314",
+            "pageTitle": "Segment Description",
+            "row": "PD1.3",
+            "quote": "ID Number = NHIC Organization ID, Assigning Authority Universal ID must be set to “2.16.840.1.113883.3.3731.1.2.2”"
+          },
+          "alsoStatedOn": [
+            {
+              "pageId": "7766408",
+              "pageTitle": "PD1"
+            }
+          ]
+        },
+        {
+          "field": "PD1.3",
+          "fieldName": "Patient Primary Facility",
+          "component": "6.2",
+          "nameInGuidance": "Assigning Authority Universal ID",
+          "resolution": "Assigning Authority (XON.6) -> Universal ID",
+          "resolvedDatatype": "ST",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "fixed-value",
+          "fixedValue": "2.16.840.1.113883.3.3731.1.2.2",
+          "source": {
+            "pageId": "7766314",
+            "pageTitle": "Segment Description",
+            "row": "PD1.3",
+            "quote": "ID Number = NHIC Organization ID, Assigning Authority Universal ID must be set to “2.16.840.1.113883.3.3731.1.2.2”"
+          },
+          "alsoStatedOn": [
+            {
+              "pageId": "7766408",
+              "pageTitle": "PD1"
+            }
+          ]
+        }
+      ]
+    },
+    "XPN": {
+      "name": "XPN",
+      "description": "Extended Person Name",
+      "category": "composite",
+      "usedByNphies": true,
+      "provenance": "hl7-base",
+      "baseStandard": "HL7 v2.5.1 Chapter 2A",
+      "components": [
+        {
+          "index": 1,
+          "name": "Family Name",
+          "datatype": "FN",
+          "maxLength": 194,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 2,
+          "name": "Given Name",
+          "datatype": "ST",
+          "maxLength": 30,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 3,
+          "name": "Second and Further Given Names or Initials Thereof",
+          "datatype": "ST",
+          "maxLength": 30,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 4,
+          "name": "Suffix (e.g., JR or III)",
+          "datatype": "ST",
+          "maxLength": 20,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 5,
+          "name": "Prefix (e.g., DR)",
+          "datatype": "ST",
+          "maxLength": 20,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 6,
+          "name": "Degree (e.g., MD)",
+          "datatype": "IS",
+          "maxLength": 6,
+          "note": "Retained for backward compatibility only as of v2.5",
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 7,
+          "name": "Name Type Code",
+          "datatype": "ID",
+          "maxLength": 1,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 8,
+          "name": "Name Representation Code",
+          "datatype": "ID",
+          "maxLength": 1,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 9,
+          "name": "Name Context",
+          "datatype": "CE",
+          "maxLength": 483,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 10,
+          "name": "Name Validity Range",
+          "datatype": "DR",
+          "maxLength": 53,
+          "note": "Retained for backward compatibility only as of v2.5",
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 11,
+          "name": "Name Assembly Order",
+          "datatype": "ID",
+          "maxLength": 1,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 12,
+          "name": "Effective Date",
+          "datatype": "TS",
+          "maxLength": 26,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 13,
+          "name": "Expiration Date",
+          "datatype": "TS",
+          "maxLength": 26,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 14,
+          "name": "Professional Suffix",
+          "datatype": "ST",
+          "maxLength": 199,
+          "provenance": "hl7-base"
+        }
+      ],
+      "nphiesComponentRules": [
+        {
+          "field": "PID.5",
+          "fieldName": "Patient Name",
+          "component": "1",
+          "nameInGuidance": "Family Name",
+          "resolution": "direct",
+          "resolvedDatatype": "FN",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "required",
+          "source": {
+            "pageId": "171212900",
+            "pageTitle": "ORU - PID",
+            "row": "PID.5",
+            "quote": "· Element “Family Name” SHALL be present"
+          }
+        },
+        {
+          "field": "PID.5",
+          "fieldName": "Patient Name",
+          "component": "1.1",
+          "nameInGuidance": "Surname",
+          "resolution": "via Family Name (XPN.1)",
+          "resolvedDatatype": "ST",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "required",
+          "source": {
+            "pageId": "171212900",
+            "pageTitle": "ORU - PID",
+            "row": "PID.5",
+            "quote": "o Sub-Element “Surname” SHALL be present and contain the family name"
+          }
+        },
+        {
+          "field": "PID.5",
+          "fieldName": "Patient Name",
+          "component": "2",
+          "nameInGuidance": "Given Name",
+          "resolution": "direct",
+          "resolvedDatatype": "ST",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "required",
+          "source": {
+            "pageId": "171212900",
+            "pageTitle": "ORU - PID",
+            "row": "PID.5",
+            "quote": "· Element “Given Name” SHALL be present and contain the given name"
+          }
+        },
+        {
+          "field": "PID.5",
+          "fieldName": "Patient Name",
+          "component": "3",
+          "nameInGuidance": "Second and Further Given Names",
+          "resolution": "direct",
+          "resolvedDatatype": "ST",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "required-if-known",
+          "source": {
+            "pageId": "171212900",
+            "pageTitle": "ORU - PID",
+            "row": "PID.5",
+            "quote": "· Element “Second and Further Given Names” SHALL be present IF KNOWN"
+          }
+        },
+        {
+          "field": "PID.5",
+          "fieldName": "Patient Name",
+          "component": "4",
+          "nameInGuidance": "Suffix",
+          "resolution": "direct",
+          "resolvedDatatype": "ST",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "required-if-known",
+          "source": {
+            "pageId": "171212900",
+            "pageTitle": "ORU - PID",
+            "row": "PID.5",
+            "quote": "· Element “Suffix” SHALL be present IF KNOWN"
+          }
+        },
+        {
+          "field": "PID.5",
+          "fieldName": "Patient Name",
+          "component": "5",
+          "nameInGuidance": "Prefix",
+          "resolution": "direct",
+          "resolvedDatatype": "ST",
+          "modality": "SHALL",
+          "provenance": "nphies-guidance",
+          "constraint": "required-if-known",
+          "source": {
+            "pageId": "171212900",
+            "pageTitle": "ORU - PID",
+            "row": "PID.5",
+            "quote": "· Element “Prefix” SHALL be present IF KNOWN"
+          }
+        }
+      ]
+    },
+    "XTN": {
+      "name": "XTN",
+      "description": "Extended Telecommunication Number",
+      "category": "composite",
+      "usedByNphies": true,
+      "provenance": "hl7-base",
+      "baseStandard": "HL7 v2.5.1 Chapter 2A",
+      "components": [
+        {
+          "index": 1,
+          "name": "Telephone Number",
+          "datatype": "ST",
+          "maxLength": 199,
+          "note": "Retained for backward compatibility only as of v2.3",
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 2,
+          "name": "Telecommunication Use Code",
+          "datatype": "ID",
+          "maxLength": 3,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 3,
+          "name": "Telecommunication Equipment Type",
+          "datatype": "ID",
+          "maxLength": 8,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 4,
+          "name": "Email Address",
+          "datatype": "ST",
+          "maxLength": 199,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 5,
+          "name": "Country Code",
+          "datatype": "NM",
+          "maxLength": 3,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 6,
+          "name": "Area/City Code",
+          "datatype": "NM",
+          "maxLength": 5,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 7,
+          "name": "Local Number",
+          "datatype": "NM",
+          "maxLength": 9,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 8,
+          "name": "Extension",
+          "datatype": "NM",
+          "maxLength": 5,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 9,
+          "name": "Any Text",
+          "datatype": "ST",
+          "maxLength": 199,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 10,
+          "name": "Extension Prefix",
+          "datatype": "ST",
+          "maxLength": 4,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 11,
+          "name": "Speed Dial Code",
+          "datatype": "ST",
+          "maxLength": 6,
+          "provenance": "hl7-base"
+        },
+        {
+          "index": 12,
+          "name": "Unformatted Telephone number",
+          "datatype": "ST",
+          "maxLength": 199,
+          "provenance": "hl7-base"
+        }
+      ]
+    }
+  },
+  "goldenValidation": {
+    "method": "Each golden ADT .txt was tokenised with a real HL7 v2 parser (segment terminator -> field separator -> repetition separator -> component separator -> subcomponent separator), then each target field was mapped onto this dictionary component-by-component and index-by-index.",
+    "filesChecked": [
+      "ADT_sample03.txt",
+      "ADT_sample04.txt",
+      "ADT_sample08.txt"
+    ],
+    "assertions": [
+      {
+        "assertion": "CX model explains PID.3",
+        "passed": true,
+        "detail": "PID.3 parses as CX.1 ID Number = 30511223344557, CX.2/CX.3 empty, CX.4 Assigning Authority = HD with CX.4.1 Namespace ID = HealthId, CX.4.2 Universal ID = 2.16.840.1.113883.3.3731.1.1.100.1, CX.4.3 Universal ID Type = ISO. This is exactly what the guidance rule (CX.4.2 fixed to 2.16.840.1.113883.3.3731.1.1.100.1, CX.4.3 fixed to ISO) predicts, and it confirms Assigning Authority sits at component 4, not component 3.",
+        "evidence": "30511223344557^^^HealthId&2.16.840.1.113883.3.3731.1.1.100.1&ISO"
+      },
+      {
+        "assertion": "PL model explains PV1.3",
+        "passed": true,
+        "detail": "PV1.3 parses as PL.1 Point of Care = ME, PL.2 Room and PL.3 Bed empty, PL.4 Facility = HD with PL.4.1 Namespace ID = SENDO, PL.4.2 Universal ID = 15000000112233, PL.4.3 Universal ID Type = ISO. NPHIES Table 10.1 lists \"Facility Universal ID\" whose length cell reads \"Participant NHIC Organization ID\"; the golden value at PL.4.2 is 15000000112233, the same NHIC Organization ID that MSH-4 Sending Facility carries. Table 10.1 is therefore a SELECTION of PL components 1,2,3,4.2,7,8,9 - it skips PL.5 Location Status and PL.6 Person Location Type - and is NOT a 7-component re-numbering.",
+        "evidence": "ME^^^SENDO&15000000112233&ISO"
+      },
+      {
+        "assertion": "XCN model explains PV1.7",
+        "passed": true,
+        "detail": "PV1.7 parses as XCN.1 ID Number = 00TEST1980, XCN.2 Family Name = Test, XCN.3 Given Name = Test, XCN.4 Second and Further Given Names = Test, XCN.5 Suffix empty, XCN.6 Prefix = DR., XCN.7 Degree and XCN.8 Source Table empty, XCN.9 Assigning Authority = HD with XCN.9.2 Universal ID = 2.16.840.1.113883.3.3731.1.2.1 and XCN.9.3 Universal ID Type = ISO, followed by four more empty components (XCN.10-13). The prefix \"DR.\" landing on component 6 and the OID landing on component 9 confirm the full 23-component v2.5.1 XCN order; a 5-slot reading of NPHIES Table 9.1 would have put the Assigning Authority at component 5 and mis-parsed this message.",
+        "evidence": "00TEST1980^Test^Test^Test^^DR.^^^&2.16.840.1.113883.3.3731.1.2.1&ISO^^^^"
+      },
+      {
+        "assertion": "XON model checked against PD1.3",
+        "passed": false,
+        "detail": "PD1.3 could NOT be validated: none of the three golden ADT samples (ADT_sample03, ADT_sample04, ADT_sample08) contains a PD1 segment. The XON component model and the PD1.3 guidance rules (ID Number, Assigning Authority Universal ID = 2.16.840.1.113883.3.3731.1.2.2) are carried on the base layer plus the Confluence quote alone, with no golden corroboration. NOTE: the guidance names \"ID Number\", which in HL7 v2.5.1 is XON.3 and is marked retained-for-backward-compatibility (superseded by XON.10 Organization Identifier); NPHIES clearly intends XON.3, but a strict v2.5.1 reader may expect XON.10."
+      }
+    ],
+    "fieldChecks": [
+      {
+        "file": "ADT_sample03.txt",
+        "field": "PID.3 Patient Identifier List",
+        "datatype": "CX",
+        "present": true,
+        "rawValue": "30511223344557^^^HealthId&2.16.840.1.113883.3.3731.1.1.100.1&ISO",
+        "repetitions": 1,
+        "componentBreakdown": [
+          {
+            "component": "CX.1",
+            "modelName": "ID Number",
+            "modelDatatype": "ST",
+            "value": "30511223344557"
+          },
+          {
+            "component": "CX.4",
+            "modelName": "Assigning Authority",
+            "modelDatatype": "HD",
+            "value": "HealthId&2.16.840.1.113883.3.3731.1.1.100.1&ISO",
+            "subcomponents": [
+              {
+                "sub": "CX.4.1",
+                "modelName": "Namespace ID",
+                "value": "HealthId"
+              },
+              {
+                "sub": "CX.4.2",
+                "modelName": "Universal ID",
+                "value": "2.16.840.1.113883.3.3731.1.1.100.1"
+              },
+              {
+                "sub": "CX.4.3",
+                "modelName": "Universal ID Type",
+                "value": "ISO"
+              }
+            ]
+          }
+        ],
+        "componentCount": 4,
+        "maxComponentIndexInModel": 10,
+        "withinModel": true
+      },
+      {
+        "file": "ADT_sample03.txt",
+        "field": "PV1.3 Assigned Patient Location",
+        "datatype": "PL",
+        "present": true,
+        "rawValue": "ME^^^SENDO&15000000112233&ISO",
+        "repetitions": 1,
+        "componentBreakdown": [
+          {
+            "component": "PL.1",
+            "modelName": "Point of Care",
+            "modelDatatype": "IS",
+            "value": "ME"
+          },
+          {
+            "component": "PL.4",
+            "modelName": "Facility",
+            "modelDatatype": "HD",
+            "value": "SENDO&15000000112233&ISO",
+            "subcomponents": [
+              {
+                "sub": "PL.4.1",
+                "modelName": "Namespace ID",
+                "value": "SENDO"
+              },
+              {
+                "sub": "PL.4.2",
+                "modelName": "Universal ID",
+                "value": "15000000112233"
+              },
+              {
+                "sub": "PL.4.3",
+                "modelName": "Universal ID Type",
+                "value": "ISO"
+              }
+            ]
+          }
+        ],
+        "componentCount": 4,
+        "maxComponentIndexInModel": 11,
+        "withinModel": true
+      },
+      {
+        "file": "ADT_sample03.txt",
+        "field": "PV1.7 Attending Doctor",
+        "datatype": "XCN",
+        "present": true,
+        "rawValue": "00TEST1980^Test^Test^Test^^DR.^^^&2.16.840.1.113883.3.3731.1.2.1&ISO^^^^",
+        "repetitions": 1,
+        "componentBreakdown": [
+          {
+            "component": "XCN.1",
+            "modelName": "ID Number",
+            "modelDatatype": "ST",
+            "value": "00TEST1980"
+          },
+          {
+            "component": "XCN.2",
+            "modelName": "Family Name",
+            "modelDatatype": "FN",
+            "value": "Test"
+          },
+          {
+            "component": "XCN.3",
+            "modelName": "Given Name",
+            "modelDatatype": "ST",
+            "value": "Test"
+          },
+          {
+            "component": "XCN.4",
+            "modelName": "Second and Further Given Names or Initials Thereof",
+            "modelDatatype": "ST",
+            "value": "Test"
+          },
+          {
+            "component": "XCN.6",
+            "modelName": "Prefix (e.g., DR)",
+            "modelDatatype": "ST",
+            "value": "DR."
+          },
+          {
+            "component": "XCN.9",
+            "modelName": "Assigning Authority",
+            "modelDatatype": "HD",
+            "value": "&2.16.840.1.113883.3.3731.1.2.1&ISO",
+            "subcomponents": [
+              {
+                "sub": "XCN.9.1",
+                "modelName": "Namespace ID",
+                "value": ""
+              },
+              {
+                "sub": "XCN.9.2",
+                "modelName": "Universal ID",
+                "value": "2.16.840.1.113883.3.3731.1.2.1"
+              },
+              {
+                "sub": "XCN.9.3",
+                "modelName": "Universal ID Type",
+                "value": "ISO"
+              }
+            ]
+          }
+        ],
+        "componentCount": 13,
+        "maxComponentIndexInModel": 23,
+        "withinModel": true
+      },
+      {
+        "file": "ADT_sample03.txt",
+        "field": "PD1.3 Patient Primary Facility",
+        "datatype": "XON",
+        "present": false,
+        "result": "not-present-in-this-sample"
+      },
+      {
+        "file": "ADT_sample04.txt",
+        "field": "PID.3 Patient Identifier List",
+        "datatype": "CX",
+        "present": true,
+        "rawValue": "30511223344557^^^HealthId&2.16.840.1.113883.3.3731.1.1.100.1&ISO",
+        "repetitions": 1,
+        "componentBreakdown": [
+          {
+            "component": "CX.1",
+            "modelName": "ID Number",
+            "modelDatatype": "ST",
+            "value": "30511223344557"
+          },
+          {
+            "component": "CX.4",
+            "modelName": "Assigning Authority",
+            "modelDatatype": "HD",
+            "value": "HealthId&2.16.840.1.113883.3.3731.1.1.100.1&ISO",
+            "subcomponents": [
+              {
+                "sub": "CX.4.1",
+                "modelName": "Namespace ID",
+                "value": "HealthId"
+              },
+              {
+                "sub": "CX.4.2",
+                "modelName": "Universal ID",
+                "value": "2.16.840.1.113883.3.3731.1.1.100.1"
+              },
+              {
+                "sub": "CX.4.3",
+                "modelName": "Universal ID Type",
+                "value": "ISO"
+              }
+            ]
+          }
+        ],
+        "componentCount": 4,
+        "maxComponentIndexInModel": 10,
+        "withinModel": true
+      },
+      {
+        "file": "ADT_sample04.txt",
+        "field": "PV1.3 Assigned Patient Location",
+        "datatype": "PL",
+        "present": true,
+        "rawValue": "ME^^^SENDO&15000000112233&ISO",
+        "repetitions": 1,
+        "componentBreakdown": [
+          {
+            "component": "PL.1",
+            "modelName": "Point of Care",
+            "modelDatatype": "IS",
+            "value": "ME"
+          },
+          {
+            "component": "PL.4",
+            "modelName": "Facility",
+            "modelDatatype": "HD",
+            "value": "SENDO&15000000112233&ISO",
+            "subcomponents": [
+              {
+                "sub": "PL.4.1",
+                "modelName": "Namespace ID",
+                "value": "SENDO"
+              },
+              {
+                "sub": "PL.4.2",
+                "modelName": "Universal ID",
+                "value": "15000000112233"
+              },
+              {
+                "sub": "PL.4.3",
+                "modelName": "Universal ID Type",
+                "value": "ISO"
+              }
+            ]
+          }
+        ],
+        "componentCount": 4,
+        "maxComponentIndexInModel": 11,
+        "withinModel": true
+      },
+      {
+        "file": "ADT_sample04.txt",
+        "field": "PV1.7 Attending Doctor",
+        "datatype": "XCN",
+        "present": false,
+        "result": "not-present-in-this-sample"
+      },
+      {
+        "file": "ADT_sample04.txt",
+        "field": "PD1.3 Patient Primary Facility",
+        "datatype": "XON",
+        "present": false,
+        "result": "not-present-in-this-sample"
+      },
+      {
+        "file": "ADT_sample08.txt",
+        "field": "PID.3 Patient Identifier List",
+        "datatype": "CX",
+        "present": true,
+        "rawValue": "30511223344557^^^HealthId&2.16.840.1.113883.3.3731.1.1.100.1&ISO",
+        "repetitions": 1,
+        "componentBreakdown": [
+          {
+            "component": "CX.1",
+            "modelName": "ID Number",
+            "modelDatatype": "ST",
+            "value": "30511223344557"
+          },
+          {
+            "component": "CX.4",
+            "modelName": "Assigning Authority",
+            "modelDatatype": "HD",
+            "value": "HealthId&2.16.840.1.113883.3.3731.1.1.100.1&ISO",
+            "subcomponents": [
+              {
+                "sub": "CX.4.1",
+                "modelName": "Namespace ID",
+                "value": "HealthId"
+              },
+              {
+                "sub": "CX.4.2",
+                "modelName": "Universal ID",
+                "value": "2.16.840.1.113883.3.3731.1.1.100.1"
+              },
+              {
+                "sub": "CX.4.3",
+                "modelName": "Universal ID Type",
+                "value": "ISO"
+              }
+            ]
+          }
+        ],
+        "componentCount": 4,
+        "maxComponentIndexInModel": 10,
+        "withinModel": true
+      },
+      {
+        "file": "ADT_sample08.txt",
+        "field": "PV1.3 Assigned Patient Location",
+        "datatype": "PL",
+        "present": true,
+        "rawValue": "ME^^^SENDO&15000000112233&ISO",
+        "repetitions": 1,
+        "componentBreakdown": [
+          {
+            "component": "PL.1",
+            "modelName": "Point of Care",
+            "modelDatatype": "IS",
+            "value": "ME"
+          },
+          {
+            "component": "PL.4",
+            "modelName": "Facility",
+            "modelDatatype": "HD",
+            "value": "SENDO&15000000112233&ISO",
+            "subcomponents": [
+              {
+                "sub": "PL.4.1",
+                "modelName": "Namespace ID",
+                "value": "SENDO"
+              },
+              {
+                "sub": "PL.4.2",
+                "modelName": "Universal ID",
+                "value": "15000000112233"
+              },
+              {
+                "sub": "PL.4.3",
+                "modelName": "Universal ID Type",
+                "value": "ISO"
+              }
+            ]
+          }
+        ],
+        "componentCount": 4,
+        "maxComponentIndexInModel": 11,
+        "withinModel": true
+      },
+      {
+        "file": "ADT_sample08.txt",
+        "field": "PV1.7 Attending Doctor",
+        "datatype": "XCN",
+        "present": true,
+        "rawValue": "00TEST1980^Test^Test^Test^^DR.^^^&2.16.840.1.113883.3.3731.1.2.1&ISO^^^^",
+        "repetitions": 1,
+        "componentBreakdown": [
+          {
+            "component": "XCN.1",
+            "modelName": "ID Number",
+            "modelDatatype": "ST",
+            "value": "00TEST1980"
+          },
+          {
+            "component": "XCN.2",
+            "modelName": "Family Name",
+            "modelDatatype": "FN",
+            "value": "Test"
+          },
+          {
+            "component": "XCN.3",
+            "modelName": "Given Name",
+            "modelDatatype": "ST",
+            "value": "Test"
+          },
+          {
+            "component": "XCN.4",
+            "modelName": "Second and Further Given Names or Initials Thereof",
+            "modelDatatype": "ST",
+            "value": "Test"
+          },
+          {
+            "component": "XCN.6",
+            "modelName": "Prefix (e.g., DR)",
+            "modelDatatype": "ST",
+            "value": "DR."
+          },
+          {
+            "component": "XCN.9",
+            "modelName": "Assigning Authority",
+            "modelDatatype": "HD",
+            "value": "&2.16.840.1.113883.3.3731.1.2.1&ISO",
+            "subcomponents": [
+              {
+                "sub": "XCN.9.1",
+                "modelName": "Namespace ID",
+                "value": ""
+              },
+              {
+                "sub": "XCN.9.2",
+                "modelName": "Universal ID",
+                "value": "2.16.840.1.113883.3.3731.1.2.1"
+              },
+              {
+                "sub": "XCN.9.3",
+                "modelName": "Universal ID Type",
+                "value": "ISO"
+              }
+            ]
+          }
+        ],
+        "componentCount": 13,
+        "maxComponentIndexInModel": 23,
+        "withinModel": true
+      },
+      {
+        "file": "ADT_sample08.txt",
+        "field": "PD1.3 Patient Primary Facility",
+        "datatype": "XON",
+        "present": false,
+        "result": "not-present-in-this-sample"
+      }
+    ],
+    "corroboratingValues": [
+      {
+        "file": "ADT_sample03.txt",
+        "field": "AL1.3",
+        "datatype": "CE",
+        "relatedTable": "Table 12.1",
+        "rawValue": "414074006^Egg product^2.16.840.1.113883.6.96",
+        "components": [
+          "414074006",
+          "Egg product",
+          "2.16.840.1.113883.6.96"
+        ]
+      },
+      {
+        "file": "ADT_sample03.txt",
+        "field": "PV1.19",
+        "datatype": "CX",
+        "relatedTable": null,
+        "rawValue": "2167184^^^VISNo&2.16.840.1.113883.3.3731.5.1.15000000112233",
+        "components": [
+          "2167184",
+          "",
+          "",
+          "VISNo&2.16.840.1.113883.3.3731.5.1.15000000112233"
+        ]
+      },
+      {
+        "file": "ADT_sample03.txt",
+        "field": "MSH.3",
+        "datatype": "HD",
+        "relatedTable": null,
+        "rawValue": "CW^2.16.840.1.113883.3.3731.1.2.1.15000000112233^ISO",
+        "components": [
+          "CW",
+          "2.16.840.1.113883.3.3731.1.2.1.15000000112233",
+          "ISO"
+        ]
+      },
+      {
+        "file": "ADT_sample03.txt",
+        "field": "MSH.4",
+        "datatype": "HD",
+        "relatedTable": null,
+        "rawValue": "SendO^15000000112233^ISO",
+        "components": [
+          "SendO",
+          "15000000112233",
+          "ISO"
+        ]
+      },
+      {
+        "file": "ADT_sample04.txt",
+        "field": "AL1.3",
+        "datatype": "CE",
+        "relatedTable": "Table 12.1",
+        "rawValue": "414074006^Egg product^2.16.840.1.113883.6.96",
+        "components": [
+          "414074006",
+          "Egg product",
+          "2.16.840.1.113883.6.96"
+        ]
+      },
+      {
+        "file": "ADT_sample04.txt",
+        "field": "PV1.19",
+        "datatype": "CX",
+        "relatedTable": null,
+        "rawValue": "2167220^^^VISNo&2.16.840.1.113883.3.3731.5.1.15000000112233",
+        "components": [
+          "2167220",
+          "",
+          "",
+          "VISNo&2.16.840.1.113883.3.3731.5.1.15000000112233"
+        ]
+      },
+      {
+        "file": "ADT_sample04.txt",
+        "field": "MSH.3",
+        "datatype": "HD",
+        "relatedTable": null,
+        "rawValue": "CW^2.16.840.1.113883.3.3731.1.2.1.15000000112233^ISO",
+        "components": [
+          "CW",
+          "2.16.840.1.113883.3.3731.1.2.1.15000000112233",
+          "ISO"
+        ]
+      },
+      {
+        "file": "ADT_sample04.txt",
+        "field": "MSH.4",
+        "datatype": "HD",
+        "relatedTable": null,
+        "rawValue": "SendO^15000000112233^ISO",
+        "components": [
+          "SendO",
+          "15000000112233",
+          "ISO"
+        ]
+      },
+      {
+        "file": "ADT_sample08.txt",
+        "field": "AL1.3",
+        "datatype": "CE",
+        "relatedTable": "Table 12.1",
+        "rawValue": "387207008^Ibuprofen^2.16.840.1.113883.6.96",
+        "components": [
+          "387207008",
+          "Ibuprofen",
+          "2.16.840.1.113883.6.96"
+        ]
+      },
+      {
+        "file": "ADT_sample08.txt",
+        "field": "DG1.3",
+        "datatype": "CE",
+        "relatedTable": "Table 13.1",
+        "rawValue": "R50.9^Fever, unspecified^2.16.840.1.113883.6.135",
+        "components": [
+          "R50.9",
+          "Fever, unspecified",
+          "2.16.840.1.113883.6.135"
+        ]
+      },
+      {
+        "file": "ADT_sample08.txt",
+        "field": "PR1.3",
+        "datatype": "CE",
+        "relatedTable": "Table 14.1",
+        "rawValue": "30484-00^Endoscopic retrograde cholangiopancreatography [ERCP]^2.16.840.1.113883.3.3731.50.2",
+        "components": [
+          "30484-00",
+          "Endoscopic retrograde cholangiopancreatography [ERCP]",
+          "2.16.840.1.113883.3.3731.50.2"
+        ]
+      },
+      {
+        "file": "ADT_sample08.txt",
+        "field": "PV1.19",
+        "datatype": "CX",
+        "relatedTable": null,
+        "rawValue": "2167184^^^VISNo&2.16.840.1.113883.3.3731.5.1.15000000112233",
+        "components": [
+          "2167184",
+          "",
+          "",
+          "VISNo&2.16.840.1.113883.3.3731.5.1.15000000112233"
+        ]
+      },
+      {
+        "file": "ADT_sample08.txt",
+        "field": "MSH.3",
+        "datatype": "HD",
+        "relatedTable": null,
+        "rawValue": "CW^2.16.840.1.113883.3.3731.1.2.1.15000000112233^ISO",
+        "components": [
+          "CW",
+          "2.16.840.1.113883.3.3731.1.2.1.15000000112233",
+          "ISO"
+        ]
+      },
+      {
+        "file": "ADT_sample08.txt",
+        "field": "MSH.4",
+        "datatype": "HD",
+        "relatedTable": null,
+        "rawValue": "SendO^15000000112233^ISO",
+        "components": [
+          "SendO",
+          "15000000112233",
+          "ISO"
+        ]
+      }
+    ],
+    "notes": [
+      {
+        "file": "ADT_sample03.txt",
+        "issue": "MSH-2 malformed",
+        "declared": "^~\\\\&",
+        "detail": "MSH-2 literally contains '^~\\\\\\\\&' (5 chars). HL7 v2.5.1 requires '^~\\&'. The message body nevertheless uses & as the subcomponent separator (e.g. PID.3 'HealthId&2.16...&ISO'), so the intended encoding characters are '^~\\&' and this is a defect in the sample file, not a different encoding. Parsed with '^~\\&'."
+      },
+      {
+        "file": "ADT_sample04.txt",
+        "issue": "MSH-2 malformed",
+        "declared": "^~\\\\&",
+        "detail": "MSH-2 literally contains '^~\\\\\\\\&' (5 chars). HL7 v2.5.1 requires '^~\\&'. The message body nevertheless uses & as the subcomponent separator (e.g. PID.3 'HealthId&2.16...&ISO'), so the intended encoding characters are '^~\\&' and this is a defect in the sample file, not a different encoding. Parsed with '^~\\&'."
+      },
+      {
+        "file": "ADT_sample08.txt",
+        "issue": "segment terminator",
+        "detail": "ADT_sample08.txt uses bare LF as the segment terminator; ADT_sample03/04 use CR. HL7 v2.5.1 requires CR (0x0D). Parser accepted both."
+      },
+      {
+        "file": "ADT_sample03.txt / ADT_sample04.txt",
+        "issue": "PV1.3 usage disagreement",
+        "detail": "PV1.3 is populated (ME^^^SENDO&15000000112233&ISO) in all three ADT samples, but the ORU page (171246311) marks PV1.3 usage 'I' (ignored). The ADT page (7766425) marks it 'O'. Usage is message-type specific; this dictionary asserts structure only, not usage."
+      }
+    ],
+    "summary": {
+      "assertionsPassed": 3,
+      "assertionsTotal": 4,
+      "assertionsUnverifiable": 1
+    }
+  },
+  "unresolvedComponentNames": [],
+  "stats": {
+    "datatypesTotal": 42,
+    "datatypesUsedByNphies": 34,
+    "datatypesReferencedOnly": 8,
+    "primitives": 10,
+    "composites": 31,
+    "componentsTotal": 195,
+    "componentsFromHl7Base": 195,
+    "nphiesOverlayTables": 8,
+    "nphiesOverlayAcceptedComponents": 45,
+    "nphiesPerComponentLengthFields": 9,
+    "nphiesPerComponentLengthAssignments": 28,
+    "nphiesGuidanceComponentRules": 69,
+    "nphiesGuidanceRulesWithFixedValue": 28,
+    "uncertainItems": 3,
+    "unresolvedComponentNames": 0,
+    "sourcePagesUsed": [
+      "171180143",
+      "171180201",
+      "171212900",
+      "171246311",
+      "171246336",
+      "171246357",
+      "171278410",
+      "7766314",
+      "7766408",
+      "7766425",
+      "7766452",
+      "7766469",
+      "7766496",
+      "7766519"
+    ],
+    "goldenFilesValidated": 3
+  }
+}

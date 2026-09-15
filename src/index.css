@@ -1,0 +1,319 @@
+@import "tailwindcss";
+
+/* ============================================================================
+   NPHIES Workbench — design tokens
+   ----------------------------------------------------------------------------
+   Two layers:
+     1. `--nw-*` raw tokens. Defined three times: light (:root), system-dark
+        (prefers-color-scheme, unless the root is explicitly stamped light),
+        and forced-dark (:root[data-theme="dark"]). Neither mode is a filter
+        over the other — both palettes are written out in full.
+     2. `@theme` maps them onto Tailwind utility namespaces, so `bg-surface`,
+        `border-line`, `text-ink-2`, `text-error` all resolve through the raw
+        tokens and therefore follow the theme automatically.
+
+   SEMANTIC COLOUR RULE: --nw-error / --nw-warn / --nw-ok / --nw-ignored encode
+   validator severity and NOTHING else. Never use them for branding, for chart
+   series, for "success" toasts, or for decoration.
+   ========================================================================== */
+
+@theme {
+  /* --- typography scale: dense instrument, 13px base ------------------- */
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-mono:
+    ui-monospace, "SF Mono", SFMono-Regular, Menlo, "Cascadia Mono",
+    "Roboto Mono", Consolas, "Liberation Mono", monospace;
+
+  --text-2xs: 0.625rem; /* 10px — dense table meta */
+  --text-2xs--line-height: 0.875rem;
+  --text-xs: 0.6875rem; /* 11px — badges, rail meta */
+  --text-xs--line-height: 1rem;
+  --text-sm: 0.75rem; /* 12px — secondary UI */
+  --text-sm--line-height: 1.125rem;
+  --text-base: 0.8125rem; /* 13px — base */
+  --text-base--line-height: 1.25rem;
+  --text-lg: 0.875rem; /* 14px — panel titles */
+  --text-lg--line-height: 1.25rem;
+  --text-xl: 1rem; /* 16px */
+  --text-xl--line-height: 1.375rem;
+  --text-2xl: 1.25rem; /* 20px — the only "display" size */
+  --text-2xl--line-height: 1.5rem;
+
+  --radius-xs: 2px;
+  --radius-sm: 3px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+
+  /* --- surfaces & structure ------------------------------------------- */
+  --color-canvas: var(--nw-canvas);
+  --color-surface: var(--nw-surface);
+  --color-raised: var(--nw-raised);
+  --color-inset: var(--nw-inset);
+  --color-line: var(--nw-line);
+  --color-line-strong: var(--nw-line-strong);
+
+  /* --- ink ------------------------------------------------------------- */
+  --color-ink: var(--nw-ink);
+  --color-ink-2: var(--nw-ink-2);
+  --color-ink-3: var(--nw-ink-3);
+
+  /* --- interactive ----------------------------------------------------- */
+  --color-accent: var(--nw-accent);
+  --color-accent-ink: var(--nw-accent-ink);
+  --color-accent-soft: var(--nw-accent-soft);
+  --color-focus: var(--nw-focus);
+  --color-sel: var(--nw-sel);
+  --color-sel-line: var(--nw-sel-line);
+
+  /* --- SEVERITY (reserved) --------------------------------------------- */
+  --color-error: var(--nw-error);
+  --color-error-bg: var(--nw-error-bg);
+  --color-error-ink: var(--nw-error-ink);
+  --color-warn: var(--nw-warn);
+  --color-warn-bg: var(--nw-warn-bg);
+  --color-warn-ink: var(--nw-warn-ink);
+  --color-ok: var(--nw-ok);
+  --color-ok-bg: var(--nw-ok-bg);
+  --color-ok-ink: var(--nw-ok-ink);
+  --color-ignored: var(--nw-ignored);
+  --color-ignored-bg: var(--nw-ignored-bg);
+  --color-ignored-ink: var(--nw-ignored-ink);
+
+  /* --- wire-message syntax (deliberately NOT severity hues) ------------ */
+  --color-syn-punct: var(--nw-syn-punct);
+  --color-syn-name: var(--nw-syn-name);
+  --color-syn-key: var(--nw-syn-key);
+  --color-syn-value: var(--nw-syn-value);
+  --color-syn-string: var(--nw-syn-string);
+  --color-syn-number: var(--nw-syn-number);
+  --color-syn-meta: var(--nw-syn-meta);
+  --color-syn-comment: var(--nw-syn-comment);
+}
+
+/* ---------------------------------------------------------------- LIGHT -- */
+:root {
+  --nw-canvas: #f7f8f9;
+  --nw-surface: #ffffff;
+  --nw-raised: #fbfbfc;
+  --nw-inset: #f2f3f5;
+  --nw-line: #e3e5e8;
+  --nw-line-strong: #c9ccd1;
+
+  --nw-ink: #15181d;
+  --nw-ink-2: #5c636e;
+  --nw-ink-3: #8b929c;
+
+  --nw-accent: #2f6feb;
+  --nw-accent-ink: #ffffff;
+  --nw-accent-soft: #e8effd;
+  --nw-focus: #2f6feb;
+  --nw-sel: #dfe9fd;
+  --nw-sel-line: #f0f5ff;
+
+  --nw-error: #c8332b;
+  --nw-error-bg: #fdeceb;
+  --nw-error-ink: #8f1f19;
+  --nw-warn: #a8690a;
+  --nw-warn-bg: #fdf3e0;
+  --nw-warn-ink: #7a4b05;
+  --nw-ok: #1d7a4b;
+  --nw-ok-bg: #e6f5ec;
+  --nw-ok-ink: #145737;
+  --nw-ignored: #8b929c;
+  --nw-ignored-bg: #f2f3f5;
+  --nw-ignored-ink: #6f767f;
+
+  --nw-syn-punct: #9aa1ab;
+  --nw-syn-name: #1f4fb8;
+  --nw-syn-key: #7b3fa0;
+  --nw-syn-value: #15181d;
+  --nw-syn-string: #1a6b52;
+  --nw-syn-number: #9a5100;
+  --nw-syn-meta: #5c636e;
+  --nw-syn-comment: #9aa1ab;
+
+  color-scheme: light;
+}
+
+/* ------------------------------------------------------- DARK (system) -- */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --nw-canvas: #0c0e12;
+    --nw-surface: #131620;
+    --nw-raised: #181c27;
+    --nw-inset: #1d212d;
+    --nw-line: #262b38;
+    --nw-line-strong: #3a4152;
+
+    --nw-ink: #e7eaf0;
+    --nw-ink-2: #98a1b2;
+    --nw-ink-3: #6b7484;
+
+    --nw-accent: #6f9bff;
+    --nw-accent-ink: #0c0e12;
+    --nw-accent-soft: #1b2540;
+    --nw-focus: #7ba6ff;
+    --nw-sel: #24304f;
+    --nw-sel-line: #171d2c;
+
+    --nw-error: #ff7b72;
+    --nw-error-bg: #341a1c;
+    --nw-error-ink: #ffb0aa;
+    --nw-warn: #e3a54a;
+    --nw-warn-bg: #33270f;
+    --nw-warn-ink: #f0c98a;
+    --nw-ok: #4cc38a;
+    --nw-ok-bg: #12291f;
+    --nw-ok-ink: #8fdcb5;
+    --nw-ignored: #6b7484;
+    --nw-ignored-bg: #191d27;
+    --nw-ignored-ink: #808a9b;
+
+    --nw-syn-punct: #5b6475;
+    --nw-syn-name: #7fb0ff;
+    --nw-syn-key: #c9a2ef;
+    --nw-syn-value: #e7eaf0;
+    --nw-syn-string: #74d3a8;
+    --nw-syn-number: #e0a96d;
+    --nw-syn-meta: #98a1b2;
+    --nw-syn-comment: #5b6475;
+
+    color-scheme: dark;
+  }
+}
+
+/* -------------------------------------------------------- DARK (forced) -- */
+:root[data-theme="dark"] {
+  --nw-canvas: #0c0e12;
+  --nw-surface: #131620;
+  --nw-raised: #181c27;
+  --nw-inset: #1d212d;
+  --nw-line: #262b38;
+  --nw-line-strong: #3a4152;
+
+  --nw-ink: #e7eaf0;
+  --nw-ink-2: #98a1b2;
+  --nw-ink-3: #6b7484;
+
+  --nw-accent: #6f9bff;
+  --nw-accent-ink: #0c0e12;
+  --nw-accent-soft: #1b2540;
+  --nw-focus: #7ba6ff;
+  --nw-sel: #24304f;
+  --nw-sel-line: #171d2c;
+
+  --nw-error: #ff7b72;
+  --nw-error-bg: #341a1c;
+  --nw-error-ink: #ffb0aa;
+  --nw-warn: #e3a54a;
+  --nw-warn-bg: #33270f;
+  --nw-warn-ink: #f0c98a;
+  --nw-ok: #4cc38a;
+  --nw-ok-bg: #12291f;
+  --nw-ok-ink: #8fdcb5;
+  --nw-ignored: #6b7484;
+  --nw-ignored-bg: #191d27;
+  --nw-ignored-ink: #808a9b;
+
+  --nw-syn-punct: #5b6475;
+  --nw-syn-name: #7fb0ff;
+  --nw-syn-key: #c9a2ef;
+  --nw-syn-value: #e7eaf0;
+  --nw-syn-string: #74d3a8;
+  --nw-syn-number: #e0a96d;
+  --nw-syn-meta: #98a1b2;
+  --nw-syn-comment: #5b6475;
+
+  color-scheme: dark;
+}
+
+/* ------------------------------------------------------- DARK (explicit light) */
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+/* ============================================================================
+   Base
+   ========================================================================== */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--nw-canvas);
+  color: var(--nw-ink);
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  line-height: 1.25rem;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Real focus rings. Never removed, only scoped to keyboard where sensible. */
+:focus-visible {
+  outline: 2px solid var(--nw-focus);
+  outline-offset: 1px;
+  border-radius: 2px;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+::selection {
+  background: var(--nw-sel);
+}
+
+/* Restrained scrollbars — this is an instrument, not a toy. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--nw-line-strong) transparent;
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--nw-line-strong);
+  border: 3px solid transparent;
+  background-clip: content-box;
+  border-radius: 6px;
+}
+*::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Utility: the recessed "ignored by NPHIES" treatment.
+   Reduced contrast, never a strikethrough — the field is legal, just discarded. */
+@utility recessed {
+  color: var(--nw-ignored-ink);
+  opacity: 0.72;
+}
