@@ -74,6 +74,7 @@ Measured, and enforced by `npm test`:
 
 | | |
 |---|---|
+| The built app, driven in a real browser | load a sample → check → findings, on every surface |
 | Official samples that parse | **60 / 60** |
 | Byte-for-byte round trips (parse → emit) | **60 / 60** |
 | Unaccounted-for errors on official messages | **0** |

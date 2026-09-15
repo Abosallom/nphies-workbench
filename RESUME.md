@@ -1,7 +1,8 @@
 # Resume notes
 
 The app is complete and running. `npx tsc --noEmit -p tsconfig.app.json` is clean,
-`npm run build` succeeds, and `npm test` passes 13 tests.
+`npm run build` succeeds, and `npm test` passes 14 tests — including one that drives the built
+bundle in a real browser.
 
 ## Run it
 
@@ -41,7 +42,13 @@ Each was a confidently-wrong verdict or a hang, found by the round-trip or mutat
    members are now transparent: not judged, children still checked.
 6. **Relative member locators never matched** (`./text` inside `nonXMLBody`), so an embedded-PDF
    document was told it was missing the text element it plainly had.
-7. **The compiled CDA body locator was hard-coded to `structuredBody`**, so the official
+7. **`import.meta.glob` guarded by `typeof import.meta.glob === "function"`** — that guard is
+   left alone by the compile-time transform and is `false` in a browser, so the built app
+   resolved the whole compiled spec to `{}`: no use cases, every surface dead, in dev and in
+   the deployed build alike. Nothing caught it because the Node suites install their own
+   resolver and the SSR suite runs under Vite's Node transform. `tests/browser.test.mjs` now
+   drives the built bundle in headless Chrome so this class of bug cannot return.
+8. **The compiled CDA body locator was hard-coded to `structuredBody`**, so the official
    Radiology Results Embedded PDF sample was told it had no body. Fixed in
    `scripts/compile-spec.mjs`; re-running the compiler changes exactly that one field.
 

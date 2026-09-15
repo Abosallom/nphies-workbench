@@ -1329,10 +1329,25 @@ export type SpecResolver = (path: string) => Promise<unknown>;
 
 const SPEC_PREFIX = "../spec/";
 
-const globbed: Record<string, () => Promise<unknown>> =
-  typeof import.meta.glob === "function"
-    ? (import.meta.glob("../spec/**/*.json") as Record<string, () => Promise<unknown>>)
-    : {};
+/**
+ * Every bundle file, as a lazy import, discovered at BUILD time.
+ *
+ * `import.meta.glob` is a compile-time transform, not a runtime function: the bundler
+ * replaces this call with an object literal. Guarding it with `typeof import.meta.glob ===
+ * "function"` therefore looks safe and is catastrophic — that expression is left alone by the
+ * transform, evaluates to `false` in a browser, and the whole spec bundle silently becomes
+ * `{}`, so every use case disappears and the app reports that it cannot find `index.json`.
+ *
+ * The call must be unguarded. Outside a bundler (a plain Node script, a test runner) there is
+ * no transform and the call throws, which is what the `catch` is for — those hosts supply
+ * their own loader through {@link setSpecResolver}.
+ */
+let globbed: Record<string, () => Promise<unknown>> = {};
+try {
+  globbed = import.meta.glob("../spec/**/*.json") as Record<string, () => Promise<unknown>>;
+} catch {
+  globbed = {};
+}
 
 function unwrapModule(mod: unknown): unknown {
   if (mod && typeof mod === "object" && "default" in (mod as Record<string, unknown>)) {
