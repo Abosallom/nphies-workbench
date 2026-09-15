@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soap:Envelope xmlns="urn:ihe:iti:xds-b:2007" xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:addressing="http://www.w3.org/2005/08/addressing">
+	<soap:Header>
+		<addressing:Action>urn:ihe:iti:2007:RetrieveDocumentSet</addressing:Action>
+		<addressing:MessageID>uuid:a54d6aa5-d40d-43f9-88c5-b4633d873bdc</addressing:MessageID>
+		<addressing:To>https://registry.com/service/xdsrepository</addressing:To>
+	</soap:Header>
+	<soap:Body>
+		<RetrieveDocumentSetRequest>
+			<!-- 1 or more repetitions - in this example: retrieving the on-demand iEHR Summary of the patient -->
+			<DocumentRequest>
+				<!-- RepositoryUniqueId: the repository from where to get the on-demand iEHR Summary -->
+				<RepositoryUniqueId>2.16.840.1.113883.3.3731.1.2.2.11111111111110.2.4.2</RepositoryUniqueId>
+				<!-- 
+					DocumentUniqueId: the unique id of the on-demand iEHR Summary document (from there the actual "instances" of the iEHR summary are created)
+					In this example: 2.16.840.1.113883.3.3731.1.2.2.11111111111110.2.4.2^bc5ef457-63a4-4b52-8740-cc0b7dfca96e is the unique id of the on-demand iEHR Summary of the patient
+				-->
+				<DocumentUniqueId>2.16.840.1.113883.3.3731.1.2.2.11111111111110.2.4.2^bc5ef457-63a4-4b52-8740-cc0b7dfca96e</DocumentUniqueId>
+			</DocumentRequest>
+		</RetrieveDocumentSetRequest>
+	</soap:Body>
+</soap:Envelope>

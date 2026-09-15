@@ -57,6 +57,7 @@ import type {
   StructureMember,
   StructureTree,
   TreeNode,
+  TreeNodeKind,
   UsageCode,
   UsageRule,
   ValueSet,
@@ -389,6 +390,57 @@ function memberKeys(member: StructureMember): string[] {
   return keys;
 }
 
+/**
+ * The steps of a relative CDA locator that names elements and nothing else, e.g. `./text`.
+ *
+ * A path carrying a PREDICATE — `./templateId[2]`, `./component/section[templateId='2.16…']` —
+ * is deliberately refused. Those predicates are the whole identity of the rule: dropping them
+ * to walk by name alone lets any section stand in for the one the spec asked for, so a
+ * document that has lost a mandatory templateId looks conformant. Predicate-bearing rules
+ * keep going through the exact keys, where the predicate is still part of the match.
+ */
+function relativeStepsOf(member: StructureMember): string[] | null {
+  const locator = memberLocator(member);
+  if (!locator || locator.kind !== "cdaXPath") return null;
+  if (!locator.path.startsWith("./") || locator.path.includes("[")) return null;
+  if (locator.predicate) return null;
+  return locator.path
+    .slice(2)
+    .split("/")
+    .map((step) => step.trim())
+    .filter(Boolean);
+}
+
+function attributeNameOf(member: StructureMember): string | null {
+  const locator = memberLocator(member);
+  return locator && locator.kind === "cdaXPath" ? (locator.attribute ?? null) : null;
+}
+
+/** Walk down from each scope node by wire name, then optionally into an attribute. */
+function descendByName(scope: readonly TreeNode[], steps: readonly string[], attribute: string | null): TreeNode[] {
+  let level: TreeNode[] = [...scope];
+  for (const step of steps) {
+    const next: TreeNode[] = [];
+    for (const node of level) {
+      for (const child of node.children) {
+        if (child.present === false || child.kind === "attribute") continue;
+        if (wireNameOf(child) === step) next.push(child);
+      }
+    }
+    if (!next.length) return [];
+    level = next;
+  }
+  if (!attribute) return level;
+  const attrs: TreeNode[] = [];
+  for (const node of level) {
+    for (const child of node.children) {
+      if (child.kind !== "attribute" || child.present === false) continue;
+      if (child.label.replace(/^@/, "") === attribute || wireNameOf(child) === `@${attribute}`) attrs.push(child);
+    }
+  }
+  return attrs;
+}
+
 /** How the instances for a member were found — reported when confidence depends on it. */
 type MatchVia = "memberId" | "locator" | "segment" | "label" | "resourceType" | "none";
 
@@ -408,8 +460,8 @@ interface Matched {
 function matchInstances(index: TreeIndex, member: StructureMember, scope: TreeNode[] | null): Matched {
   const inScope = (nodes: TreeNode[]): TreeNode[] => {
     const present = nodes.filter((n) => n.present !== false);
-    if (!scope) return present;
-    return present.filter((n) => scope.some((s) => s === n || isWithin(index, n, s)));
+    const scoped = !scope ? present : present.filter((n) => scope.some((s) => s === n || isWithin(index, n, s)));
+    return instancesFrom(index, scoped);
   };
 
   const byMember = index.byMemberId.get(member.id);
@@ -441,6 +493,17 @@ function matchInstances(index: TreeIndex, member: StructureMember, scope: TreeNo
     if (hit.length) return { instances: hit, via: "locator" };
   }
 
+  // A RELATIVE locator (`./text`, `./component/section`) names a path inside the enclosing
+  // instance, not a global one, and the compiled `relativeTo` is sometimes the document
+  // element rather than the true parent — which made a global key lookup miss elements the
+  // document plainly contains and report them as required-but-missing. Walking down from the
+  // scope is what the path actually means.
+  const steps = relativeStepsOf(member);
+  if (steps?.length && scope?.length) {
+    const hit = instancesFrom(index, descendByName(scope, steps, attributeNameOf(member)));
+    if (hit.length) return { instances: hit, via: "locator" };
+  }
+
   if (member.label) {
     for (const label of [member.label, localName(member.label)]) {
       const hit = inScope(index.byLabel.get(label) ?? []);
@@ -450,11 +513,67 @@ function matchInstances(index: TreeIndex, member: StructureMember, scope: TreeNo
   return { instances: [], via: "none" };
 }
 
+/** Node kinds that ARE a repetition of their parent rather than a part of it. */
+const REPEAT_KINDS = new Set<TreeNodeKind>(["repetition", "entry"]);
+
+/**
+ * Lexical XML content: whitespace between elements, comments, processing instructions.
+ *
+ * Parsers keep these so an emitter can reproduce a document byte for byte, and they inherit
+ * their parent element's locator because that is where they sit. They are not instances of
+ * anything, and counting them as such made `structuredBody` — one element with seven
+ * whitespace children — look like eight repeats of itself.
+ */
+function isLexicalNode(node: TreeNode): boolean {
+  return node.kind === "text" || node.label.startsWith("#");
+}
+
+/**
+ * Reduce raw locator/spec-node matches to the actual INSTANCES of a rule.
+ *
+ * Three things are not instances, and each of them produced a confident, wrong
+ * `cardinality-too-many` error before this existed:
+ *
+ *  1. **Lexical content.** See {@link isLexicalNode}.
+ *  2. **The parts of a composite.** One `PID-3` row governs `PID[0].3` and every component
+ *     and subcomponent inside it, because the spec has exactly one row for the field. Those
+ *     are parts of one identifier, not eight of them.
+ *  3. **A collection container.** `Bundle.entry` is one node holding fifteen `entry`
+ *     repetitions, and both carry the `./entry` rule. Here it is the CONTAINER that is not
+ *     an instance: the fifteen repetitions are, and scoping a child rule such as
+ *     `entry/fullUrl` to the container rather than to one entry made a correct bundle look
+ *     like fifteen `fullUrl`s at a `[1..1]` position.
+ *
+ * What survives is exactly the set cardinality is about: repetition at one position.
+ */
+function instancesFrom(index: TreeIndex, nodes: TreeNode[]): TreeNode[] {
+  const candidates = nodes.filter((n) => !isLexicalNode(n));
+  if (candidates.length < 2) return candidates;
+  const set = new Set(candidates);
+  // A container whose own repetitions also matched yields to them.
+  for (const node of candidates) {
+    if (node.children.some((c) => set.has(c) && REPEAT_KINDS.has(c.kind))) set.delete(node);
+  }
+  const out: TreeNode[] = [];
+  for (const node of candidates) {
+    if (!set.has(node)) continue;
+    let enclosed = false;
+    for (let p = index.info.get(node)?.parent ?? null; p; p = index.info.get(p)?.parent ?? null) {
+      if (set.has(p)) {
+        enclosed = true;
+        break;
+      }
+    }
+    if (!enclosed) out.push(node);
+  }
+  return out;
+}
+
 function matchSpecNode(index: TreeIndex, node: SpecNode, scope: TreeNode[] | null): TreeNode[] {
   const inScope = (nodes: TreeNode[]): TreeNode[] => {
     const present = nodes.filter((n) => n.present !== false);
-    if (!scope) return present;
-    return present.filter((n) => scope.some((s) => s === n || isWithin(index, n, s)));
+    const scoped = !scope ? present : present.filter((n) => scope.some((s) => s === n || isWithin(index, n, s)));
+    return instancesFrom(index, scoped);
   };
   const byId = index.bySpecNodeId.get(node.id);
   if (byId?.length) {
@@ -470,6 +589,7 @@ function matchSpecNode(index: TreeIndex, node: SpecNode, scope: TreeNode[] | nul
   }
   return [];
 }
+
 
 /* ========================================================================== *
  * Values
@@ -750,6 +870,8 @@ interface RunState {
   checksSkipped: string[];
   /** Members whose identity in the message could not be established. Reported, not judged. */
   undecidable: StructureMember[];
+  /** Members the compiled spec cannot locate at all. See {@link isUnlocatable}. */
+  unlocatable: StructureMember[];
   suppressNodeVerdicts: boolean;
   valueSetNotice: Set<string>;
   separator: string;
@@ -789,6 +911,7 @@ export function check(tree: StructureTree, structure: MessageStructure, opts: Ch
     membersAligned: 0,
     checksSkipped: [],
     undecidable: [],
+    unlocatable: [],
     suppressNodeVerdicts: false,
     valueSetNotice: new Set(),
     separator: componentSeparator(opts.datatypes),
@@ -897,6 +1020,27 @@ export function check(tree: StructureTree, structure: MessageStructure, opts: Ch
       path: structure.id,
       provenance: { pageId: null, pageTitle: null, row: null, quote: `structure ${structure.id}` },
       caveat: null,
+      confidence: "high",
+    });
+  }
+
+  if (state.unlocatable.length > 0) {
+    state.checksSkipped.push(
+      `presence of ${state.unlocatable.length} member(s) the compiled structure cannot locate in a message`,
+    );
+    state.sink.push({
+      code: "structure-caveat",
+      severity: "info",
+      title: `${state.unlocatable.length} structure member(s) name no element and were NOT judged`,
+      detail:
+        `${state.unlocatable
+          .slice(0, 6)
+          .map((m) => m.label.replace(/\s+/g, " ").trim())
+          .join(", ")}${state.unlocatable.length > 6 ? ", …" : ""} came out of the specification as prose rather than as a ` +
+        "path, so there is nothing in a message to look for. Their children were still checked.",
+      path: structure.id,
+      provenance: { pageId: null, pageTitle: null, row: null, quote: `structure ${structure.id}` },
+      caveat: "This is a gap in the compiled specification, not a defect in the message.",
       confidence: "high",
     });
   }
@@ -1149,6 +1293,24 @@ function probeAlignment(state: RunState): { considered: number; aligned: number 
   return { considered, aligned };
 }
 
+/**
+ * A member the compiled spec gives the matcher NOTHING to find: no locator, no segment, no
+ * templateId, no resource type — only a prose label such as "CDA header constraints for this
+ * document type (Table 22)", which the extractor lifted out of a constraints table. Those
+ * are documentation containers, not positions in a message.
+ *
+ * Such a member is never judged present or absent — a group that cannot be located cannot be
+ * missing, and saying "required but missing" about one is a confident falsehood about a
+ * conformant document. It is instead TRANSPARENT: its children are checked against the same
+ * scope and the same presence, so wrapping a real rule inside one never hides the rule.
+ */
+function isUnlocatable(member: StructureMember): boolean {
+  if (member.kind === "segment" || member.kind === "entry") return false;
+  if (memberLocator(member)) return false;
+  if (member.kind === "section" && member.templateIds.length > 0) return false;
+  return true;
+}
+
 function pathFor(prefix: string, member: StructureMember): string {
   const locator = member.kind === "segment" ? member.segment : memberLocator(member);
   const label = member.kind === "segment" ? member.segment : locator ? formatLocator(locator as SpecLocator) : member.label;
@@ -1175,7 +1337,10 @@ function walkMembers(
       observed.push({ member, order: orderOf(state.index, instances[0]), path });
     }
 
-    if (parentPresent && !state.suppressNodeVerdicts && !undecidable) {
+    const unlocatable = instances.length === 0 && isUnlocatable(member);
+    if (unlocatable) state.unlocatable.push(member);
+
+    if (parentPresent && !state.suppressNodeVerdicts && !undecidable && !unlocatable) {
       judgeMember(state, member, instances, path);
     }
 
@@ -1186,7 +1351,13 @@ function walkMembers(
 
     const children = membersOf(member);
     if (children.length) {
-      walkMembers(state, children, instances.length ? instances : scope, path, parentPresent && instances.length > 0);
+      walkMembers(
+        state,
+        children,
+        instances.length ? instances : scope,
+        path,
+        unlocatable ? parentPresent : parentPresent && instances.length > 0,
+      );
     }
   }
 
@@ -1325,7 +1496,7 @@ function judgeMember(state: RunState, member: StructureMember, instances: TreeNo
 
   // --- cardinality ---------------------------------------------------------
   if (enabled(state.opts, "cardinality") && present) {
-    checkCardinality(state, { ...base, notes }, verdict, instances.length, member.label, ceiling);
+    checkCardinality(state, { ...base, notes }, verdict, maxRepeatsAtOnePosition(state.index, instances), member.label, ceiling);
   }
 }
 
@@ -1347,6 +1518,29 @@ function fixHintFor(member: StructureMember, usage: UsageCode): string | undefin
       : undefined;
   }
   return undefined;
+}
+
+/**
+ * How many times a rule repeats AT ONE POSITION.
+ *
+ * A `[1..1]` on `./entry/fullUrl` constrains each entry to one `fullUrl`, not the bundle to
+ * one altogether — the path names a repeating ancestor, so the rule is inherently per
+ * parent. Counting the flat match list instead reported a perfectly correct fifteen-entry
+ * bundle as fifteen repeats of a single-occurrence field. Grouping by parent and taking the
+ * worst group asks the question the spec is actually asking, and still catches a real
+ * violation: two `fullUrl`s inside one entry is a group of two.
+ */
+function maxRepeatsAtOnePosition(index: TreeIndex, instances: TreeNode[]): number {
+  if (instances.length < 2) return instances.length;
+  const perParent = new Map<TreeNode | null, number>();
+  let worst = 0;
+  for (const node of instances) {
+    const parent = index.info.get(node)?.parent ?? null;
+    const next = (perParent.get(parent) ?? 0) + 1;
+    perParent.set(parent, next);
+    if (next > worst) worst = next;
+  }
+  return worst;
 }
 
 function checkCardinality(
@@ -1697,7 +1891,7 @@ function judgeSpecNode(
     }
 
     if (enabled(state.opts, "cardinality") && present) {
-      checkCardinality(state, base, verdict, instances.length, labelOf(node), ceiling);
+      checkCardinality(state, base, verdict, maxRepeatsAtOnePosition(state.index, instances), labelOf(node), ceiling);
     }
   }
 
@@ -2086,17 +2280,21 @@ function checkQuarantinedOids(state: RunState): void {
       const exempt = hints.find((h) => h.tokens.some((t) => where.includes(t.toLowerCase())));
       if (exempt) continue; // normative in THIS position; the quarantine does not apply
 
+      // An OID inside an XML comment is documentation the receiver never reads. Worth
+      // mentioning so a copy-paste of the sample is noticed, never worth blocking on.
+      const inComment = node.label.startsWith("#comment");
       const unplaceable = hints.length > 0;
       state.sink.push({
         code: "quarantined-oid",
-        severity: unplaceable ? "warn" : "error",
+        severity: inComment ? "info" : unplaceable ? "warn" : "error",
         title: `Placeholder OID ${entry.oid} in ${node.label}`,
         detail:
           `${entry.oid} is a placeholder from the published examples (${entry.reason ?? "quarantined by the spec compiler"}). ` +
           "It is sample data and is never valid in a real submission — a message carrying it identifies a fictional organisation." +
           (unplaceable
             ? ` This OID IS legitimate in one position: ${entry.exemptContexts.map((c) => c.context).join("; ")}. The checker could not confirm that this node is that position, so this is a warning rather than an error.`
-            : ""),
+            : "") +
+          (inComment ? " It appears inside an XML comment, which NPHIES never reads, so this is a note rather than a defect." : ""),
         path: node.id,
         location: node.loc ?? null,
         documentOrder: orderOf(state.index, node),
@@ -2286,6 +2484,33 @@ function checkUnknownElements(state: RunState): void {
     if (parent && !state.matched.has(parent) && !parent.specNodeId && !parent.memberId && interesting.has(parent.kind)) {
       continue;
     }
+    // A second copy of something the spec DOES describe is not unknown content — it is a
+    // repeat. Reporting it as "we have no rule for this" would hide a real, common defect
+    // (an element emitted twice) behind a caveat about our own coverage.
+    const extra = extraCopyOfDescribedElement(state, node);
+    if (extra) {
+      state.sink.push({
+        code: "cardinality-too-many",
+        severity: capSeverity("error", ceilingFor(extra.evidence)),
+        title: `${extra.name} is sent twice, identically; at most 1 allowed`,
+        detail:
+          `${extra.name} is described as ${describeCardinality(extra.cardinality)} at this position, and the message ` +
+          "carries a byte-identical second copy of it.",
+        path: node.id,
+        location: node.loc ?? null,
+        documentOrder: orderOf(state.index, node),
+        specNodeId: extra.specNodeId,
+        provenance: extra.evidence.provenance,
+        confidence: extra.evidence.confidence,
+        derivation: extra.evidence.derivation,
+        rules: extra.rules,
+        expected: `${extra.described} occurrence(s)`,
+        actual: `${extra.present} occurrence(s)`,
+        fix: `Send ${extra.name} ${extra.described} time(s).`,
+      });
+      continue;
+    }
+
     const value = valueOf(node);
     state.sink.push({
       code: "unknown-element",
@@ -2303,6 +2528,127 @@ function checkUnknownElements(state: RunState): void {
       confidence: "low",
     });
   }
+}
+
+/**
+ * Is this unmapped node simply a second copy of a sibling the spec DOES describe?
+ *
+ * A parser maps a rule to the first element it fits, so an element emitted twice leaves the
+ * second copy with no spec node at all. Matching it back to its described sibling — same
+ * parent, same label — turns "we have no rule for this" into the defect it actually is.
+ */
+function extraCopyOfDescribedElement(
+  state: RunState,
+  node: TreeNode,
+): {
+  name: string;
+  present: number;
+  described: number;
+  specNodeId: string | null;
+  evidence: Evidence;
+  rules: UsageRule[];
+  cardinality: Cardinality;
+} | null {
+  const parent = state.index.info.get(node)?.parent ?? null;
+  if (!parent) return null;
+  const name = wireNameOf(node);
+  if (!name) return null;
+
+  const same = parent.children.filter(
+    (c) => c.present !== false && c.kind === node.kind && wireNameOf(c) === name,
+  );
+  const describedBy = new Map<string, SpecNode>();
+  for (const sibling of same) {
+    if (!sibling.specNodeId) continue;
+    const spec = sibling.spec ?? state.opts.specNodes?.get(sibling.specNodeId) ?? null;
+    if (spec) describedBy.set(spec.id, spec);
+  }
+  if (describedBy.size === 0) return null;
+
+  // Only an IDENTICAL copy is reported.
+  //
+  // Several ordinal rules may describe one element name — a CDA section commonly carries two
+  // templateIds, each with its own row — and a document may legitimately carry more of them
+  // than the compiled tables happen to enumerate, because an XML content model is not closed
+  // by the spec listing some of its members. Counting copies against rules therefore called
+  // a conformant official document defective. A byte-identical repeat of an element the spec
+  // describes as single-occurrence carries no such ambiguity: it is the same thing sent
+  // twice, whatever else the content model allows.
+  const twin = same.find(
+    (c) => c !== node && c.specNodeId !== null && sameContent(c, node),
+  );
+  if (!twin) return null;
+  const spec = twin.spec ?? state.opts.specNodes?.get(twin.specNodeId as string) ?? null;
+  if (!spec) return null;
+  const verdict = usageVerdictFor(spec, state.ctx);
+  if (verdict.cardinality.max !== 1) return null;
+  const specs = [spec];
+  const verdicts = [verdict];
+
+  const evidence = evidenceOfSpecNode(specs[0]);
+  if (!evidence.provenance?.pageId && !evidence.provenance?.sample) return null;
+  return {
+    name,
+    present: same.length,
+    described: 1,
+    specNodeId: specs[0].id,
+    evidence,
+    rules: verdicts[0].rules,
+    cardinality: verdicts[0].cardinality,
+  };
+}
+
+/**
+ * Same element, same value, same attributes — a literal repeat rather than a sibling.
+ *
+ * Compared through a signature rather than through `raw`, because the commonest duplicated
+ * elements in CDA are empty ones whose whole content is attributes: `<templateId root="…"/>`
+ * has no text at all, and a text comparison would call every pair of them different.
+ */
+function sameContent(a: TreeNode, b: TreeNode): boolean {
+  return contentSignature(a) === contentSignature(b);
+}
+
+function contentSignature(node: TreeNode): string {
+  const attrs = node.children
+    .filter((c) => c.kind === "attribute" && c.present !== false)
+    .map((c) => `${c.label.replace(/^@/, "")}=${c.value ?? ""}`)
+    .sort()
+    .join("|");
+  const kids = node.children.filter(
+    (c) => c.kind !== "attribute" && c.present !== false && !c.label.startsWith("#"),
+  ).length;
+  return `${wireNameOf(node) ?? node.label}\u0000${(node.value ?? "").trim()}\u0000${attrs}\u0000${kids}`;
+}
+
+/**
+ * The name this node actually has ON THE WIRE.
+ *
+ * `label` is not it: a parser renames a node to its spec row's title once it maps one, so a
+ * mapped `<templateId>` is labelled "Template indicator" while an unmapped second copy of the
+ * same element is still labelled "templateId". Comparing labels would therefore never see
+ * that the two are the same element. The locator's last step, or failing that the last step
+ * of the instance id, always carries the real name.
+ */
+function wireNameOf(node: TreeNode): string | null {
+  const fromLocator =
+    node.locator?.kind === "cdaXPath"
+      ? node.locator.attribute
+        ? `@${node.locator.attribute}`
+        : lastStep(node.locator.path)
+      : node.locator?.kind === "fhirPath"
+        ? lastStep(node.locator.path)
+        : null;
+  if (fromLocator) return fromLocator;
+  const tail = lastStep(node.id.replace(/\./g, "/"));
+  return tail || node.label || null;
+}
+
+/** The final path step, with any positional predicate stripped: `a/b[2]` -> `b`. */
+function lastStep(path: string): string {
+  const cut = path.lastIndexOf("/");
+  const step = cut < 0 ? path : path.slice(cut + 1);
+  return step.replace(/\[[^\]]*\]/g, "").trim();
 }
 
 function truncate(text: string, max: number): string {

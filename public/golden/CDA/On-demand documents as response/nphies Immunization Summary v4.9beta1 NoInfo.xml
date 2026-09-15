@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ClinicalDocument xmlns="urn:hl7-org:v3" xmlns:nphies="urn:oid:2.16.840.1.113883.3.3731.1.2.2.11111111111110" xmlns:pharm="urn:ihe:pharm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<realmCode code="SA"/>
+	<typeId extension="POCD_HD000040" root="2.16.840.1.113883.1.3"/>
+	<templateId root="2.16.840.1.113883.3.3731.1.210.10"/>
+	<id root="2.16.840.1.113883.3.3731.1.2.2.11111111111110" extension="f26a51ee-7e6c-4696-bd4b-24485a285401"/>
+	<code code="11369-6" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="History of Immunizations"/>
+	<title>Immunization Summary</title>
+	<nphies:documentStatus code="final" codeSystem="2.16.840.1.113883.4.642.4.236" codeSystemName="FHIRDiagnosticReportStatus" displayName="Final"/>
+	<effectiveTime value="20210602080000+0300"/>
+	<confidentialityCode code="N" codeSystem="2.16.840.1.113883.5.25" displayName="normal"/>
+	<languageCode code="ar-SA"/>
+	<setId root="2.16.840.1.113883.3.3731.1.2.2.11111111111110" extension="f26a51ee-7e6c-4696-bd4b-24485a285401"/>
+	<versionNumber value="1"/>
+	<!-- Patient -->
+	<recordTarget>
+		<patientRole>
+			<templateId root="2.16.840.1.113883.3.3731.1.203.28.1"/>
+			<id extension="30000999999999" root="2.16.840.1.113883.3.3731.1.1.100.1"/>
+			<addr>
+				<streetAddressLine>2448 Zarga Alyamamah St</streetAddressLine>
+				<city>Riyadh</city>
+				<postalCode>13337</postalCode>
+				<country>Saudi Arabia</country>
+			</addr>
+			<telecom value="tel:+974.143.47333"/>
+			<patient>
+				<name use="L ABC">
+					<family>ALQAHTANI</family>
+					<given>YAHYA</given>
+					<given>SAEED A</given>
+					<suffix>Jr</suffix>
+				</name>
+				<administrativeGenderCode code="M" displayName="Male" codeSystem="2.16.840.1.113883.5.1"/>
+				<birthTime value="19761230"/>
+				<maritalStatusCode code="S" displayName="Single" codeSystem="2.16.840.1.113883.5.2"/>
+				<religiousAffiliationCode code="1" displayName="Islam" codeSystem="2.16.840.1.113883.3.3731.1.202.10"/>
+				<guardian>
+					<addr>
+						<streetAddressLine>1234 Guardian St</streetAddressLine>
+						<city>Riyadh</city>
+						<postalCode>13337</postalCode>
+						<country>Saudi Arabia</country>
+					</addr>
+					<telecom value="tel:+974.143.2345678"/>
+					<guardianPerson>
+						<name>ALQAHTANI Heba (mother)</name>
+					</guardianPerson>
+				</guardian>
+				<languageCommunication>
+					<languageCode code="ara"/>
+				</languageCommunication>
+			</patient>
+		</patientRole>
+	</recordTarget>
+	<!-- Author Device -->
+	<author>
+		<templateId root="2.16.840.1.113883.3.3731.1.203.28.9"/>
+		<time value="20130829124538+0300"/>
+		<assignedAuthor>
+			<id extension="05RM14422" root="2.16.840.1.113883.3.3731.1.2.1"/>
+			<assignedAuthoringDevice>
+				<manufacturerModelName>nphies Immunization Summary Document Creator</manufacturerModelName>
+				<softwareName>Document Generator 1.2.0</softwareName>
+			</assignedAuthoringDevice>
+		</assignedAuthor>
+	</author>
+	<!-- Custodian of the document -->
+	<custodian>
+		<assignedCustodian>
+			<representedCustodianOrganization>
+				<templateId root="2.16.840.1.113883.3.3731.1.203.28.4"/>
+				<id extension="11111111111110" root="2.16.840.1.113883.3.3731.1.2.2"/>
+				<name>nphies - Clinical Services</name>
+				<telecom nullFlavor="UNK"/>
+				<addr nullFlavor="UNK"/>
+			</representedCustodianOrganization>
+		</assignedCustodian>
+	</custodian>
+	<!-- Nationality of the patient -->
+	<participant typeCode="SBJ">
+		<associatedEntity classCode="CIT">
+			<templateId root="2.16.840.1.113883.3.3731.1.203.28.2"/>
+			<code code="SAU" codeSystem="1.0.3166.1"/>
+		</associatedEntity>
+	</participant>
+	<!--
+			=================================================
+			=================================================
+			=================================================
+
+			Clinical Content (structured)
+
+			=================================================
+			=================================================
+			=================================================
+	-->
+	<component>
+		<structuredBody>
+			<!--
+					=================================================
+					Section: Immunizations Section
+
+						The Immunizations Section contains a list of the vaccinations administered to the patient during the encounter.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.6"/>
+					<templateId root="1.3.6.1.4.1.19376.1.5.3.1.3.23"/>
+					<templateId root="2.16.840.1.113883.10.20.1.6"/>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.6.1"/> <!-- no info flag -->
+					<code code="11369-6" displayName="HISTORY OF IMMUNIZATIONS" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Immunizations</title>
+					<text>No information available</text>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Active Problems Section
+
+						Problem List Section contains the problems currently being monitored for the patient, including currently active and recently resolved problems.
+
+						This example shows "no problems", reflecting the situation, that the patient shows no other problems as the one which led to this hospital stay.
+						See the Admitting Diagnosis section for the Diagnosis, which led to this hospital stay.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.3"/>
+					<templateId root="1.3.6.1.4.1.19376.1.5.3.1.3.6"/>
+					<templateId root="2.16.840.1.113883.10.20.1.11"/>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.3.1"/> <!-- no info flag -->
+					<code code="11450-4" displayName="PROBLEM LIST" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Active problems</title>
+					<text>No information available</text>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Allergies and Adverse Reactions Section
+
+						The Allergies and Adverse Reactions Section is used to record both environmental and drug allergies, as well as the adverse reactions.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.8"/>
+					<templateId root="1.3.6.1.4.1.19376.1.5.3.1.3.13"/>
+					<templateId root="2.16.840.1.113883.10.20.1.2"/>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.8.1"/> <!-- no info flag -->
+					<code code="48765-2" displayName="ALLERGIES, ADVERSE REACTIONS, ALERTS" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Allergies and Adverse Reactions</title>
+					<text>No information available</text>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Medications Section
+
+						The current medications and pertinent medication history at the end of the encounter.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.93"/>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.93.1"/> <!-- no info flag -->
+					<code code="10160-0" displayName="HISTORY OF MEDICATION USE" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Medications Risk Factor List</title>
+					<text>No information available</text>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: List of Surgeries Section
+
+						The History of Procedures Section defines all interventional, surgical, diagnostic, or therapeutic procedures or treatments pertinent to the patient historically at the time of the encounter.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.7"/>
+					<templateId root="1.3.6.1.4.1.19376.1.5.3.1.3.12"/>
+					<templateId root="1.3.6.1.4.1.19376.1.5.3.1.3.11"/>
+					<templateId root="2.16.840.1.113883.10.20.1.12"/>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.7.1"/> <!-- no info flag -->
+					<code code="47519-4" displayName="HISTORY OF PROCEDURES" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>List of Surgeries</title>
+					<text>No information available</text>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: History of Past Illness
+
+						The Reason for Referral contains information on the primary reason for the encounter.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.86"/>
+					<templateId root="1.3.6.1.4.1.19376.1.5.3.1.3.8"/>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.86.1"/> <!-- no info flag -->
+					<code code="11348-0" displayName="HISTORY OF PAST ILLNESS" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>History of Past Illness</title>
+					<text>No information available</text>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Pregnancy History Section
+
+						The Pregnancy History contains information gathered about a woman’s prior pregnancies, how the baby was born and any problems related to the pregnancy.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.23"/>
+					<templateId root="1.3.6.1.4.1.19376.1.5.3.1.1.5.3.4"/>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.23.1"/> <!-- no info flag -->
+					<code code="10162-6" displayName="HISTORY OF PREGNANCIES" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Pregnancy History</title>
+					<text>No information available</text>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Social History
+
+						The social history is a description of the person’s beliefs, home life, community life, work life, hobbies, and risky habits.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.83"/>
+					<templateId root="1.3.6.1.4.1.19376.1.5.3.1.3.16"/>
+					<templateId root="2.16.840.1.113883.10.20.1.15"/>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.83.1"/> <!-- no info flag -->
+					<code code="29762-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="SOCIAL HISTORY"/>
+					<title>Social History</title>
+					<text>No information available</text>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Immunization Serology Coded Results 
+
+						The Immunization Serology Coded Results Section may include laboratory results showing the presence or absence of immunity for specific conditions.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.87"/>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.87.1"/> <!-- no info flag -->
+					<code code="30954-2" displayName="STUDIES SUMMARY" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Immunization Serology Coded Results</title>
+					<text>No information available</text>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Immunization Recommendations Section
+
+						The schedule of vaccinations that are intended or proposed for the patient.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.89"/>
+					<templateId root="1.3.6.1.4.1.19376.1.5.3.1.1.18.3.1"/>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.89.1"/> <!-- no info flag -->
+					<code code="18776-5" displayName="TREATMENT PLAN" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Immunization Recommendations</title>
+					<text>No information available</text>
+				</section>
+			</component>
+		</structuredBody>
+	</component>
+</ClinicalDocument>

@@ -1,0 +1,423 @@
+{
+    "resourceType": "Bundle",
+    "id": "75e66c37-7d48-405d-b6ec-7264a8f558ff",
+    "meta": {
+        "profile": [
+            "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/bundleRadReport|1.0"
+        ]
+    },
+    "type": "document",
+    "timestamp": "2025-01-15T13:28:17+03:00",
+    "identifier": {
+        "system": "urn:oid:2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.100.1",
+        "value": "DocumentID"
+    },
+    "entry": [
+        {
+            "fullUrl": "urn:uuid:5d7d58d0-a771-42dc-9592-b010c7524101",
+            "resource": {
+                "resourceType": "Composition",
+                "id": "5d7d58d0-a771-42dc-9592-b010c7524101",
+                "meta": {
+                "profile": [
+                    "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/compositionRadReportEmbeddedPDF|1.0"
+                ]
+                },
+                    "extension": [
+                    {
+                        "url": "http://hl7.org/fhir/StructureDefinition/composition-clinicaldocument-versionNumber",
+                        "valueString": "1"
+                    },
+                    {
+                        "url": "http://hl7.org/fhir/uv/lab-report/StructureDefinition/composition-basedOn-order-or-requisition",
+                        "valueReference": {
+                            "reference": "ServiceRequest/dbee8a47-f90f-4d0b-984b-4b0f9f187667"
+                        }
+                    }
+                ],
+                "identifier": [
+                    {
+                        "system": "urn:oid:2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.100.1",
+                        "value": "DocumentSetID (set equal to DocumentID, since it's the first version of the set)"
+                    }
+                ],
+                "status": "final",
+                "type": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "18748-4",
+                            "display": "DIAGNOSTIC IMAGING STUDY"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/248156ff-3453-4344-a75a-bbb66c2bba92",
+                    "identifier": [
+                        {
+                            "system": "2.16.840.1.113883.3.3731.1.1.100.1",
+                            "value": "30000999999999"
+                        }
+                    ]
+                },
+                "encounter": {
+                    "reference": "Encounter/4fd3fd0f-42e7-4278-8a4f-293ace8ce7dd",
+                    "identifier": [
+                        {
+                            "system": "2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.300.1",
+                            "value": "12345678"
+                        }
+                    ]
+                },
+                "date": "2025-01-15T13:28:17+03:00",
+                "author": [
+                    {
+                        "reference": "Device/52f01485-302e-4088-92b6-2b5946b870cd",
+                        "identifier": [
+                            {
+                                "system": "2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.400.1",
+                                "value": "AuthorDeviceID"
+                            }
+                        ]
+                    }
+                ],
+                "title": "Radiology Report",
+                "confidentiality": "N",
+                "attester": [
+                    {
+                        "mode": "legal",
+                        "party": {
+                            "reference": "PractitionerRole/e1fbbf0b-f039-4524-b3d8-35cc681a1ccb",
+                            "identifier": [
+                                {
+                                    "system": "2.16.840.1.113883.3.3731.1.2.1",
+                                    "value": "05RM14422"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "mode": "professional",
+                        "party": {
+                            "reference": "PractitionerRole/e1fbbf0b-f039-4524-b3d8-35cc681a1ccb",
+                            "identifier": [
+                                {
+                                    "system": "2.16.840.1.113883.3.3731.1.2.1",
+                                    "value": "05RM14422"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "custodian": {
+                    "reference": "Organization/2617a95d-8471-460e-8562-16b0d05e7b43",
+                    "identifier": [
+                        {
+                            "system": "2.16.840.1.113883.3.3731.1.2.2",
+                            "value": "11000000002333"
+                        }
+                    ]
+                },
+                "section": [
+                    {
+                        "code": {
+                            "coding": [
+                                {
+                                    "system": "urn:oid:2.16.840.1.113883.6.1",
+                                    "code": "18726-0",
+                                    "display": "Radiology studies (set)"
+                                }
+                            ]
+                        },
+                        "title": "Imaging Study",
+                        "text": {
+                            "status": "additional",
+                            "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>This report includes no images</b></p></div>"
+                        }
+                    },
+                    {
+                        "code": {
+                            "coding": [
+                                {
+                                    "system": "urn:oid:2.16.840.1.113883.6.1",
+                                    "code": "55108-5",
+                                    "display": "Clinical presentation Document"
+                                }
+                            ]
+                        },
+                        "title": "Clinical presentation Document",
+                        "entry": [
+                            {
+                                "reference": "DocumentReference/96ea0f1b-6f88-4459-89eb-3b2bbc6939ac"
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "fullUrl": "urn:uuid:52f01485-302e-4088-92b6-2b5946b870cd",
+            "resource": {
+                "resourceType": "Device",
+                "id": "52f01485-302e-4088-92b6-2b5946b870cd",
+                "meta": {
+                    "profile": [
+                        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/device|1.0"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "system": "2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.400.1",
+                        "value": "AuthorDeviceID"
+                    }
+                ],
+                "deviceName": [
+                    {
+                        "name": "The model name of the device, which is set as author of the entire report",
+                        "type": "model-name"
+                    },
+                    {
+                        "name": "The software name of the device, which is set as author of the entire report",
+                        "type": "other"
+                    }
+                ]
+            }
+        },
+        {
+            "fullUrl": "urn:uuid:dbee8a47-f90f-4d0b-984b-4b0f9f187667",
+            "resource": {
+                "resourceType": "ServiceRequest",
+                "id": "dbee8a47-f90f-4d0b-984b-4b0f9f187667",
+                "meta": {
+                    "profile": [
+                        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/servicerequest|1.0"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                                    "code": "PLAC"
+                                }
+                            ]
+                        },
+                        "system": "urn:oid:1.2.840.1.113883.3.3719",
+                        "value": "PLAC1"
+                    },
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                                    "code": "ACSN"
+                                }
+                            ]
+                        },
+                        "system": "urn:oid:1.2.840.1.113883.3.3720",
+                        "value": "ACCESSION_NUMBER_1"
+                    }
+                ],
+                "status": "completed",
+                "intent": "order",
+                "subject": {
+                    "reference": "Patient/248156ff-3453-4344-a75a-bbb66c2bba92"
+                },
+                "occurrencePeriod": {
+                    "start": "2025-01-15T13:05:00+03:00",
+                    "end": "2025-05-15T13:05:00+03:00"
+                },
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:oid:2.16.840.1.113883.3.3731.1.204.15",
+                            "code": "CABDO",
+                            "display": "CT Abdomen"
+                        }
+                    ]                    
+                },
+                "priority": "routine",
+                "orderDetail": {
+                    "coding": [
+                        {
+                            "system": "urn:oid:1.2.840.10008.2.16.4",
+                            "code": "CT"
+                        }
+                    ]                    
+                },
+                "bodySite": {
+                    "coding": [
+                        {
+                            "system": "urn:oid:2.16.840.1.113883.6.96",
+                            "code": "113345001",
+                            "display": "Abdomen"
+                        }
+                    ]      
+                }           
+            }
+        },
+        {
+  "fullUrl": "urn:uuid:248156ff-3453-4344-a75a-bbb66c2bba92",
+  "resource": {
+    "resourceType": "Patient",
+    "id": "248156ff-3453-4344-a75a-bbb66c2bba92",
+    "meta": {
+      "profile": [
+        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/patient|1.0"
+      ]
+    },
+    "identifier": [
+      {
+        "system": "2.16.840.1.113883.3.3731.1.1.100.1",
+        "value": "30000999999999"
+      }
+    ]
+  }
+}
+,
+        {
+            "fullUrl": "urn:uuid:ef3b8d35-c3e9-407a-a233-2ada6e22bb37",
+            "resource": {
+                "resourceType": "Practitioner",
+                "id": "ef3b8d35-c3e9-407a-a233-2ada6e22bb37",
+                "meta": {
+                    "profile": [
+                        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/practitioner|1.0"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "system": "2.16.840.1.113883.3.3731.1.2.1",
+                        "value": "05RM14422"
+                    }
+                ],
+                "name": {
+                    "given": "Aditya",
+                    "family": "Khan"
+                },
+                "address": [
+                    {
+                        "text": "3920 Mathar Alshibani St, Riyadh 12629, Saudi Arabia",
+                        "line": "3920 Mathar Alshibani St",
+                        "city": "Riyadh",
+                        "postalCode": "12629",
+                        "country": "Saudi Arabia"
+                    }
+                ],
+                "telecom": [
+                    {
+                        "system": "phone",
+                        "value": "+974.143.47444"
+                    },
+                    {
+                        "system": "email",
+                        "value": "office@intmedcentre.sa"
+                    }
+                ]
+            }
+        },
+        {
+  "fullUrl": "urn:uuid:e1fbbf0b-f039-4524-b3d8-35cc681a1ccb",
+  "resource": {
+    "resourceType": "PractitionerRole",
+    "id": "e1fbbf0b-f039-4524-b3d8-35cc681a1ccb",
+    "meta": {
+      "profile": [
+        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/practitionerrole|1.0"
+      ]
+    },
+    "practitioner": {
+      "identifier": [
+        {
+          "system": "2.16.840.1.113883.3.3731.1.2.1",
+          "value": "05RM14422"
+        }
+      ]
+    },
+    "organization": {
+      "identifier": [
+        {
+          "system": "2.16.840.1.113883.3.3731.1.2.2",
+          "value": "11000000002333"
+        }
+      ]
+    }
+  }
+}
+,
+        {
+            "fullUrl": "urn:uuid:2617a95d-8471-460e-8562-16b0d05e7b43",
+            "resource": {
+                "resourceType": "Organization",
+                "id": "2617a95d-8471-460e-8562-16b0d05e7b43",
+                "meta": {
+                    "profile": [
+                        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/organization|1.0"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "system": "2.16.840.1.113883.3.3731.1.2.2",
+                        "value": "11000000002333"
+                    }
+                ],
+                "name": "International University Hospital"
+            }
+        },
+        {
+            "fullUrl": "urn:uuid:4fd3fd0f-42e7-4278-8a4f-293ace8ce7dd",
+            "resource": {
+                "resourceType": "Encounter",
+                "id": "4fd3fd0f-42e7-4278-8a4f-293ace8ce7dd",
+                "meta": {
+                    "profile": [
+                        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/encounter|1.0"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "system": "2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.300.1",
+                        "value": "12345678"
+                    }
+                ],
+                "class": {
+                    "coding": [
+                        {
+                            "system": "urn:oid:2.16.840.1.113883.18.5",
+                            "code": "E",
+                            "display": "Emergency"
+                        }
+                    ]
+                },
+                "period": {
+                    "start": "2023-07-07T12:30:00+03:00"
+                },
+                "serviceProvider": {
+                    "display": "International University Hospital"
+                }
+            }
+        },
+        {
+            "fullUrl": "urn:uuid:96ea0f1b-6f88-4459-89eb-3b2bbc6939ac",
+            "resource": {
+                "resourceType": "DocumentReference",
+                "id": "96ea0f1b-6f88-4459-89eb-3b2bbc6939ac",
+                "meta": {
+                    "profile": [
+                        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/DocumentReference|1.0"
+                    ]
+                },
+                "status": "current",
+                "content": [
+                    {
+                        "attachment": {
+                            "contentType": "application/pdf",
+                            "data": "... B64coded_PDF_data ..."
+                        }
+                    }
+                ]
+            }
+        }
+   ]
+}

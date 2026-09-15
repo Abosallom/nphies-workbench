@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { cx } from "./cx";
 import { SEV_CHIP, SEV_RULE, IGNORED_EXPLANATION } from "./severity";
 import { SEVERITY_GLYPH, SEVERITY_LABEL, type Finding } from "./types";
@@ -13,6 +14,11 @@ export interface FindingRowProps {
   onReveal?: (finding: Finding) => void;
   /** Hide the provenance disclosure (e.g. in a very dense list). */
   hideSource?: boolean;
+  /**
+   * Extra content under the finding — an action, or whatever that action produced.
+   * Kept as a slot so `src/ui` gains no opinion about what the host puts there.
+   */
+  footer?: ReactNode;
   baseUrl?: string;
   className?: string;
 }
@@ -27,6 +33,7 @@ export function FindingRow({
   onSelect,
   onReveal,
   hideSource,
+  footer,
   baseUrl,
   className,
 }: FindingRowProps) {
@@ -113,6 +120,16 @@ export function FindingRow({
             >
               {finding.detail}
             </p>
+          ) : null}
+
+          {footer ? (
+            <div
+              className="mt-1.5"
+              onClick={(e) => e.stopPropagation()}
+              onKeyDown={(e) => e.stopPropagation()}
+            >
+              {footer}
+            </div>
           ) : null}
 
           {finding.source && !hideSource ? (

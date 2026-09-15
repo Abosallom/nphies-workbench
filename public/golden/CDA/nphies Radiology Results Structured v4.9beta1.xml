@@ -1,0 +1,598 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ClinicalDocument xmlns="urn:hl7-org:v3" xmlns:nphies="urn:oid:2.16.840.1.113883.3.3731.1.2.2.11111111111110" xmlns:ps3-20="urn:dicom-org:ps3-20" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<realmCode code="SA"/>
+	<typeId extension="POCD_HD000040" root="2.16.840.1.113883.1.3"/>
+	<templateId root="2.16.840.1.113883.3.3731.1.204.21"/>
+	<id root="2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.100.1" extension="RadioReport123456789"/>
+	<code code="43468-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="X-Ray Report"/>
+	<title>X-Ray Report</title>
+	<nphies:documentStatus code="final" codeSystem="2.16.840.1.113883.4.642.4.236" codeSystemName="FHIRDiagnosticReportStatus" displayName="Final"/>
+	<effectiveTime value="20210602080000+0300"/>
+	<confidentialityCode code="N" codeSystem="2.16.840.1.113883.5.25" displayName="normal"/>
+	<languageCode code="ar-SA"/>
+	<setId root="2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.100.1" extension="RadioReport123456789"/>
+	<versionNumber value="1"/>
+	<!-- Patient -->
+	<recordTarget>
+		<patientRole>
+			<templateId root="2.16.840.1.113883.3.3731.1.203.28.1"/>
+			<id extension="30000999999999" root="2.16.840.1.113883.3.3731.1.1.100.1"/>
+			<addr>
+				<streetAddressLine>2448 Zarga Alyamamah St</streetAddressLine>
+				<city>Riyadh</city>
+				<postalCode>13337</postalCode>
+				<country>Saudi Arabia</country>
+			</addr>
+			<telecom value="tel:+974.143.47333"/>
+			<patient>
+				<name use="L ABC">
+					<family>ALQAHTANI</family>
+					<given>YAHYA</given>
+					<given>SAEED A</given>
+					<suffix>Jr</suffix>
+				</name>
+				<administrativeGenderCode code="M" displayName="Male" codeSystem="2.16.840.1.113883.5.1"/>
+				<birthTime value="19761230"/>
+				<maritalStatusCode code="S" displayName="Single" codeSystem="2.16.840.1.113883.5.2"/>
+				<religiousAffiliationCode code="1" displayName="Islam" codeSystem="2.16.840.1.113883.3.3731.1.202.10"/>
+				<guardian>
+					<addr>
+						<streetAddressLine>1234 Guardian St</streetAddressLine>
+						<city>Riyadh</city>
+						<postalCode>13337</postalCode>
+						<country>Saudi Arabia</country>
+					</addr>
+					<telecom value="tel:+974.143.2345678"/>
+					<guardianPerson>
+						<name>ALQAHTANI Heba (mother)</name>
+					</guardianPerson>
+				</guardian>
+				<languageCommunication>
+					<languageCode code="ara"/>
+				</languageCommunication>
+			</patient>
+		</patientRole>
+	</recordTarget>
+	<!-- Author -->
+	<author>
+		<templateId root="2.16.840.1.113883.3.3731.1.203.28.3"/>
+		<functionCode code="100000003" codeSystem="2.16.840.1.113883.3.3731.1.202.1" codeSystemName="KSA Individual Provider Type" displayName="Medicine and Surgery"/>
+		<time value="20210602123500+0300"/>
+		<assignedAuthor>
+			<id extension="05RM14422" root="2.16.840.1.113883.3.3731.1.2.1"/>
+			<code code="EF9D7C6B-62F9-E811-B80F-005056AD2FD8" codeSystem="2.16.840.1.113883.3.3731.1.202.5" codeSystemName="Healthcare Specialty Identifier" displayName="Diagnostic Radiology"/>
+			<addr>
+				<streetAddressLine>3920 Mathar Alshibani St</streetAddressLine>
+				<city>Riyadh</city>
+				<postalCode>12629</postalCode>
+				<country>Saudi Arabia</country>
+			</addr>
+			<telecom value="tel:+966920011223"/>
+			<assignedPerson>
+				<name>
+					<prefix>Dr</prefix>
+					<family>Khan</family>
+					<given>Aditya</given>
+				</name>
+			</assignedPerson>
+			<representedOrganization>
+				<id extension="11000000002333" root="2.16.840.1.113883.3.3731.1.2.2"/>
+				<name>International University Hospital</name>
+				<!-- no more detailed telecom provided as for assignedAuthor, nullFlavor is used -->
+				<telecom nullFlavor="NI"/>
+				<!-- no more detailed address provided as for assignedAuthor, nullFlavor is used -->
+				<addr nullFlavor="NI"/>
+			</representedOrganization>
+		</assignedAuthor>
+	</author>
+	<!-- Custodian of the document -->
+	<custodian>
+		<assignedCustodian>
+			<representedCustodianOrganization>
+				<templateId root="2.16.840.1.113883.3.3731.1.203.28.4"/>
+				<id extension="11000000002333" root="2.16.840.1.113883.3.3731.1.2.2"/>
+				<name>International University Hospital</name>
+				<telecom value="tel:+966920011223"/>
+				<addr>
+					<streetAddressLine>3920 Mathar Alshibani St</streetAddressLine>
+					<city>Riyadh</city>
+					<postalCode>12629</postalCode>
+					<country>Saudi Arabia</country>
+				</addr>
+			</representedCustodianOrganization>
+		</assignedCustodian>
+	</custodian>
+	<!-- Legal authenticator -->
+	<legalAuthenticator>
+		<templateId root="2.16.840.1.113883.3.3731.1.203.28.5"/>
+		<time value="20210602123500+0300"/>
+		<signatureCode code="S"/>
+		<assignedEntity>
+			<id extension="13KA0054149" root="2.16.840.1.113883.3.3731.1.2.1"/>
+			<!-- same address as for author, nullFlavor is used -->
+			<addr nullFlavor="NI"/>
+			<!-- same telecom as for author, nullFlavor is used -->
+			<telecom nullFlavor="NI"/>
+			<assignedPerson>
+				<name use="L">
+					<prefix>Dr.</prefix>
+					<family>GOPAL</family>
+					<given>Arjun</given>
+				</name>
+			</assignedPerson>
+		</assignedEntity>
+	</legalAuthenticator>
+	<!-- Nationality of the patient -->
+	<participant typeCode="SBJ">
+		<associatedEntity classCode="CIT">
+			<templateId root="2.16.840.1.113883.3.3731.1.203.28.2"/>
+			<code code="SAU" codeSystem="1.0.3166.1"/>
+		</associatedEntity>
+	</participant>
+	<!-- Ordering Provider -->
+	<participant typeCode="REF">
+		<templateId root="2.16.840.1.113883.3.3731.1.204.22"/>
+		<templateId root="1.3.6.1.4.1.19376.1.3.3.1.6"/>
+		<time value="20210601080000+0300"/>
+		<associatedEntity classCode="PROV">
+			<id extension="13MM0035341" root="2.16.840.1.113883.3.3731.1.2.1"/>
+			<addr>
+				<streetAddressLine>3920 Mathar Alshibani St</streetAddressLine>
+				<city>Riyadh</city>
+				<postalCode>12629</postalCode>
+				<country>Saudi Arabia</country>
+			</addr>
+			<telecom value="tel:+966920011223"/>
+			<associatedPerson>
+				<name>
+					<prefix>Dr</prefix>
+					<family>Khan</family>
+					<given>Aditya</given>
+				</name>
+			</associatedPerson>
+			<scopingOrganization>
+				<id extension="11000000002333" root="2.16.840.1.113883.3.3731.1.2.2"/>
+				<name>International University Hospital</name>
+				<telecom value="tel:+966920011223"/>
+				<addr>
+					<streetAddressLine>3920 Mathar Alshibani St</streetAddressLine>
+					<city>Riyadh</city>
+					<postalCode>12629</postalCode>
+					<country>Saudi Arabia</country>
+				</addr>
+			</scopingOrganization>
+		</associatedEntity>
+	</participant>
+	<inFulfillmentOf>
+		<templateId root="2.16.840.1.113883.3.3731.1.204.23"/>
+		<order>
+			<!--
+					PLACER Order Number
+	
+					Explanation of the example:
+
+					*) Order Placer Identifier issued by the order placer: 1234567
+					*) Order placer unique "root" OID assigend by nphies: 2.16.840.1.113883.3.3731.1.2.2.11000000002333
+						Note: 11000000002333 is the id of the organization of the ordering provider
+						including the sub-branch of ".1.2.3" for identifying "Order Placer Numbers" (example - per local configuration)
+			-->
+			<id extension="1234567" root="2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.1.2.3"/>
+			<!--
+					Accession Number(s)
+					
+					Note: This is the semantical link to the manifests (KOS objects) related to this report.
+			-->
+			<ps3-20:accessionNumber extension="10523475" root="2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.1"/>
+		</order>
+	</inFulfillmentOf>
+	<!--
+			ServiceEvent: Imaging procedure, Modality and Body Region performed
+	-->
+	<documentationOf>
+		<serviceEvent>
+			<templateId root="2.16.840.1.113883.3.3731.1.204.24"/>
+			<!-- Study Instance UID -->
+			<id root="2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.1.2.33333111.21"/>
+			<!-- Imaging Procedure Code and Description -->
+			<code code="XCHES" displayName="XR Chest" codeSystem="2.16.840.1.113883.3.3731.1.204.15" codeSystemName="KSA Imaging Procedures"/>
+			<!-- Modality -->
+			<nphies:modalityCode code="RG" displayName="Radiographic imaging" codeSystem="1.2.840.10008.2.16.4" codeSystemName="DICOM Controlled Terminology"/>
+			<!-- Body Region -->
+			<nphies:bodyRegionCode code="76752008" displayName="breast structure" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT"/>
+			<effectiveTime>
+				<low value="20210602113500+0300"/>
+				<high value="20210602123500+0300"/>
+			</effectiveTime>
+		</serviceEvent>
+	</documentationOf>
+	<!--
+			Encounter
+	-->
+	<componentOf>
+		<encompassingEncounter>
+			<templateId root="2.16.840.1.113883.3.3731.1.105.7"/>
+			<!-- Identifier of the patient's encounter -->
+			<id extension="12345678" root="2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.300.1"/>
+			<code code="I" displayName="Inpatient" codeSystem="2.16.840.1.113883.18.5" codeSystemName="HL7 Patient Class"/>
+			<effectiveTime>
+				<low value="20210123211000+0300"/>
+				<!-- example: high element is omitted, because encounter is still ongoing -->
+			</effectiveTime>
+			<location>
+				<healthCareFacility>
+					<id extension="11000000002333" root="2.16.840.1.113883.3.3731.1.2.2"/>
+					<location>
+						<name>Internal medicine department</name>
+					</location>
+					<serviceProviderOrganization>
+						<name>International University Hospital</name>
+					</serviceProviderOrganization>
+				</healthCareFacility>
+			</location>
+		</encompassingEncounter>
+	</componentOf>
+	<!--
+			=================================================
+			=================================================
+			=================================================
+
+			Clinical Content (Structured)
+
+			=================================================
+			=================================================
+			=================================================
+	-->
+	<component>
+		<structuredBody>
+			<!--
+					=================================================
+					=================================================
+
+					Radiology Order section
+
+					AS DERIVED FROM THE RADIOLOGY ORDER
+
+					=================================================
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.204.34"/>
+					<code code="57832-8" displayName="Prescription for diagnostic or specialist care" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Radiology Order</title>
+					<text>
+						<paragraph styleCode="Bold">Additional Order Information</paragraph>
+						<table>
+							<thead>
+								<tr>
+									<th>Type</th>
+									<th>Value</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ID="order_addinfo_1_1">
+									<td>50373000, Body Height Measure</td>
+									<td>170 cm</td>
+								</tr>
+								<tr ID="order_addinfo_1_2">
+									<td>16985007, Fasting</td>
+									<td>true</td>
+								</tr>
+							</tbody>
+						</table>
+					</text>
+					<!-- 
+							Additional Order Information
+					-->
+					<entry>
+						<organizer classCode="CLUSTER" moodCode="EVN">
+							<templateId root="2.16.840.1.113883.3.3731.1.210.100.67"/>
+							<statusCode code="completed"/>
+							<component>
+								<observation classCode="OBS" moodCode="EVN">
+									<templateId root="2.16.840.1.113883.3.3731.1.210.100.68"/>
+									<code code="50373000" displayName="Body Height Measure" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT"/>
+									<text>
+										<reference value="#order_addinfo_1_1"/>
+									</text>
+									<value xsi:type="PQ" value="170" unit="cm"/>
+								</observation>
+							</component>
+							<component>
+								<observation classCode="OBS" moodCode="EVN">
+									<templateId root="2.16.840.1.113883.3.3731.1.210.100.68"/>
+									<code code="16985007" displayName="Fasting" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT"/>
+									<text>
+										<reference value="#order_addinfo_1_2"/>
+									</text>
+									<value xsi:type="BL" value="true"/>
+								</observation>
+							</component>
+						</organizer>
+					</entry>
+					<!--
+							*************************************************
+							Sub-Section: Request
+							*************************************************
+					-->
+					<component>
+						<section>
+							<templateId root="2.16.840.1.113883.3.3731.1.204.35"/>
+							<code code="55115-0" displayName="Requested imaging studies information" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+							<title>Request</title>
+							<text>
+								<table>
+									<thead>
+										<tr>
+											<th>Procedure</th>
+											<th>Modality</th>
+											<th>Body Region</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr ID="order_imgproc-1">
+											<td ID="order_imgproc-1_procedure">XR Chest</td>
+											<td ID="order_imgproc-1_modality">Radiographic imaging</td>
+											<td ID="order_imgproc-1_bodyregion">breast structure</td>
+										</tr>
+									</tbody>
+								</table>
+							</text>
+							<!--
+									Imaging Procedure Entry
+							-->
+							<entry typeCode="DRIV">
+								<procedure classCode="PROC" moodCode="EVN">
+									<templateId root="2.16.840.1.113883.3.3731.1.204.38"/>
+									<code code="XCHES" displayName="XR Chest" codeSystem="2.16.840.1.113883.3.3731.1.204.15" codeSystemName="KSA Imaging Procedures">
+										<originalText>
+											<reference value="#order_imgproc-1_procedure"/>
+										</originalText>
+									</code>
+									<text>
+										<reference value="#order_imgproc-1"/>
+									</text>
+									<statusCode code="completed"/>
+									<methodCode code="RG" displayName="Radiographic imaging" codeSystem="1.2.840.10008.2.16.4" codeSystemName="DICOM Controlled Terminology">
+										<originalText>
+											<reference value="#order_imgproc-1_modality"/>
+										</originalText>
+									</methodCode>
+									<targetSiteCode code="76752008" displayName="breast structure" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
+										<originalText>
+											<reference value="#order_imgproc-1_bodyregion"/>
+										</originalText>
+									</targetSiteCode>
+								</procedure>
+							</entry>
+						</section>
+					</component>
+					<!--
+							*************************************************
+							Sub-Section: Procedure Indications
+							*************************************************
+					-->
+					<component>
+						<section>
+							<templateId root="2.16.840.1.113883.3.3731.1.204.36"/>
+							<code code="59768-2" displayName="Procedure Indications" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+							<title>Procedure Indications</title>
+							<text>
+								Patient feels pressure on the lungs
+							</text>
+						</section>
+					</component>
+					<!--
+							*************************************************
+							Sub-Section: Medical (General) History
+							*************************************************
+					-->
+					<component>
+						<section>
+							<templateId root="2.16.840.1.113883.3.3731.1.204.37"/>
+							<code code="11329-0" displayName="History General" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+							<title>Medical (General) History</title>
+							<text>No information</text>
+						</section>
+					</component>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Clinical Information 
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.204.27"/>
+					<code code="55752-0" displayName="Clinical Information" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Clinical Information</title>
+					<text>
+						<paragraph>
+							<content>History: Sore throat</content>
+							<content>Suspected lung tumor</content>
+						</paragraph>
+					</text>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Current Procedure Descriptions Section
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.204.29"/>
+					<code code="55111-9" displayName="Current Procedure Descriptions Section" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Current Procedure Descriptions</title>
+					<text>
+						<table>
+							<thead>
+								<tr>
+									<th>Procedure</th>
+									<th>Modality</th>
+									<th>Body Region</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ID="imgproc-1">
+									<td ID="imgproc-1_procedure">XR Chest</td>
+									<td ID="imgproc-1_modality">Radiographic imaging</td>
+									<td ID="imgproc-1_bodyregion">breast structure</td>
+								</tr>
+							</tbody>
+						</table>
+					</text>
+					<!--
+							Imaging Procedure Entry
+					-->
+					<entry typeCode="DRIV">
+						<procedure classCode="PROC" moodCode="EVN">
+							<templateId root="2.16.840.1.113883.3.3731.1.204.38"/>
+							<code code="XCHES" displayName="XR Chest" codeSystem="2.16.840.1.113883.3.3731.1.204.15" codeSystemName="KSA Imaging Procedures">
+								<originalText>
+									<reference value="#imgproc-1_procedure"/>
+								</originalText>
+							</code>
+							<text>
+								<reference value="#imgproc-1"/>
+							</text>
+							<statusCode code="completed"/>
+							<methodCode code="RG" displayName="Radiographic imaging" codeSystem="1.2.840.10008.2.16.4" codeSystemName="DICOM Controlled Terminology">
+								<originalText>
+									<reference value="#imgproc-1_modality"/>
+								</originalText>
+							</methodCode>
+							<targetSiteCode code="76752008" displayName="breast structure" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
+								<originalText>
+									<reference value="#imgproc-1_bodyregion"/>
+								</originalText>
+							</targetSiteCode>
+						</procedure>
+					</entry>
+					<!--
+							Sub-Section: Radiation Exposure and Protection Information
+					-->
+					<component>
+						<section>
+							<templateId root="2.16.840.1.113883.3.3731.1.204.31"/>
+							<code code="73569-6" displayName="Radiation Exposure and Protection Information" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+							<title>Radiation Exposure and Protection Information</title>
+							<text>No specific information</text>
+						</section>
+					</component>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Comparison / Previous Findings 
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.204.28"/>
+					<code code="18834-2" displayName="Comparison / Previous Findings" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Comparison / Previous Findings</title>
+					<text>No previous findings</text>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Findings 
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.204.30"/>
+					<code code="18782-3" displayName="Findings" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Findings</title>
+					<text>
+						<paragraph>
+							<caption>Finding</caption>
+							<content>The cardiomediastinum is within normal limits. The trachea is midline.
+                            The previously described opacity at the medial right lung base has cleared. There are no new
+                            infiltrates. There is a new round density at the left hilus,superiorly (diameter about 45mm).
+                            A CT scan is recommended for further evaluation. The pleural spaces are clear. The visualized
+                            musculoskeletal structures and the upper abdomen are stable and unremarkable.</content>
+						</paragraph>
+						<paragraph>
+							<caption>Diameter</caption>
+							<content>45mm</content>
+						</paragraph>
+					</text>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Impressions
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.204.25"/>
+					<code code="19005-8" displayName="Impressions" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Impressions</title>
+					<text>
+						<paragraph>
+							<caption>Impression</caption>
+							<content>No acute cardiopulmonary process. Round density in left superior hilus, further
+                            evaluation with CT is recommended as underlying malignancy is not excluded.</content>
+						</paragraph>
+					</text>
+					<!--
+							Sub-Section: Communication of Critical Results
+					-->
+					<component>
+						<section>
+							<templateId root="2.16.840.1.113883.3.3731.1.204.26"/>
+							<code code="73568-8" displayName="Communication of Critical Results" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+							<title>Communication of Critical Results</title>
+							<text>
+								<paragraph>
+									<content>Critical result:</content>
+									<content>Lung tumor found</content>
+								</paragraph>
+							</text>
+						</section>
+					</component>
+					<!--
+							Sub-Section: Key Images
+					-->
+					<component>
+						<section>
+							<templateId root="2.16.840.1.113883.3.3731.1.204.35"/>
+							<code code="55113-5" displayName="Key Images" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+							<title>Key Images</title>
+							<text>Maximum extent of tumor is shown in
+								<renderMultiMedia referencedObject="refimag1"/>
+							</text>
+							<entry>
+								<!-- inline rendered image -->
+								<observationMedia classCode="OBS" moodCode="EVN" ID="refimag1">
+									<templateId root="1.3.6.1.4.1.19376.1.4.1.4.7"/>
+									<id nullFlavor="UNK"/>
+									<value representation="B64" mediaType="image/jpeg">
+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
+									</value>
+								</observationMedia>
+							</entry>
+						</section>
+					</component>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Addendum
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.204.36"/>
+					<code code="55107-7" displayName="Addendum" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Addendum</title>
+					<text>No addendum</text>
+				</section>
+			</component>
+		</structuredBody>
+	</component>
+</ClinicalDocument>

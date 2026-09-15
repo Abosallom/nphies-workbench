@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soap:Envelope xmlns="urn:ihe:iti:xds-b:2007" xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0" xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:addressing="http://www.w3.org/2005/08/addressing">
+	<soap:Header>
+		<addressing:Action>urn:ihe:iti:2007:RegistryStoredQuery</addressing:Action>
+		<addressing:MessageID>urn:uuid:a54d6aa5-d40d-43f9-88c5-b4633d873bdc</addressing:MessageID>
+		<addressing:To>https://registry.com/service/xdsregistry</addressing:To>
+	</soap:Header>
+	<soap:Body>
+		<query:AdhocQueryRequest>
+			<query:ResponseOption returnComposedObjects="true" returnType="LeafClass"/>
+			<rim:AdhocQuery id="urn:uuid:14d4debf-8f97-4251-9a74-a90016b0af0d" >
+				<rim:Slot name="$XDSDocumentEntryPatientId" >
+					<rim:ValueList>
+						<rim:Value>'30000999999999^^^2.16.840.1.113883.3.3731.1.1.100.1&amp;ISO'</rim:Value>
+					</rim:ValueList>
+				</rim:Slot>
+				<rim:Slot name="$XDSDocumentEntryClassCode" >
+					<rim:ValueList>
+						<rim:Value>('SUMMARIES^^2.16.840.1.113883.3.3731.1.203.10')</rim:Value>
+					</rim:ValueList>
+				</rim:Slot>
+				<rim:Slot name="$XDSDocumentEntryTypeCode" >
+					<rim:ValueList>
+						<rim:Value>('34133-9^^2.16.840.1.113883.6.1')</rim:Value>
+					</rim:ValueList>
+				</rim:Slot>
+				<rim:Slot name="$XDSDocumentEntryHealthcareFacilityTypeCode" >
+					<rim:ValueList>
+						<rim:Value>('AP5^^2.16.840.1.113883.3.3731.1.202.2')</rim:Value>
+					</rim:ValueList>
+				</rim:Slot>
+				<rim:Slot name="$XDSDocumentEntryPracticeSettingCode" >
+					<rim:ValueList>
+						<rim:Value>('394802001^^2.16.840.1.113883.6.96')</rim:Value>
+					</rim:ValueList>
+				</rim:Slot>
+				<rim:Slot name="$XDSDocumentEntryFormatCode" >
+					<rim:ValueList>
+						<rim:Value>('urn:ihe:pcc:xphr:2007^^1.3.6.1.4.1.19376.1.2.3')</rim:Value>
+					</rim:ValueList>
+				</rim:Slot>
+				<rim:Slot name="$XDSDocumentEntryStatus" >
+					<rim:ValueList>
+						<rim:Value>('urn:oasis:names:tc:ebxml-regrep:StatusType:Approved')</rim:Value>
+					</rim:ValueList>
+				</rim:Slot>
+				<!-- EntryType: on-demand document -->
+				<rim:Slot name="$XDSDocumentEntryType" >
+					<rim:ValueList>
+						<rim:Value>('urn:uuid:34268e47-fdf5-41a6-ba33-82133c465248')</rim:Value>
+					</rim:ValueList>
+				</rim:Slot>
+			</rim:AdhocQuery>
+		</query:AdhocQueryRequest>
+	</soap:Body>
+</soap:Envelope>

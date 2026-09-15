@@ -1,0 +1,2134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ClinicalDocument xmlns="urn:hl7-org:v3" xmlns:nphies="urn:oid:2.16.840.1.113883.3.3731.1.2.2.11111111111110" xmlns:pharm="urn:ihe:pharm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<realmCode code="SA"/>
+	<typeId extension="POCD_HD000040" root="2.16.840.1.113883.1.3"/>
+	<templateId root="2.16.840.1.113883.3.3731.1.210.3"/>
+	<id root="2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.100.1" extension="MaternalDisSum123456789"/>
+	<code code="97702-5" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Maternal and Fetal Medicine Discharge Summary"/>
+	<title>Maternal Discharge Summary</title>
+	<nphies:documentStatus code="final" codeSystem="2.16.840.1.113883.4.642.4.236" codeSystemName="FHIRDiagnosticReportStatus" displayName="Final"/>
+	<effectiveTime value="20210602080000+0300"/>
+	<confidentialityCode code="N" codeSystem="2.16.840.1.113883.5.25" displayName="normal"/>
+	<languageCode code="ar-SA"/>
+	<setId root="2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.100.1" extension="MaternalDisSum123456789"/>
+	<versionNumber value="1"/>
+	<!-- Patient -->
+	<recordTarget>
+		<patientRole>
+			<templateId root="2.16.840.1.113883.3.3731.1.203.28.1"/>
+			<id extension="30000999999999" root="2.16.840.1.113883.3.3731.1.1.100.1"/>
+			<addr>
+				<streetAddressLine>2448 Zarga Alyamamah St</streetAddressLine>
+				<city>Riyadh</city>
+				<postalCode>13337</postalCode>
+				<country>Saudi Arabia</country>
+			</addr>
+			<telecom value="tel:+974.143.47333"/>
+			<patient>
+				<name use="L ABC">
+					<family>ALQAHTANI</family>
+					<given>YAHYA</given>
+					<given>SAEED A</given>
+					<suffix>Jr</suffix>
+				</name>
+				<administrativeGenderCode code="M" displayName="Male" codeSystem="2.16.840.1.113883.5.1"/>
+				<birthTime value="19761230"/>
+				<maritalStatusCode code="S" displayName="Single" codeSystem="2.16.840.1.113883.5.2"/>
+				<religiousAffiliationCode code="1" displayName="Islam" codeSystem="2.16.840.1.113883.3.3731.1.202.10"/>
+				<guardian>
+					<addr>
+						<streetAddressLine>1234 Guardian St</streetAddressLine>
+						<city>Riyadh</city>
+						<postalCode>13337</postalCode>
+						<country>Saudi Arabia</country>
+					</addr>
+					<telecom value="tel:+974.143.2345678"/>
+					<guardianPerson>
+						<name>ALQAHTANI Heba (mother)</name>
+					</guardianPerson>
+				</guardian>
+				<languageCommunication>
+					<languageCode code="ara"/>
+				</languageCommunication>
+			</patient>
+		</patientRole>
+	</recordTarget>
+	<!-- Author -->
+	<author>
+		<templateId root="2.16.840.1.113883.3.3731.1.203.28.3"/>
+		<functionCode code="100000003" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" displayName="Medicine and Surgery"/>
+		<time value="20130829124538+0300"/>
+		<assignedAuthor>
+			<id extension="05RM14422" root="2.16.840.1.113883.3.3731.1.2.1"/>
+			<code code="179D7C6B-62F9-E811-B80F-005056AD2FD8" codeSystem="2.16.840.1.113883.3.3731.1.202.5" codeSystemName="Healthcare Specialty Identifier" displayName="Obstetrics and Gynecology"/>
+			<addr>
+				<streetAddressLine>3920 Mathar Alshibani St</streetAddressLine>
+				<city>Riyadh</city>
+				<postalCode>12629</postalCode>
+				<country>Saudi Arabia</country>
+			</addr>
+			<telecom value="tel:+966920011223"/>
+			<assignedPerson>
+				<name>
+					<prefix>Dr</prefix>
+					<family>Khan</family>
+					<given>Aditya</given>
+				</name>
+			</assignedPerson>
+			<representedOrganization>
+				<id extension="11000000002333" root="2.16.840.1.113883.3.3731.1.2.2"/>
+				<name>International University Hospital</name>
+				<!-- no more detailed telecom provided as for assignedAuthor, nullFlavor is used -->
+				<telecom nullFlavor="NI"/>
+				<!-- no more detailed address provided as for assignedAuthor, nullFlavor is used -->
+				<addr nullFlavor="NI"/>
+			</representedOrganization>
+		</assignedAuthor>
+	</author>
+	<!-- Custodian of the document -->
+	<custodian>
+		<assignedCustodian>
+			<representedCustodianOrganization>
+				<templateId root="2.16.840.1.113883.3.3731.1.203.28.4"/>
+				<id extension="11000000002333" root="2.16.840.1.113883.3.3731.1.2.2"/>
+				<name>International University Hospital</name>
+				<telecom value="tel:+966920011223"/>
+				<addr>
+					<streetAddressLine>3920 Mathar Alshibani St</streetAddressLine>
+					<city>Riyadh</city>
+					<postalCode>12629</postalCode>
+					<country>Saudi Arabia</country>
+				</addr>
+			</representedCustodianOrganization>
+		</assignedCustodian>
+	</custodian>
+	<!-- Legal authenticator -->
+	<legalAuthenticator>
+		<templateId root="2.16.840.1.113883.3.3731.1.203.28.5"/>
+		<time value="20210602123500+0300"/>
+		<signatureCode code="S"/>
+		<assignedEntity>
+			<id extension="13KA0054149" root="2.16.840.1.113883.3.3731.1.2.1"/>
+			<!-- same address as for author, nullFlavor is used -->
+			<addr nullFlavor="NI"/>
+			<!-- same telecom as for author, nullFlavor is used -->
+			<telecom nullFlavor="NI"/>
+			<assignedPerson>
+				<name use="L">
+					<prefix>Dr.</prefix>
+					<family>GOPAL</family>
+					<given>Arjun</given>
+				</name>
+			</assignedPerson>
+		</assignedEntity>
+	</legalAuthenticator>
+	<!-- Nationality of the patient -->
+	<participant typeCode="SBJ">
+		<associatedEntity classCode="CIT">
+			<templateId root="2.16.840.1.113883.3.3731.1.203.28.2"/>
+			<code code="SAU" codeSystem="1.0.3166.1"/>
+		</associatedEntity>
+	</participant>
+	<!--
+			Performer (assisting person prior to entering the Emergency Department)
+	-->
+	<documentationOf>
+		<serviceEvent>
+			<performer typeCode="PRF">
+				<templateId root="2.16.840.1.113883.3.3731.1.203.28.7"/>
+				<time value="20210602123500+0300"/>
+				<assignedEntity>
+					<id extension="17JP0032773" root="2.16.840.1.113883.3.3731.1.2.1"/>
+					<!-- same address as for author, nullFlavor is used -->
+					<addr nullFlavor="NI"/>
+					<!-- same telecom as for author, nullFlavor is used -->
+					<telecom nullFlavor="NI"/>
+					<assignedPerson>
+						<name>
+							<family>PARAMEDIC</family>
+							<given>Osama</given>
+						</name>
+					</assignedPerson>
+				</assignedEntity>
+			</performer>
+		</serviceEvent>
+	</documentationOf>
+	<!--
+			Encounter
+	-->
+	<componentOf>
+		<encompassingEncounter>
+			<templateId root="2.16.840.1.113883.3.3731.1.105.7"/>
+			<!-- Identifier of the patient's encounter -->
+			<id extension="5433" root="2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.300.1"/>
+			<code code="D" displayName="Inpatient Daycase" codeSystem="2.16.840.1.113883.18.5" codeSystemName="HL7 Patient Class"/>
+			<effectiveTime>
+				<low value="20130829060525+0300"/>
+				<high value="20130829124538+0300"/>
+			</effectiveTime>
+			<location>
+				<healthCareFacility>
+					<id extension="11000000002333" root="2.16.840.1.113883.3.3731.1.2.2"/>
+					<serviceProviderOrganization>
+						<name>International University Hospital</name>
+					</serviceProviderOrganization>
+				</healthCareFacility>
+			</location>
+		</encompassingEncounter>
+	</componentOf>
+	<!--
+			=================================================
+			=================================================
+			=================================================
+
+			Clinical Content (structured)
+
+			=================================================
+			=================================================
+			=================================================
+	-->
+	<component>
+		<structuredBody>
+			<!--
+					=================================================
+					Section: Chief Complaint
+
+						The Chief Complaint Section contains a free text subjective statement made by a patient describing the most significant or serious symptoms or signs of illness or dysfunction that caused him or her to seek healthcare.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.1"/>
+					<templateId root="1.3.6.1.4.1.19376.1.5.3.1.1.13.2.1"/>
+					<code code="10154-3" displayName="CHIEF COMPLAINT" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Chief Complaint</title>
+					<text>
+						This is the chief complaint of the patient.
+					</text>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Hospital Admission Diagnosis Section
+
+						The Hospital Admission Diagnosis Section contains a description of the primary reason for the encounter.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.17"/>
+					<templateId root="1.3.6.1.4.1.19376.1.5.3.1.3.3"/>
+					<code code="46241-6" displayName="HOSPITAL ADMISSION DX" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Admitting Diagnosis</title>
+					<text>
+						<table>
+							<thead>
+								<tr>
+									<th>Diagnosis</th>
+									<th>Date from</th>
+									<th>Date to</th>
+									<th>Status</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ID="admdiag-1">
+									<td ID="admdiag-1_diagnosis">M25.46, Effusion of joint, lower leg</td>
+									<td>2021.01.23</td>
+									<td>-</td>
+									<td>Active</td>
+								</tr>
+							</tbody>
+						</table>
+					</text>
+					<entry typeCode="DRIV">
+						<act classCode="ACT" moodCode="EVN">
+							<templateId root="2.16.840.1.113883.3.3731.1.210.100.43"/>
+							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1"/>
+							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.2"/>
+							<templateId root="2.16.840.1.113883.10.20.1.27"/>
+							<id nullFlavor="NI"/>
+							<code nullFlavor="NA"/>
+							<statusCode code="active"/>
+							<effectiveTime>
+								<low value="20210123"/>
+							</effectiveTime>
+							<entryRelationship typeCode="SUBJ" inversionInd="false">
+								<observation classCode="OBS" moodCode="EVN">
+									<templateId root="2.16.840.1.113883.3.3731.1.210.100.44"/>
+									<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5"/>
+									<templateId root="2.16.840.1.113883.10.20.1.28"/>
+									<id root="DBA414DE-6B92-4D74-30D1-46BC36770F79"/>
+									<code code="282291009" displayName="Diagnosis" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT"/>
+									<text>
+										<reference value="#admdiag-1"/>
+									</text>
+									<statusCode code="completed"/>
+									<effectiveTime>
+										<low value="20210123"/>
+									</effectiveTime>
+									<value xsi:type="CD" code="M25.46" displayName="Effusion of joint, lower leg" codeSystem="2.16.840.1.113883.6.135" codeSystemName="ICD10-AM">
+										<originalText>
+											<reference value="#admdiag-1_diagnosis"/>
+										</originalText>
+									</value>
+								</observation>
+							</entryRelationship>
+						</act>
+					</entry>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: History of Present Illness Section
+
+						The History of Present Illness Section describes the history related to the reason for the encounter.
+						It contains the historical details leading up to and pertaining to the patient’s current complaint or reason for seeking medical care.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.4"/>
+					<templateId root="1.3.6.1.4.1.19376.1.5.3.1.3.4"/>
+					<code code="10164-2" displayName="HISTORY OF PRESENT ILLNESS" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>History of Present Illness</title>
+					<text>
+						This is the history of the present illness of the patient.
+					</text>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Pregnancy History Section
+
+						The Pregnancy History contains information gathered about a woman’s prior pregnancies, how the baby was born and any problems related to the pregnancy.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.23"/>
+					<templateId root="1.3.6.1.4.1.19376.1.5.3.1.1.5.3.4"/>
+					<code code="10162-6" displayName="HISTORY OF PREGNANCIES" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Pregnancy History</title>
+					<text>
+						<table>
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>Value</th>
+									<th>Time of measurement</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ID="preghist-1">
+									<td ID="preghist-1_type">BIRTHS LIVE (REPORTED)</td>
+									<td ID="preghist-1_value">2</td>
+									<td>2021.06.02 08:00:00</td>
+								</tr>
+								<tr ID="preghist-2">
+									<td ID="preghist-2_type">PREGNANCY STATUS</td>
+									<td ID="preghist-2_value">Patient currently pregnant (finding)</td>
+									<td>2021.06.02 08:00:00</td>
+								</tr>
+								<tr ID="preghist-3">
+									<td ID="preghist-3_type">FETUS, GESTATIONAL AGE (CLINICAL ESTIMATE)</td>
+									<td ID="preghist-3_value">8 weeks</td>
+									<td>2021.06.02 08:00:00</td>
+								</tr>
+								<tr ID="preghist-4">
+									<td ID="preghist-4_type">MULTIPLE PREGNANCY</td>
+									<td ID="preghist-4_value">No</td>
+									<td>2021.06.02 08:00:00</td>
+								</tr>
+							</tbody>
+						</table>
+					</text>
+					<entry typeCode="DRIV">
+						<observation classCode="OBS" moodCode="EVN">
+							<templateId root="2.16.840.1.113883.3.3731.1.210.100.58"/>
+							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.13.5"/>
+							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.13"/>
+							<id root="E6F45742-BA20-7224-15A0-6D8836E96123"/>
+							<code code="11636-8" displayName="BIRTHS LIVE (REPORTED)" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC">
+								<originalText>
+									<reference value="#preghist-1_type"/>
+								</originalText>
+							</code>
+							<text>
+								<reference value="#preghist-1"/>
+							</text>
+							<statusCode code="completed"/>
+							<effectiveTime value="20210602080000+0300"/>
+							<value xsi:type="INT" value="2"/>
+						</observation>
+					</entry>
+					<entry typeCode="DRIV">
+						<observation classCode="OBS" moodCode="EVN">
+							<templateId root="2.16.840.1.113883.3.3731.1.210.100.58"/>
+							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.13.5"/>
+							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.13"/>
+							<id root="E6F45742-BA20-7224-15A0-6D8836E96456"/>
+							<code code="11449-6" displayName="PREGNANCY STATUS" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC">
+								<originalText>
+									<reference value="#preghist-2_type"/>
+								</originalText>
+							</code>
+							<text>
+								<reference value="#preghist-2"/>
+							</text>
+							<statusCode code="completed"/>
+							<effectiveTime value="20210602080000+0300"/>
+							<value xsi:type="CE" code="77386006" displayName="Patient currently pregnant (finding)" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
+								<originalText>
+									<reference value="#preghist-2_value"/>
+								</originalText>
+							</value>
+						</observation>
+					</entry>
+					<entry typeCode="DRIV">
+						<observation classCode="OBS" moodCode="EVN">
+							<templateId root="2.16.840.1.113883.3.3731.1.210.100.58"/>
+							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.13.5"/>
+							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.13"/>
+							<id root="E6F45742-BA20-7224-15A0-6D8836E96456"/>
+							<code code="11884-4" displayName="FETUS, GESTATIONAL AGE (CLINICAL ESTIMATE)" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC">
+								<originalText>
+									<reference value="#preghist-3_type"/>
+								</originalText>
+							</code>
+							<text>
+								<reference value="#preghist-3"/>
+							</text>
+							<statusCode code="completed"/>
+							<effectiveTime value="20210602080000+0300"/>
+							<value xsi:type="PQ" value="8" unit="wk"/>
+						</observation>
+					</entry>
+					<entry typeCode="DRIV">
+						<observation classCode="OBS" moodCode="EVN">
+							<templateId root="2.16.840.1.113883.3.3731.1.210.100.58"/>
+							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.13.5"/>
+							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.13"/>
+							<id root="E6F45742-BA20-7224-15A0-6D8836E96456"/>
+							<code code="45371-2" displayName="MULTIPLE PREGNANCY" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC">
+								<originalText>
+									<reference value="#preghist-4_type"/>
+								</originalText>
+							</code>
+							<text>
+								<reference value="#preghist-4"/>
+							</text>
+							<statusCode code="completed"/>
+							<effectiveTime value="20210602080000+0300"/>
+							<value xsi:type="BL" value="false"/>
+						</observation>
+					</entry>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Allergies and Adverse Reactions Section
+
+						The Allergies and Adverse Reactions Section is used to record both environmental and drug allergies, as well as the adverse reactions.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.8"/>
+					<templateId root="1.3.6.1.4.1.19376.1.5.3.1.3.13"/>
+					<templateId root="2.16.840.1.113883.10.20.1.2"/>
+					<code code="48765-2" displayName="ALLERGIES, ADVERSE REACTIONS, ALERTS" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Allergies and Adverse Reactions</title>
+					<text>
+						<table>
+							<thead>
+								<tr>
+									<th>Allergy Type</th>
+									<th>Allergy Substance</th>
+									<th>Date from</th>
+									<th>Date to</th>
+									<th>Status</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ID="allergy-1">
+									<td ID="allergy-1_type">ALG, Allergy (other than drug or food)</td>
+									<td ID="allergy-1_substance">427618005, Dextroamphetamine</td>
+									<td>Unknown</td>
+									<td>-</td>
+									<td>Active</td>
+								</tr>
+							</tbody>
+						</table>
+					</text>
+					<entry typeCode="DRIV">
+						<act classCode="ACT" moodCode="EVN">
+							<templateId root="2.16.840.1.113883.3.3731.1.210.100.51"/>
+							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1"/>
+							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.3"/>
+							<templateId root="2.16.840.1.113883.10.20.1.27"/>
+							<id nullFlavor="NI"/>
+							<code nullFlavor="NA"/>
+							<statusCode code="active"/>
+							<!-- the start of that allergy is unknown, since it's "active", the high element is omitted -->
+							<effectiveTime>
+								<low nullFlavor="UNK"/>
+							</effectiveTime>
+							<entryRelationship typeCode="SUBJ" inversionInd="false">
+								<observation classCode="OBS" moodCode="EVN">
+									<templateId root="2.16.840.1.113883.3.3731.1.210.100.52"/>
+									<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5"/>
+									<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.6"/>
+									<templateId root="2.16.840.1.113883.10.20.1.18"/>
+									<id root="DBA414DE-6B92-4D74-30D1-46BC36770F79"/>
+									<code code="ALG" displayName="Allergy (other than drug or food)" codeSystem="2.16.840.1.113883.5.4" codeSystemName="HL7 ActCodes">
+										<originalText>
+											<reference value="#allergy-1_type"/>
+										</originalText>
+									</code>
+									<text>
+										<reference value="#allergy-1"/>
+									</text>
+									<statusCode code="completed"/>
+									<effectiveTime>
+										<low nullFlavor="UNK"/>
+									</effectiveTime>
+									<value xsi:type="CD" nullFlavor="NA"/>
+									<participant typeCode="CSM">
+										<participantRole classCode="MANU">
+											<playingEntity classCode="MMAT">
+												<code code="427618005" displayName="Dextroamphetamine" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
+													<originalText>
+														<reference value="#allergy-1_substance"/>
+													</originalText>
+												</code>
+											</playingEntity>
+										</participantRole>
+									</participant>
+								</observation>
+							</entryRelationship>
+						</act>
+					</entry>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Active Problems Section
+
+						Problem List Section contains the problems currently being monitored for the patient, including currently active and recently resolved problems.
+
+						This example shows "no problems", reflecting the situation, that the patient shows no other problems as the one which led to this hospital stay.
+						See the Admitting Diagnosis section for the Diagnosis, which led to this hospital stay.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.3"/>
+					<templateId root="1.3.6.1.4.1.19376.1.5.3.1.3.6"/>
+					<templateId root="2.16.840.1.113883.10.20.1.11"/>
+					<code code="11450-4" displayName="PROBLEM LIST" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Active problems</title>
+					<text>
+						<table>
+							<thead>
+								<tr>
+									<th>Diagnosis</th>
+									<th>Date from</th>
+									<th>Date to</th>
+									<th>Status</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ID="actproblem-1">
+									<td ID="actproblem-1_diagnosis">160245001, No current problems or disability</td>
+									<td>-</td>
+									<td>-</td>
+									<td>Completed</td>
+								</tr>
+							</tbody>
+						</table>
+					</text>
+					<entry typeCode="DRIV">
+						<act classCode="ACT" moodCode="EVN">
+							<templateId root="2.16.840.1.113883.3.3731.1.210.100.43"/>
+							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1"/>
+							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.2"/>
+							<templateId root="2.16.840.1.113883.10.20.1.27"/>
+							<id nullFlavor="NI"/>
+							<code nullFlavor="NA"/>
+							<statusCode code="completed"/>
+							<effectiveTime nullFlavor="NA">
+								<low nullFlavor="UNK"/>
+								<high nullFlavor="UNK"/>
+							</effectiveTime>
+							<entryRelationship typeCode="SUBJ" inversionInd="false">
+								<observation classCode="OBS" moodCode="EVN">
+									<templateId root="2.16.840.1.113883.3.3731.1.210.100.44"/>
+									<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5"/>
+									<templateId root="2.16.840.1.113883.10.20.1.28"/>
+									<id root="DBA414DE-6B92-4D74-30D1-46BC36770F79"/>
+									<code code="282291009" displayName="Diagnosis" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT"/>
+									<text>
+										<reference value="#actproblem-1"/>
+									</text>
+									<statusCode code="completed"/>
+									<effectiveTime nullFlavor="NA">
+										<low nullFlavor="UNK"/>
+										<high nullFlavor="UNK"/>
+									</effectiveTime>
+									<value xsi:type="CD" code="160245001" displayName="No current problems or disability" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
+										<originalText>
+											<reference value="#actproblem-1_diagnosis"/>
+										</originalText>
+									</value>
+								</observation>
+							</entryRelationship>
+						</act>
+					</entry>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Admission Medications History Section
+
+						The Admission Medications History Section contains the information on a patient’s current and relevant medications as part of the admission to the Hospital.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.16"/>
+					<templateId root="1.3.6.1.4.1.19376.1.5.3.1.3.20"/>
+					<code code="42346-7" displayName="MEDICATIONS ON ADMISSION" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Medications History on Admission</title>
+					<text>
+						<table ID="medadmission-1">
+							<tbody>
+								<tr>
+									<td>Medication Item</td>
+									<td>1</td>
+								</tr>
+								<tr>
+									<td>Medication ID</td>
+									<td>CE1215CD-69EC-4C7B-805F-569233C5E159</td>
+								</tr>
+								<tr>
+									<td>Medication Name</td>
+									<td>cardex 5 mg tablet</td>
+								</tr>
+								<tr>
+									<td>Medication Code</td>
+									<td>
+										<content ID="medadmission-1_prodcode">240102-0222-6410-02-04</content>
+									</td>
+								</tr>
+								<tr>
+									<td>Pharmaceutical Dose Form</td>
+									<td>
+										<content ID="medadmission-1_doseform">6410 - tablet, film coated</content>
+									</td>
+								</tr>
+								<tr>
+									<td>Start / End / Duration of treatment</td>
+									<td>for 3 weeks</td>
+								</tr>
+								<tr>
+									<td>Dose / Frequency</td>
+									<td>
+										<content ID="medadmission-1_dose">4 tablets</content> / 2 times per day
+									</td>
+								</tr>
+								<tr>
+									<td>Route of Administration</td>
+									<td>
+										<content ID="medadmission-1_route">oral route</content>
+									</td>
+								</tr>
+								<tr>
+									<td>Approach Site</td>
+									<td>-</td>
+								</tr>
+								<tr>
+									<td>Patient Medication Instructions</td>
+									<td>
+										<content ID="medadmission-1_pinstruct">4 tablets, 2 times per day, for 3 weeks, oral route, with plenty of water</content>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<table ID="medadmission-2">
+							<tbody>
+								<tr>
+									<td>Medication Item</td>
+									<td>2</td>
+								</tr>
+								<tr>
+									<td>Medication ID</td>
+									<td>CE1215CD-69EC-4C7B-805F-569233C5E158</td>
+								</tr>
+								<tr>
+									<td>Medication Name</td>
+									<td>croma 40 and 0.5 mg/ml solution/ drops</td>
+								</tr>
+								<tr>
+									<td>Medication Code</td>
+									<td>
+										<content ID="medadmission-2_prodcode">800402-0130-5406-01-06</content>
+									</td>
+								</tr>
+								<tr>
+									<td>Pharmaceutical Dose Form</td>
+									<td>
+										<content ID="medadmission-2_doseform">5406 - solution/ drops</content>
+									</td>
+								</tr>
+								<tr>
+									<td>Start / End / Duration of treatment</td>
+									<td>from 2021.01.23 to 2021.01.26</td>
+								</tr>
+								<tr>
+									<td>Dose / Frequency</td>
+									<td>
+										<content ID="medadmission-2_dosecomp-1">Morning (before breakfast):
+											<content ID="medadmission-2_dosequantity-1">1 drop(s)</content>
+										</content>
+										<content ID="medadmission-2_dosecomp-2">Evening (before dinner):
+											<content ID="medadmission-2_dosequantity-2">2 drop(s)</content>
+										</content>
+									</td>
+								</tr>
+								<tr>
+									<td>Route of Administration</td>
+									<td>
+										<content ID="medadmission-2_route">ophthalmic route</content>
+									</td>
+								</tr>
+								<tr>
+									<td>Approach Site</td>
+									<td>
+										<content ID="medadmission-2_approach">both eyes</content>
+									</td>
+								</tr>
+								<tr>
+									<td>Patient Medication Instructions</td>
+									<td>
+										<content ID="medadmission-2_pinstruct">Morning (before breakfast): 1 drop(s) and Evening (before dinner): 2 drop(s), from 2021.01.23 to 2021.01.26, ophthalmic route, both eyes</content>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</text>
+					<entry typeCode="DRIV">
+						<!--
+							=========================================================================
+								Medication Item 1 (intended medication / prescription):
+
+								cardex 5 mg tablet, 4 tablets 2 times per day, for 3 weeks, oral route, with plenty of water
+							=========================================================================
+						-->
+						<substanceAdministration classCode="SBADM" moodCode="INT">
+							<templateId root="2.16.840.1.113883.3.3731.1.210.100.45"/>
+							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.7"/>
+							<templateId root="2.16.840.1.113883.10.20.1.24"/>
+							<!-- 
+									Template Ids for Dosing Variant 1: Normal Dosing
+													↓
+							-->
+							<templateId root="2.16.840.1.113883.3.3731.1.210.100.46"/>
+							<templateId root="1.3.6.1.4.1.19376.1.9.1.3.6"/>
+							<!-- Normal Dosing -->
+							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.7.1"/>
+							<!-- Delayed Start Dosing, because 'width' is used -->
+							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.21"/>
+							<!-- Medication Item ID -->
+							<id root="CE1215CD-69EC-4C7B-805F-569233C5E159"/>
+							<text>
+								<reference value="#medadmission-1"/>
+							</text>
+							<statusCode code="completed"/>
+							<!-- Duration of treatment -->
+							<effectiveTime xsi:type="IVL_TS">
+								<!-- Duration: 3 weeks -->
+								<width value="3" unit="wk"/>
+							</effectiveTime>
+							<!-- Frequency -->
+							<effectiveTime xsi:type="PIVL_TS" operator="A" institutionSpecified="true">
+								<!-- 2 times per day -->
+								<period value="2" unit="d"/>
+							</effectiveTime>
+							<!-- Route of Administration -->
+							<routeCode code="26643006" displayName="oral route" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
+								<originalText>
+									<reference value="#medadmission-1_route"/>
+								</originalText>
+							</routeCode>
+							<!-- Dose Quantity -->
+							<doseQuantity value="4" unit="{tablet}">
+								<translation>
+									<originalText>
+										<reference value="#medadmission-1_dose"/>
+									</originalText>
+								</translation>
+							</doseQuantity>
+							<!-- Medication -->
+							<consumable>
+								<manufacturedProduct classCode="MANU">
+									<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.7.2"/>
+									<templateId root="2.16.840.1.113883.10.20.1.53"/>
+									<manufacturedMaterial classCode="MMAT" determinerCode="KIND">
+										<code code="240102-0222-6410-02-04" displayName="cardex 5 mg tablet" codeSystem="2.16.840.1.113883.3.3731.1.205.2" codeSystemName="KSA Dispensation Pharmacy Item Name">
+											<originalText>
+												<reference value="#medadmission-1_prodcode"/>
+											</originalText>
+										</code>
+										<name>cardex 5 mg tablet</name>
+										<pharm:formCode code="6410" displayName="tablet, film coated" codeSystem="2.16.840.1.113883.3.3731.1.205.8" codeSystemName="KSA Medication Pharmaceutical Dose Form">
+											<originalText>
+												<reference value="#medadmission-1_doseform"/>
+											</originalText>
+										</pharm:formCode>
+										<pharm:ingredient classCode="ACTI">
+											<pharm:quantity>
+												<numerator xsi:type="PQ" value="5" unit="mg"/>
+												<denominator xsi:type="INT" value="1"/>
+											</pharm:quantity>
+										</pharm:ingredient>
+									</manufacturedMaterial>
+								</manufacturedProduct>
+							</consumable>
+							<!-- Patient Medication Instructions -->
+							<entryRelationship typeCode="SUBJ" inversionInd="true">
+								<act classCode="ACT" moodCode="INT">
+									<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.3"/>
+									<templateId root="2.16.840.1.113883.10.20.1.49"/>
+									<code code="PINSTRUCT" codeSystem="1.3.6.1.4.1.19376.1.5.3.2" codeSystemName="IHEActCode"/>
+									<text>
+										<reference value="#medadmission-1_pinstruct"/>
+									</text>
+									<statusCode code="completed"/>
+								</act>
+							</entryRelationship>
+						</substanceAdministration>
+					</entry>
+					<entry typeCode="DRIV">
+						<!--
+							=========================================================================
+								Medication Item 2 (currently taken medication):
+
+								Croma Eye Drop, Morning (before breakfast): 1 drop(s) and Evening (before dinner): 2 drop(s), from 2021.01.23 to 2021.01.26, ophthalmic route, both eyes
+							=========================================================================
+						-->
+						<substanceAdministration classCode="SBADM" moodCode="EVN">
+							<templateId root="2.16.840.1.113883.3.3731.1.210.100.45"/>
+							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.7"/>
+							<templateId root="2.16.840.1.113883.10.20.1.24"/>
+							<!-- 
+									Template Ids for Dosing Variant 2: Split Dosing
+													↓
+							-->
+							<templateId root="2.16.840.1.113883.3.3731.1.210.100.47"/>
+							<templateId root="1.3.6.1.4.1.19376.1.9.1.3.6"/>
+							<!-- Split Dosing -->
+							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.9"/>
+							<!-- Medication Item ID -->
+							<id root="CE1215CD-69EC-4C7B-805F-569233C5E158"/>
+							<text>
+								<reference value="#medadmission-2"/>
+							</text>
+							<statusCode code="completed"/>
+							<!-- Duration of treatment -->
+							<effectiveTime xsi:type="IVL_TS">
+								<low value="20210123"/>
+								<high value="20210126"/>
+							</effectiveTime>
+							<!-- Route of Administration -->
+							<routeCode code="54485002" displayName="ophthalmic route" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
+								<originalText>
+									<reference value="#medadmission-2_route"/>
+								</originalText>
+							</routeCode>
+							<!-- Approachsite -->
+							<approachSiteCode code="362508001" displayName="both eyes" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
+								<originalText>
+									<reference value="#medadmission-2_approach"/>
+								</originalText>
+							</approachSiteCode>
+							<!-- Medication -->
+							<consumable>
+								<manufacturedProduct classCode="MANU">
+									<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.7.2"/>
+									<templateId root="2.16.840.1.113883.10.20.1.53"/>
+									<manufacturedMaterial classCode="MMAT" determinerCode="KIND">
+										<code code="800402-0130-5406-01-06" displayName="croma 40 and 0.5 mg/ml solution/ drops" codeSystem="2.16.840.1.113883.3.3731.1.205.2" codeSystemName="KSA Dispensation Pharmacy Item Name">
+											<originalText>
+												<reference value="#medadmission-2_prodcode"/>
+											</originalText>
+										</code>
+										<name>croma 40 and 0.5 mg/ml solution/ drops</name>
+										<pharm:formCode code="5406" displayName="solution/ drops" codeSystem="2.16.840.1.113883.3.3731.1.205.8" codeSystemName="KSA Medication Pharmaceutical Dose Form">
+											<originalText>
+												<reference value="#medadmission-2_formcode"/>
+											</originalText>
+										</pharm:formCode>
+										<!-- ingredient is omitted, because it's a combination of 2 ingredients -->
+									</manufacturedMaterial>
+								</manufacturedProduct>
+							</consumable>
+							<!-- components of the split dosing -->
+							<entryRelationship typeCode="COMP">
+								<!-- Intake: Morning (before breakfast), 1 drop -->
+								<sequenceNumber value="1"/>
+								<substanceAdministration classCode="SBADM" moodCode="INT">
+									<text>
+										<reference value="#medadmission-2_dosecomp-1"/>
+									</text>
+									<effectiveTime xsi:type="EIVL_TS">
+										<event code="ACM"/>
+										<offset value="0" unit="s"/>
+									</effectiveTime>
+									<doseQuantity value="1" unit="{drop}">
+										<translation>
+											<originalText>
+												<reference value="#medadmission-2_dosequantity-1"/>
+											</originalText>
+										</translation>
+									</doseQuantity>
+									<consumable>
+										<manufacturedProduct>
+											<manufacturedMaterial nullFlavor="NA"/>
+										</manufacturedProduct>
+									</consumable>
+								</substanceAdministration>
+							</entryRelationship>
+							<entryRelationship typeCode="COMP">
+								<!-- Intake: Evening (before dinner), 2 drops -->
+								<sequenceNumber value="2"/>
+								<substanceAdministration classCode="SBADM" moodCode="INT">
+									<text>
+										<reference value="#medadmission-2_dosecomp-2"/>
+									</text>
+									<effectiveTime xsi:type="EIVL_TS">
+										<event code="ACV"/>
+										<offset value="0" unit="s"/>
+									</effectiveTime>
+									<doseQuantity value="2" unit="{drop}">
+										<translation>
+											<originalText>
+												<reference value="#medadmission-2_dosequantity-2"/>
+											</originalText>
+										</translation>
+									</doseQuantity>
+									<consumable>
+										<manufacturedProduct>
+											<manufacturedMaterial nullFlavor="NA"/>
+										</manufacturedProduct>
+									</consumable>
+								</substanceAdministration>
+							</entryRelationship>
+							<!-- Patient Medication Instructions -->
+							<entryRelationship typeCode="SUBJ" inversionInd="true">
+								<act classCode="ACT" moodCode="INT">
+									<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.3"/>
+									<templateId root="2.16.840.1.113883.10.20.1.49"/>
+									<code code="PINSTRUCT" codeSystem="1.3.6.1.4.1.19376.1.5.3.2" codeSystemName="IHEActCode"/>
+									<text>
+										<reference value="#medadmission-2_pinstruct"/>
+									</text>
+									<statusCode code="completed"/>
+								</act>
+							</entryRelationship>
+						</substanceAdministration>
+					</entry>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Blood Group Coded Results Section
+
+						The Blood Group Coded Results Section contains observations on the Blood Group of the patient.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.14"/>
+					<code code="30954-2" displayName="STUDIES SUMMARY" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Blood Group Test Results</title>
+					<text>
+						<table>
+							<tbody>
+								<tr>
+									<td>Code</td>
+									<td>Blood group</td>
+								</tr>
+								<tr ID="bloodgroup">
+									<td ID="bloodgroup_code">278147001</td>
+									<td>Blood group O Rh(D) positive</td>
+								</tr>
+							</tbody>
+						</table>
+					</text>
+					<entry typeCode="DRIV">
+						<observation classCode="OBS" moodCode="DEF">
+							<templateId root="2.16.840.1.113883.3.3731.1.210.100.56"/>
+							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.13"/>
+							<id root="CE1215CD-69EC-4C7B-805F-569233C5E1510"/>
+							<code code="882-1" displayName="ABO and Rh group [Type] in Blood" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+							<text>
+								<reference value="#bloodgroup"/>
+							</text>
+							<statusCode code="completed"/>
+							<effectiveTime value="20210730083000+0300"/>
+							<value xsi:type="CD" code="278147001" displayName="Blood group O Rh(D) positive" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
+								<originalText>
+									<reference value="#bloodgroup_code"/>
+								</originalText>
+							</value>
+						</observation>
+					</entry>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Hospital Course Section
+
+						The Hospital Course Section describes the sequence of events during the course of the hospital stay.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.21"/>
+					<templateId root="1.3.6.1.4.1.19376.1.5.3.1.3.5"/>
+					<code code="8648-8" displayName="HOSPITAL COURSE" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Hospital Course</title>
+					<text>
+						This is the narrative description of the hospital course
+					</text>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Labor and Delivery Events
+
+						Labor and Delivery Events shall include information about the delivery type (e.g. vaginal, vaginal birth after cesarean section), whether an episiotomy was done,
+						and if a treatment for RH Factor was needed. In the case of non-hospital delivery outcome information on how the cord was handled and if the environment was sterile.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.24"/>
+					<templateId root="1.3.6.1.4.1.19376.1.5.3.1.1.13.2.11"/>
+					<code code="29544-3" displayName="PROCEDURES" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Labor and Delivery Events</title>
+					<text>
+						<table>
+							<thead>
+								<tr>
+									<th>Procedure</th>
+									<th>Date/Time</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ID="laboranddeliveryevents">
+									<td ID="laboranddeliveryevents_procedure">Vaginal - non-instrumental</td>
+									<td>2019.01.23, 10:00:00</td>
+								</tr>
+							</tbody>
+						</table>
+					</text>
+					<entry typeCode="DRIV">
+						<procedure classCode="PROC" moodCode="EVN">
+							<templateId root="2.16.840.1.113883.3.3731.1.210.100.59"/>
+							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.19"/>
+							<templateId root="2.16.840.1.113883.10.20.1.29"/>
+							<id root="DBA414DE-6B92-4D74-30D1-46BC36770F79"/>
+							<code code="1" displayName="Vaginal - non-instrumental" codeSystem="2.16.840.1.113883.3.3731.1.203.22" codeSystemName="KSA Mode of Delivery">
+								<originalText>
+									<reference value="#laboranddeliveryevents_procedure"/>
+								</originalText>
+							</code>
+							<text>
+								<reference value="#laboranddeliveryevents"/>
+							</text>
+							<statusCode code="completed"/>
+							<effectiveTime value="20190123100000+0300"/>
+						</procedure>
+					</entry>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Delivery Event Outcome
+
+						The Delivery Outcome Event describes the end result of the delivery. Delivery Outcome must include the birth status, post-partum complications.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.25"/>
+					<templateId root="1.3.6.1.4.1.19376.1.5.3.1.1.21.2.9"/>
+					<code code="42545-4" displayName="EVENT OUTCOME" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Delivery Event Outcome</title>
+					<text>
+						<table>
+							<thead>
+								<tr>
+									<th>Procedure</th>
+									<th>Value</th>
+									<th>Date/Time of delivery</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ID="deloutcome1">
+									<td ID="deloutcome1_procedure">Live Births</td>
+									<td>1</td>
+									<td>2021.06.02 08:00:00</td>
+								</tr>
+								<tr ID="deloutcome2">
+									<td ID="deloutcome2_procedure">Stillborn Births</td>
+									<td>0</td>
+									<td></td>
+								</tr>
+							</tbody>
+						</table>
+					</text>
+					<entry typeCode="DRIV">
+						<observation classCode="OBS" moodCode="EVN">
+							<templateId root="2.16.840.1.113883.3.3731.1.210.100.60"/>
+							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.13"/>
+							<id root="DBA414DE-6B92-4D74-30D1-46BC36770F79"/>
+							<code code="11636-8" displayName="Live Births" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC">
+								<originalText>
+									<reference value="#deloutcome1_code"/>
+								</originalText>
+							</code>
+							<text>
+								<reference value="#deloutcome1"/>
+							</text>
+							<statusCode code="completed"/>
+							<effectiveTime value="20210602080000+0300"/>
+							<value xsi:type="INT" value="1"/>
+						</observation>
+					</entry>
+					<entry typeCode="DRIV">
+						<observation classCode="OBS" moodCode="EVN">
+							<templateId root="2.16.840.1.113883.3.3731.1.210.100.61"/>
+							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.13"/>
+							<id root="DBA414DE-6B92-4D74-30D1-46BC36770F79"/>
+							<code code="57062-2" displayName="Stillborn Births" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC">
+								<originalText>
+									<reference value="#deloutcome2_code"/>
+								</originalText>
+							</code>
+							<text>
+								<reference value="#deloutcome2"/>
+							</text>
+							<statusCode code="completed"/>
+							<effectiveTime value="20210602080000+0300"/>
+							<value xsi:type="INT" value="0"/>
+						</observation>
+					</entry>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: List of Surgeries Section
+
+						The History of Procedures Section defines all interventional, surgical, diagnostic, or therapeutic procedures or treatments pertinent to the patient historically at the time of the encounter.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.7"/>
+					<templateId root="1.3.6.1.4.1.19376.1.5.3.1.3.12"/>
+					<templateId root="1.3.6.1.4.1.19376.1.5.3.1.3.11"/>
+					<templateId root="2.16.840.1.113883.10.20.1.12"/>
+					<code code="47519-4" displayName="HISTORY OF PROCEDURES" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>List of Surgeries</title>
+					<text>
+						<table>
+							<thead>
+								<tr>
+									<th>Procedure</th>
+									<th>Date from</th>
+									<th>Date to</th>
+									<th>Status</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ID="listofsurgery-1">
+									<td ID="listofsurgery-1_procedure">32123-00, Anoplasty</td>
+									<td>2019.01.23, 10:00:00</td>
+									<td>2019.01.23, 12:30:00</td>
+									<td>Completed</td>
+								</tr>
+							</tbody>
+						</table>
+					</text>
+					<entry typeCode="DRIV">
+						<procedure classCode="PROC" moodCode="EVN">
+							<templateId root="2.16.840.1.113883.3.3731.1.210.100.53"/>
+							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.19"/>
+							<templateId root="2.16.840.1.113883.10.20.1.29"/>
+							<id root="DBA414DE-6B92-4D74-30D1-46BC36770F79"/>
+							<code code="32123-00" displayName="Anoplasty" codeSystem="2.16.840.1.113883.3.3731.50.2" codeSystemName="ACHI">
+								<originalText>
+									<reference value="#listofsurgery-1_procedure"/>
+								</originalText>
+							</code>
+							<text>
+								<reference value="#listofsurgery-1"/>
+							</text>
+							<statusCode code="completed"/>
+							<effectiveTime>
+								<low value="20190123100000+0300"/>
+								<high value="20190123123000+0300"/>
+							</effectiveTime>
+						</procedure>
+					</entry>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Surgical Drains Section
+
+						The Surgical Drains Section describes any drains implanted during a procedure.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.12"/>
+					<templateId root="2.16.840.1.113883.10.20.7.13"/>
+					<code code="11537-8" displayName="SURGICAL DRAINS" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Surgical Drains</title>
+					<text>
+						This is the narrative description of surgical drains
+					</text>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Medications Administered Section
+
+						The Medications Administered Section contains the relevant medications administered to the patient during the hospital stay.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.18"/>
+					<templateId root="1.3.6.1.4.1.19376.1.5.3.1.3.21"/>
+					<code code="18610-6" displayName="MEDICATION ADMINISTERED" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Medications Administered</title>
+					<text>
+						<table ID="medadministered-1">
+							<tbody>
+								<tr>
+									<td>Medication Item</td>
+									<td>1</td>
+								</tr>
+								<tr>
+									<td>Medication ID</td>
+									<td>CE1215CD-69EC-4C7B-805F-569233C5E159</td>
+								</tr>
+								<tr>
+									<td>Medication Name</td>
+									<td>butafyl 1% cream</td>
+								</tr>
+								<tr>
+									<td>Medication Code</td>
+									<td>
+										<content ID="medadministered-1_prodcode">280102-0101-0901-01-18</content>
+									</td>
+								</tr>
+								<tr>
+									<td>Pharmaceutical Dose Form</td>
+									<td>
+										<content ID="medadministered-1_doseform">0901 - cream</content>
+									</td>
+								</tr>
+								<tr>
+									<td>Start / End / Duration of treatment</td>
+									<td>-</td>
+								</tr>
+								<tr>
+									<td>Dose / Frequency</td>
+									<td>-</td>
+								</tr>
+								<tr>
+									<td>Route of Administration</td>
+									<td>-</td>
+								</tr>
+								<tr>
+									<td>Approach Site</td>
+									<td>-</td>
+								</tr>
+								<tr>
+									<td>Patient Medication Instructions</td>
+									<td>
+										<content ID="medadministered-1_pinstruct">cream was applied as required</content>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</text>
+					<entry typeCode="DRIV">
+						<!--
+							===========================================================================
+								Medication Item 1:
+
+								EXODERIL CREAM 1%, non-structured dosing variants
+							===========================================================================
+						-->
+						<substanceAdministration classCode="SBADM" moodCode="EVN">
+							<templateId root="2.16.840.1.113883.3.3731.1.210.100.45"/>
+							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.7"/>
+							<templateId root="2.16.840.1.113883.10.20.1.24"/>
+							<!-- Medication Item ID -->
+							<id root="CE1215CD-69EC-4C7B-805F-569233C5E151"/>
+							<text>
+								<reference value="#medadministered-1"/>
+							</text>
+							<statusCode code="completed"/>
+							<!-- Medication -->
+							<consumable>
+								<manufacturedProduct classCode="MANU">
+									<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.7.2"/>
+									<templateId root="2.16.840.1.113883.10.20.1.53"/>
+									<manufacturedMaterial classCode="MMAT" determinerCode="KIND">
+										<code code="280102-0101-0901-01-18" displayName="butafyl 1% cream" codeSystem="2.16.840.1.113883.3.3731.1.205.2" codeSystemName="KSA Dispensation Pharmacy Item Name">
+											<originalText>
+												<reference value="#medadministered-1_prodcode"/>
+											</originalText>
+										</code>
+										<name>butafyl 1% cream</name>
+										<pharm:formCode code="0901" displayName="cream" codeSystem="2.16.840.1.113883.3.3731.1.205.8" codeSystemName="KSA Medication Pharmaceutical Dose Form">
+											<originalText>
+												<reference value="#medadministered-1_doseform"/>
+											</originalText>
+										</pharm:formCode>
+										<pharm:ingredient classCode="ACTI">
+											<pharm:quantity>
+												<numerator xsi:type="PQ" value="1" unit="%"/>
+												<denominator xsi:type="INT" value="1"/>
+											</pharm:quantity>
+										</pharm:ingredient>	
+									</manufacturedMaterial>
+								</manufacturedProduct>
+							</consumable>
+							<!-- Patient Medication Instructions -->
+							<entryRelationship typeCode="SUBJ" inversionInd="true">
+								<act classCode="ACT" moodCode="INT">
+									<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.3"/>
+									<templateId root="2.16.840.1.113883.10.20.1.49"/>
+									<code code="PINSTRUCT" codeSystem="1.3.6.1.4.1.19376.1.5.3.2" codeSystemName="IHEActCode"/>
+									<text>
+										<reference value="#medadministered-1_pinstruct"/>
+									</text>
+									<statusCode code="completed"/>
+								</act>
+							</entryRelationship>
+						</substanceAdministration>
+					</entry>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Immunizations Section
+
+						The Immunizations Section contains a list of the vaccinations administered to the patient.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.6"/>
+					<templateId root="1.3.6.1.4.1.19376.1.5.3.1.3.23"/>
+					<templateId root="2.16.840.1.113883.10.20.1.6"/>
+					<code code="11369-6" displayName="HISTORY OF IMMUNIZATIONS" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Immunizations</title>
+					<text>
+						<table ID="immu-1">
+							<tbody>
+								<tr>
+									<td>Immunization Item</td>
+									<td>1</td>
+								</tr>
+								<tr>
+									<td>Immunization ID</td>
+									<td>CE1215CD-69EC-4C7B-805F-569233C5E159</td>
+								</tr>
+								<tr>
+									<td>Immunization Name</td>
+									<td>hepatitis a vaccine</td>
+								</tr>
+								<tr>
+									<td>Immunization Code</td>
+									<td>
+										<content ID="immu-1_vaccnamecode">530702-0115-2713</content>
+									</td>
+								</tr>
+								<tr>
+									<td>Date of administration</td>
+									<td>2018.01.03</td>
+								</tr>
+								<tr>
+									<td>Dose</td>
+									<td ID="immu-1_dose">1 ml</td>
+								</tr>
+								<tr>
+									<td>Route of Administration</td>
+									<td>
+										<content ID="immu-1_route">Intramuscular route</content>
+									</td>
+								</tr>
+								<tr>
+									<td>Approach Site</td>
+									<td>
+										<content ID="immu-1_approach">Left Upper Arm</content>
+									</td>
+								</tr>
+								<tr>
+									<td>Reason</td>
+									<td>
+										<content ID="immu-1_reason">Routine</content>
+									</td>
+								</tr>
+								<tr>
+									<td>Vaccination Product Code and Name</td>
+									<td>
+										<content ID="immu-1_vaccprodcode">530702-0115-2713-01-19, vaqta hepatitis a vaccine 50 iu/ml solution</content>
+									</td>
+								</tr>
+								<tr>
+									<td>Pharmaceutical Dose Form</td>
+									<td>
+										<content ID="immu-1_doseform">2713 - solution, injection</content>
+									</td>
+								</tr>
+								<tr>
+									<td>Lot Number</td>
+									<td>1abc-34aad</td>
+								</tr>
+								<tr>
+									<td>Manufacturer</td>
+									<td>
+										<content ID="immu-1_manufacturer">Abbott Laboratories</content>
+									</td>
+								</tr>
+								<tr>
+									<td>Provider Administering the Vaccine</td>
+									<td>Vaccine Administration Doc, Osama</td>
+								</tr>
+								<tr>
+									<td>Responsible Provider</td>
+									<td>Responsible Doc, Osama</td>
+								</tr>
+								<tr>
+									<td>Informant</td>
+									<td>Informant for patient supplied information person, Heba</td>
+								</tr>
+								<tr>
+									<td>Immunization Campaign</td>
+									<td>
+										<content ID="immu-1_campaign">National Vaccination Campaign for Hepatitis A (2.16.840.1.113883.3.3731.1.2.2.200.100000000000000.100.1)</content>
+									</td>
+								</tr>
+								<tr>
+									<td>Adverse Immunization(s)</td>
+									<td>
+										<content ID="immu-1_adverseimmuevent1">Patient experienced dizziness short after application of the vaccine</content>
+									</td>
+								</tr>
+								<tr>
+									<td>Dose Number</td>
+									<td>
+										<content ID="immu-1_dosenumber">1</content>
+									</td>
+								</tr>
+								<tr>
+									<td>Comment</td>
+									<td>
+										<content ID="immu-1_comment">This is a comment to this vaccine administration</content>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</text>
+					<entry typeCode="DRIV">
+						<!--
+							========================================================================
+								Immunization Item 1
+
+								hepatitis a vaccine - 50 iu/ml - injection, solution
+							========================================================================
+						-->
+						<substanceAdministration classCode="SBADM" moodCode="EVN">
+							<templateId root="2.16.840.1.113883.3.3731.1.210.100.48"/>
+							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.12"/>
+							<templateId root="2.16.840.1.113883.10.20.1.24"/>
+							<id root="CE1215CD-69EC-4C7B-805F-569233C5E159"/>
+							<code code="IMMUNIZ" codeSystem="2.16.840.1.113883.5.4"/>
+							<text>
+								<reference value="#immu-1"/>
+							</text>
+							<statusCode code="completed"/>
+							<!-- Date and Time of administration -->
+							<effectiveTime value="20180103"/>
+							<!-- Route of administration -->
+							<routeCode code="78421000" displayName="Intramuscular route" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
+								<originalText>
+									<reference value="#immu-1_route"/>
+								</originalText>
+							</routeCode>
+							<!-- Approachsite -->
+							<approachSiteCode code="LUA" displayName="Left Upper Arm" codeSystem="2.16.840.1.113883.12.163" codeSystemName="HL7 Body Site">
+								<originalText>
+									<reference value="#immu-1_approach"/>
+								</originalText>
+							</approachSiteCode>
+							<!-- Dose Quantity -->
+							<doseQuantity value="1" unit="ml">
+								<translation>
+									<originalText>
+										<reference value="#immu-1_dose"/>
+									</originalText>
+								</translation>
+							</doseQuantity>
+							<nphies:reasonCode code="50811001" displayName="Routine" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
+								<originalText>
+									<reference value="#immu-1_reason"/>
+								</originalText>
+							</nphies:reasonCode>
+							<!-- Vaccine -->
+							<consumable>
+								<manufacturedProduct classCode="MANU">
+									<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.7.2"/>
+									<templateId root="2.16.840.1.113883.10.20.1.53"/>
+									<manufacturedMaterial classCode="MMAT" determinerCode="KIND">
+										<!-- Note: the code in this example not necessarily according to the NHIC approved value-set -->
+										<code code="530702-0115-2713" displayName="hepatitis a vaccine - 50 iu/ml - injection, solution" codeSystem="2.16.840.1.113883.3.3731.1.205.1" codeSystemName="KSA Prescription Pharmacy Item Name">
+											<originalText>
+												<reference value="#immu-1_prodcode"/>
+											</originalText>
+										</code>
+										<name>hepatitis a vaccine</name>
+										<pharm:formCode code="2713" displayName="solution, injection" codeSystem="2.16.840.1.113883.3.3731.1.205.8" codeSystemName="KSA Medication Pharmaceutical Dose Form">
+											<originalText>
+												<reference value="#immu-1_doseform"/>
+											</originalText>
+										</pharm:formCode>
+										<lotNumberText>1abc-34aad</lotNumberText>
+										<pharm:expirationTime value="20241231"/>
+										<pharm:asContent classCode="CONT">
+											<pharm:containerPackagedMedicine classCode="CONT" determinerCode="INSTANCE">
+												<!-- Note: the code in this example not necessarily according to the NHIC approved value-set -->
+												<pharm:code code="530702-0115-2713-01-19" displayName="vaqta vaccine 50 u vial" codeSystem="2.16.840.1.113883.3.3731.1.205.2" codeSystemName="KSA Dispensation Pharmacy Item Name">
+													<originalText>
+														<reference value="#immu-1_vaccprodcode"/>
+													</originalText>
+												</pharm:code>
+											</pharm:containerPackagedMedicine>
+										</pharm:asContent>
+										<pharm:ingredient classCode="ACTI">
+											<pharm:quantity>
+												<numerator xsi:type="PQ" value="50" unit="iu/ml"/>
+												<denominator xsi:type="INT" value="1"/>
+											</pharm:quantity>
+										</pharm:ingredient>
+									</manufacturedMaterial>
+									<manufacturerOrganization>
+										<asOrganizationPartOf>
+											<code code="AB" displayName="Abbott Laboratories" codeSystem="2.16.840.1.114222.4.11.826">
+												<originalText>
+													<reference value="#immu-1_manufacturer"/>
+												</originalText>
+											</code>
+										</asOrganizationPartOf>
+									</manufacturerOrganization>
+								</manufacturedProduct>
+							</consumable>
+							<performer>
+								<templateId root="2.16.840.1.113883.3.3731.1.203.28.7"/>
+								<assignedEntity>
+									<id extension="17JP0032773" root="2.16.840.1.113883.3.3731.1.2.1"/>
+									<!-- same address as for author, nullFlavor is used -->
+									<addr nullFlavor="NI"/>
+									<!-- same telecom as for author, nullFlavor is used -->
+									<telecom nullFlavor="NI"/>
+									<assignedPerson>
+										<name>
+											<family>Vaccine Administration Doc</family>
+											<given>Osama</given>
+										</name>
+									</assignedPerson>
+								</assignedEntity>
+							</performer>
+							<author>
+								<templateId root="2.16.840.1.113883.3.3731.1.203.28.3"/>
+								<time value="20180103"/>
+								<assignedAuthor>
+									<id extension="17TM0056783" root="2.16.840.1.113883.3.3731.1.2.1"/>
+									<!-- same address as for author, nullFlavor is used -->
+									<addr nullFlavor="NI"/>
+									<!-- same telecom as for author, nullFlavor is used -->
+									<telecom nullFlavor="NI"/>
+									<assignedPerson>
+										<name>
+											<family>Responsible Doc</family>
+											<given>Osama</given>
+										</name>
+									</assignedPerson>
+								</assignedAuthor>
+							</author>
+							<informant>
+								<templateId root="2.16.840.1.113883.3.3731.1.203.28.10"/>
+								<assignedEntity>
+									<id nullFlavor="UNK"/>
+									<addr nullFlavor="UNK"/>
+									<telecom nullFlavor="UNK"/>
+									<assignedPerson>
+										<name>
+											<family>Informant for patient supplied information person</family>
+											<given>Heba</given>
+										</name>
+									</assignedPerson>
+								</assignedEntity>
+							</informant>
+							<!-- Immunization Campaign -->
+							<entryRelationship typeCode="REFR">
+								<act classCode="ACT" moodCode="DEF">
+									<templateId root="2.16.840.1.113883.3.3731.1.210.100.49"/>
+									<id root="2.16.840.1.113883.3.3731.1.2.2.200.100000000000000.100.1"/>
+									<code nullFlavor="NI"/>
+									<text>
+										<reference value="'#immu-1_campaign"/>
+									</text>
+								</act>
+							</entryRelationship>
+							<!-- Adverse Immunization Event -->
+							<entryRelationship typeCode="CAUS" inversionInd="false">
+								<observation classCode="OBS" moodCode="EVN">
+									<templateId root="2.16.840.1.113883.3.3731.1.210.100.50"/>
+									<code nullFlavor="NI"/>
+									<text>
+										<reference value="#immu-1_adverseimmuevent1"/>
+									</text>
+								</observation>
+							</entryRelationship>
+							<!-- Dose Number -->
+							<entryRelationship typeCode="SUBJ">
+								<observation classCode="OBS" moodCode="EVN">
+									<templateId root="2.16.840.1.113883.10.20.1.46"/>
+									<code code="30973-2" displayName="Dose Number" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+									<text>
+										<reference value="#immu-1_dosenumber"/>
+									</text>
+									<statusCode code="completed"/>
+									<value xsi:type="INT" value="1"/>
+								</observation>
+							</entryRelationship>
+							<entryRelationship typeCode="SUBJ" inversionInd="true">
+								<act classCode="ACT" moodCode="EVN">
+									<templateId root="2.16.840.1.113883.3.3731.1.210.100.91"/>
+									<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.2"/>
+									<templateId root="2.16.840.1.113883.10.20.1.40"/>
+									<id root="DBA414DE-6B92-4D74-30D1-46BC36770F79"/>
+									<code code="48767" displayName="Annotation Comment" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+									<text>
+										<reference value="#immu-1_comment"/>
+									</text>
+									<statusCode code="completed"/>
+								</act>
+							</entryRelationship>
+						</substanceAdministration>
+					</entry>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Vital Signs Section
+
+						The Vital Signs Section contains coded measurement results of a patient’s vital signs.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.10"/>
+					<templateId root="1.3.6.1.4.1.19376.1.5.3.1.1.5.3.2"/>
+					<templateId root="1.3.6.1.4.1.19376.1.5.3.1.3.25"/>
+					<templateId root="2.16.840.1.113883.10.20.1.16"/>
+					<code code="8716-3" displayName="VITAL SIGNS" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Vital Signs</title>
+					<text>
+						<paragraph>Time of measurement: 30.07.2021, 08:30</paragraph>
+						<table>
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>Value</th>
+									<th>Unit</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ID="vitsig-1">
+									<td ID="vitsig-1_type">Heart beat</td>
+									<td>60</td>
+									<td>/min</td>
+								</tr>
+								<tr ID="vitsig-2">
+									<td ID="vitsig-2_type">Blood Pressure Systolic</td>
+									<td>110</td>
+									<td>mm[Hg]</td>
+								</tr>
+								<tr ID="vitsig-3">
+									<td ID="vitsig-3_type">Blood Pressure Diastolic</td>
+									<td>70</td>
+									<td>mm[Hg]</td>
+								</tr>
+							</tbody>
+						</table>
+						<paragraph>Time of measurement: 31.07.2021, 10:00</paragraph>
+						<table>
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>Value</th>
+									<th>Unit</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ID="vitsig-4">
+									<td ID="vitsig-4_type">Body Weight (Measured)</td>
+									<td>85</td>
+									<td>kg</td>
+								</tr>
+								<tr ID="vitsig-5">
+									<td ID="vitsig-5_type">Body Height (Measured)</td>
+									<td>190</td>
+									<td>cm</td>
+								</tr>
+							</tbody>
+						</table>
+					</text>
+					<entry typeCode="DRIV">
+						<organizer classCode="CLUSTER" moodCode="EVN">
+							<templateId root="2.16.840.1.113883.3.3731.1.210.100.54"/>
+							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.13.1"/>
+							<templateId root="2.16.840.1.113883.10.20.1.32"/>
+							<templateId root="2.16.840.1.113883.10.20.1.35"/>
+							<id nullFlavor="NI"/>
+							<code code="46680005" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" displayName="Vital signs"/>
+							<statusCode code="completed"/>
+							<effectiveTime value="20210730083000+0300"/>
+							<component>
+								<observation classCode="OBS" moodCode="EVN">
+									<templateId root="2.16.840.1.113883.3.3731.1.210.100.55"/>
+									<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.13"/>
+									<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.13.2"/>
+									<templateId root="2.16.840.1.113883.10.20.1.31"/>
+									<id root="E6F45742-BA20-7224-15A0-6D8836E96123"/>
+									<code code="8867-4" displayName="Heart Beat" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC">
+										<originalText>
+											<reference value="#vitsig-1_type"/>
+										</originalText>
+									</code>
+									<text>
+										<reference value="#vitsig-1"/>
+									</text>
+									<statusCode code="completed"/>
+									<value xsi:type="PQ" value="60" unit="/min"/>
+								</observation>
+							</component>
+							<component>
+								<observation classCode="OBS" moodCode="EVN">
+									<templateId root="2.16.840.1.113883.3.3731.1.210.100.55"/>
+									<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.13"/>
+									<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.13.2"/>
+									<templateId root="2.16.840.1.113883.10.20.1.31"/>
+									<id root="E6F45742-BA20-7224-15A0-6D8836E96456"/>
+									<code code="8480-6" displayName="Intravascular Systolic" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC">
+										<originalText>
+											<reference value="#vitsig-2_type"/>
+										</originalText>
+									</code>
+									<text>
+										<reference value="#vitsig-2"/>
+									</text>
+									<statusCode code="completed"/>
+									<value xsi:type="PQ" value="110" unit="mm[Hg]"/>
+								</observation>
+							</component>
+							<component typeCode="COMP">
+								<observation classCode="OBS" moodCode="EVN">
+									<templateId root="2.16.840.1.113883.3.3731.1.210.100.55"/>
+									<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.13"/>
+									<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.13.2"/>
+									<templateId root="2.16.840.1.113883.10.20.1.31"/>
+									<id root="E6F45742-BA20-7224-15A0-6D8836E96789"/>
+									<code code="8462-4" displayName="Intravascular Diastolic" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC">
+										<originalText>
+											<reference value="#vitsig-3_type"/>
+										</originalText>
+									</code>
+									<text>
+										<reference value="#vitsig-3"/>
+									</text>
+									<statusCode code="completed"/>
+									<value xsi:type="PQ" value="70" unit="mm[Hg]"/>
+								</observation>
+							</component>
+						</organizer>
+					</entry>
+					<entry typeCode="DRIV">
+						<organizer classCode="CLUSTER" moodCode="EVN">
+							<templateId root="2.16.840.1.113883.3.3731.1.210.100.54"/>
+							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.13.1"/>
+							<templateId root="2.16.840.1.113883.10.20.1.32"/>
+							<templateId root="2.16.840.1.113883.10.20.1.35"/>
+							<id nullFlavor="NI"/>
+							<code code="46680005" displayName="Vital signs" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT"/>
+							<statusCode code="completed"/>
+							<effectiveTime value="20210731100000+0100"/>
+							<component>
+								<observation classCode="OBS" moodCode="EVN">
+									<templateId root="2.16.840.1.113883.3.3731.1.210.100.55"/>
+									<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.13"/>
+									<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.13.2"/>
+									<templateId root="2.16.840.1.113883.10.20.1.31"/>
+									<id root="E6F45742-BA20-7224-15A0-6D8836E96123"/>
+									<code code="3141-9" displayName="Body Weight (Measured)" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC">
+										<originalText>
+											<reference value="#vitsig-4_type"/>
+										</originalText>
+									</code>
+									<text>
+										<reference value="#vitsig-4"/>
+									</text>
+									<statusCode code="completed"/>
+									<value xsi:type="PQ" value="85" unit="kg"/>
+								</observation>
+							</component>
+							<component>
+								<observation classCode="OBS" moodCode="EVN">
+									<templateId root="2.16.840.1.113883.3.3731.1.210.100.55"/>
+									<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.13"/>
+									<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.13.2"/>
+									<templateId root="2.16.840.1.113883.10.20.1.31"/>
+									<id root="E6F45742-BA20-7224-15A0-6D8836E96123"/>
+									<code code="8302-2" displayName="Body Height (Measured)" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC">
+										<originalText>
+											<reference value="#vitsig-5_type"/>
+										</originalText>
+									</code>
+									<text>
+										<reference value="#vitsig-5"/>
+									</text>
+									<statusCode code="completed"/>
+									<value xsi:type="PQ" value="190" unit="cm"/>
+								</observation>
+							</component>
+						</organizer>
+					</entry>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Physical Examination Section
+
+						The Physical Examination Section includes direct observations made by the clinician. The examination may include the use of simple instruments and may also describe simple maneuvers performed directly on the patient’s body.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.9"/>
+					<templateId root="1.3.6.1.4.1.19376.1.5.3.1.3.24"/>
+					<code code="29545-1" displayName="PHYSICAL EXAMINATION" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Physical Examination</title>
+					<text>
+						This is the physical examination of the patient.
+					</text>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Visible Implanted Medical Devices Section
+
+						The Visible Implanted Medical Devices Section includes a description of the medical devices apparent on physical exam that have been inserted into the patient, whether internal or partially external.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.11"/>
+					<templateId root="1.3.6.1.4.1.19376.1.5.3.1.1.9.48"/>
+					<code code="57080-4" displayName="IMPLANTED MEDICAL DEVICE" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Visible Implanted Medical Devices</title>
+					<text>
+						This is the narrative description of the visible implanted medical devices
+					</text>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Newborn Status at Maternal Discharge
+
+						Observations of problems or other clinical statements captured about the baby at the completion of the encounter which represent the ongoing process tracked over time.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.26"/>
+					<templateId root="1.3.6.1.4.1.19376.1.5.3.1.1.21.2.8"/>
+					<code code="57077-0" displayName="NEWBORN STATUS AT MATERNAL DISCHARGE" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Newborn Status at Maternal Discharge</title>
+					<text>
+						<table>
+							<thead>
+								<tr>
+									<th>Status Type</th>
+									<th>Value</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ID="newbornstatus_gestage">
+									<td>Gestational Age</td>
+									<td>8 weeks</td>
+								</tr>
+								<tr ID="newbornstatus_apgar1">
+									<td>Apgar after 1 min</td>
+									<td>7</td>
+								</tr>
+								<tr ID="newbornstatus_apgar5">
+									<td>Apgar after 5 min</td>
+									<td>8</td>
+								</tr>
+								<tr ID="newbornstatus_apgar10">
+									<td>Apgar after 10 min</td>
+									<td>8</td>
+								</tr>
+							</tbody>
+						</table>
+					</text>
+					<entry typeCode="DRIV">
+						<observation classCode="OBS" moodCode="EVN">
+							<templateId root="2.16.840.1.113883.3.3731.1.210.100.62"/>
+							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.13"/>
+							<id root="DBA414DE-6B92-4D74-30D1-46BC36770F79"/>
+							<code code="49051-6" displayName="Gestational Age" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+							<text>
+								<reference value="#newbornstatus_gestage"/>
+							</text>
+							<statusCode code="completed"/>
+							<effectiveTime value="20210602080000+0300"/>
+							<value xsi:type="PQ" value="8" unit="wk"/>
+						</observation>
+					</entry>
+					<entry typeCode="DRIV">
+						<observation classCode="OBS" moodCode="EVN">
+							<templateId root="2.16.840.1.113883.3.3731.1.210.100.63"/>
+							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.13"/>
+							<id root="DBA414DE-6B92-4D74-30D1-46BC36770F79"/>
+							<code code="9272-6" displayName="Apgar after 1 min" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+							<text>
+								<reference value="#newbornstatus_apgar1"/>
+							</text>
+							<statusCode code="completed"/>
+							<effectiveTime value="20210602080000+0300"/>
+							<value xsi:type="INT" value="7"/>
+						</observation>
+					</entry>
+					<entry typeCode="DRIV">
+						<observation classCode="OBS" moodCode="EVN">
+							<templateId root="2.16.840.1.113883.3.3731.1.210.100.63"/>
+							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.13"/>
+							<id root="DBA414DE-6B92-4D74-30D1-46BC36770F79"/>
+							<code code="9273-4" displayName="Apgar after 5 min" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+							<text>
+								<reference value="#newbornstatus_apgar5"/>
+							</text>
+							<statusCode code="completed"/>
+							<effectiveTime value="20210602080000+0300"/>
+							<value xsi:type="INT" value="8"/>
+						</observation>
+					</entry>
+					<entry typeCode="DRIV">
+						<observation classCode="OBS" moodCode="EVN">
+							<templateId root="2.16.840.1.113883.3.3731.1.210.100.63"/>
+							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.13"/>
+							<id root="DBA414DE-6B92-4D74-30D1-46BC36770F79"/>
+							<code code="9271-8" displayName="Apgar after 10 min" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+							<text>
+								<reference value="#newbornstatus_apgar10"/>
+							</text>
+							<statusCode code="completed"/>
+							<effectiveTime value="20210602080000+0300"/>
+							<value xsi:type="INT" value="8"/>
+						</observation>
+					</entry>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Hospital Discharge Medications Section
+
+						The Discharge Medications Section contains the patient's current medications and pertinent medication history at the end of the hospital stay.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.19"/>
+					<templateId root="1.3.6.1.4.1.19376.1.5.3.1.3.22"/>
+					<code code="10183-2" displayName="HOSPITAL DISCHARGE MEDICATIONS" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Hospital Discharge Medications</title>
+					<text>
+						<table>
+							<tbody>
+								<tr ID="meddischarge-1">
+									<td ID="meddischarge-1_code">182849000</td>
+									<td>No Drug Therapy Prescribed</td>
+								</tr>
+							</tbody>
+						</table>
+					</text>
+					<entry typeCode="DRIV">
+						<!--
+							=====================================================================
+								No medication
+							=====================================================================
+						-->
+						<substanceAdministration classCode="SBADM" moodCode="EVN">
+							<templateId root="2.16.840.1.113883.3.3731.1.210.100.45"/>
+							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.7"/>
+							<templateId root="2.16.840.1.113883.10.20.1.24"/>
+							<!-- Medication Item ID -->
+							<id root="CE1215CD-69EC-4C7B-805F-569233C5E1510"/>
+							<code code="182849000" displayName="No Drug Therapy Prescribed" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
+								<originalText>
+									<reference value="#meddischarge-1_code"/>
+								</originalText>
+							</code>
+							<text>
+								<reference value="#meddischarge-1"/>
+							</text>
+							<statusCode code="completed"/>
+							<!-- Medication -->
+							<consumable>
+								<manufacturedProduct classCode="MANU">
+									<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.7.2"/>
+									<templateId root="2.16.840.1.113883.10.20.1.53"/>
+									<manufacturedMaterial classCode="MMAT" determinerCode="KIND" nullFlavor="NI"/>
+								</manufacturedProduct>
+							</consumable>
+						</substanceAdministration>
+					</entry>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Care Plan Section
+
+						The Care Plan Section describes any pending orders, interventions, encounters, services and procedures for the patient after the completion of the Outpatient encounter.
+						The Plan of Care may also include other information such as patient education, nutritional diet, follow-up orders, etc.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.13"/>
+					<templateId root="1.3.6.1.4.1.19376.1.5.3.1.3.31"/>
+					<templateId root="2.16.840.1.113883.10.20.1.10"/>
+					<code code="61145-9" displayName="TREATMENT PLAN" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Care Plan</title>
+					<text>
+						This is the narrative description of the care plan of the patient
+					</text>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Discharge Diagnosis Section
+
+						The Discharge Diagnosis Section contains a narrative description of the conditions that need to be monitored after discharge from the hospital and those that were resolved during the hospital course.
+						It shall include entries for patient conditions as described in the Entry Content Module.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.20"/>
+					<templateId root="1.3.6.1.4.1.19376.1.5.3.1.3.7"/>
+					<code code="11535-2" displayName="HOSPITAL DISCHARGE DX" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Discharge Diagnosis</title>
+					<text>
+						<table>
+							<thead>
+								<tr>
+									<th>Diagnosis</th>
+									<th>Date from</th>
+									<th>Date to</th>
+									<th>Status</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ID="disdiag-1">
+									<td ID="disdiag-1_diagnosis">282291009, No current problems or disability</td>
+									<td>-</td>
+									<td>-</td>
+									<td>Completed</td>
+								</tr>
+							</tbody>
+						</table>
+					</text>
+					<entry typeCode="DRIV">
+						<act classCode="ACT" moodCode="EVN">
+							<templateId root="2.16.840.1.113883.3.3731.1.210.100.43"/>
+							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1"/>
+							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.2"/>
+							<templateId root="2.16.840.1.113883.10.20.1.27"/>
+							<id nullFlavor="NI"/>
+							<code nullFlavor="NA"/>
+							<statusCode code="completed"/>
+							<effectiveTime nullFlavor="NA">
+								<low nullFlavor="UNK"/>
+								<high nullFlavor="UNK"/>
+							</effectiveTime>
+							<entryRelationship typeCode="SUBJ" inversionInd="false">
+								<observation classCode="OBS" moodCode="EVN">
+									<templateId root="2.16.840.1.113883.3.3731.1.210.100.44"/>
+									<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5"/>
+									<templateId root="2.16.840.1.113883.10.20.1.28"/>
+									<id root="DBA414DE-6B92-4D74-30D1-46BC36770F79"/>
+									<code code="282291009" displayName="Diagnosis" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT"/>
+									<text>
+										<reference value="#disdiag-1"/>
+									</text>
+									<statusCode code="completed"/>
+									<effectiveTime nullFlavor="NA">
+										<low nullFlavor="UNK"/>
+										<high nullFlavor="UNK"/>
+									</effectiveTime>
+									<value xsi:type="CD" code="160245001" displayName="’No current problems or disability" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
+										<originalText>
+											<reference value="#disdiag-1_diagnosis"/>
+										</originalText>
+									</value>
+								</observation>
+							</entryRelationship>
+						</act>
+					</entry>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Discharge Disposition Section
+
+						The Discharge Disposition Section contains the place the patient is going or being sent upon discharge from the hospital.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.22"/>
+					<templateId root="1.3.6.1.4.1.19376.1.5.3.1.3.32"/>
+					<code code="8650-4" displayName="HOSPITAL DISCHARGE DISPOSITION" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Discharge Disposition</title>
+					<text>
+						This is the narrative description of the discharge disposition
+					</text>
+				</section>
+			</component>
+		</structuredBody>
+	</component>
+</ClinicalDocument>

@@ -88,6 +88,8 @@ export interface SplitViewProps {
   overscan?: number;
   /** Start with `ignored` nodes/findings hidden. */
   hideIgnoredByDefault?: boolean;
+  /** Extra content under each finding — the host decides what, `src/ui` stays neutral. */
+  renderFindingFooter?: (finding: Finding) => ReactNode;
   /** Initial left-pane width as a fraction of the container. */
   defaultRatio?: number;
   className?: string;
@@ -162,6 +164,7 @@ export function SplitView({
   lineHeight = CODE_LINE_HEIGHT,
   overscan = 14,
   hideIgnoredByDefault = false,
+  renderFindingFooter,
   defaultRatio = 0.56,
   className,
 }: SplitViewProps) {
@@ -552,6 +555,7 @@ export function SplitView({
                   onReveal={(x) =>
                     x.regionId ? selectRegion(x.regionId, "finding") : undefined
                   }
+                  footer={renderFindingFooter?.(f)}
                 />
               ))
             )}

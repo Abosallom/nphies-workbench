@@ -270,27 +270,40 @@ function writeElement(ctx: Ctx, node: TreeNode, depth: number): string {
   return open + parts.join("") + close;
 }
 
+/**
+ * How many attributes an open tag spells out, so the emitter can tell whether the tree still
+ * agrees with the source text it came from.
+ *
+ * Every branch advances `i`. An earlier version stepped back onto the `=` it had just
+ * consumed and spun forever on the first attribute it met, which hung the CDA emitter — and
+ * would have hung the browser tab — on every official document.
+ */
 function countAttrsIn(openTag: string): number {
   let n = 0;
-  let quote = "";
   let i = 1;
-  while (i < openTag.length && !/[\s/>]/.test(openTag[i])) i++;
-  for (; i < openTag.length; i++) {
+  while (i < openTag.length && !/[\s/>]/.test(openTag[i])) i++; // element name
+
+  while (i < openTag.length) {
     const c = openTag[i];
-    if (quote) {
-      if (c === quote) quote = "";
-      continue;
-    }
-    if (c === '"' || c === "'") {
-      quote = c;
-      continue;
-    }
     if (c === ">" || (c === "/" && openTag[i + 1] === ">")) break;
-    if (/\s/.test(c)) continue;
-    // start of a name
+    if (/\s/.test(c)) {
+      i++;
+      continue;
+    }
     n++;
-    while (i < openTag.length && !/[\s=/>]/.test(openTag[i])) i++;
-    i--;
+    while (i < openTag.length && !/[\s=/>]/.test(openTag[i])) i++; // the name
+    while (i < openTag.length && /\s/.test(openTag[i])) i++;
+    if (openTag[i] !== "=") continue; // a bare attribute, XML-invalid but not ours to fix
+    i++;
+    while (i < openTag.length && /\s/.test(openTag[i])) i++;
+    const quote = openTag[i];
+    if (quote === '"' || quote === "'") {
+      i++;
+      while (i < openTag.length && openTag[i] !== quote) i++;
+      i++; // past the closing quote
+    } else {
+      while (i < openTag.length && !/[\s/>]/.test(openTag[i])) i++;
+    }
   }
   return n;
 }

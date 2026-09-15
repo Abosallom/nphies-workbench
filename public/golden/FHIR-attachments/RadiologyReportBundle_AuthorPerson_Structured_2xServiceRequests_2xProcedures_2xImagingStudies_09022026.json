@@ -1,0 +1,920 @@
+{
+    "resourceType": "Bundle",
+    "id": "75e66c37-7d48-405d-b6ec-7264a8f558ff",
+    "meta": {
+        "profile": [
+        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/bundleRadReport|1.0"
+        ]
+    },
+    "type": "document",
+    "timestamp": "2025-01-15T13:28:17+03:00",
+    "identifier": {
+        "system": "urn:oid:2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.100.1",
+        "value": "DocumentID"
+    },
+    "entry": [
+        {
+            "fullUrl": "urn:uuid:5d7d58d0-a771-42dc-9592-b010c7524101",
+            "resource": {
+                "resourceType": "Composition",
+                "id": "5d7d58d0-a771-42dc-9592-b010c7524101",
+                "meta": {
+                "profile": [
+                    "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/compositionRadReportEmbeddedPDF|1.0"
+                ]
+                },
+                    "extension": [
+                    {
+                        "url": "http://hl7.org/fhir/StructureDefinition/composition-clinicaldocument-versionNumber",
+                        "valueString": "1"
+                    },
+                    {
+                        "url": "http://hl7.org/fhir/uv/lab-report/StructureDefinition/composition-basedOn-order-or-requisition",
+                        "valueReference": {
+                            "reference": "ServiceRequest/dbee8a47-f90f-4d0b-984b-4b0f9f187667"
+                        }
+                    },
+                    {
+                        "url": "http://hl7.org/fhir/uv/lab-report/StructureDefinition/composition-basedOn-order-or-requisition",
+                        "valueReference": {
+                            "reference": "ServiceRequest/e3b6a5dc-864f-4159-a2c6-c87de218998f"
+                        }
+                    }
+                ],
+                "identifier": [
+                    {
+                        "system": "urn:oid:2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.100.1",
+                        "value": "DocumentSetID (set equal to DocumentID, since it's the first version of the set)"
+                    }
+                ],
+                "status": "final",
+                "type": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "18748-4",
+                            "display": "DIAGNOSTIC IMAGING STUDY"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/248156ff-3453-4344-a75a-bbb66c2bba92",
+                    "identifier": [
+                        {
+                            "system": "2.16.840.1.113883.3.3731.1.1.100.1",
+                            "value": "30000999999999"
+                        }
+                    ]
+                },
+                "encounter": {
+                    "reference": "Encounter/4fd3fd0f-42e7-4278-8a4f-293ace8ce7dd",
+                    "identifier": [
+                        {
+                            "system": "2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.300.1",
+                            "value": "12345678"
+                        }
+                    ]
+                },
+                "date": "2025-01-15T13:28:17+03:00",
+                "author": [
+                    {
+                        "reference": "PractitionerRole/e1fbbf0b-f039-4524-b3d8-35cc681a1ccb",
+                        "identifier": [
+                            {
+                                "system": "2.16.840.1.113883.3.3731.1.2.1",
+                                "value": "05RM14422"
+                            }
+                        ]
+                    }
+                ],
+                "title": "Radiology Report",
+                "confidentiality": "N",
+                "attester": [
+                    {
+                        "mode": "legal",
+                        "party": {
+                            "reference": "PractitionerRole/e1fbbf0b-f039-4524-b3d8-35cc681a1ccb",
+                            "identifier": [
+                                {
+                                    "system": "2.16.840.1.113883.3.3731.1.2.1",
+                                    "value": "05RM14422"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "mode": "professional",
+                        "party": {
+                            "reference": "PractitionerRole/e1fbbf0b-f039-4524-b3d8-35cc681a1ccb",
+                            "identifier": [
+                                {
+                                    "system": "2.16.840.1.113883.3.3731.1.2.1",
+                                    "value": "05RM14422"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "custodian": {
+                    "reference": "Organization/2617a95d-8471-460e-8562-16b0d05e7b43",
+                    "identifier": [
+                        {
+                            "system": "2.16.840.1.113883.3.3731.1.2.2",
+                            "value": "11000000002333"
+                        }
+                    ]
+                },
+                "section": [
+                    {
+                        "code": {
+                            "coding": [
+                                {
+                                    "system": "urn:oid:2.16.840.1.113883.6.1",
+                                    "code": "18726-0",
+                                    "display": "Radiology studies (set)"
+                                }
+                            ]
+                        },
+                        "title": "Imaging Study",
+                        "text": {
+                            "status": "additional",
+                            "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>XHTML Section Narrative</b></p></div>"
+                        },
+                        "entry": [
+                            {
+                                "reference": "ImagingStudy/64837103-6a97-4916-b7f4-a60f5b71b535"
+                            },
+                            {
+                                "reference": "ImagingStudy/aa72c50c-9a52-4fa9-b95e-662126188c28"
+                            }
+                        ]
+                    },
+                    {
+                        "code": {
+                            "coding": [
+                                {
+                                    "system": "urn:oid:2.16.840.1.113883.6.1",
+                                    "code": "55752-0",
+                                    "display": "Clinical Information"
+                                }
+                            ]
+                        },
+                        "title": "Clinical Information",
+                        "text": {
+                            "status": "additional",
+                            "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>XHTML Section Narrative</b></p></div>"
+                        }
+                    },
+                    {
+                        "code": {
+                            "coding": [
+                                {
+                                    "system": "urn:oid:2.16.840.1.113883.6.1",
+                                    "code": "55111-9",
+                                    "display": "Current Imaging Procedure Descriptions"
+                                }
+                            ]
+                        },
+                        "title": "Procedures",
+                        "text": {
+                            "status": "additional",
+                            "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>XHTML Section Narrative</b></p></div>"
+                        },
+                        "entry": [
+                            {
+                                "reference": "Procedure/a7e76f96-fa39-401b-bc32-75e05e6d6639"
+                            },
+                            {
+                                "reference": "Procedure/d5360e87-148c-4a6c-8b9e-25fe67951dd7"
+                            }
+                        ],
+                        "section": [
+                            {
+                                "code": {
+                                    "coding": [
+                                        {
+                                            "system": "urn:oid:2.16.840.1.113883.6.1",
+                                            "code": "73569-6",
+                                            "display": "Radiation Exposure and Protection Information"
+                                        }
+                                    ]
+                                },
+                                "title": "Radiation Exposure and Protection Information",
+                                "text": {
+                                    "status": "additional",
+                                    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>XHTML Section Narrative</b></p></div>"
+                                }
+                            }                            
+                        ]
+                    },
+                    {
+                        "code": {
+                            "coding": [
+                                {
+                                    "system": "urn:oid:2.16.840.1.113883.6.1",
+                                    "code": "18834-2",
+                                    "display": "Comparison / Previous Findings"
+                                }
+                            ]
+                        },
+                        "title": "Comparison / Previous Findings",
+                        "text": {
+                            "status": "additional",
+                            "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>XHTML Section Narrative</b></p></div>"
+                        }
+                    },
+                    {
+                        "code": {
+                            "coding": [
+                                {
+                                    "system": "urn:oid:2.16.840.1.113883.6.1",
+                                    "code": "59776-5",
+                                    "display": "Procedure findings"
+                                }
+                            ]
+                        },
+                        "title": "Procedure findings",
+                        "text": {
+                            "status": "additional",
+                            "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>XHTML Section Narrative</b></p></div>"
+                        }
+                    },
+                    {
+                        "code": {
+                            "coding": [
+                                {
+                                    "system": "urn:oid:2.16.840.1.113883.6.1",
+                                    "code": "19005-8",
+                                    "display": "Impressions"
+                                }
+                            ]
+                        },
+                        "title": "Impressions",
+                        "text": {
+                            "status": "additional",
+                            "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>XHTML Section Narrative</b></p></div>"
+                        },
+                        "section": [
+                            {
+                                "code": {
+                                    "coding": [
+                                        {
+                                            "system": "urn:oid:2.16.840.1.113883.6.1",
+                                            "code": "73568-8",
+                                            "display": "Communication of Critical Results"
+                                        }
+                                    ]
+                                },
+                                "title": "Communication",
+                                "text": {
+                                    "status": "additional",
+                                    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>XHTML Section Narrative</b></p></div>"
+                                }
+                            },                           
+                            {
+                                "code": {
+                                    "coding": [
+                                        {
+                                            "system": "urn:oid:2.16.840.1.113883.6.1",
+                                            "code": "55113-5",
+                                            "display": "Key Images"
+                                        }
+                                    ]
+                                },
+                                "title": "Key Images",
+                                "text": {
+                                    "status": "additional",
+                                    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>XHTML Section Narrative</b></p></div>"
+                                },
+                                "entry": [
+                                    {
+                                        "reference": "Binary/18d303ba-fa49-40ea-8aee-2a145c9014c7"
+                                    }
+                                ]
+                            },
+                            {
+                                "code": {
+                                    "coding": [
+                                        {
+                                            "system": "urn:oid:2.16.840.1.113883.6.1",
+                                            "code": "55107-7",
+                                            "display": "Addendum"
+                                        }
+                                    ]
+                                },
+                                "title": "Addendum",
+                                "text": {
+                                    "status": "additional",
+                                    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>XHTML Section Narrative</b></p></div>"
+                                }
+                            }    
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "fullUrl": "urn:uuid:dbee8a47-f90f-4d0b-984b-4b0f9f187667",
+            "resource": {
+                "resourceType": "ServiceRequest",
+                "id": "dbee8a47-f90f-4d0b-984b-4b0f9f187667",
+                "meta": {
+                    "profile": [
+                        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/servicerequest|1.0"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                                    "code": "PLAC"
+                                }
+                            ]
+                        },
+                        "system": "urn:oid:1.2.840.1.113883.3.3719",
+                        "value": "PLAC1"
+                    },
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                                    "code": "ACSN"
+                                }
+                            ]
+                        },
+                        "system": "urn:oid:1.2.840.1.113883.3.3720",
+                        "value": "ACCESSION_NUMBER_1"
+                    }
+                ],
+                "status": "completed",
+                "intent": "order",
+                "subject": {
+                    "reference": "Patient/248156ff-3453-4344-a75a-bbb66c2bba92"
+                },
+                "occurrencePeriod": {
+                    "start": "2025-01-15T13:05:00+03:00",
+                    "end": "2025-05-15T13:05:00+03:00"
+                },
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:oid:2.16.840.1.113883.3.3731.1.204.15",
+                            "code": "CABDO",
+                            "display": "CT Abdomen"
+                        }
+                    ]                    
+                },
+                "priority": "routine",
+                "orderDetail": {
+                    "coding": [
+                        {
+                            "system": "urn:oid:1.2.840.10008.2.16.4",
+                            "code": "CT"
+                        }
+                    ]                    
+                },
+                "bodySite": {
+                    "coding": [
+                        {
+                            "system": "urn:oid:2.16.840.1.113883.6.96",
+                            "code": "113345001",
+                            "display": "Abdomen"
+                        }
+                    ]      
+                }           
+            }
+        },
+        {
+            "fullUrl": "urn:uuid:e3b6a5dc-864f-4159-a2c6-c87de218998f",
+            "resource": {
+                "resourceType": "ServiceRequest",
+                "id": "e3b6a5dc-864f-4159-a2c6-c87de218998f",
+                "meta": {
+                    "profile": [
+                        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/servicerequest|1.0"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                                    "code": "PLAC"
+                                }
+                            ]
+                        },
+                        "system": "urn:oid:1.2.840.1.113883.3.3719",
+                        "value": "PLAC2"
+                    },
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                                    "code": "ACSN"
+                                }
+                            ]
+                        },
+                        "system": "urn:oid:1.2.840.1.113883.3.3720",
+                        "value": "ACCESSION_NUMBER_2"
+                    }
+                ],
+                "status": "completed",
+                "intent": "order",
+                "subject": {
+                    "reference": "Patient/248156ff-3453-4344-a75a-bbb66c2bba92"
+                },
+                "occurencePeriod": {
+                    "start": "2025-01-15T13:05:00+03:00",
+                    "end": "2025-05-15T13:05:00+03:00"
+                },
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:oid:2.16.840.1.113883.3.3731.1.204.15",
+                            "code": "XPELV",
+                            "display": "XR Pelvis"
+                        }
+                    ]
+                },
+                "priority": "routine",
+                "orderDetail": {
+                    "coding": [
+                        {
+                            "system": "urn:oid:1.2.840.10008.2.16.4",
+                            "code": "RG"
+                        }
+                    ]                    
+                },
+                "bodySite": {
+                    "coding": [
+                        {
+                            "system": "urn:oid:2.16.840.1.113883.6.96",
+                            "code": "12921003",
+                            "display": "Pelvis"
+                        }
+                    ]
+                }                
+            }
+        },        
+        {
+            "fullUrl": "urn:uuid:64837103-6a97-4916-b7f4-a60f5b71b535",
+            "resource": {
+                "resourceType": "ImagingStudy",
+                "id": "64837103-6a97-4916-b7f4-a60f5b71b535",
+                "meta": {
+                    "profile": [
+                        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/ImagingStudy|1.0"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "system": "urn:dicom:uid",
+                        "value": "TheImagingStudyUID_1_123456"
+                    }
+                ],
+                "status": "available",
+                "subject": {
+                    "reference": "Patient/248156ff-3453-4344-a75a-bbb66c2bba92"
+                },
+                "basedOn": {
+                    "reference": "ServiceRequest/dbee8a47-f90f-4d0b-984b-4b0f9f187667"
+                },
+                "procdureReference": {
+                    "reference": "Procedure/a7e76f96-fa39-401b-bc32-75e05e6d6639"
+                },
+                "endPoint":  [
+                    {
+                        "reference": "Endpoint/f6cb0cc2-0555-4db2-8962-cbeb1068f7a4"
+                    }
+                ],
+                "numberOfSeries": 1,
+                "series": [
+                    {
+                        "uid": "2.16.840.1.113883.3.3731.1.2.2.11000000002333.100.100.1234898122",
+                        "number": 1,
+                        "modality": {
+                            "system": "urn:oid:1.2.840.10008.2.16.4",
+                            "code": "CT"
+                        },
+                        "description": "CT Surview 180",
+                        "numberOfInstances": 2,
+                        "instance": [
+                            {
+                                "uid": "2.16.840.1.113883.3.3731.1.2.2.11000000002333.100.100.1234898122.1",
+                                "sopClass": {
+                                    "system": "urn:ietf:rfc:3986",
+                                    "code": "urn:oid:1.2.840.10008.5.1.4.1.1.2"
+                                },
+                                "number": 1
+                            },
+                            {
+                                "uid": "2.16.840.1.113883.3.3731.1.2.2.11000000002333.100.100.1234898122.2",
+                                "sopClass": {
+                                    "system": "urn:ietf:rfc:3986",
+                                    "code": "urn:oid:1.2.840.10008.5.1.4.1.1.2"
+                                },
+                                "number": 2
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "fullUrl": "urn:uuid:aa72c50c-9a52-4fa9-b95e-662126188c28",
+            "resource": {
+                "resourceType": "ImagingStudy",
+                "id": "aa72c50c-9a52-4fa9-b95e-662126188c28",
+                "meta": {
+                    "profile": [
+                        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/ImagingStudy|1.0"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "system": "urn:dicom:uid",
+                        "value": "TheImagingStudyUID_2_123456"
+                    }
+                ],
+                "status": "available",
+                "subject": {
+                    "reference": "Patient/248156ff-3453-4344-a75a-bbb66c2bba92"
+                },
+                "basedOn": {
+                    "reference": "ServiceRequest/e3b6a5dc-864f-4159-a2c6-c87de218998f"
+                },
+                "procdureReference": {
+                    "reference": "Procedure/d5360e87-148c-4a6c-8b9e-25fe67951dd7"
+                },
+                "endPoint":  [
+                    {
+                        "reference": "Endpoint/f6cb0cc2-0555-4db2-8962-cbeb1068f7a4"
+                    }
+                ],
+                "numberOfSeries": 2,
+                "series": [
+                    {
+                        "uid": "2.16.840.1.113883.3.3731.1.2.2.11000000002333.100.100.888888888",
+                        "number": 1,
+                        "modality": {
+                            "system": "urn:oid:1.2.840.10008.2.16.4",
+                            "code": "RG"
+                        },
+                        "description": "Radiographic imaging lateral",
+                        "numberOfInstances": 1,
+                        "instance": [
+                            {
+                                "uid": "2.16.840.1.113883.3.3731.1.2.2.11000000002333.100.100.888888888.1",
+                                "sopClass": {
+                                    "system": "urn:ietf:rfc:3986",
+                                    "code": "urn:oid:1.2.840.10008.5.1.4.1.1.2"
+                                },
+                                "number": 1
+                            }
+                        ]
+                    },
+                    {
+                        "uid": "2.16.840.1.113883.3.3731.1.2.2.11000000002333.100.100.999999999",
+                        "number": 2,
+                        "modality": {
+                            "system": "urn:oid:1.2.840.10008.2.16.4",
+                            "code": "RG"
+                        },
+                        "description": "Radiographic imaging medial",
+                        "numberOfInstances": 1,
+                        "instance": [
+                            {
+                                "uid": "2.16.840.1.113883.3.3731.1.2.2.11000000002333.100.100.999999999.1",
+                                "sopClass": {
+                                    "system": "urn:ietf:rfc:3986",
+                                    "code": "urn:oid:1.2.840.10008.5.1.4.1.1.2"
+                                },
+                                "number": 1
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "fullUrl": "urn:uuid:a7e76f96-fa39-401b-bc32-75e05e6d6639",
+            "resource": {
+                "resourceType": "Procedure",
+                "id": "a7e76f96-fa39-401b-bc32-75e05e6d6639",
+                "meta": {
+                    "profile": [
+                        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/ImagingProcedure|1.0"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "system": "2.16.840.1.113883.3.3731.1.2.2.11000000002333.100.200",
+                        "value": "ImagingProcedureID1"
+                    }
+                ],
+                "status": "completed",
+                "subject": {
+                    "reference": "Patient/248156ff-3453-4344-a75a-bbb66c2bba92"
+                },
+                "basedOn": {
+                    "reference": "ServiceRequest/dbee8a47-f90f-4d0b-984b-4b0f9f187667"
+                },
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:oid:2.16.840.1.113883.3.3731.1.204.15",
+                            "code": "CABDO",
+                            "display": "CT Abdomen"
+                        }
+                    ]                    
+                },
+                "performer": [
+                    {
+                        "actor": {
+                            "reference": "Device/532f73b1-62c5-4e2e-8448-b205969c8516"
+                        }
+                    }
+                ],
+                "bodySite": {
+                    "coding": [
+                        {
+                            "system": "urn:oid:2.16.840.1.113883.6.96",
+                            "code": "113345001",
+                            "display": "Abdomen"
+                        }
+                    ]      
+                },
+                "performedPeriod": {
+                    "start": "2025-01-15T14:00:00+03:00",
+                    "end": "2025-01-15T14:00:00+03:00"
+                }
+            }
+        },
+        {
+            "fullUrl": "urn:uuid:532f73b1-62c5-4e2e-8448-b205969c8516",
+            "resource": {
+                "resourceType": "Device",
+                "id": "532f73b1-62c5-4e2e-8448-b205969c8516",
+                "meta": {
+                    "profile": [
+                        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/device|1.0"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "system": "2.16.840.1.113883.3.3731.1.2.2.11000000002333.100.300",
+                        "value": "DeviceID1"
+                    }
+                ],
+                "deviceName": [
+                    {
+                        "type": "model-name",
+                        "name": "Vendor CT 9001"
+                    },
+                    {
+                        "type": "other",
+                        "name": "Software Version 1.01"
+                    }
+                ]
+            }
+        },
+        {
+            "fullUrl": "urn:uuid:d5360e87-148c-4a6c-8b9e-25fe67951dd7",
+            "resource": {
+                "resourceType": "Procedure",
+                "id": "d5360e87-148c-4a6c-8b9e-25fe67951dd7",
+                "meta": {
+                    "profile": [
+                        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/ImagingProcedure|1.0"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "system": "2.16.840.1.113883.3.3731.1.2.2.11000000002333.100.200",
+                        "value": "ImagingProcedureID2"
+                    }
+                ],
+                "status": "completed",
+                "subject": {
+                    "reference": "Patient/248156ff-3453-4344-a75a-bbb66c2bba92"
+                },
+                "basedOn": {
+                    "reference": "ServiceRequest/e3b6a5dc-864f-4159-a2c6-c87de218998f"
+                },
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:oid:2.16.840.1.113883.3.3731.1.204.15",
+                            "code": "XPELV",
+                            "display": "XR Pelvis"
+                        }
+                    ]
+                },
+                "performer": [
+                    {
+                        "actor": {
+                            "reference": "Device/91035a34-a127-41ce-a411-628ed722177a"
+                        }
+                    }
+                ],
+                "bodySite": {
+                    "coding": [
+                        {
+                            "system": "urn:oid:2.16.840.1.113883.6.96",
+                            "code": "12921003",
+                            "display": "Pelvis"
+                        }
+                    ]
+                },
+                "performedPeriod": {
+                    "start": "2025-01-15T14:00:00+03:00",
+                    "end": "2025-01-15T14:00:00+03:00"
+                }
+            }
+        },
+        {
+            "fullUrl": "urn:uuid:91035a34-a127-41ce-a411-628ed722177a",
+            "resource": {
+                "resourceType": "Device",
+                "id": "91035a34-a127-41ce-a411-628ed722177a",
+                "meta": {
+                    "profile": [
+                        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/device|1.0"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "system": "2.16.840.1.113883.3.3731.1.2.2.11000000002333.100.300",
+                        "value": "DeviceID2"
+                    }
+                ],
+                "deviceName": [
+                    {
+                        "type": "model-name",
+                        "name": "Vendor XRImagemaker AS100"
+                    }
+                ]
+            }
+        },
+        {
+  "fullUrl": "urn:uuid:248156ff-3453-4344-a75a-bbb66c2bba92",
+  "resource": {
+    "resourceType": "Patient",
+    "id": "248156ff-3453-4344-a75a-bbb66c2bba92",
+    "meta": {
+      "profile": [
+        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/patient|1.0"
+      ]
+    },
+    "identifier": [
+      {
+        "system": "2.16.840.1.113883.3.3731.1.1.100.1",
+        "value": "30000999999999"
+      }
+    ]
+  }
+}
+,
+       {
+  "fullUrl": "urn:uuid:ef3b8d35-c3e9-407a-a233-2ada6e22bb37",
+  "resource": {
+    "resourceType": "Practitioner",
+    "id": "ef3b8d35-c3e9-407a-a233-2ada6e22bb37",
+    "meta": {
+      "profile": [
+        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/practitioner|1.0"
+      ]
+    },
+    "identifier": [
+      {
+        "system": "2.16.840.1.113883.3.3731.1.2.1",
+        "value": "05RM14422"
+      }
+    ]
+  }
+}
+,
+        {
+  "fullUrl": "urn:uuid:e1fbbf0b-f039-4524-b3d8-35cc681a1ccb",
+  "resource": {
+    "resourceType": "PractitionerRole",
+    "id": "e1fbbf0b-f039-4524-b3d8-35cc681a1ccb",
+    "meta": {
+      "profile": [
+        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/practitionerrole|1.0"
+      ]
+    },
+    "practitioner": {
+      "identifier": [
+        {
+          "system": "2.16.840.1.113883.3.3731.1.2.1",
+          "value": "05RM14422"
+        }
+      ]
+    },
+    "organization": {
+      "identifier": [
+        {
+          "system": "2.16.840.1.113883.3.3731.1.2.2",
+          "value": "11000000002333"
+        }
+      ]
+    }
+  }
+}
+,
+        {
+  "fullUrl": "urn:uuid:2617a95d-8471-460e-8562-16b0d05e7b43",
+  "resource": {
+    "resourceType": "Organization",
+    "id": "2617a95d-8471-460e-8562-16b0d05e7b43",
+    "meta": {
+      "profile": [
+        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/organization|1.0"
+      ]
+    },
+    "identifier": [
+      {
+        "system": "2.16.840.1.113883.3.3731.1.2.2",
+        "value": "11000000002333"
+      }
+    ]
+  }
+}
+,
+        {
+            "fullUrl": "urn:uuid:4fd3fd0f-42e7-4278-8a4f-293ace8ce7dd",
+            "resource": {
+                "resourceType": "Encounter",
+                "id": "4fd3fd0f-42e7-4278-8a4f-293ace8ce7dd",
+                "meta": {
+                    "profile": [
+                        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/encounter|1.0"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "system": "2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.300.1",
+                        "value": "12345678"
+                    }
+                ],
+                "class": {
+                    "coding": [
+                        {
+                            "system": "urn:oid:2.16.840.1.113883.18.5",
+                            "code": "E",
+                            "display": "Emergency"
+                        }
+                    ]
+                },
+                "period": {
+                    "start": "2023-07-07T12:30:00+03:00"
+                },
+                "serviceProvider": {
+                    "display": "International University Hospital"
+                }
+            }
+        },
+        {
+            "fullUrl": "urn:uuid:18d303ba-fa49-40ea-8aee-2a145c9014c7",
+            "resource": {
+                "resourceType": "Binary",
+                "id": "18d303ba-fa49-40ea-8aee-2a145c9014c7",
+                "meta": {
+                    "profile": [
+                        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/Binary|1.0"
+                    ]
+                },
+                "contentType": "image/png",
+                "data": "... B64coded_PNG_data ..."
+            }
+        },
+        {
+            "fullUrl": "urn:uuid:f6cb0cc2-0555-4db2-8962-cbeb1068f7a4",
+            "resource": {
+                "resourceType": "Endpoint",
+                "id": "f6cb0cc2-0555-4db2-8962-cbeb1068f7a4",
+                "meta": {
+                    "profile": [
+                        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/Endpoint|1.0"
+                    ]
+                },
+                "status": "active",
+                "connectionType": {
+                    "system": "http://terminology.hl7.org/CodeSystem/endpoint-connection-type",
+                    "code": "dicom-wado-rs"
+                },
+                "payloadType": {
+                    "system": "http://terminology.hl7.org/CodeSystem/endpoint-payload-typee",
+                    "code": "any"
+                },
+                "address": "https://pacs.hospital.org/wado-rs-endpoint"
+            }
+        }
+   ]
+}

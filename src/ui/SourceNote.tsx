@@ -16,6 +16,18 @@ export interface SourceNoteProps {
  * the compiled spec — it is what lets an analyst check any claim this tool
  * makes. Never render a paraphrase here.
  */
+/**
+ * The URL of a Confluence page.
+ *
+ * A base containing `{pageId}` is filled in; anything else has the id appended. Confluence
+ * Cloud addresses a page by query string (`viewpage.action?pageId=…`), which appending
+ * cannot express.
+ */
+function pageHref(baseUrl: string, pageId: string): string {
+  if (baseUrl.includes("{pageId}")) return baseUrl.replace("{pageId}", encodeURIComponent(pageId));
+  return `${baseUrl.replace(/\/$/, "")}/${pageId}`;
+}
+
 export function SourceNote({
   source,
   defaultOpen = false,
@@ -45,7 +57,7 @@ export function SourceNote({
           <div className="text-2xs uppercase tracking-wide text-ink-3">
             {baseUrl ? (
               <a
-                href={`${baseUrl.replace(/\/$/, "")}/${source.pageId}`}
+                href={pageHref(baseUrl, source.pageId)}
                 target="_blank"
                 rel="noreferrer"
                 className="underline decoration-dotted underline-offset-2 hover:text-accent"

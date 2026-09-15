@@ -1,0 +1,289 @@
+<soap:Envelope xmlns="urn:ihe:iti:xds-b:2007" xmlns:lcm="urn:oasis:names:tc:ebxml-regrep:xsd:lcm:3.0" xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:addressing="http://www.w3.org/2005/08/addressing">
+	<soap:Header>
+		<addressing:MessageID>urn:uuid:a54d6aa5-d40d-43f9-88c5-b4633d873bdc</addressing:MessageID>
+		<addressing:To>https://repository.com/service/xdsrepository</addressing:To>
+		<addressing:Action>urn:ihe:iti:2007:ProvideAndRegisterDocumentSetRequest</addressing:Action>
+	</soap:Header>
+	<soap:Body>
+		<ProvideAndRegisterDocumentSetRequest>
+			<lcm:SubmitObjectsRequest>
+				<rim:RegistryObjectList>
+					<rim:Classification classificationNode="urn:uuid:a54d6aa5-d40d-43f9-88c5-b4633d873bdd" classifiedObject="urn:uuid:a6e06ca8-0c75-4064-9e5c-88b9045a96f6" id="cl11"/>
+					<!-- 
+							======================================
+							Document 1 of 1 in this submission
+							======================================
+					-->
+					<rim:ExtrinsicObject id="urn:uuid:c704075c-f5f3-4161-a73f-33441987a06e" mimeType="text/xml" objectType="urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1" status="urn:oasis:names:tc:ebxml-regrep:StatusType:Approved">
+						<!-- 
+								*************************************************************
+								Document Metadata elements
+
+								Important: The order of sub-elements has to be:
+									rim:Slot(s)
+									rim:Name
+									rim:Description
+									rim:Classification(s)
+									rim:ExternalIdentifier(s)
+								*************************************************************
+						-->
+						<!-- Document Metadata element: creationTime (in UTC time) -->
+						<rim:Slot name="creationTime">
+							<rim:ValueList>
+								<rim:Value>20210602050000</rim:Value>
+							</rim:ValueList>
+						</rim:Slot>
+						<!-- Document Metadata element: hash -->
+						<rim:Slot name="hash">
+							<rim:ValueList>
+								<rim:Value>6ee06f26bd7bde8cbdca6395156b152f9c70d26e</rim:Value>
+							</rim:ValueList>
+						</rim:Slot>
+						<!-- Document Metadata element: size -->
+						<rim:Slot name="size">
+							<rim:ValueList>
+								<rim:Value>70222</rim:Value>
+							</rim:ValueList>
+						</rim:Slot>
+						<!-- Document Metadata element: languageCode -->
+						<rim:Slot name="languageCode">
+							<rim:ValueList>
+								<rim:Value>ar-SA</rim:Value>
+							</rim:ValueList>
+						</rim:Slot>
+						<!-- Document Metadata element: referenceIdList -->
+						<rim:Slot name="urn:ihe:iti:xds:2013:referenceIdList">
+							<rim:ValueList>
+								<rim:Value>MaternalDisSum123456789^^^&amp;2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.100.1&amp;ISO^urn:ksa-ehealth:document:setId:2023</rim:Value>
+							</rim:ValueList>
+						</rim:Slot>
+						<!-- Document Metadata element: sourcePatientId -->
+						<rim:Slot name="sourcePatientId">
+							<rim:ValueList>
+								<rim:Value>30000999999999^^^&amp;2.16.840.1.113883.3.3731.1.1.100.1&amp;ISO</rim:Value>
+							</rim:ValueList>
+						</rim:Slot>
+						<!-- Document Metadata element: title -->
+						<rim:Name>
+							<rim:LocalizedString value="Maternal Discharge Summary"/>
+						</rim:Name>
+						<!-- Document Metadata element: comments -->
+						<rim:Description>
+							<rim:LocalizedString value="Any additional comment"/>
+						</rim:Description>
+						<!-- Document Metadata element: author -->
+						<rim:Classification classificationScheme="urn:uuid:93606bcf-9494-43ec-9b4e-a7748d1a838d" classifiedObject="urn:uuid:c704075c-f5f3-4161-a73f-33441987a06e" id="cl01">
+							<!-- sub-element: authorPerson -->
+							<rim:Slot name="authorPerson">
+								<rim:ValueList>
+									<rim:Value>05RM14422^Khan^Aditya^^^Dr.^^^&amp;2.16.840.1.113883.3.3731.1.2.1&amp;ISO</rim:Value>
+								</rim:ValueList>
+							</rim:Slot>
+							<!-- sub-element: authorInstitution -->
+							<rim:Slot name="authorInstitution">
+								<rim:ValueList>
+									<rim:Value>International University Hospital^^^^^&amp;2.16.840.1.113883.3.3731.1.2.2&amp;ISO^^^^11000000002333</rim:Value>
+								</rim:ValueList>
+							</rim:Slot>
+							<!-- sub-element: authorRole -->
+							<rim:Slot name="authorRole">
+								<rim:ValueList>
+									<rim:Value>Medicine and Surgery</rim:Value>
+								</rim:ValueList>
+							</rim:Slot>
+							<!-- sub-element: authorSpecialty -->
+							<rim:Slot name="authorSpecialty">
+								<rim:ValueList>
+									<rim:Value>Obstetrics and Gynecology</rim:Value>
+								</rim:ValueList>
+							</rim:Slot>
+						</rim:Classification>
+						<!-- Document Metadata element: classCode -->
+						<rim:Classification classificationScheme="urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a" classifiedObject="urn:uuid:c704075c-f5f3-4161-a73f-33441987a06e" id="cl02" nodeRepresentation="SUMMARIES">
+							<rim:Slot name="codingScheme">
+								<rim:ValueList>
+									<rim:Value>2.16.840.1.113883.3.3731.1.203.10</rim:Value>
+								</rim:ValueList>
+							</rim:Slot>
+							<rim:Name>
+								<rim:LocalizedString value="Summaries"/>
+							</rim:Name>
+						</rim:Classification>
+						<!-- Document Metadata element: confidentialityCode -->
+						<rim:Classification classificationScheme="urn:uuid:f4f85eac-e6cb-4883-b524-f2705394840f" classifiedObject="urn:uuid:c704075c-f5f3-4161-a73f-33441987a06e" id="cl03" nodeRepresentation="N">
+							<rim:Slot name="codingScheme">
+								<rim:ValueList>
+									<rim:Value>2.16.840.1.113883.5.25</rim:Value>
+								</rim:ValueList>
+							</rim:Slot>
+							<rim:Name>
+								<rim:LocalizedString value="normal"/>
+							</rim:Name>
+						</rim:Classification>
+						<!-- Document Metadata element: formatCode -->
+						<rim:Classification classificationScheme="urn:uuid:a09d5840-386c-46f2-b5ad-9c3699a4309d" classifiedObject="urn:uuid:c704075c-f5f3-4161-a73f-33441987a06e" id="cl04" nodeRepresentation="urn:ihe:pcc:xds-ms:2007">
+							<rim:Slot name="codingScheme">
+								<rim:ValueList>
+									<rim:Value>1.3.6.1.4.1.19376.1.2.3</rim:Value>
+								</rim:ValueList>
+							</rim:Slot>
+							<rim:Name>
+								<rim:LocalizedString value="Medical Summary"/>
+							</rim:Name>
+						</rim:Classification>
+						<!-- Document Metadata element: healthcareFacilityTypeCode -->
+						<rim:Classification classificationScheme="urn:uuid:f33fb8ac-18af-42cc-ae0e-ed0b0bdb91e1" classifiedObject="urn:uuid:c704075c-f5f3-4161-a73f-33441987a06e" id="cl05" nodeRepresentation="AP5">
+							<rim:Slot name="codingScheme">
+								<rim:ValueList>
+									<rim:Value>2.16.840.1.113883.3.3731.1.202.2</rim:Value>
+								</rim:ValueList>
+							</rim:Slot>
+							<rim:Name>
+								<rim:LocalizedString value="Primary Healthcare"/>
+							</rim:Name>
+						</rim:Classification>
+						<!-- Document Metadata element: practiceSettingCode -->
+						<rim:Classification classificationScheme="urn:uuid:cccf5598-8b07-4b77-a05e-ae952c785ead" classifiedObject="urn:uuid:c704075c-f5f3-4161-a73f-33441987a06e" id="cl06" nodeRepresentation="MJ1">
+							<rim:Slot name="codingScheme">
+								<rim:ValueList>
+									<rim:Value>2.16.840.1.113883.3.3731.1.202.6</rim:Value>
+								</rim:ValueList>
+							</rim:Slot>
+							<rim:Name>
+								<rim:LocalizedString value="Gyn-Oncology Department"/>
+							</rim:Name>
+						</rim:Classification>
+						<!-- Document Metadata element: typeCode -->
+						<rim:Classification classificationScheme="urn:uuid:f0306f51-975f-434e-a61c-c59651d33983" classifiedObject="urn:uuid:c704075c-f5f3-4161-a73f-33441987a06e" id="cl10" nodeRepresentation="97702-5">
+							<rim:Slot name="codingScheme">
+								<rim:ValueList>
+									<rim:Value>2.16.840.1.113883.6.1</rim:Value>
+								</rim:ValueList>
+							</rim:Slot>
+							<rim:Name>
+								<rim:LocalizedString value="Maternal and Fetal Medicine Discharge Summary"/>
+							</rim:Name>
+						</rim:Classification>
+						<!-- Document Metadata element: patientId -->
+						<rim:ExternalIdentifier id="ei01" identificationScheme="urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427" registryObject="urn:uuid:c704075c-f5f3-4161-a73f-33441987a06e" value="30000999999999^^^&amp;2.16.840.1.113883.3.3731.1.1.100.1&amp;ISO">
+							<rim:Name>
+								<rim:LocalizedString value="XDSDocumentEntry.patientId"/>
+							</rim:Name>
+						</rim:ExternalIdentifier>
+						<!-- Document Metadata element: uniqueId -->
+						<rim:ExternalIdentifier id="ei03" identificationScheme="urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab" registryObject="urn:uuid:c704075c-f5f3-4161-a73f-33441987a06e" value="2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.100.1^MaternalDisSum123456789">
+							<rim:Name>
+								<rim:LocalizedString value="XDSDocumentEntry.uniqueId"/>
+							</rim:Name>
+						</rim:ExternalIdentifier>
+					</rim:ExtrinsicObject>
+					<!-- 
+							======================================
+							SubmissionSet
+							======================================
+					-->
+					<rim:RegistryPackage id="urn:uuid:a6e06ca8-0c75-4064-9e5c-88b9045a96f6" objectType="urn:oasis:names:tc:ebxmlregrep:ObjectType:RegistryObject:RegistryPackage" status="urn:oasis:names:tc:ebxml-regrep:StatusType:Approved">
+						<!-- 
+								*************************************************************
+								SubmissionSet Metadata elements
+
+								Important: The order of sub-elements has to be:
+									rim:Slot(s)
+									rim:Name
+									rim:Description
+									rim:Classification(s)
+									rim:ExternalIdentifier(s)
+								*************************************************************
+						-->
+						<!-- SubmissionSet Metadata element: submissionTime (in UTC time) -->
+						<rim:Slot name="submissionTime">
+							<rim:ValueList>
+								<rim:Value>20210602053000</rim:Value>
+							</rim:ValueList>
+						</rim:Slot>
+						<!-- SubmissionSet Metadata element: title -->
+						<rim:Name>
+							<rim:LocalizedString value="Maternal Discharge Summary Submission Set Title"/>
+						</rim:Name>
+						<!-- SubmissionSet Metadata element: comment -->
+						<rim:Description>
+							<rim:LocalizedString value="Maternal Discharge Summary Submission Set Comment"/>
+						</rim:Description>
+						<!-- SubmissionSet Metadata element: author -->
+						<rim:Classification classificationScheme="urn:uuid:a7058bb9-b4e4-4307-ba5b-e3f0ab85e12d" classifiedObject="urn:uuid:a6e06ca8-0c75-4064-9e5c-88b9045a96f6" id="cl08">
+							<!-- sub-element: authorPerson -->
+							<rim:Slot name="authorPerson">
+								<rim:ValueList>
+									<rim:Value>05RM14422^Khan^Aditya^^^Dr.^^^&amp;2.16.840.1.113883.3.3731.1.2.1&amp;ISO</rim:Value>
+								</rim:ValueList>
+							</rim:Slot>
+							<!-- sub-element: authorInstitution -->
+							<rim:Slot name="authorInstitution">
+								<rim:ValueList>
+									<rim:Value>International University Hospital^^^^^&amp;2.16.840.1.113883.3.3731.1.2.2&amp;ISO^^^^11000000002333</rim:Value>
+								</rim:ValueList>
+							</rim:Slot>
+							<!-- sub-element: authorRole -->
+							<rim:Slot name="authorRole">
+								<rim:ValueList>
+									<rim:Value>Medicine and Surgery</rim:Value>
+								</rim:ValueList>
+							</rim:Slot>
+							<!-- sub-element: authorSpecialty -->
+							<rim:Slot name="authorSpecialty">
+								<rim:ValueList>
+									<rim:Value>Obstetrics and Gynecology</rim:Value>
+								</rim:ValueList>
+							</rim:Slot>
+						</rim:Classification>
+						<!-- SubmissionSet Metadata element: contentTypeCode -->
+						<rim:Classification classificationScheme="urn:uuid:aa543740-bdda-424e-8c96-df4873be8500" classifiedObject="urn:uuid:a6e06ca8-0c75-4064-9e5c-88b9045a96f6" id="cl09" nodeRepresentation="HOSPITAL-VISIT">
+							<rim:Slot name="codingScheme">
+								<rim:ValueList>
+									<rim:Value>2.16.840.1.113883.3.3731.1.203.16</rim:Value>
+								</rim:ValueList>
+							</rim:Slot>
+							<rim:Name>
+								<rim:LocalizedString value="Hospital visit"/>
+							</rim:Name>
+						</rim:Classification>
+						<!-- SubmissionSet Metadata element: uniqueId -->
+						<rim:ExternalIdentifier id="ei03" identificationScheme="urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8" registryObject="urn:uuid:a6e06ca8-0c75-4064-9e5c-88b9045a96f6" value="2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.300.112">
+							<rim:Name>
+								<rim:LocalizedString value="XDSSubmissionSet.uniqueId"/>
+							</rim:Name>
+						</rim:ExternalIdentifier>
+						<!-- SubmissionSet Metadata element: sourceId -->
+						<rim:ExternalIdentifier id="ei04" identificationScheme="urn:uuid:554ac39e-e3fe-47fe-b233-965d2a147832" registryObject="urn:uuid:a6e06ca8-0c75-4064-9e5c-88b9045a96f6" value="2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.200.89112">
+							<rim:Name>
+								<rim:LocalizedString value="XDSSubmissionSet.sourceId"/>
+							</rim:Name>
+						</rim:ExternalIdentifier>
+						<!-- SubmissionSet Metadata element: patientId -->
+						<rim:ExternalIdentifier id="ei05" identificationScheme="urn:uuid:6b5aea1a-874d-4603-a4bc-96a0a7b38446" registryObject="urn:uuid:a6e06ca8-0c75-4064-9e5c-88b9045a96f6" value="30000999999999^^^&amp;2.16.840.1.113883.3.3731.1.1.100.1&amp;ISO">
+							<rim:Name>
+								<rim:LocalizedString value="XDSSubmissionSet.patientId"/>
+							</rim:Name>
+						</rim:ExternalIdentifier>
+					</rim:RegistryPackage>
+					<!-- 
+							======================================
+							Association: links the document to the SubmissionSet
+								targetObject (the document) = rim:ExtrinsicObject[@id='urn:uuid:c704075c-f5f3-4161-a73f-33441987a06e']
+							======================================
+					-->
+					<rim:Association associationType="HasMember" id="as01" sourceObject="urn:uuid:a6e06ca8-0c75-4064-9e5c-88b9045a96f6" targetObject="urn:uuid:c704075c-f5f3-4161-a73f-33441987a06e">
+						<rim:Slot name="SubmissionSetStatus">
+							<rim:ValueList>
+								<rim:Value>Original</rim:Value>
+							</rim:ValueList>
+						</rim:Slot>
+					</rim:Association>
+				</rim:RegistryObjectList>
+			</lcm:SubmitObjectsRequest>
+			<Document id="urn:uuid:c704075c-f5f3-4161-a73f-33441987a06e">
+				<xop:Include xmlns:xop="http://www.w3.org/2004/08/xop/include" href="cid:MatDisSum.xml"/>
+			</Document>
+		</ProvideAndRegisterDocumentSetRequest>
+	</soap:Body>
+</soap:Envelope>

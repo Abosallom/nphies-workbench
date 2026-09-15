@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soap:Envelope xmlns="urn:ihe:iti:xds-b:2007" xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:addressing="http://www.w3.org/2005/08/addressing" xmlns:rs="urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0">
+	<soap:Header>
+		<addressing:Action>urn:ihe:iti:2007:RetrieveDocumentSetResponse</addressing:Action>
+		<addressing:RelatesTo>uuid:a54d6aa5-d40d-43f9-88c5-b4633d873bdc</addressing:RelatesTo>
+	</soap:Header>
+	<soap:Body>
+		<RetrieveDocumentSetResponse xmlns:ns5="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0" xmlns:ns6="urn:oasis:names:tc:ebxml-regrep:xsd:lcm:3.0">
+			<rs:RegistryResponse status="urn:oasis:names:tc:ebxml-regrep:ResponseStatusType:Success"/>
+			<!-- Retrieved document 1/2 -->
+			<DocumentResponse>
+				<RepositoryUniqueId>2.16.840.1.113883.3.3731.1.2.2.11111111111110</RepositoryUniqueId>
+				<DocumentUniqueId>2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.100.1^DisSum123456789</DocumentUniqueId>
+				<mimeType>text/xml</mimeType>
+				<Document>
+					<xop:Include href="cid:DisSum123456789.xml" xmlns:xop="http://www.w3.org/2004/08/xop/include"/>
+				</Document>
+			</DocumentResponse>
+			<!-- Retrieved document 2/2 -->
+			<DocumentResponse>
+				<RepositoryUniqueId>2.16.840.1.113883.3.3731.1.2.2.11111111111110</RepositoryUniqueId>
+				<DocumentUniqueId>2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.100.1^DisSum123456790</DocumentUniqueId>
+				<mimeType>text/xml</mimeType>
+				<Document>
+					<xop:Include href="cid:DisSum123456790.xml" xmlns:xop="http://www.w3.org/2004/08/xop/include"/>
+				</Document>
+			</DocumentResponse>
+		</RetrieveDocumentSetResponse>
+	</soap:Body>
+</soap:Envelope>

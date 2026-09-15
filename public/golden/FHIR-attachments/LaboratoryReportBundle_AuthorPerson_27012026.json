@@ -1,0 +1,1754 @@
+{
+    "resourceType": "Bundle",
+    "id": "75e66c37-7d48-405d-b6ec-7264a8f558ff",
+    "meta": {
+      "profile": [
+        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/bundleLabReport|1.0"
+      ]
+    },
+    "type": "document",
+    "timestamp": "2025-01-15T13:28:17+03:00",
+    "identifier": {
+      "system": "urn:oid:2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.100.1",
+      "value": "DocumentID"
+    },
+    "entry": [
+        {
+            "fullUrl": "urn:uuid:5d7d58d0-a771-42dc-9592-b010c7524101",
+            "resource": {
+                "resourceType": "Composition",
+                "id": "5d7d58d0-a771-42dc-9592-b010c7524101",
+                "meta": {
+                "profile": [
+                    "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/compositionLabReport|1.0"
+                ]
+                },
+                    "extension": [
+                    {
+                        "url": "http://hl7.org/fhir/StructureDefinition/composition-clinicaldocument-versionNumber",
+                        "valueString": "1"
+                    },
+                    {
+                        "url": "http://hl7.org/fhir/uv/lab-report/StructureDefinition/composition-basedOn-order-or-requisition",
+                        "valueReference": {
+                            "reference": "ServiceRequest/dbee8a47-f90f-4d0b-984b-4b0f9f187667"
+                        }
+                    },
+                    {
+                        "url": "http://hl7.org/fhir/uv/lab-report/StructureDefinition/composition-basedOn-order-or-requisition",
+                        "valueReference": {
+                            "reference": "ServiceRequest/1b60cab5-1779-404a-b9c0-cf6b84f9a946"
+                        }
+                    },                    
+                    {
+                        "url": "http://hl7.org/fhir/uv/lab-report/StructureDefinition/composition-basedOn-order-or-requisition",
+                        "valueReference": {
+                            "reference": "ServiceRequest/33d2d633-db85-49f3-aef7-d749bc987662"
+                        }
+                    },                    
+                    {
+                        "url": "http://hl7.org/fhir/uv/lab-report/StructureDefinition/composition-basedOn-order-or-requisition",
+                        "valueReference": {
+                            "reference": "ServiceRequest/6ef4e2a5-c247-448c-99af-5e9d9a209b9a"
+                        }
+                    },     
+                    {
+                        "url": "http://hl7.org/fhir/uv/lab-report/StructureDefinition/composition-basedOn-order-or-requisition",
+                        "valueReference": {
+                            "reference": "ServiceRequest/cc27acf5-744d-4f82-baa0-9701b08219da"
+                        }
+                    },     
+                    {
+                        "url": "http://hl7.org/fhir/uv/lab-report/StructureDefinition/composition-basedOn-order-or-requisition",
+                        "valueReference": {
+                            "reference": "ServiceRequest/329cf6ea-82b1-4529-801b-43fee74697c3"
+                        }
+                    },     
+                    {
+                        "url": "http://hl7.org/fhir/uv/lab-report/StructureDefinition/composition-diagnosticReportReference",
+                        "valueReference": {
+                            "reference": "DiagnosticReport/8f2c0e04-b7cb-451e-8916-1cbae5df3663"
+                        }
+                    }
+                ],
+                "identifier": [
+                    {
+                        "system": "urn:oid:2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.100.1",
+                        "value": "12345678"
+                    }
+                ],
+                "status": "final",
+                "type": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "11502-2",
+                            "display": "LABORATORY REPORT"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/248156ff-3453-4344-a75a-bbb66c2bba92",
+                    "identifier": [
+                        {
+                            "system": "2.16.840.1.113883.3.3731.1.1.100.1",
+                            "value": "30000999999999"
+                        }
+                    ]
+                },
+                "encounter": {
+                    "reference": "Encounter/4fd3fd0f-42e7-4278-8a4f-293ace8ce7dd",
+                    "identifier": [
+                        {
+                            "system": "2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.300.1",
+                            "value": "12345678"
+                        }
+                    ]
+                },
+                "date": "2025-01-15T13:28:17+03:00",
+                "author": [
+                    {
+                        "reference": "PractitionerRole/e1fbbf0b-f039-4524-b3d8-35cc681a1ccb",
+                        "identifier": [
+                            {
+                                "system": "2.16.840.1.113883.3.3731.1.2.1",
+                                "value": "05RM14422"
+                            }
+                        ]
+                    }
+                ],
+                "title": "Laboratory Report",
+                "confidentiality": "N",
+                "attester": [
+                    {
+                        "mode": "legal",
+                        "party": {
+                            "reference": "PractitionerRole/e1fbbf0b-f039-4524-b3d8-35cc681a1ccb",
+                            "identifier": [
+                                {
+                                    "system": "2.16.840.1.113883.3.3731.1.2.1",
+                                    "value": "05RM14422"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "mode": "professional",
+                        "party": {
+                            "reference": "PractitionerRole/e1fbbf0b-f039-4524-b3d8-35cc681a1ccb",
+                            "identifier": [
+                                {
+                                    "system": "2.16.840.1.113883.3.3731.1.2.1",
+                                    "value": "05RM14422"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "custodian": {
+                    "reference": "Organization/2617a95d-8471-460e-8562-16b0d05e7b43",
+                    "identifier": [
+                        {
+                            "system": "2.16.840.1.113883.3.3731.1.2.2",
+                            "value": "11000000002333"
+                        }
+                    ]
+                },
+                "section": [
+                    {
+                        "code": {
+                            "coding": [
+                                {
+                                    "system": "urn:oid:2.16.840.1.113883.6.1",
+                                    "code": "18723-7",
+                                    "display": "Hematology"
+                                }
+                            ]
+                        },
+                        "title": "Hematology",
+                        "entry": [
+                            {
+                                "reference": "Observation/64837103-6a97-4916-b7f4-a60f5b71b535"
+                            },
+                            {
+                                "reference": "Observation/68b5cf19-2f26-416b-b6d8-28c76e5d271f"
+                            },
+                            {
+                                "reference": "Observation/f65e7d21-75a0-48b3-8786-bf2eff5dc62a"
+                            }
+                        ]
+                    },
+                    {
+                        "code": {
+                            "coding": [
+                                {
+                                    "system": "urn:oid:2.16.840.1.113883.6.1",
+                                    "code": "24323-8",
+                                    "display": "Biochemistry"
+                                }
+                            ]
+                        },
+                        "title": "Biochemistry",
+                        "entry": [
+                            {
+                                "reference": "Observation/781a879f-4ac8-4e0b-929b-2faab28c4192"
+                            },
+                            {
+                                "reference": "Observation/53915dfc-d45d-4b41-8d7a-2f223037856a"
+                            },
+                            {
+                                "reference": "Observation/41092569-c2ff-4780-9d5a-169159f4bb24"                            
+                            }
+                        ]
+                    },
+                    {
+                        "code": {
+                            "coding": [
+                                {
+                                    "system": "urn:oid:2.16.840.1.113883.6.1",
+                                    "code": "18725-2",
+                                    "display": "Microbiology studies"
+                                }
+                            ]
+                        },
+                        "title": "Microbiology studies",
+                        "entry": [
+                            {
+                                "reference": "Observation/1de4b089-c2d6-4c12-a5f2-f6f8c9f7e044"
+                            }
+                        ]
+                    },
+                    {
+                        "code": {
+                            "coding": [
+                                {
+                                    "system": "urn:oid:2.16.840.1.113883.6.1",
+                                    "code": "53049-3",
+                                    "display": "Pathology"
+                                }
+                            ]
+                        },
+                        "title": "Pathology",
+                        "entry": [
+                            {
+                                "reference": "Observation/59296b52-cedb-4dda-a5cb-db92f79df633"
+                            },
+                            {
+                                "reference": "Observation/af613a2c-a097-4a0b-ba28-e4636e47de7d"
+                            },
+                            {
+                                "reference": "Observation/7ebd43bb-959c-4142-b62c-e1b3416a2c4d"
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "fullUrl": "urn:uuid:8f2c0e04-b7cb-451e-8916-1cbae5df3663",
+            "resource": {
+                "resourceType": "DiagnosticReport",
+                "id": "8f2c0e04-b7cb-451e-8916-1cbae5df3663",
+                "meta": {
+                    "profile": [
+                        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/diagnosticreportLabReport|1.0"
+                    ]
+                },
+                "extension": [
+                    {
+                        "url": "http://hl7.org/fhir/5.0/StructureDefinition/extension-DiagnosticReport.composition",
+                        "valueReference": {
+                            "reference": "Composition/5d7d58d0-a771-42dc-9592-b010c7524101",
+                            "identifier": [
+                                {
+                                    "system": "urn:oid:2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.100.1",
+                                    "value": "DocumentSetID (set equal to DocumentID, since it's the first version of the set)"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "status": "final",
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "11502-2",
+                            "display": "LABORATORY REPORT"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/248156ff-3453-4344-a75a-bbb66c2bba92",
+                    "identifier": [
+                        {
+                            "system": "2.16.840.1.113883.3.3731.1.1.100.1",
+                            "value": "30000999999999"
+                        }
+                    ]
+                },
+                "encounter": {
+                    "reference": "Encounter/4fd3fd0f-42e7-4278-8a4f-293ace8ce7dd",
+                    "identifier": [
+                        {
+                            "system": "2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.300.1",
+                            "value": "12345678"
+                        }
+                    ]
+                },
+                "effectivePeriod": {
+                    "start": "2025-01-14T08:00:00+03:00",
+                    "end": "2025-01-15T13:28:17+03:00"
+                },
+                "specimen": [
+                    {
+                        "reference": "Specimen/44fb4cbe-d5ec-421a-8c69-7abc422ecf08"
+                    }
+                ],
+                "result": [
+                    {
+                        "reference": "Observation/64837103-6a97-4916-b7f4-a60f5b71b535"
+                    },
+                    {
+                        "reference": "Observation/68b5cf19-2f26-416b-b6d8-28c76e5d271f"
+                    },
+                    {
+                        "reference": "Observation/f65e7d21-75a0-48b3-8786-bf2eff5dc62a"
+                    },
+                    {
+                        "reference": "Observation/781a879f-4ac8-4e0b-929b-2faab28c4192"
+                    },
+                    {
+                        "reference": "Observation/53915dfc-d45d-4b41-8d7a-2f223037856a"
+                    },
+                    {
+                        "reference": "Observation/41092569-c2ff-4780-9d5a-169159f4bb24"
+                    },
+                    {
+                        "reference": "Observation/1de4b089-c2d6-4c12-a5f2-f6f8c9f7e044"
+                    },
+                    {
+                        "reference": "Observation/59296b52-cedb-4dda-a5cb-db92f79df633"
+                    },
+                    {
+                        "reference": "Observation/af613a2c-a097-4a0b-ba28-e4636e47de7d"
+                    },
+                    {
+                        "reference": "Observation/7ebd43bb-959c-4142-b62c-e1b3416a2c4d"
+                    }
+                ]
+            }
+        },
+        {
+            "fullUrl": "urn:uuid:64837103-6a97-4916-b7f4-a60f5b71b535",
+            "resource": {
+                "resourceType": "Observation",
+                "id": "64837103-6a97-4916-b7f4-a60f5b71b535",
+                "meta": {
+                    "profile": [
+                        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/observationLabReport|1.0"
+                    ]
+                },
+                "basedOn": [
+                    {
+                        "reference": "ServiceRequest/dbee8a47-f90f-4d0b-984b-4b0f9f187667"
+                    }
+                ],
+                "status": "final",
+                "category": {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                            "code": "laboratory"
+                        }
+                    ]
+                },
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:oid:2.16.840.1.113883.6.1",
+                            "code": "58410-2",
+                            "display": "Complete Blood Count"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/248156ff-3453-4344-a75a-bbb66c2bba92"
+                },
+                "effectivePeriod": {
+                    "start": "2025-01-15T13:05:00+03:00",
+                    "end": "2025-01-15T13:05:00+03:00"
+                },
+                "hasMember": [
+                    {
+                        "reference": "Observation/68b5cf19-2f26-416b-b6d8-28c76e5d271f"
+                    },
+                    {
+                        "reference": "Observation/f65e7d21-75a0-48b3-8786-bf2eff5dc62a"
+                    }
+                ],
+                "note": [
+                    {
+                        "text": "CBC panel observation (no direct value)."
+                    }
+                ],
+                "performer": [
+                    {
+                        "reference": "PractitionerRole/e1fbbf0b-f039-4524-b3d8-35cc681a1ccb"
+                    },
+                    {
+                        "extension": [
+                        {
+                            "url": "http://hl7.org/fhir/extensions/StructureDefinition-event-performerFunction.html",
+                            "valueCodeableConcept": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/v3-ParticipationType",
+                                    "code": "VRF",
+                                    "display": "verifier"
+                                }
+                            ]
+                            }
+                        }
+                        ],
+                        "reference": "PractitionerRole/1b0f2f77-23e5-46f5-b2a7-6b6262be0b21"
+                    }
+                ]
+            }
+        },
+        {
+            "fullUrl": "urn:uuid:68b5cf19-2f26-416b-b6d8-28c76e5d271f",
+            "resource": {
+                "resourceType": "Observation",
+                "id": "68b5cf19-2f26-416b-b6d8-28c76e5d271f",
+                "meta": {
+                    "profile": [
+                        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/observationLabReport|1.0"
+                    ]
+                },
+                "basedOn": [
+                    {
+                        "reference": "ServiceRequest/dbee8a47-f90f-4d0b-984b-4b0f9f187667"
+                    }
+                ],
+                "status": "final",
+                "category": {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                            "code": "laboratory"
+                        }
+                    ]
+                },
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:oid:2.16.840.1.113883.6.1",
+                            "code": "789-8",
+                            "display": "Red Blood Cell Count"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/248156ff-3453-4344-a75a-bbb66c2bba92"
+                },
+                "effectivePeriod": {
+                    "start": "2025-01-15T13:05:00+03:00",
+                    "end": "2025-01-15T13:05:00+03:00"
+                },
+                "performer": [
+                    {
+                        "reference": "PractitionerRole/e1fbbf0b-f039-4524-b3d8-35cc681a1ccb"
+                    },
+                    {
+                        "extension": [
+                            {
+                                "url": "http://hl7.org/fhir/extensions/StructureDefinition-event-performerFunction.html",
+                                "valueCodeableConcept": {
+                                    "coding": [
+                                        {
+                                            "system": "http://terminology.hl7.org/CodeSystem/v3-ParticipationType",
+                                            "code": "VRF",
+                                            "display": "verifier"
+                                        }
+                                    ]
+                                }
+                            }
+                        ],
+                        "reference": "PractitionerRole/1b0f2f77-23e5-46f5-b2a7-6b6262be0b21"
+                    }
+                ],
+                "valueQuantity": {
+                    "value": 5.2,
+                    "unit": "10^12/L",
+                    "system": "urn:oid:2.16.840.1.113883.6.8",
+                    "code": "10*12/L"
+                },
+                "interpretation": {
+                    "coding": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                        "code": "N",
+                        "display": "Normal"
+                    }
+                    ]
+                },
+                "referenceRange": [
+                    {
+                        "low": {
+                            "value": 4.7,
+                            "unit": "10^12/L",
+                            "system": "urn:oid:2.16.840.1.113883.6.8",
+                            "code": "10*12/L"
+                        },
+                        "high": {
+                            "value": 6.1,
+                            "unit": "10^12/L",
+                            "system": "urn:oid:2.16.840.1.113883.6.8",
+                            "code": "10*12/L"
+                        },
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/referencerange-meaning",
+                                    "code": "normal",
+                                    "display": "Normal Range"
+                                }
+                            ]
+                        },
+                        "text": "Normal RBC range"
+                    }
+                ],
+                "specimen": {
+                    "reference": "Specimen/44fb4cbe-d5ec-421a-8c69-7abc422ecf08"
+                },
+                "note": [
+                    {
+                        "text": "Example RBC observation"
+                    }
+                ]
+            }
+        },
+        {
+            "fullUrl": "urn:uuid:f65e7d21-75a0-48b3-8786-bf2eff5dc62a",
+            "resource": {
+                "resourceType": "Observation",
+                "id": "f65e7d21-75a0-48b3-8786-bf2eff5dc62a",
+                "meta": {
+                    "profile": [
+                        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/observationLabReport|1.0"
+                    ]
+                },
+                "basedOn": [
+                    {
+                        "reference": "ServiceRequest/dbee8a47-f90f-4d0b-984b-4b0f9f187667"
+                    }
+                ],
+                "status": "final",
+                "category": {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                            "code": "laboratory"
+                        }
+                    ]
+                },
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:oid:2.16.840.1.113883.6.1",
+                            "code": "6690-2",
+                            "display": "White Blood Cell Count"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/248156ff-3453-4344-a75a-bbb66c2bba92"
+                },
+                "effectivePeriod": {
+                    "start": "2025-01-15T14:40:00+03:00",
+                    "end": "2025-01-15T14:40:00+03:00"
+                },
+                "performer": [
+                    {
+                        "reference": "PractitionerRole/e1fbbf0b-f039-4524-b3d8-35cc681a1ccb"
+                    }
+                ],
+                "valueRange": {
+                    "low": {
+                        "value": 4.0,
+                        "unit": "10^9/L"
+                    },
+                    "high": {
+                        "value": 11.0,
+                        "unit": "10^9/L"
+                    }
+                },
+                "specimen": {
+                    "reference": "Specimen/44fb4cbe-d5ec-421a-8c69-7abc422ecf08"
+                },
+                "referenceRange": [
+                     {
+                        "text": "undefined"
+                    }
+                ],
+                "note": [
+                    {
+                        "text": "WBC count within normal range."
+                    }
+                ]
+            }
+        },
+        {
+            "fullUrl": "urn:uuid:781a879f-4ac8-4e0b-929b-2faab28c4192",
+            "resource": {
+                "resourceType": "Observation",
+                "id": "781a879f-4ac8-4e0b-929b-2faab28c4192",
+                "meta": {
+                    "profile": [
+                        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/observationLabReport|1.0"
+                    ]
+                },
+                "basedOn": [
+                    {
+                        "reference": "ServiceRequest/1b60cab5-1779-404a-b9c0-cf6b84f9a946"
+                    }
+                ],
+                "status": "final",
+                "category": {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                            "code": "laboratory"
+                        }
+                    ]
+                },
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:oid:2.16.840.1.113883.6.1",
+                            "code": "24323-8",
+                            "display": "Liver Function Tests (Panel)"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/248156ff-3453-4344-a75a-bbb66c2bba92"
+                },
+                "effectivePeriod": {
+                    "start": "2025-01-15T13:20:00+03:00",
+                    "end": "2025-01-15T13:20:00+03:00"
+                },
+                "hasMember": [
+                    {
+                        "reference": "Observation/53915dfc-d45d-4b41-8d7a-2f223037856a"
+                    },
+                    {
+                        "reference": "Observation/41092569-c2ff-4780-9d5a-169159f4bb24"
+                    }
+                ],
+                "note": [
+                    {
+                        "text": "LFT panel observation (no direct value)."
+                    }
+                ],
+                "performer": [
+                    {
+                        "reference": "PractitionerRole/e1fbbf0b-f039-4524-b3d8-35cc681a1ccb"
+                    },
+                    {
+                        "extension": [
+                            {
+                                "url": "http://hl7.org/fhir/extensions/StructureDefinition-event-performerFunction.html",
+                                "valueCodeableConcept": {
+                                    "coding": [
+                                        {
+                                            "system": "http://terminology.hl7.org/CodeSystem/v3-ParticipationType",
+                                            "code": "VRF",
+                                            "display": "verifier"
+                                        }
+                                    ]
+                                }
+                            }
+                        ],
+                        "reference": "PractitionerRole/1b0f2f77-23e5-46f5-b2a7-6b6262be0b21"
+                    }
+                ]
+            }
+        },
+        {
+            "fullUrl": "urn:uuid:53915dfc-d45d-4b41-8d7a-2f223037856a",
+            "resource": {
+                "resourceType": "Observation",
+                "id": "53915dfc-d45d-4b41-8d7a-2f223037856a",
+                "meta": {
+                    "profile": [
+                        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/observationLabReport|1.0"
+                    ]
+                },
+                "basedOn": [
+                    {
+                        "reference": "ServiceRequest/1b60cab5-1779-404a-b9c0-cf6b84f9a946"
+                    }
+                ],
+                "status": "final",
+                "category": {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                            "code": "laboratory"
+                        }
+                    ]
+                },
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:oid:2.16.840.1.113883.6.1",
+                            "code": "1742-6",
+                            "display": "Alanine aminotransferase (ALT)"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/248156ff-3453-4344-a75a-bbb66c2bba92"
+                },
+                "effectivePeriod": {
+                    "start": "2025-01-15T13:20:00+03:00",
+                    "end": "2025-01-15T13:20:00+03:00"
+                },
+                "performer": [
+                    {
+                        "reference": "PractitionerRole/e1fbbf0b-f039-4524-b3d8-35cc681a1ccb"
+                    },
+                    {
+                        "extension": [
+                            {
+                                "url": "http://hl7.org/fhir/extensions/StructureDefinition-event-performerFunction.html",
+                                "valueCodeableConcept": {
+                                    "coding": [
+                                        {
+                                            "system": "http://terminology.hl7.org/CodeSystem/v3-ParticipationType",
+                                            "code": "VRF",
+                                            "display": "verifier"
+                                        }
+                                    ]
+                                }
+                            }
+                        ],
+                        "reference": "PractitionerRole/1b0f2f77-23e5-46f5-b2a7-6b6262be0b21"
+                    }
+                ],
+                "valueQuantity": {
+                    "value": 55,
+                    "unit": "U/L",
+                    "system": "urn:oid:2.16.840.1.113883.6.8",
+                    "code": "U/L"
+                },
+                "interpretation": {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                            "code": "H",
+                            "display": "High"
+                        }
+                    ]
+                },
+                "referenceRange": [
+                    {
+                        "low": {
+                            "value": 0,
+                            "unit": "U/L",
+                            "system": "urn:oid:2.16.840.1.113883.6.8",
+                            "code": "U/L"
+                        },
+                        "high": {
+                            "value": 50,
+                            "unit": "U/L",
+                            "system": "urn:oid:2.16.840.1.113883.6.8",
+                            "code": "U/L"
+                        },
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/referencerange-meaning",
+                                    "code": "normal",
+                                    "display": "Normal Range"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "note": [
+                    {
+                        "text": "Elevated ALT"
+                    }
+                ]
+            }
+        },
+        {
+            "fullUrl": "urn:uuid:41092569-c2ff-4780-9d5a-169159f4bb24",
+            "resource": {
+                "resourceType": "Observation",
+                "id": "41092569-c2ff-4780-9d5a-169159f4bb24",
+                "meta": {
+                    "profile": [
+                        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/observationLabReport|1.0"
+                    ]
+                },
+                "basedOn": [
+                    {
+                        "reference": "ServiceRequest/1b60cab5-1779-404a-b9c0-cf6b84f9a946"
+                    }
+                ],
+                "status": "final",
+                "category": {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                            "code": "laboratory"
+                        }
+                    ]
+                },
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:oid:2.16.840.1.113883.6.1",
+                            "code": "6768-6",
+                            "display": "Aspartate aminotransferase (AST)"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/248156ff-3453-4344-a75a-bbb66c2bba92"
+                },
+                "effectivePeriod": {
+                    "start": "2025-01-15T13:25:00+03:00",
+                    "end": "2025-01-15T13:25:00+03:00"
+                },
+                "performer": [
+                    {
+                        "reference": "PractitionerRole/e1fbbf0b-f039-4524-b3d8-35cc681a1ccb"
+                    },
+                    {
+                        "extension": [
+                            {
+                                "url": "http://hl7.org/fhir/extensions/StructureDefinition-event-performerFunction.html",
+                                "valueCodeableConcept": {
+                                    "coding": [
+                                        {
+                                            "system": "http://terminology.hl7.org/CodeSystem/v3-ParticipationType",
+                                            "code": "VRF",
+                                            "display": "verifier"
+                                        }
+                                    ]
+                                }
+                            }
+                        ],
+                        "reference": "PractitionerRole/1b0f2f77-23e5-46f5-b2a7-6b6262be0b21"
+                    }
+                ],
+                "valueQuantity": {
+                    "value": 48,
+                    "unit": "U/L",
+                    "system": "urn:oid:2.16.840.1.113883.6.8",
+                    "code": "U/L"
+                },
+                "interpretation": {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                            "code": "N",
+                            "display": "Normal"
+                        }
+                    ]
+                },
+                "referenceRange": [
+                    {
+                        "low": {
+                            "value": 10,
+                            "unit": "U/L",
+                            "system": "urn:oid:2.16.840.1.113883.6.8",
+                            "code": "U/L"
+                        },
+                        "high": {
+                            "value": 40,
+                            "unit": "U/L",
+                            "system": "urn:oid:2.16.840.1.113883.6.8",
+                            "code": "U/L"
+                        },
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/referencerange-meaning",
+                                    "code": "normal",
+                                    "display": "Normal Range"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "note": [
+                    {
+                        "text": "AST normal result"
+                    }
+                ]
+            }
+        },
+        {
+            "fullUrl": "urn:uuid:1de4b089-c2d6-4c12-a5f2-f6f8c9f7e044",
+            "resource": {
+                "resourceType": "Observation",
+                "id": "1de4b089-c2d6-4c12-a5f2-f6f8c9f7e044",
+                "meta": {
+                    "profile": [
+                        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/observationLabReport|1.0"
+                    ]
+                },
+                "basedOn": [
+                    {
+                        "reference": "ServiceRequest/33d2d633-db85-49f3-aef7-d749bc987662"
+                    }
+                ],
+                "status": "final",
+                "category": {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                            "code": "laboratory"
+                        }
+                    ]
+                },
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:oid:2.16.840.1.113883.6.1",
+                            "code": "634-6",
+                            "display": "Microbiology Culture Result"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/248156ff-3453-4344-a75a-bbb66c2bba92"
+                },
+                "effectivePeriod": {
+                    "start": "2025-01-15T13:30:00+03:00",
+                    "end": "2025-01-15T13:30:00+03:00"
+                },
+                "performer": [
+                    {
+                        "reference": "PractitionerRole/e1fbbf0b-f039-4524-b3d8-35cc681a1ccb"
+                    }
+                ],
+                "valueString": "Gram-negative rods identified. Further susceptibility testing is recommended.",
+                "specimen": {
+                    "reference": "Specimen/44fb4cbe-d5ec-421a-8c69-7abc422ecf08"
+                },
+                "referenceRange": [
+                    {
+                         "text": "undefined"
+                        }
+                    ],
+                "note": [
+                    {
+                        "text": "Preliminary microbiology report. Final report pending culture incubation."
+                    }
+                ]
+            }
+        },
+        {
+            "fullUrl": "urn:uuid:59296b52-cedb-4dda-a5cb-db92f79df633",
+            "resource": {
+                "resourceType": "Observation",
+                "id": "59296b52-cedb-4dda-a5cb-db92f79df633",
+                "meta": {
+                    "profile": [
+                        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/observationLabReport|1.0"
+                    ]
+                },
+                "basedOn": [
+                    {
+                        "reference": "ServiceRequest/6ef4e2a5-c247-448c-99af-5e9d9a209b9a"
+                    }
+                ],
+                "status": "final",
+                "category": {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                            "code": "laboratory"
+                        }
+                    ]
+                },
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:oid:2.16.840.1.113883.6.1",
+                            "code": "21889-1",
+                            "display": "Tumor Size Measurement"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/248156ff-3453-4344-a75a-bbb66c2bba92"
+                },
+                "effectivePeriod": {
+                    "start": "2025-01-15T14:00:00+03:00",
+                    "end": "2025-01-15T14:00:00+03:00"
+                },
+                "performer": [
+                    {
+                        "reference": "PractitionerRole/e1fbbf0b-f039-4524-b3d8-35cc681a1ccb"
+                    }
+                ],
+                "valueInteger": 35,
+                "unit": "mm",
+                "interpretation": {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                            "code": "H",
+                            "display": "High"
+                        }
+                    ]
+                },
+                "referenceRange": [
+                    { "text": "undefined"
+                }
+            ],
+                "note": [
+                    {
+                        "text": "Tumor size measured at 35mm, exceeding normal thresholds."
+                    }
+                ]
+            }
+        },
+        {
+            "fullUrl": "urn:uuid:af613a2c-a097-4a0b-ba28-e4636e47de7d",
+            "resource": {
+                "resourceType": "Observation",
+                "id": "af613a2c-a097-4a0b-ba28-e4636e47de7d",
+                "meta": {
+                    "profile": [
+                        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/observationLabReport|1.0"
+                    ]
+                },
+                "basedOn": [
+                    {
+                        "reference": "ServiceRequest/cc27acf5-744d-4f82-baa0-9701b08219da"
+                    }
+                ],
+                "status": "final",
+                "category": {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                            "code": "laboratory"
+                        }
+                    ]
+                },
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:oid:2.16.840.1.113883.6.1",
+                            "code": "33762-6",
+                            "display": "Cancer Cell Detection"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/248156ff-3453-4344-a75a-bbb66c2bba92"
+                },
+                "effectivePeriod": {
+                    "start": "2025-01-15T14:10:00+03:00",
+                    "end": "2025-01-15T14:10:00+03:00"
+                },
+                "performer": [
+                    {
+                        "reference": "PractitionerRole/e1fbbf0b-f039-4524-b3d8-35cc681a1ccb"
+                    }
+                ],
+                "valueBoolean": false,
+                "interpretation": {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                            "code": "N",
+                            "display": "Negative/Normal"
+                        }
+                    ]
+                },
+                "referenceRange": [
+                    {
+                        "text": "undefined"
+                    }
+                ],
+                "note": [
+                    {
+                        "text": "No cancer cells detected in the sample."
+                    }
+                ]
+            }
+        },
+        {
+            "fullUrl": "urn:uuid:7ebd43bb-959c-4142-b62c-e1b3416a2c4d",
+            "resource": {
+                "resourceType": "Observation",
+                "id": "7ebd43bb-959c-4142-b62c-e1b3416a2c4d",
+                "meta": {
+                    "profile": [
+                        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/observationLabReport|1.0"
+                    ]
+                },
+                "basedOn": [
+                    {
+                        "reference": "ServiceRequest/329cf6ea-82b1-4529-801b-43fee74697c3"
+                    }
+                ],
+                "status": "final",
+                "category": {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                            "code": "laboratory"
+                        }
+                    ]
+                },
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:oid:2.16.840.1.113883.6.1",
+                            "code": "15066-4",
+                            "display": "Hormone Ratio Analysis"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/248156ff-3453-4344-a75a-bbb66c2bba92"
+                },
+                "effectivePeriod": {
+                    "start": "2025-01-15T14:30:00+03:00",
+                    "end": "2025-01-15T14:30:00+03:00"
+                },
+                "performer": [
+                    {
+                        "reference": "PractitionerRole/e1fbbf0b-f039-4524-b3d8-35cc681a1ccb"
+                    }
+                ],
+                "valueRatio": {
+                    "numerator": {
+                        "value": 1.5,
+                        "unit": "ng/mL"
+                    },
+                    "denominator": {
+                        "value": 1.0,
+                        "unit": "ng/mL"
+                    }
+                },"referenceRange": [
+                     {
+                        "text": "undefined"
+                    }
+                ],
+                "note": [
+                    {
+                        "text": "Hormone ratio within expected range."
+                    }
+                ]
+            }
+        },
+        {
+            "fullUrl": "urn:uuid:dbee8a47-f90f-4d0b-984b-4b0f9f187667",
+            "resource": {
+                "resourceType": "ServiceRequest",
+                "id": "dbee8a47-f90f-4d0b-984b-4b0f9f187667",
+                "meta": {
+                    "profile": [
+                        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/servicerequest|1.0"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                                    "code": "PLAC"
+                                }
+                            ]
+                        },
+                        "system": "urn:oid:1.2.840.1.113883.3.3719",
+                        "value": "PLAC1"
+                    },
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                                    "code": "FILL"
+                                }
+                            ]
+                        },
+                        "system": "urn:oid:1.2.840.1.113883.3.3720",
+                        "value": "FILL1"
+                    }
+                ],
+                "status": "completed",
+                "intent": "order",
+                "subject": {
+                    "reference": "Patient/248156ff-3453-4344-a75a-bbb66c2bba92"
+                },
+                "occurrencePeriod": {
+                    "start": "2025-01-15T13:05:00+03:00",
+                    "end": "2025-05-15T13:05:00+03:00"
+                },
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:oid:2.16.840.1.113883.6.1",
+                            "code": "58410-2",
+                            "display": "Complete Blood Count"
+                        }
+                    ]
+                },
+                "priority": "routine",
+                "specimen": [
+                    {
+                        "reference": "Specimen/44fb4cbe-d5ec-421a-8c69-7abc422ecf08"
+                    }
+                ]                
+            }
+        },
+        {
+            "fullUrl": "urn:uuid:1b60cab5-1779-404a-b9c0-cf6b84f9a946",
+            "resource": {
+                "resourceType": "ServiceRequest",
+                "id": "1b60cab5-1779-404a-b9c0-cf6b84f9a946",
+                "meta": {
+                    "profile": [
+                        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/servicerequest|1.0"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                                    "code": "PLAC"
+                                }
+                            ]
+                        },
+                        "system": "urn:oid:1.2.840.1.113883.3.3719",
+                        "value": "PLAC2"
+                    },
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                                    "code": "FILL"
+                                }
+                            ]
+                        },
+                        "system": "urn:oid:1.2.840.1.113883.3.3720",
+                        "value": "FILL2"
+                    }
+                ],
+                "status": "completed",
+                "intent": "order",
+                "subject": {
+                    "reference": "Patient/248156ff-3453-4344-a75a-bbb66c2bba92"
+                },
+                "occurencePeriod": {
+                    "start": "2025-01-15T13:05:00+03:00",
+                    "end": "2025-05-15T13:05:00+03:00"
+                },
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:oid:2.16.840.1.113883.6.1",
+                            "code": "24323-8",
+                            "display": "Liver Function Tests (Panel)"
+                        }
+                    ]
+                },
+                "priority": "routine"                
+            }
+        },
+        {
+            "fullUrl": "urn:uuid:33d2d633-db85-49f3-aef7-d749bc987662",
+            "resource": {
+                "resourceType": "ServiceRequest",
+                "id": "33d2d633-db85-49f3-aef7-d749bc987662",
+                "meta": {
+                    "profile": [
+                        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/servicerequest|1.0"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                                    "code": "PLAC"
+                                }
+                            ]
+                        },
+                        "system": "urn:oid:1.2.840.1.113883.3.3719",
+                        "value": "PLAC3"
+                    },
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                                    "code": "FILL"
+                                }
+                            ]
+                        },
+                        "system": "urn:oid:1.2.840.1.113883.3.3720",
+                        "value": "FILL3"
+                    }
+                ],
+                "status": "completed",
+                "intent": "order",
+                "subject": {
+                    "reference": "Patient/248156ff-3453-4344-a75a-bbb66c2bba92"
+                },
+                "occurencePeriod": {
+                    "start": "2025-01-15T13:05:00+03:00",
+                    "end": "2025-05-15T13:05:00+03:00"
+                },
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:oid:2.16.840.1.113883.6.1",
+                            "code": "634-6",
+                            "display": "Microbiology Culture Result"
+                        }
+                    ]
+                },
+                "priority": "urgent",
+                "specimen": [
+                    {
+                        "reference": "Specimen/44fb4cbe-d5ec-421a-8c69-7abc422ecf08"
+                    }
+                ]                
+            }
+        },
+        {
+            "fullUrl": "urn:uuid:6ef4e2a5-c247-448c-99af-5e9d9a209b9a",
+            "resource": {
+                "resourceType": "ServiceRequest",
+                "id": "6ef4e2a5-c247-448c-99af-5e9d9a209b9a",
+                "meta": {
+                    "profile": [
+                        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/servicerequest|1.0"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                                    "code": "PLAC"
+                                }
+                            ]
+                        },
+                        "system": "urn:oid:1.2.840.1.113883.3.3719",
+                        "value": "PLAC4"
+                    },
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                                    "code": "FILL"
+                                }
+                            ]
+                        },
+                        "system": "urn:oid:1.2.840.1.113883.3.3720",
+                        "value": "FILL4"
+                    }
+                ],
+                "status": "completed",
+                "intent": "order",
+                "subject": {
+                    "reference": "Patient/248156ff-3453-4344-a75a-bbb66c2bba92"
+                },
+                "occurencePeriod": {
+                    "start": "2025-01-15T13:05:00+03:00",
+                    "end": "2025-05-15T13:05:00+03:00"
+                },
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:oid:2.16.840.1.113883.6.1",
+                            "code": "21889-1",
+                            "display": "Tumor Size Measurement"
+                        }
+                    ]
+                },
+                "priority": "routine"            
+            }
+        },
+        {
+            "fullUrl": "urn:uuid:cc27acf5-744d-4f82-baa0-9701b08219da",
+            "resource": {
+                "resourceType": "ServiceRequest",
+                "id": "cc27acf5-744d-4f82-baa0-9701b08219da",
+                "meta": {
+                    "profile": [
+                        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/servicerequest|1.0"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                                    "code": "PLAC"
+                                }
+                            ]
+                        },
+                        "system": "urn:oid:1.2.840.1.113883.3.3719",
+                        "value": "PLAC5"
+                    },
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                                    "code": "FILL"
+                                }
+                            ]
+                        },
+                        "system": "urn:oid:1.2.840.1.113883.3.3720",
+                        "value": "FILL5"
+                    }                    
+                ],
+                "status": "completed",
+                "intent": "order",
+                "subject": {
+                    "reference": "Patient/248156ff-3453-4344-a75a-bbb66c2bba92"
+                },
+                "occurencePeriod": {
+                    "start": "2025-01-15T13:05:00+03:00",
+                    "end": "2025-05-15T13:05:00+03:00"
+                },
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:oid:2.16.840.1.113883.6.1",
+                            "code": "33762-6",
+                            "display": "Cancer Cell Detection"
+                        }
+                    ]
+                },
+                "priority": "routine"
+            }
+        },
+        {
+            "fullUrl": "urn:uuid:329cf6ea-82b1-4529-801b-43fee74697c3",
+            "resource": {
+                "resourceType": "ServiceRequest",
+                "id": "329cf6ea-82b1-4529-801b-43fee74697c3",
+                "meta": {
+                    "profile": [
+                        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/servicerequest|1.0"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                                    "code": "PLAC"
+                                }
+                            ]
+                        },
+                        "system": "urn:oid:1.2.840.1.113883.3.3719",
+                        "value": "PLAC6"
+                    },
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                                    "code": "FILL"
+                                }
+                            ]
+                        },
+                        "system": "urn:oid:1.2.840.1.113883.3.3720",
+                        "value": "FILL6"
+                    }                    
+                ],
+                "status": "completed",
+                "intent": "order",
+                "subject": {
+                    "reference": "Patient/248156ff-3453-4344-a75a-bbb66c2bba92"
+                },
+                "occurencePeriod": {
+                    "start": "2025-01-15T13:05:00+03:00",
+                    "end": "2025-05-15T13:05:00+03:00"
+                },
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:oid:2.16.840.1.113883.6.1",
+                            "code": "15066-4",
+                            "display": "Hormone Ratio Analysis"
+                        }
+                    ]
+                },
+                "priority": "routine"
+            }
+        },
+        {
+            "fullUrl": "urn:uuid:44fb4cbe-d5ec-421a-8c69-7abc422ecf08",
+            "resource": {
+                "resourceType": "Specimen",
+                "id": "44fb4cbe-d5ec-421a-8c69-7abc422ecf08",
+                "meta": {
+                    "profile": [
+                        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/specimen|1.0"
+                    ]
+                },
+                "identifier": {
+                    "system": "urn:oid:2.16.840.1.113883.3.3731.1.1.100.123123",
+                    "value": "44fb4cbe-d5ec-421a-8c69-7abc422ecf08"
+                },
+                "type": {
+                    "coding": [
+                        {
+                            "system": "urn:oid:2.16.840.1.113883.18.311",
+                            "code": "BLDV",
+                            "display": "Blood venous"
+                        }
+                    ]
+                },
+                "collection": {
+                    "collectedDateTime": "2025-01-15T13:28:17+03:00",
+                    "method": {
+                        "coding": [
+                            {
+                                "system": "urn:oid:2.16.840.1.113883.12.488",
+                                "code": "PNA",
+                                "display": "Aterial puncture"
+                            }
+                        ]
+                    },
+                    "bodySite": {
+                        "coding": [
+                            {
+                                "system": "urn:oid:2.16.840.1.113883.12.70",
+                                "code": "Blood__arterial",
+                                "display": "Blood arterial"
+                            }
+                        ]
+                    }
+                },
+                "receivedTime": "2025-01-15T15:00:00+03:00",
+                "extension": [
+                    {
+                        "url": "http://hl7.org/fhir/StructureDefinition/specimen-specialHandling",
+                        "valueCodeableConcept": {
+                            "text": "Handle with care; temperature sensitive"
+                        }
+                    },
+                    {
+                        "url": "http://nphies.sa/fhir/ksa/nphies-cs/Extension/specimenRisk",
+                        "valueCodeableConcept": {
+                            "text": "Biohazard",
+                            "coding": [
+                                {
+                                    "system": "urn:oid:2.16.840.1.113883.12.489",
+                                    "code": "BHZ",
+                                    "display": "Biohazard"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "url": "http://nphies.sa/fhir/ksa/nphies-cs/Extension/specimenReceiver",
+                        "valueReference": {
+                            "reference": "PractitionerRole/e1fbbf0b-f039-4524-b3d8-35cc681a1ccb"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "fullUrl": "urn:uuid:248156ff-3453-4344-a75a-bbb66c2bba92",
+            "resource": {
+    "resourceType": "Patient",
+    "id": "248156ff-3453-4344-a75a-bbb66c2bba92",
+    "meta": {
+      "profile": [
+        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/patient|1.0"
+      ]
+    },
+    "identifier": [
+      {
+        "system": "2.16.840.1.113883.3.3731.1.1.100.1",
+        "value": "30000999999999"
+      }
+    ]
+            }
+},
+        {
+            "fullUrl": "urn:uuid:ef3b8d35-c3e9-407a-a233-2ada6e22bb37",
+            "resource": {
+    "resourceType": "Practitioner",
+    "id": "ef3b8d35-c3e9-407a-a233-2ada6e22bb37",
+    "meta": {
+      "profile": [
+        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/practitioner|1.0"
+      ]
+    },
+    "identifier": [
+      {
+        "system": "2.16.840.1.113883.3.3731.1.2.1",
+        "value": "05RM14422"
+      }
+    ]
+            }
+},
+       {
+            "fullUrl": "urn:uuid:e1fbbf0b-f039-4524-b3d8-35cc681a1ccb",
+            "resource": {
+    "resourceType": "PractitionerRole",
+    "id": "e1fbbf0b-f039-4524-b3d8-35cc681a1ccb",
+     "meta": {
+                    "profile": [
+                        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/practitionerrole|1.0"
+                    ]
+                },
+                "practitioner": {
+                    "reference": "Practitioner/ef3b8d35-c3e9-407a-a233-2ada6e22bb37",
+                    "identifier": [
+                        {
+                            "system": "urn:oid:2.16.840.1.113883.3.3731.1.2.1",
+                            "value": "05RM14422"
+                        }
+                    ]
+                },
+                "organization": {
+                    "reference": "Organization/2617a95d-8471-460e-8562-16b0d05e7b43",
+                    "identifier": [
+                        {
+                            "system": "urn:oid:2.16.840.1.113883.3.3731.1.2.2",
+                            "value": "11000000002333"
+                        }
+      ]
+    }
+            }
+}
+,
+        {
+            "fullUrl": "urn:uuid:609add55-9463-4675-a5f5-8f6a160e7fff",
+            "resource": {
+    "resourceType": "Practitioner",
+    "id": "609add55-9463-4675-a5f5-8f6a160e7fff",
+    "meta": {
+      "profile": [
+        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/practitioner|1.0"
+      ]
+    },
+    "identifier": [
+      {
+        "system": "2.16.840.1.113883.3.3731.1.2.1",
+        "value": "07RM15333"
+      }
+    ]
+            }
+}
+,
+        {
+            "fullUrl": "urn:uuid:1b0f2f77-23e5-46f5-b2a7-6b6262be0b21",
+            "resource": {
+    "resourceType": "PractitionerRole",
+    "id": "1b0f2f77-23e5-46f5-b2a7-6b6262be0b21",
+    "meta": {
+                    "profile": [
+                        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/practitionerrole|1.0"
+                    ]
+                },
+                "practitioner": {
+                    "reference": "Practitioner/609add55-9463-4675-a5f5-8f6a160e7fff",
+                    "identifier": [
+                        {
+                            "system": "urn:oid:2.16.840.1.113883.3.3731.1.2.1",
+                            "value": "05RM14422"
+                        }
+                    ]
+                },
+                "organization": {
+                    "reference": "Organization/2617a95d-8471-460e-8562-16b0d05e7b43",
+                    "identifier": [
+                        {
+                            "system": "urn:oid:2.16.840.1.113883.3.3731.1.2.2",
+                            "value": "11000000002333"
+                        }
+      ]
+    }
+            }
+}
+,
+        {
+            "fullUrl": "urn:uuid:2617a95d-8471-460e-8562-16b0d05e7b43",
+            "resource": {
+                "resourceType": "Organization",
+                "id": "2617a95d-8471-460e-8562-16b0d05e7b43",
+                "meta": {
+                    "profile": [
+                        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/organization|1.0"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "system": "2.16.840.1.113883.3.3731.1.2.2",
+                        "value": "11000000002333"
+                    }
+                ],
+                "name": "International University Hospital"
+            }
+        },
+        {
+            "fullUrl": "urn:uuid:4fd3fd0f-42e7-4278-8a4f-293ace8ce7dd",
+            "resource": {
+                "resourceType": "Encounter",
+                "id": "4fd3fd0f-42e7-4278-8a4f-293ace8ce7dd",
+                "meta": {
+                    "profile": [
+                        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/encounter|1.0"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "system": "2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.300.1",
+                        "value": "12345678"
+                    }
+                ],
+                "class": {
+                    "coding": [
+                        {
+                        "system": "urn:oid:2.16.840.1.113883.18.5",
+                        "code": "E",
+                        "display": "Emergency"
+                        }
+                    ]
+                },
+                "period": {
+                    "start": "2023-07-07T12:30:00+03:00"
+                },
+                "serviceProvider": {
+                    "display": "International University Hospital"
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,821 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ClinicalDocument xmlns="urn:hl7-org:v3" xmlns:nphies="urn:oid:2.16.840.1.113883.3.3731.1.2.2.11111111111110" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<realmCode code="SA"/>
+	<typeId extension="POCD_HD000040" root="2.16.840.1.113883.1.3"/>
+	<templateId root="2.16.840.1.113883.3.3731.1.210.5"/>
+	<id root="2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.100.1" extension="OperativeNotes123456789"/>
+	<code code="11504-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Surgical operation note"/>
+	<title>Operative Notes</title>
+	<nphies:documentStatus code="final" codeSystem="2.16.840.1.113883.4.642.4.236" codeSystemName="FHIRDiagnosticReportStatus" displayName="Final"/>
+	<effectiveTime value="20210602080000+0300"/>
+	<confidentialityCode code="N" codeSystem="2.16.840.1.113883.5.25" displayName="normal"/>
+	<languageCode code="ar-SA"/>
+	<setId root="2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.100.1" extension="OperativeNotes123456789"/>
+	<versionNumber value="1"/>
+	<!-- Patient -->
+	<recordTarget>
+		<patientRole>
+			<templateId root="2.16.840.1.113883.3.3731.1.203.28.1"/>
+			<id extension="30000999999999" root="2.16.840.1.113883.3.3731.1.1.100.1"/>
+			<addr>
+				<streetAddressLine>2448 Zarga Alyamamah St</streetAddressLine>
+				<city>Riyadh</city>
+				<postalCode>13337</postalCode>
+				<country>Saudi Arabia</country>
+			</addr>
+			<telecom value="tel:+974.143.47333"/>
+			<patient>
+				<name use="L ABC">
+					<family>ALQAHTANI</family>
+					<given>YAHYA</given>
+					<given>SAEED A</given>
+					<suffix>Jr</suffix>
+				</name>
+				<administrativeGenderCode code="M" displayName="Male" codeSystem="2.16.840.1.113883.5.1"/>
+				<birthTime value="19761230"/>
+				<maritalStatusCode code="S" displayName="Single" codeSystem="2.16.840.1.113883.5.2"/>
+				<religiousAffiliationCode code="1" displayName="Islam" codeSystem="2.16.840.1.113883.3.3731.1.202.10"/>
+				<guardian>
+					<addr>
+						<streetAddressLine>1234 Guardian St</streetAddressLine>
+						<city>Riyadh</city>
+						<postalCode>13337</postalCode>
+						<country>Saudi Arabia</country>
+					</addr>
+					<telecom value="tel:+974.143.2345678"/>
+					<guardianPerson>
+						<name>ALQAHTANI Heba (mother)</name>
+					</guardianPerson>
+				</guardian>
+				<languageCommunication>
+					<languageCode code="ara"/>
+				</languageCommunication>
+			</patient>
+		</patientRole>
+	</recordTarget>
+	<!-- Author -->
+	<author>
+		<templateId root="2.16.840.1.113883.3.3731.1.203.28.3"/>
+		<functionCode code="100000003" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" displayName="Medicine and Surgery"/>
+		<time value="20130829124538+0300"/>
+		<assignedAuthor>
+			<id extension="05RM14422" root="2.16.840.1.113883.3.3731.1.2.1"/>
+			<code code="179D7C6B-62F9-E811-B80F-005056AD2FD8" codeSystem="2.16.840.1.113883.3.3731.1.202.5" codeSystemName="Healthcare Specialty Identifier" displayName="Obstetrics and Gynecology"/>
+			<addr>
+				<streetAddressLine>3920 Mathar Alshibani St</streetAddressLine>
+				<city>Riyadh</city>
+				<postalCode>12629</postalCode>
+				<country>Saudi Arabia</country>
+			</addr>
+			<telecom value="tel:+966920011223"/>
+			<assignedPerson>
+				<name>
+					<prefix>Dr</prefix>
+					<family>Khan</family>
+					<given>Aditya</given>
+				</name>
+			</assignedPerson>
+			<representedOrganization>
+				<id extension="11000000002333" root="2.16.840.1.113883.3.3731.1.2.2"/>
+				<name>International University Hospital</name>
+				<!-- no more detailed telecom provided as for assignedAuthor, nullFlavor is used -->
+				<telecom nullFlavor="NI"/>
+				<!-- no more detailed address provided as for assignedAuthor, nullFlavor is used -->
+				<addr nullFlavor="NI"/>
+			</representedOrganization>
+		</assignedAuthor>
+	</author>
+	<!-- Custodian of the document -->
+	<custodian>
+		<assignedCustodian>
+			<representedCustodianOrganization>
+				<templateId root="2.16.840.1.113883.3.3731.1.203.28.4"/>
+				<id extension="11000000002333" root="2.16.840.1.113883.3.3731.1.2.2"/>
+				<name>International University Hospital</name>
+				<telecom value="tel:+966920011223"/>
+				<addr>
+					<streetAddressLine>3920 Mathar Alshibani St</streetAddressLine>
+					<city>Riyadh</city>
+					<postalCode>12629</postalCode>
+					<country>Saudi Arabia</country>
+				</addr>
+			</representedCustodianOrganization>
+		</assignedCustodian>
+	</custodian>
+	<!-- Legal authenticator -->
+	<legalAuthenticator>
+		<templateId root="2.16.840.1.113883.3.3731.1.203.28.5"/>
+		<time value="20210602123500+0300"/>
+		<signatureCode code="S"/>
+		<assignedEntity>
+			<id extension="13KA0054149" root="2.16.840.1.113883.3.3731.1.2.1"/>
+			<!-- same address as for author, nullFlavor is used -->
+			<addr nullFlavor="NI"/>
+			<!-- same telecom as for author, nullFlavor is used -->
+			<telecom nullFlavor="NI"/>
+			<assignedPerson>
+				<name use="L">
+					<prefix>Dr.</prefix>
+					<family>GOPAL</family>
+					<given>Arjun</given>
+				</name>
+			</assignedPerson>
+		</assignedEntity>
+	</legalAuthenticator>
+	<!-- Nationality of the patient -->
+	<participant typeCode="SBJ">
+		<associatedEntity classCode="CIT">
+			<templateId root="2.16.840.1.113883.3.3731.1.203.28.2"/>
+			<code code="SAU" codeSystem="1.0.3166.1"/>
+		</associatedEntity>
+	</participant>
+	<!--
+			Performer (assisting person prior to entering the Emergency Department)
+	-->
+	<documentationOf>
+		<serviceEvent>
+			<performer typeCode="PRF">
+				<templateId root="2.16.840.1.113883.3.3731.1.203.28.7"/>
+				<time value="20210602123500+0300"/>
+				<assignedEntity>
+					<id extension="17JP0032773" root="2.16.840.1.113883.3.3731.1.2.1"/>
+					<!-- same address as for author, nullFlavor is used -->
+					<addr nullFlavor="NI"/>
+					<!-- same telecom as for author, nullFlavor is used -->
+					<telecom nullFlavor="NI"/>
+					<assignedPerson>
+						<name>
+							<family>Surgeon</family>
+							<given>Osama</given>
+						</name>
+					</assignedPerson>
+				</assignedEntity>
+			</performer>
+		</serviceEvent>
+	</documentationOf>
+	<!--
+			Encounter
+	-->
+	<componentOf>
+		<encompassingEncounter>
+			<templateId root="2.16.840.1.113883.3.3731.1.105.7"/>
+			<!-- Identifier of the patient's encounter -->
+			<id extension="12345678" root="2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.300.1"/>
+			<code code="I" displayName="Inpatient" codeSystem="2.16.840.1.113883.18.5" codeSystemName="HL7 Patient Class"/>
+			<effectiveTime>
+				<low value="20210123211000+0300"/>
+				<high value="20210220081000+0300"/>
+			</effectiveTime>
+			<location>
+				<healthCareFacility>
+					<id extension="11000000002333" root="2.16.840.1.113883.3.3731.1.2.2"/>
+					<location>
+						<name>Surgical Department</name>
+					</location>
+					<serviceProviderOrganization>
+						<name>International University Hospital</name>
+					</serviceProviderOrganization>
+				</healthCareFacility>
+			</location>
+		</encompassingEncounter>
+	</componentOf>
+	<!--
+			=================================================
+			=================================================
+			=================================================
+
+			Clinical Content (structured)
+
+			=================================================
+			=================================================
+			=================================================
+	-->
+	<component>
+		<structuredBody>
+			<!--
+					=================================================
+					Section: Preoperative Diagnosis Section
+
+						The Preoperative Diagnosis section records the surgical diagnosis or diagnoses assigned to the patient before a surgical procedure and is the reason for the surgery.
+						The preoperative diagnosis is, in the opinion of the surgeon, the diagnosis that will be confirmed during surgery.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.28"/>
+					<templateId root="2.16.840.1.113883.10.20.22.2.34"/>
+					<code code="10219-4" displayName="SURGICAL OPERATION NOTE PREOPERATIVE DIAGNOSIS" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Preoperative Diagnosis</title>
+					<text>
+						<table>
+							<thead>
+								<tr>
+									<th>Diagnosis</th>
+									<th>Date from</th>
+									<th>Date to</th>
+									<th>Status</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ID="preopdiag-1">
+									<td ID="preopdiag-1_diagnosis">M25.46, Effusion of joint, lower leg</td>
+									<td>2021.01.23</td>
+									<td>-</td>
+									<td>Active</td>
+								</tr>
+							</tbody>
+						</table>
+					</text>
+					<entry typeCode="DRIV">
+						<act classCode="ACT" moodCode="EVN">
+							<templateId root="2.16.840.1.113883.3.3731.1.210.100.43"/>
+							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1"/>
+							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.2"/>
+							<templateId root="2.16.840.1.113883.10.20.1.27"/>
+							<id nullFlavor="NI"/>
+							<code nullFlavor="NA"/>
+							<statusCode code="active"/>
+							<effectiveTime>
+								<low value="20210123"/>
+							</effectiveTime>
+							<entryRelationship typeCode="SUBJ" inversionInd="false">
+								<observation classCode="OBS" moodCode="EVN">
+									<templateId root="2.16.840.1.113883.3.3731.1.210.100.44"/>
+									<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5"/>
+									<templateId root="2.16.840.1.113883.10.20.1.28"/>
+									<id root="DBA414DE-6B92-4D74-30D1-46BC36770F79"/>
+									<code code="282291009" displayName="Diagnosis" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT"/>
+									<text>
+										<reference value="#preopdiag-1"/>
+									</text>
+									<statusCode code="completed"/>
+									<effectiveTime>
+										<low value="20210123"/>
+									</effectiveTime>
+									<value xsi:type="CD" code="M25.46" displayName="Effusion of joint, lower leg" codeSystem="2.16.840.1.113883.6.135" codeSystemName="ICD10-AM">
+										<originalText>
+											<reference value="#preopdiag-1_diagnosis"/>
+										</originalText>
+									</value>
+								</observation>
+							</entryRelationship>
+						</act>
+					</entry>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Postprocedure Diagnosis Section
+
+						The Postprocedure Diagnosis records the diagnosis or diagnoses confirmed during the procedure.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.29"/>
+					<templateId root="2.16.840.1.113883.10.20.22.2.36"/>
+					<code code="59769-0" displayName="POSTPROCEDURE DIAGNOSIS" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Postprocedure Diagnosis</title>
+					<text>
+						<table>
+							<thead>
+								<tr>
+									<th>Diagnosis</th>
+									<th>Date from</th>
+									<th>Date to</th>
+									<th>Status</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ID="postprocdiag-1">
+									<td ID="postprocdiag-1_diagnosis">M25.46, Effusion of joint, lower leg</td>
+									<td>2021.01.23</td>
+									<td>-</td>
+									<td>Active</td>
+								</tr>
+							</tbody>
+						</table>
+					</text>
+					<entry typeCode="DRIV">
+						<act classCode="ACT" moodCode="EVN">
+							<templateId root="2.16.840.1.113883.3.3731.1.210.100.43"/>
+							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1"/>
+							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.2"/>
+							<templateId root="2.16.840.1.113883.10.20.1.27"/>
+							<id nullFlavor="NI"/>
+							<code nullFlavor="NA"/>
+							<statusCode code="active"/>
+							<effectiveTime>
+								<low value="20210123"/>
+							</effectiveTime>
+							<entryRelationship typeCode="SUBJ" inversionInd="false">
+								<observation classCode="OBS" moodCode="EVN">
+									<templateId root="2.16.840.1.113883.3.3731.1.210.100.44"/>
+									<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5"/>
+									<templateId root="2.16.840.1.113883.10.20.1.28"/>
+									<id root="DBA414DE-6B92-4D74-30D1-46BC36770F79"/>
+									<code code="282291009" displayName="Diagnosis" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT"/>
+									<text>
+										<reference value="#postprocdiag-1"/>
+									</text>
+									<statusCode code="completed"/>
+									<effectiveTime>
+										<low value="20210123"/>
+									</effectiveTime>
+									<value xsi:type="CD" code="M25.46" displayName="Effusion of joint, lower leg" codeSystem="2.16.840.1.113883.6.135" codeSystemName="ICD10-AM">
+										<originalText>
+											<reference value="#postprocdiag-1_diagnosis"/>
+										</originalText>
+									</value>
+								</observation>
+							</entryRelationship>
+						</act>
+					</entry>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Operative Note Surgical Procedure Section
+
+						The Procedures performed for this encounter include interventional, surgical, diagnostic, or therapeutic procedures or treatments.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.33"/>
+					<templateId root="2.16.840.1.113883.10.20.7.14"/>
+					<code code="10223-6" displayName="SURGICAL OPERATION NOTE SURGICAL PROCEDURE" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Operative Note Surgical Procedure</title>
+					<text>
+						This is the narrative description of the surgical procedure(s) performed for this encounter
+					</text>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Procedure Findings Section
+
+						The Findings Section contains a narrative description of any observation made during the time of the procedure or treatment.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.39"/>
+					<templateId root="2.16.840.1.113883.10.20.22.2.28"/>
+					<code code="59776-5" displayName="PROCEDURE FINDINGS" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Procedure Findings</title>
+					<text>
+						This is the narrative description of the findings made during the procedure
+					</text>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Surgical Drains Section
+
+						The Surgical Drains Section describes any drains implanted during a procedure.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.12"/>
+					<templateId root="2.16.840.1.113883.10.20.7.13"/>
+					<code code="11537-8" displayName="SURGICAL DRAINS" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Surgical Drains</title>
+					<text>
+						This is the narrative description of surgical drains
+					</text>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Procedure Specimens Taken Section
+
+						Specimens describe any samples or pathology obtained for Laboratory testing during the surgery.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.36"/>
+					<templateId root="2.16.840.1.113883.10.20.22.2.31"/>
+					<code code="59773-2" displayName="PROCEDURE SPECIMENS TAKEN" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Procedure Specimens Taken</title>
+					<text>
+						This is the narrative description of specimen taken during the procedure
+					</text>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Complications Section
+
+						The Complications Section records information on any issues that arose during the procedure.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.35"/>
+					<templateId root="2.16.840.1.113883.10.20.22.2.37"/>
+					<code code="55109-3" displayName="COMPLICATIONS" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Complications</title>
+					<text>
+						This is the narrative description of complications, which arose during the procedure
+					</text>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Anesthesia Section
+
+						The Anesthesia Section records the type of anesthesia used (e.g., Local or general).
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.34"/>
+					<templateId root="2.16.840.1.113883.10.20.22.2.25"/>
+					<code code="59774-0" displayName="PROCEDURE ANESTHESIA" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Anesthesia</title>
+					<text>
+						This is the narrative description of the anesthesia
+					</text>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Estimated Blood Loss Section
+
+						The Estimated Blood Loss describes the amount of blood loss during the procedure.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.37"/>
+					<templateId root="2.16.840.1.113883.10.20.18.2.9"/>
+					<code code="59770-8" displayName="PROCEDURE ESTIMATED BLOOD LOSS" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Estimated Blood Loss</title>
+					<text>
+						This is the narrative description of estimated blood loss during the procedure
+					</text>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Operative Note Fluids Section
+
+						The Fluids records information about the in-take or out-take of fluids during the procedure.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.38"/>
+					<templateId root="2.16.840.1.113883.10.20.7.12"/>
+					<code code="10216-0" displayName="SURGICAL OPERATION NOTE FLUIDS" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Operative Note Fluids</title>
+					<text>
+						This is the narrative description of the operative note fluids
+					</text>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Procedure Description Section
+
+						The Procedure Description section records the particulars of the procedure and may include procedure site preparation, surgical site preparation and other pertinent details.
+						Local practices often identify the level and type of detail required based on the procedure or specialty.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.40"/>
+					<templateId root="2.16.840.1.113883.10.20.22.2.27"/>
+					<code code="29554-3" displayName="PROCEDURE" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Procedure Description</title>
+					<text>
+						This is the narrative description of the procedure
+					</text>
+				</section>
+			</component>
+						<!--
+					=================================================
+					Section: Procedure Description Section
+
+						The Procedure Description section records the particulars of the procedure and may include procedure site preparation, surgical site preparation and other pertinent details.
+						Local practices often identify the level and type of detail required based on the procedure or specialty.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.40"/>
+					<templateId root="2.16.840.1.113883.10.20.22.2.27"/>
+					<code code="29554-3" displayName="PROCEDURE" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Procedure Description</title>
+					<text>
+						This is the narrative description of the procedure
+					</text>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Active Problems Section
+
+						Problem List Section contains the problems currently being monitored for the patient, including currently active and recently resolved problems.
+
+						This example shows "no problems", reflecting the situation, that the patient shows no other problems as the one which led to this hospital stay.
+						See the Admitting Diagnosis section for the Diagnosis, which led to this hospital stay.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.3"/>
+					<templateId root="1.3.6.1.4.1.19376.1.5.3.1.3.6"/>
+					<templateId root="2.16.840.1.113883.10.20.1.11"/>
+					<code code="11450-4" displayName="PROBLEM LIST" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Active problems</title>
+					<text>
+						<table>
+							<thead>
+								<tr>
+									<th>Diagnosis</th>
+									<th>Date from</th>
+									<th>Date to</th>
+									<th>Status</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ID="actproblem-1">
+									<td ID="actproblem-1_diagnosis">160245001, No current problems or disability</td>
+									<td>-</td>
+									<td>-</td>
+									<td>Completed</td>
+								</tr>
+							</tbody>
+						</table>
+					</text>
+					<entry typeCode="DRIV">
+						<act classCode="ACT" moodCode="EVN">
+							<templateId root="2.16.840.1.113883.3.3731.1.210.100.43"/>
+							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1"/>
+							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.2"/>
+							<templateId root="2.16.840.1.113883.10.20.1.27"/>
+							<id nullFlavor="NI"/>
+							<code nullFlavor="NA"/>
+							<statusCode code="completed"/>
+							<effectiveTime nullFlavor="NA">
+								<low nullFlavor="UNK"/>
+								<high nullFlavor="UNK"/>
+							</effectiveTime>
+							<entryRelationship typeCode="SUBJ" inversionInd="false">
+								<observation classCode="OBS" moodCode="EVN">
+									<templateId root="2.16.840.1.113883.3.3731.1.210.100.44"/>
+									<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5"/>
+									<templateId root="2.16.840.1.113883.10.20.1.28"/>
+									<id root="DBA414DE-6B92-4D74-30D1-46BC36770F79"/>
+									<code code="282291009" displayName="Diagnosis" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT"/>
+									<text>
+										<reference value="#actproblem-1"/>
+									</text>
+									<statusCode code="completed"/>
+									<effectiveTime nullFlavor="NA">
+										<low nullFlavor="UNK"/>
+										<high nullFlavor="UNK"/>
+									</effectiveTime>
+									<value xsi:type="CD" code="160245001" displayName="No current problems or disability" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
+										<originalText>
+											<reference value="#actproblem-1_diagnosis"/>
+										</originalText>
+									</value>
+								</observation>
+							</entryRelationship>
+						</act>
+					</entry>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Visible Implanted Medical Devices Section
+
+						The Visible Implanted Medical Devices Section includes a description of the medical devices apparent on physical exam that have been inserted into the patient, whether internal or partially external.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.11"/>
+					<templateId root="1.3.6.1.4.1.19376.1.5.3.1.1.9.48"/>
+					<code code="57080-4" displayName="IMPLANTED MEDICAL DEVICE" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Visible Implanted Medical Devices</title>
+					<text>
+						This is the narrative description of the visible implanted medical devices
+					</text>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: History of Blood Transfusion Section
+
+						The History of Blood Transfusion Section shall contain a narrative description of the blood products the patient has received in the past, including any reactions to blood.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.42"/>
+					<templateId root="1.3.6.1.4.1.19376.1.5.3.1.1.9.12"/>
+					<code code="56836-0" displayName="HISTORY OF BLOOD TRANSFUSION" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>History of Blood Transfusion</title>
+					<text>
+						This is the narrative description of the history of blood transfusions the patient received
+					</text>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Acuity Assessment Section
+
+						The Acuity Assessment is used by a Surgeon to assess the severity of a patient’s condition.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.31"/>
+					<templateId root="1.3.6.1.4.1.19376.1.5.3.1.1.13.2.2"/>
+					<code code="11283-9" displayName="ACUITY ASSESSMENT" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Acuity Assessment</title>
+					<text>
+						This is the narrative description of the acuity assessment
+					</text>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Care Plan Section
+
+						The Care Plan Section describes any pending orders, interventions, encounters, services and procedures for the patient after the completion of the Outpatient encounter.
+						The Plan of Care may also include other information such as patient education, nutritional diet, follow-up orders, etc.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.13"/>
+					<templateId root="1.3.6.1.4.1.19376.1.5.3.1.3.31"/>
+					<templateId root="2.16.840.1.113883.10.20.1.10"/>
+					<code code="61145-9" displayName="TREATMENT PLAN" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Care Plan</title>
+					<text>
+						This is the narrative description of the care plan of the patient.
+						
+						For the Operative Notes, it's mainly Post-Operative Instructions and Post-Operative Orders
+					</text>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Postoperative Diagnosis Section
+
+						Observations of problems or other clinical statements captured at the completion of the procedure or treatment, which represent the ongoing process tracked over time.
+						Often it is the same as the preoperative diagnosis.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.30"/>
+					<templateId root="2.16.840.1.113883.10.20.22.2.35"/>
+					<code code="10218-6" displayName="SURGICAL OPERATION NOTE POSTOPERATIVE DIAGNOSIS" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Postoperative Diagnosis</title>
+					<text>
+						<table>
+							<thead>
+								<tr>
+									<th>Diagnosis</th>
+									<th>Date from</th>
+									<th>Date to</th>
+									<th>Status</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ID="postopdiag-1">
+									<td ID="postopdiag-1_diagnosis">M25.46, Effusion of joint, lower leg</td>
+									<td>2021.01.23</td>
+									<td>-</td>
+									<td>Active</td>
+								</tr>
+							</tbody>
+						</table>
+					</text>
+					<entry typeCode="DRIV">
+						<act classCode="ACT" moodCode="EVN">
+							<templateId root="2.16.840.1.113883.3.3731.1.210.100.43"/>
+							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1"/>
+							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.2"/>
+							<templateId root="2.16.840.1.113883.10.20.1.27"/>
+							<id nullFlavor="NI"/>
+							<code nullFlavor="NA"/>
+							<statusCode code="active"/>
+							<effectiveTime>
+								<low value="20210123"/>
+							</effectiveTime>
+							<entryRelationship typeCode="SUBJ" inversionInd="false">
+								<observation classCode="OBS" moodCode="EVN">
+									<templateId root="2.16.840.1.113883.3.3731.1.210.100.44"/>
+									<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5"/>
+									<templateId root="2.16.840.1.113883.10.20.1.28"/>
+									<id root="DBA414DE-6B92-4D74-30D1-46BC36770F79"/>
+									<code code="282291009" displayName="Diagnosis" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT"/>
+									<text>
+										<reference value="#postopdiag-1"/>
+									</text>
+									<statusCode code="completed"/>
+									<effectiveTime>
+										<low value="20210123"/>
+									</effectiveTime>
+									<value xsi:type="CD" code="M25.46" displayName="Effusion of joint, lower leg" codeSystem="2.16.840.1.113883.6.135" codeSystemName="ICD10-AM">
+										<originalText>
+											<reference value="#postopdiag-1_diagnosis"/>
+										</originalText>
+									</value>
+								</observation>
+							</entryRelationship>
+						</act>
+					</entry>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Planned Procedure Section
+
+						The Planned Procedures for this encounter include interventional, surgical, diagnostic, or therapeutic procedures or treatments, including indicator on the priority of the
+						Procedure. (i.e., Emergency (immediate), Urgent (short term) or Elective (scheduled based on availability)).
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.32"/>
+					<templateId root="2.16.840.1.113883.10.20.22.2.30"/>
+					<code code="59772-4" displayName="PLANNED PROCEDURES" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Planned Procedure</title>
+					<text>
+						<table>
+							<thead>
+								<tr>
+									<th>Procedure</th>
+									<th>Date of procedure</th>
+									<th>Priority</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ID="plannedproc-1">
+									<td ID="plannedproc-1_procedure">32123-00, Anoplasty</td>
+									<td>2019.01.23, 10:00:00</td>
+									<td ID="plannedproc-1_priority">Elective</td>
+								</tr>
+							</tbody>
+						</table>
+					</text>
+					<entry typeCode="DRIV">
+						<procedure classCode="PROC" moodCode="EVN">
+							<templateId root="2.16.840.1.113883.3.3731.1.210.100.53"/>
+							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.19"/>
+							<templateId root="2.16.840.1.113883.10.20.1.29"/>
+							<id root="DBA414DE-6B92-4D74-30D1-46BC36770F79"/>
+							<code code="32123-00" displayName="Anoplasty" codeSystem="2.16.840.1.113883.3.3731.50.2" codeSystemName="ACHI">
+								<originalText>
+									<reference value="#plannedproc-1_procedure"/>
+								</originalText>
+							</code>
+							<text>
+								<reference value="#plannedproc-1"/>
+							</text>
+							<statusCode code="active"/>
+							<effectiveTime>
+								<low value="20190123100000+0300"/>
+							</effectiveTime>
+							<priorityCode code="EL" displayName="Elective" codeSystem="2.16.840.1.113883.5.7">
+								<originalText>
+									<reference value="#plannedproc-1_priority"/>
+								</originalText>
+							</priorityCode>
+						</procedure>
+					</entry>
+				</section>
+			</component>
+			<!--
+					=================================================
+					Section: Procedure Disposition Section
+
+						The Procedure Disposition section records the status and condition of the patient at the completion of the procedure or surgery.
+						It often also states where the patent was transferred to for the next level of care.
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.210.100.41"/>
+					<templateId root="2.16.840.1.113883.10.20.18.2.12"/>
+					<code code="59775-7" displayName="PROCEDURE DISPOSITION" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Procedure Disposition</title>
+					<text>
+						This is the narrative description of the procedure disposition
+					</text>
+				</section>
+			</component>
+		</structuredBody>
+	</component>
+</ClinicalDocument>

@@ -1,0 +1,1615 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ClinicalDocument xmlns="urn:hl7-org:v3" xmlns:lab="urn:oid:1.3.6.1.4.1.19376.1.3.2" xmlns:nphies="urn:oid:2.16.840.1.113883.3.3731.1.2.2.11111111111110" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<realmCode code="SA"/>
+	<typeId extension="POCD_HD000040" root="2.16.840.1.113883.1.3"/>
+	<templateId root="2.16.840.1.113883.3.3731.1.105.33"/>
+	<templateId root="1.3.6.1.4.1.19376.1.3.3"/>
+	<id root="2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.100.1" extension="LabReport123456789"/>
+	<code code="11502-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="LABORATORY REPORT.TOTAL"/>
+	<title>Laboratory Report</title>
+	<nphies:documentStatus code="final" codeSystem="2.16.840.1.113883.4.642.4.236" codeSystemName="FHIRDiagnosticReportStatus" displayName="Final"/>
+	<effectiveTime value="20210602080000+0300"/>
+	<confidentialityCode code="N" codeSystem="2.16.840.1.113883.5.25" displayName="normal"/>
+	<languageCode code="ar-SA"/>
+	<setId root="2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.100.1" extension="LabReport123456789"/>
+	<versionNumber value="1"/>
+	<!-- Patient -->
+	<recordTarget>
+		<patientRole>
+			<templateId root="2.16.840.1.113883.3.3731.1.203.28.1"/>
+			<id extension="30000999999999" root="2.16.840.1.113883.3.3731.1.1.100.1"/>
+			<addr>
+				<streetAddressLine>2448 Zarga Alyamamah St</streetAddressLine>
+				<city>Riyadh</city>
+				<postalCode>13337</postalCode>
+				<country>Saudi Arabia</country>
+			</addr>
+			<telecom value="tel:+974.143.47333"/>
+			<patient>
+				<name use="L ABC">
+					<family>ALQAHTANI</family>
+					<given>YAHYA</given>
+					<given>SAEED A</given>
+					<suffix>Jr</suffix>
+				</name>
+				<administrativeGenderCode code="M" displayName="Male" codeSystem="2.16.840.1.113883.5.1"/>
+				<birthTime value="19761230"/>
+				<maritalStatusCode code="S" displayName="Single" codeSystem="2.16.840.1.113883.5.2"/>
+				<religiousAffiliationCode code="1" displayName="Islam" codeSystem="2.16.840.1.113883.3.3731.1.202.10"/>
+				<guardian>
+					<addr>
+						<streetAddressLine>1234 Guardian St</streetAddressLine>
+						<city>Riyadh</city>
+						<postalCode>13337</postalCode>
+						<country>Saudi Arabia</country>
+					</addr>
+					<telecom value="tel:+974.143.2345678"/>
+					<guardianPerson>
+						<name>ALQAHTANI Heba (mother)</name>
+					</guardianPerson>
+				</guardian>
+				<languageCommunication>
+					<languageCode code="ara"/>
+				</languageCommunication>
+			</patient>
+		</patientRole>
+	</recordTarget>
+	<!-- Author -->
+	<author>
+		<templateId root="2.16.840.1.113883.3.3731.1.203.28.3"/>
+		<functionCode code="100000003" codeSystem="2.16.840.1.113883.3.3731.1.202.1" codeSystemName="KSA Individual Provider Type" displayName="Medicine and Surgery"/>
+		<time value="20210602123500+0300"/>
+		<assignedAuthor>
+			<id extension="05RM14422" root="2.16.840.1.113883.3.3731.1.2.1"/>
+			<code code="CE9D7C6B-62F9-E811-B80F-005056AD2FD8" codeSystem="2.16.840.1.113883.3.3731.1.202.5" codeSystemName="Healthcare Specialty Identifier" displayName="Laboratory - Microbiology"/>
+			<addr>
+				<streetAddressLine>3920 Mathar Alshibani St</streetAddressLine>
+				<city>Riyadh</city>
+				<postalCode>12629</postalCode>
+				<country>Saudi Arabia</country>
+			</addr>
+			<telecom value="tel:+966920011223"/>
+			<assignedPerson>
+				<name>
+					<prefix>Dr</prefix>
+					<family>Khan</family>
+					<given>Aditya</given>
+				</name>
+			</assignedPerson>
+			<representedOrganization>
+				<id extension="11000000002333" root="2.16.840.1.113883.3.3731.1.2.2"/>
+				<name>International University Hospital</name>
+				<!-- no more detailed telecom provided as for assignedAuthor, nullFlavor is used -->
+				<telecom nullFlavor="NI"/>
+				<!-- no more detailed address provided as for assignedAuthor, nullFlavor is used -->
+				<addr nullFlavor="NI"/>
+			</representedOrganization>
+		</assignedAuthor>
+	</author>
+	<!-- Custodian of the document -->
+	<custodian>
+		<assignedCustodian>
+			<representedCustodianOrganization>
+				<templateId root="2.16.840.1.113883.3.3731.1.203.28.4"/>
+				<id extension="11000000002333" root="2.16.840.1.113883.3.3731.1.2.2"/>
+				<name>International University Hospital</name>
+				<telecom value="tel:+966920011223"/>
+				<addr>
+					<streetAddressLine>3920 Mathar Alshibani St</streetAddressLine>
+					<city>Riyadh</city>
+					<postalCode>12629</postalCode>
+					<country>Saudi Arabia</country>
+				</addr>
+			</representedCustodianOrganization>
+		</assignedCustodian>
+	</custodian>
+	<!-- Legal authenticator -->
+	<legalAuthenticator>
+		<templateId root="2.16.840.1.113883.3.3731.1.203.28.5"/>
+		<time value="20210602123500+0300"/>
+		<signatureCode code="S"/>
+		<assignedEntity>
+			<id extension="13KA0054149" root="2.16.840.1.113883.3.3731.1.2.1"/>
+			<!-- same address as for author, nullFlavor is used -->
+			<addr nullFlavor="NI"/>
+			<!-- same telecom as for author, nullFlavor is used -->
+			<telecom nullFlavor="NI"/>
+			<assignedPerson>
+				<name use="L">
+					<prefix>Dr.</prefix>
+					<family>GOPAL</family>
+					<given>Arjun</given>
+				</name>
+			</assignedPerson>
+		</assignedEntity>
+	</legalAuthenticator>
+	<!-- Result validator(s) -->
+	<authenticator typeCode="AUTHEN">
+		<templateId root="2.16.840.1.113883.3.3731.1.203.28.6"/>
+		<templateId root="1.3.6.1.4.1.19376.1.3.3.1.5"/>
+		<time value="20210602123500+0300"/>
+		<signatureCode code="S"/>
+		<assignedEntity>
+			<id extension="13KA0054149" root="2.16.840.1.113883.3.3731.1.2.1"/>
+			<!-- same address as for author, nullFlavor is used -->
+			<addr nullFlavor="NI"/>
+			<!-- same telecom as for author, nullFlavor is used -->
+			<telecom nullFlavor="NI"/>
+			<assignedPerson>
+				<name use="L">
+					<prefix>Dr.</prefix>
+					<family>GOPAL</family>
+					<given>Arjun</given>
+				</name>
+			</assignedPerson>
+		</assignedEntity>
+	</authenticator>
+	<!-- Nationality of the patient -->
+	<participant typeCode="SBJ">
+		<associatedEntity classCode="CIT">
+			<templateId root="2.16.840.1.113883.3.3731.1.203.28.2"/>
+			<code code="SAU" codeSystem="1.0.3166.1"/>
+		</associatedEntity>
+	</participant>
+	<!-- Ordering Provider -->
+	<participant typeCode="REF">
+		<templateId root="2.16.840.1.113883.3.3731.1.105.4"/>
+		<templateId root="1.3.6.1.4.1.19376.1.3.3.1.6"/>
+		<time value="20210601080000+0300"/>
+		<associatedEntity classCode="PROV">
+			<id extension="13MM0035341" root="2.16.840.1.113883.3.3731.1.2.1"/>
+			<addr>
+				<streetAddressLine>3920 Mathar Alshibani St</streetAddressLine>
+				<city>Riyadh</city>
+				<postalCode>12629</postalCode>
+				<country>Saudi Arabia</country>
+			</addr>
+			<telecom value="tel:+966920011223"/>
+			<associatedPerson>
+				<name>
+					<prefix>Dr</prefix>
+					<family>Khan</family>
+					<given>Aditya</given>
+				</name>
+			</associatedPerson>
+			<scopingOrganization>
+				<id extension="11000000002333" root="2.16.840.1.113883.3.3731.1.2.2"/>
+				<name>International University Hospital</name>
+				<telecom value="tel:+966920011223"/>
+				<addr>
+					<streetAddressLine>3920 Mathar Alshibani St</streetAddressLine>
+					<city>Riyadh</city>
+					<postalCode>12629</postalCode>
+					<country>Saudi Arabia</country>
+				</addr>
+			</scopingOrganization>
+		</associatedEntity>
+	</participant>
+	<inFulfillmentOf>
+		<templateId root="2.16.840.1.113883.3.3731.1.105.5"/>
+		<order>
+			<!--
+					PLACER Order Number
+	
+					Explanation of the example:
+
+					*) Order Placer Identifier issued by the order placer: 1234567
+					*) Order placer unique "root" OID assigend by nphies: 2.16.840.1.113883.3.3731.1.2.2.11000000002333
+						Note: 11000000002333 is the id of the organization of the ordering provider
+						including the sub-branch of ".1.2.3" for identifying "Order Placer Numbers" (example - per local configuration)
+			-->
+			<id extension="1234567" root="2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.1.2.3"/>
+			<!--
+					FILLER Order Number
+	
+					Explanation of the example:
+
+					*) Order Filler Identifier issued by the order placer: 123abcdefg
+					*) Order placer unique "root" OID assigend by nphies: 2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333
+						Note: 11000000002333 is the id of the organization of the order filler (e.g. as in author of this document)
+						including the sub-branch of ".100.101.102" for identifying "Order Filler Numbers" (per local configuration)
+			-->
+			<id extension="123abcdefg" root="2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.100.101.102"/>
+		</order>
+	</inFulfillmentOf>
+	<!--
+			ServiceEvent 1: Laboratory Specialty "Hematology Studies"
+	-->
+	<documentationOf>
+		<serviceEvent>
+			<templateId root="2.16.840.1.113883.3.3731.1.105.6"/>
+			<code code="18723-7" displayName="Hematology Studies" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+			<effectiveTime>
+				<low value="20210602113500+0300"/>
+				<high value="20210602123500+0300"/>
+			</effectiveTime>
+			<!-- Performer of this service -->
+			<performer typeCode="PRF">
+				<templateId root="2.16.840.1.113883.3.3731.1.203.28.7"/>
+				<templateId root="1.3.6.1.4.1.19376.1.3.3.1.7"/>
+				<time value="20210602123500+0300"/>
+				<assignedEntity>
+					<id extension="11MM0005354" root="2.16.840.1.113883.3.3731.1.2.1"/>
+					<!-- same address as for author, nullFlavor is used -->
+					<addr nullFlavor="NI"/>
+					<!-- same telecom as for author, nullFlavor is used -->
+					<telecom nullFlavor="NI"/>
+					<assignedPerson>
+						<name>
+							<prefix>Dr.</prefix>
+							<family>KASEM</family>
+							<given>Osama</given>
+						</name>
+					</assignedPerson>
+					<representedOrganization>
+						<id extension="11000000002333" root="2.16.840.1.113883.3.3731.1.2.2"/>
+						<name>International University Hospital</name>
+						<!-- same telecom as for author, nullFlavor is used -->
+						<telecom nullFlavor="NI"/>
+						<!-- same address as for author, nullFlavor is used -->
+						<addr nullFlavor="NI"/>
+						<standardIndustryClassCode code="H" displayName="MOH Ministry of Health Healthcare Facility" codeSystem="2.16.840.1.113883.3.3731.1.206.1" codeSystemName="Healthcare Facility Sector Identifier"/>
+					</representedOrganization>
+				</assignedEntity>
+			</performer>
+		</serviceEvent>
+	</documentationOf>
+	<!--
+			ServiceEvent 2: Laboratory Specialty "Microbiology"
+	-->
+	<documentationOf>
+		<serviceEvent>
+			<templateId root="2.16.840.1.113883.3.3731.1.105.6"/>
+			<code code="18725-2" displayName="Microbiology" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+			<effectiveTime>
+				<low value="20210602113500+0300"/>
+				<high value="20210602123500+0300"/>
+			</effectiveTime>
+		</serviceEvent>
+	</documentationOf>
+	<!--
+			ServiceEvent 3: Battery code "Leukocyte morphology panel – Blood"
+	-->
+	<documentationOf>
+		<serviceEvent>
+			<templateId root="2.16.840.1.113883.3.3731.1.105.22"/>
+			<code code="58407-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Leukocyte morphology panel – Blood"/>
+		</serviceEvent>
+	</documentationOf>
+	<!--
+			Encounter
+	-->
+	<componentOf>
+		<encompassingEncounter>
+			<templateId root="2.16.840.1.113883.3.3731.1.105.7"/>
+			<!-- Identifier of the patient's encounter -->
+			<id extension="12345678" root="2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.300.1"/>
+			<code code="I" displayName="Inpatient" codeSystem="2.16.840.1.113883.18.5" codeSystemName="HL7 Patient Class"/>
+			<effectiveTime>
+				<low value="20210123211000+0300"/>
+				<!-- example: high element is omitted, because encounter is still ongoing -->
+			</effectiveTime>
+			<location>
+				<healthCareFacility>
+					<id extension="11000000002333" root="2.16.840.1.113883.3.3731.1.2.2"/>
+					<location>
+						<name>Internal medicine department</name>
+					</location>
+					<serviceProviderOrganization>
+						<name>International University Hospital</name>
+					</serviceProviderOrganization>
+				</healthCareFacility>
+			</location>
+		</encompassingEncounter>
+	</componentOf>
+	<!--
+			=================================================
+			=================================================
+			=================================================
+
+			Clinical Content (structured)
+
+			=================================================
+			=================================================
+			=================================================
+	-->
+	<component>
+		<structuredBody>
+			<!--
+					=================================================
+					=================================================
+
+					Laboratory Specialty section 1: Hematology Studies
+
+					=================================================
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.105.8"/>
+					<templateId root="1.3.6.1.4.1.19376.1.3.3.2.1"/>
+					<code code="18723-7" displayName="Hematology Studies" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Hematology Studies</title>
+					<text>
+						<paragraph styleCode="Bold">Specimen</paragraph>
+						<br/>
+						<list>
+							<item ID="specimen1-collectiontime">Collection Time: 05/29/2021 09:00:00</item>
+							<item ID="specimen1-type">Blood</item>
+							<item ID="specimen1-source">Blood, Whole</item>
+							<item ID="specimen1-collectionmethod"/>
+							<item ID="specimen1-handling"/>
+							<item ID="specimen1-risk"/>
+							<item ID="specimen1-riskcomment"/>
+						</list>
+						<br/>
+						===================================================================
+						<paragraph styleCode="Bold">Laboratory Result</paragraph>
+						<br/>
+						Battery: <content ID="battery1-code">58407-8, Leukocyte morphology panel – Blood</content>
+						<table>
+							<colgroup>
+								<col width="25%"/>
+								<col width="15%"/>
+								<col width="15%"/>
+								<col width="15%"/>
+								<col width="15%"/>
+							</colgroup>
+							<thead>
+								<tr>
+									<th>Date</th>
+									<th>Description</th>
+									<th>Value</th>
+									<th>Range</th>
+									<th>Interpretation</th>
+								</tr>
+							</thead>
+							<tbody>
+								<!-- narrative expression of Laboratory Observation 1.1 -->
+								<tr>
+									<td>2-June-2021 09:00</td>
+									<td>
+										<content ID="obs1_1-test">Hemoglobin A1c/Hemoglobin.total in Blood</content>
+									</td>
+									<td>
+										<content ID="obs1_1-value">7 % (percent)</content>
+									</td>
+									<td>
+										<content ID="obs1_1-refrange">4.7 - 5.7</content>
+									</td>
+									<td>
+										<content ID="obs1_1-interpretation">high</content>
+									</td>
+								</tr>
+								<!-- narrative expression of Laboratory Observation 1.2 -->
+								<tr>
+									<td>2-June-2021 09:00</td>
+									<td>
+										<content ID="obs1_2-test">Erythrocytes [#/volume] in Blood</content>
+									</td>
+									<td>
+										<content ID="obs1_2-value">5.39 10*12/L (trillion per liter)</content>
+									</td>
+									<td>
+										<content ID="obs1_2-refrange">4.6 - 6.2</content>
+									</td>
+									<td>
+										<content ID="obs1_2-interpretation">normal</content>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<br/>
+						Battery: none
+						<table>
+							<colgroup>
+								<col width="25%"/>
+								<col width="15%"/>
+								<col width="15%"/>
+								<col width="15%"/>
+								<col width="15%"/>
+							</colgroup>
+							<thead>
+								<tr>
+									<th>Date</th>
+									<th>Description</th>
+									<th>Value</th>
+									<th>Range</th>
+									<th>Interpretation</th>
+								</tr>
+							</thead>
+							<tbody>
+								<!-- narrative expression of Laboratory Observation 1.3 -->
+								<tr>
+									<td>2-June-2021 09:00</td>
+									<td>
+										<content ID="obs1_3--test">Lymphocytes Variant/100 leukocytes in Blood</content>
+									</td>
+									<td>
+										<content ID="obs1_3--value">26 10*9/L (billion per liter)</content>
+									</td>
+									<td>
+										<content ID="obs1_3--refrange">4.0 - 10.0</content>
+									</td>
+									<td>
+										<content ID="obs1_3--interpretation">normal</content>
+									</td>
+								</tr>
+								<!-- narrative expression of Laboratory Observation 1.4, example for value in CE datatype (LOINC code not clinically correct)  -->
+								<tr>
+									<td>2-June-2021 09:00</td>
+									<td>
+										<content ID="obs1_4--test">Acebutolol [Presence] in Urine</content>
+									</td>
+									<td>
+										<content ID="obs1_4--value">Positive</content>
+									</td>
+									<td>
+										<content ID="obs1_4--refrange">undefined</content>
+									</td>
+									<td>
+										<content ID="obs1_4--interpretation">undefined</content>
+									</td>
+								</tr>
+								<!-- narrative expression of Laboratory Observation 1.5, example for value in ED datatype (LOINC code not clinically correct)  -->
+								<tr>
+									<td>2-June-2021 09:00</td>
+									<td>
+										<content ID="obs1_5--test">Acebutolol [Mass/volume] in Urine</content>
+									</td>
+									<td>
+										<content ID="obs1_5--value">The lab value in narrative text form</content>
+									</td>
+									<td>
+										<content ID="obs1_5--refrange">The reference range in narrative form</content>
+									</td>
+									<td>
+										<content ID="obs1_5--interpretation">normal</content>
+									</td>
+								</tr>
+								<!-- narrative expression of Laboratory Observation 1.6, example for value in INT datatype (LOINC code not clinically correct)  -->
+								<tr>
+									<td>2-June-2021 09:00</td>
+									<td>
+										<content ID="obs1_6--test">Acebutolol [Mass/time] in 24 hour Urine</content>
+									</td>
+									<td>
+										<content ID="obs1_6--value">10</content>
+									</td>
+									<td>
+										<content ID="obs1_6--refrange">7 - 10</content>
+									</td>
+									<td>
+										<content ID="obs1_6--interpretation">normal</content>
+									</td>
+								</tr>
+								<!-- narrative expression of Laboratory Observation 1.7, example for value in IVL_INT datatype (LOINC code not clinically correct)  -->
+								<tr>
+									<td>2-June-2021 09:00</td>
+									<td>
+										<content ID="obs1_7--test">Acebutolol [Mass] of Dose</content>
+									</td>
+									<td>
+										<content ID="obs1_7--value">7 - 10</content>
+									</td>
+									<td>
+										<content ID="obs1_7--refrange">undefined</content>
+									</td>
+									<td>
+										<content ID="obs1_7--interpretation">undefined</content>
+									</td>
+								</tr>
+								<!-- narrative expression of Laboratory Observation 1.8, example for value in PQ datatype (LOINC code not clinically correct)  -->
+								<tr>
+									<td>2-June-2021 09:00</td>
+									<td>
+										<content ID="obs1_8--test">Acepromazine [Mass/volume] in Serum or Plasma</content>
+									</td>
+									<td>
+										<content ID="obs1_8--value">10 mg (milligram)</content>
+									</td>
+									<td>
+										<content ID="obs1_8--refrange">7.4 - 10.4</content>
+									</td>
+									<td>
+										<content ID="obs1_8--interpretation">normal</content>
+									</td>
+								</tr>
+								<!-- narrative expression of Laboratory Observation 1.9, example for value in IVL_PQ datatype (LOINC code not clinically correct)  -->
+								<tr>
+									<td>2-June-2021 09:00</td>
+									<td>
+										<content ID="obs1_9--test">Acepromazine [Mass] of Dose</content>
+									</td>
+									<td>
+										<content ID="obs1_9--value">7.4 - 10.4 mg (milligram)</content>
+									</td>
+									<td>
+										<content ID="obs1_9--refrange">undefined</content>
+									</td>
+									<td>
+										<content ID="obs1_9--interpretation">undefined</content>
+									</td>
+								</tr>
+								<!-- narrative expression of Laboratory Observation 1.10, example for value in REAL datatype (LOINC code not clinically correct)  -->
+								<tr>
+									<td>2-June-2021 09:00</td>
+									<td>
+										<content ID="obs1_10--test">Acetaldehyde [Mass/volume] in Blood</content>
+									</td>
+									<td>
+										<content ID="obs1_10--value">10.0</content>
+									</td>
+									<td>
+										<content ID="obs1_10--refrange">7.4 - 10.4</content>
+									</td>
+									<td>
+										<content ID="obs1_10--interpretation">normal</content>
+									</td>
+								</tr>
+								<!-- narrative expression of Laboratory Observation 1.11, example for value in IVL_REAL datatype (LOINC code not clinically correct)  -->
+								<tr>
+									<td>2-June-2021 09:00</td>
+									<td>
+										<content ID="obs1_11--test">Acetaldehyde [Mass/volume] in Serum or Plasma</content>
+									</td>
+									<td>
+										<content ID="obs1_11--value">7.4 - 10.4</content>
+									</td>
+									<td>
+										<content ID="obs1_11--refrange">undefined</content>
+									</td>
+									<td>
+										<content ID="obs1_11--interpretation">undefined</content>
+									</td>
+								</tr>
+								<!-- narrative expression of Laboratory Observation 1.12, example for value in BL datatype (LOINC code not clinically correct)  -->
+								<tr>
+									<td>2-June-2021 09:00</td>
+									<td>
+										<content ID="obs1_12--test">Acetaldehyde [Mass/volume] in Urine</content>
+									</td>
+									<td>
+										<content ID="obs1_12--value">true</content>
+									</td>
+									<td>
+										<content ID="obs1_12--refrange">undefined</content>
+									</td>
+									<td>
+										<content ID="obs1_12--interpretation">undefined</content>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</text>
+					<!-- 
+							==================================
+							Laboratory Data Processing Entry
+							==================================
+					-->
+					<entry typeCode="DRIV">
+						<templateId root="2.16.840.1.113883.3.3731.1.105.9"/>
+						<templateId root="1.3.6.1.4.1.19376.1.3.1"/>
+						<act classCode="ACT" moodCode="EVN">
+							<code code="18723-7" displayName="Hematology Studies" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+							<statusCode code="completed"/>
+							<!-- 
+									****************************
+									Specimen Collection (in this example: minimal)
+									****************************
+							-->
+							<entryRelationship typeCode="COMP">
+								<procedure classCode="PROC" moodCode="EVN">
+									<templateId root="2.16.840.1.113883.3.3731.1.105.10"/>
+									<templateId root="1.3.6.1.4.1.19376.1.3.1.2"/>
+									<code code="33882-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Specimen Collection"/>
+									<!-- Date and time of specimen collection -->
+									<effectiveTime value="202105280900+0300"/>
+									<!-- Specimen -->
+									<participant typeCode="PRD">
+										<participantRole classCode="SPEC">
+											<id extension="spec321" root="2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.200.201.202"/>
+											<playingEntity>
+												<code code="BLD" displayName="Blood" codeSystem="2.16.840.1.113883.5.129" codeSystemName="Laboratory Specimen Type">
+													<originalText>
+														<reference value="#specimen1-type"/>
+													</originalText>
+												</code>
+											</playingEntity>
+										</participantRole>
+									</participant>
+								</procedure>
+							</entryRelationship>
+							<!-- 
+									****************************
+									Laboratory Battery Organizer
+									****************************
+							-->
+							<entryRelationship typeCode="COMP">
+								<organizer classCode="BATTERY" moodCode="EVN">
+									<templateId root="2.16.840.1.113883.3.3731.1.105.15"/>
+									<templateId root="1.3.6.1.4.1.19376.1.3.1.4"/>
+									<code code="58407-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Leukocyte morphology panel – Blood">
+										<originalText>
+											<reference value="#battery1-code"/>
+										</originalText>
+									</code>
+									<statusCode code="completed"/>
+									<effectiveTime value="20210602090000+0300"/>
+									<!--
+											Laboratory Observation 1.1 within the battery
+									-->
+									<component typeCode="COMP">
+										<observation classCode="OBS" moodCode="EVN">
+											<templateId root="2.16.840.1.113883.3.3731.1.105.16"/>
+											<templateId root="1.3.6.1.4.1.19376.1.3.1.6"/>
+											<id extension="obs1_1" root="2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.300.301.302"/>
+											<code code="4548-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Hemoglobin A1c/Hemoglobin.total in Blood"/>
+											<text>
+												<reference value="#obs1_1-test"/>
+											</text>
+											<statusCode code="completed"/>
+											<!--
+													Example of observation status on business/workflow level. Since it is "final" it could also have been omitted
+											-->
+											<nphies:observationStatus code="final" codeSystem="2.16.840.1.113883.4.642.4.400" codeSystemName="FHIRDiagnosticReportStatus" displayName="Final"/>
+											<effectiveTime value="20210602090000+0300"/>
+											<value xsi:type="PQ" value="7" unit="%"/>
+											<!-- this interpretationCode declares, that the value of the observation is "high" in relation to the reference range -->
+											<interpretationCode code="H" codeSystemName="HL7:ObservationInterpretation" codeSystem="2.16.840.1.113883.5.83" displayName="high">
+												<originalText>
+													<reference value="#obs1_1-interpretation"/>
+												</originalText>
+											</interpretationCode>
+											<referenceRange typeCode="REFV">
+												<observationRange classCode="OBS" moodCode="EVN.CRT">
+													<text>
+														<reference value="#obs1_1-refrange"/>
+													</text>
+													<value xsi:type="IVL_PQ">
+														<low value="4.7" unit="%"/>
+														<high value="5.7" unit="%"/>
+													</value>
+													<!-- this interpretationCode declares, that the reference range is a "normal" reference range (fixed value) -->
+													<interpretationCode code="N" codeSystemName="HL7:ObservationInterpretation" codeSystem="2.16.840.1.113883.5.83" displayName="normal"/>
+												</observationRange>
+											</referenceRange>
+										</observation>
+									</component>
+									<!--
+											Laboratory Observation 1.2 within the battery
+									-->
+									<component typeCode="COMP">
+										<observation classCode="OBS" moodCode="EVN">
+											<templateId root="2.16.840.1.113883.3.3731.1.105.16"/>
+											<templateId root="1.3.6.1.4.1.19376.1.3.1.6"/>
+											<id extension="obs1_2" root="2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.300.301.302"/>
+											<code code="26453-1" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Erythrocytes [#/volume] in Blood"/>
+											<text>
+												<reference value="#obs1_2-test"/>
+											</text>
+											<statusCode code="completed"/>
+											<effectiveTime value="20210602090000+0300"/>
+											<value xsi:type="PQ" value="5.39" unit="10*12/L"/>
+											<!-- this interpretationCode declares, that the value of the observation is "normal" in relation to the reference range -->
+											<interpretationCode code="N" codeSystem="2.16.840.1.113883.5.83" codeSystemName="HL7:ObservationInterpretation" displayName="normal">
+												<originalText>
+													<reference value="#obs1_2-interpretation"/>
+												</originalText>
+											</interpretationCode>
+											<!-- this observation has a different performer -->
+											<performer typeCode="PRF">
+												<templateId root="1.3.6.1.4.1.19376.1.3.3.1.7"/>
+												<time value="20210602090000+0300"/>
+												<assignedEntity>
+													<id extension="13MM0033325" root="2.16.840.1.113883.3.3731.1.2.1"/>
+													<addr nullFlavor="NI"/>
+													<telecom nullFlavor="NI"/>
+													<assignedPerson>
+														<name>
+															<prefix>Dr.</prefix>
+															<family>SHARAFALDIN</family>
+															<given>Muhannad</given>
+														</name>
+													</assignedPerson>
+												</assignedEntity>
+											</performer>
+											<referenceRange typeCode="REFV">
+												<observationRange classCode="OBS" moodCode="EVN.CRT">
+													<text>
+														<reference value="#obs1_2-refrange"/>
+													</text>
+													<value xsi:type="IVL_PQ">
+														<low value="4.6" unit="10*12/L"/>
+														<high value="18.0" unit="10*12/L"/>
+													</value>
+													<!-- this interpretationCode declares, that the reference range is a "normal" reference range (fixed value) -->
+													<interpretationCode code="N" codeSystem="2.16.840.1.113883.5.83" codeSystemName="HL7:ObservationInterpretation" displayName="normal"/>
+												</observationRange>
+											</referenceRange>
+										</observation>
+									</component>
+								</organizer>
+							</entryRelationship>
+							<!--
+									Laboratory Observation 1.3 not organized in a battery
+							-->
+							<entryRelationship typeCode="COMP">
+								<observation classCode="OBS" moodCode="EVN">
+									<templateId root="2.16.840.1.113883.3.3731.1.105.16"/>
+									<templateId root="1.3.6.1.4.1.19376.1.3.1.6"/>
+									<id extension="obs1_3" root="2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.300.301.302"/>
+									<code code="13046-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Lymphocytes Variant/100 leukocytes in Blood"/>
+									<text>
+										<reference value="#obs1_3--test"/>
+									</text>
+									<statusCode code="completed"/>
+									<effectiveTime value="20210602090000+0300"/>
+									<value xsi:type="PQ" value="26" unit="10*9/L"/>
+									<!-- this interpretationCode declares, that the value of the observation is "normal" in relation to the reference range -->
+									<interpretationCode code="N" codeSystem="2.16.840.1.113883.5.83" codeSystemName="HL7:ObservationInterpretation" displayName="normal">
+										<originalText>
+											<reference value="#obs1_3--interpretation"/>
+										</originalText>
+									</interpretationCode>
+									<participant typeCode="AUTHEN">
+										<participantRole>
+											<playingEntity>
+												<name>Verifier Software Name</name>
+											</playingEntity>
+										</participantRole>
+									</participant>
+									<referenceRange typeCode="REFV">
+										<observationRange classCode="OBS" moodCode="EVN.CRT">
+											<text>
+												<reference value="#obs1_3--refrange"/>
+											</text>
+											<value xsi:type="IVL_PQ">
+												<low value="4.0" unit="10*9/L"/>
+												<high value="10.0" unit="10*9/L"/>
+											</value>
+											<!-- this interpretationCode declares, that the reference range is a "normal" reference range (fixed value) -->
+											<interpretationCode code="N" codeSystem="2.16.840.1.113883.5.83" codeSystemName="HL7:ObservationInterpretation" displayName="normal"/>
+										</observationRange>
+									</referenceRange>
+								</observation>
+							</entryRelationship>
+							<!--
+									Laboratory Observation 1.4 not organized in a battery, example for value in CE datatype (LOINC code not clinically correct)
+							-->
+							<entryRelationship typeCode="COMP">
+								<observation classCode="OBS" moodCode="EVN">
+									<templateId root="2.16.840.1.113883.3.3731.1.105.16"/>
+									<templateId root="1.3.6.1.4.1.19376.1.3.1.6"/>
+									<id extension="obs1_4" root="2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.300.301.302"/>
+									<code code="3293-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Acebutolol [Presence] in Urine"/>
+									<text>
+										<reference value="#obs1_4--test"/>
+									</text>
+									<statusCode code="completed"/>
+									<effectiveTime value="20210602090000+0300"/>
+									<value xsi:type="CE" code="10828004" displayName="Positive" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT"/>
+									<referenceRange typeCode="REFV">
+										<observationRange classCode="OBS" moodCode="EVN.CRT">
+											<text>
+												<reference value="#obs1_4--refrange"/>
+											</text>
+											<interpretationCode code="N" codeSystem="2.16.840.1.113883.5.83" codeSystemName="HL7:ObservationInterpretation" displayName="normal"/>
+										</observationRange>
+									</referenceRange>
+								</observation>
+							</entryRelationship>
+							<!--
+									Laboratory Observation 1.5 not organized in a battery, example for value in ED datatype (LOINC code not clinically correct)
+							-->
+							<entryRelationship typeCode="COMP">
+								<observation classCode="OBS" moodCode="EVN">
+									<templateId root="2.16.840.1.113883.3.3731.1.105.16"/>
+									<templateId root="1.3.6.1.4.1.19376.1.3.1.6"/>
+									<id extension="obs1_5" root="2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.300.301.302"/>
+									<code code="3294-6" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Acebutolol [Mass/volume] in Urine"/>
+									<text>
+										<reference value="#obs1_5--test"/>
+									</text>
+									<statusCode code="completed"/>
+									<effectiveTime value="20210602090000+0300"/>
+									<value xsi:type="ED">
+										<reference value="#obs1_5--value"/>
+									</value>
+									<!-- this interpretationCode declares, that the value of the observation is "normal" in relation to the reference range -->
+									<interpretationCode code="N" codeSystem="2.16.840.1.113883.5.83" codeSystemName="HL7:ObservationInterpretation" displayName="normal">
+										<originalText>
+											<reference value="#obs1_5-interpretation"/>
+										</originalText>
+									</interpretationCode>
+									<referenceRange typeCode="REFV">
+										<observationRange classCode="OBS" moodCode="EVN.CRT">
+											<text>
+												<reference value="#obs1_5--refrange"/>
+											</text>
+											<interpretationCode code="N" codeSystem="2.16.840.1.113883.5.83" codeSystemName="HL7:ObservationInterpretation" displayName="normal"/>
+										</observationRange>
+									</referenceRange>
+								</observation>
+							</entryRelationship>
+							<!--
+									Laboratory Observation 1.6 not organized in a battery, example for value in INT datatype (LOINC code not clinically correct)
+							-->
+							<entryRelationship typeCode="COMP">
+								<observation classCode="OBS" moodCode="EVN">
+									<templateId root="2.16.840.1.113883.3.3731.1.105.16"/>
+									<templateId root="1.3.6.1.4.1.19376.1.3.1.6"/>
+									<id extension="obs1_6" root="2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.300.301.302"/>
+									<code code="3295-3" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Acebutolol [Mass/time] in 24 hour Urine"/>
+									<text>
+										<reference value="#obs1_6--test"/>
+									</text>
+									<statusCode code="completed"/>
+									<effectiveTime value="20210602090000+0300"/>
+									<value xsi:type="INT" value="10"/>
+									<!-- this interpretationCode declares, that the value of the observation is "normal" in relation to the reference range -->
+									<interpretationCode code="N" codeSystem="2.16.840.1.113883.5.83" codeSystemName="HL7:ObservationInterpretation" displayName="normal">
+										<originalText>
+											<reference value="#obs1_6-interpretation"/>
+										</originalText>
+									</interpretationCode>
+									<referenceRange typeCode="REFV">
+										<observationRange classCode="OBS" moodCode="EVN.CRT">
+											<text>
+												<reference value="#obs1_6--refrange"/>
+											</text>
+											<value xsi:type="IVL_INT">
+												<low value="7"/>
+												<high value="10"/>
+											</value>
+											<interpretationCode code="N" codeSystem="2.16.840.1.113883.5.83" codeSystemName="HL7:ObservationInterpretation" displayName="normal"/>
+										</observationRange>
+									</referenceRange>
+								</observation>
+							</entryRelationship>
+							<!--
+									Laboratory Observation 1.7 not organized in a battery, example for value in IVL_INT datatype (LOINC code not clinically correct)
+							-->
+							<entryRelationship typeCode="COMP">
+								<observation classCode="OBS" moodCode="EVN">
+									<templateId root="2.16.840.1.113883.3.3731.1.105.16"/>
+									<templateId root="1.3.6.1.4.1.19376.1.3.1.6"/>
+									<id extension="obs1_7" root="2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.300.301.302"/>
+									<code code="4103-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Acebutolol [Mass] of Dose"/>
+									<text>
+										<reference value="#obs1_7--test"/>
+									</text>
+									<statusCode code="completed"/>
+									<effectiveTime value="20210602090000+0300"/>
+									<value xsi:type="IVL_INT">
+										<low value="7"/>
+										<high value="10"/>
+									</value>
+									<referenceRange typeCode="REFV">
+										<observationRange classCode="OBS" moodCode="EVN.CRT">
+											<text>
+												<reference value="#obs1_7--refrange"/>
+											</text>
+											<interpretationCode code="N" codeSystem="2.16.840.1.113883.5.83" codeSystemName="HL7:ObservationInterpretation" displayName="normal"/>
+										</observationRange>
+									</referenceRange>
+								</observation>
+							</entryRelationship>
+							<!--
+									Laboratory Observation 1.8 not organized in a battery, example for value in PQ datatype (LOINC code not clinically correct)
+							-->
+							<entryRelationship typeCode="COMP">
+								<observation classCode="OBS" moodCode="EVN">
+									<templateId root="2.16.840.1.113883.3.3731.1.105.16"/>
+									<templateId root="1.3.6.1.4.1.19376.1.3.1.6"/>
+									<id extension="obs1_8" root="2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.300.301.302"/>
+									<code code="3296-1" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Acepromazine [Mass/volume] in Serum or Plasma"/>
+									<text>
+										<reference value="#obs1_8--test"/>
+									</text>
+									<statusCode code="completed"/>
+									<effectiveTime value="20210602090000+0300"/>
+									<value xsi:type="PQ" value="10" unit="mg"/>
+									<!-- this interpretationCode declares, that the value of the observation is "normal" in relation to the reference range -->
+									<interpretationCode code="N" codeSystem="2.16.840.1.113883.5.83" codeSystemName="HL7:ObservationInterpretation" displayName="normal">
+										<originalText>
+											<reference value="#obs1_8-interpretation"/>
+										</originalText>
+									</interpretationCode>
+									<referenceRange typeCode="REFV">
+										<observationRange classCode="OBS" moodCode="EVN.CRT">
+											<text>
+												<reference value="#obs1_8--refrange"/>
+											</text>
+											<value xsi:type="IVL_PQ">
+												<low unit="mg" value="7.4"/>
+												<high unit="mg" value="10.4"/>
+											</value>
+											<interpretationCode code="N" codeSystem="2.16.840.1.113883.5.83" codeSystemName="HL7:ObservationInterpretation" displayName="normal"/>
+										</observationRange>
+									</referenceRange>
+								</observation>
+							</entryRelationship>
+							<!--
+									Laboratory Observation 1.9 not organized in a battery, example for value in IVL_PQ datatype (LOINC code not clinically correct)
+							-->
+							<entryRelationship typeCode="COMP">
+								<observation classCode="OBS" moodCode="EVN">
+									<templateId root="2.16.840.1.113883.3.3731.1.105.16"/>
+									<templateId root="1.3.6.1.4.1.19376.1.3.1.6"/>
+									<id extension="obs1_9" root="2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.300.301.302"/>
+									<code code="4104-6" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Acepromazine [Mass] of Dose"/>
+									<text>
+										<reference value="#obs1_9--test"/>
+									</text>
+									<statusCode code="completed"/>
+									<effectiveTime value="20210602090000+0300"/>
+									<value xsi:type="IVL_PQ">
+										<low unit="mg" value="7.4"/>
+										<high unit="mg" value="10.4"/>
+									</value>
+									<referenceRange typeCode="REFV">
+										<observationRange classCode="OBS" moodCode="EVN.CRT">
+											<text>
+												<reference value="#obs1_9--refrange"/>
+											</text>
+											<interpretationCode code="N" codeSystem="2.16.840.1.113883.5.83" codeSystemName="HL7:ObservationInterpretation" displayName="normal"/>
+										</observationRange>
+									</referenceRange>
+								</observation>
+							</entryRelationship>
+							<!--
+									Laboratory Observation 1.10 not organized in a battery, example for value in REAL datatype (LOINC code not clinically correct)
+							-->
+							<entryRelationship typeCode="COMP">
+								<observation classCode="OBS" moodCode="EVN">
+									<templateId root="2.16.840.1.113883.3.3731.1.105.16"/>
+									<templateId root="1.3.6.1.4.1.19376.1.3.1.6"/>
+									<id extension="obs1_10" root="2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.300.301.302"/>
+									<code code="1700-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Acetaldehyde [Mass/volume] in Blood"/>
+									<text>
+										<reference value="#obs1_10--test"/>
+									</text>
+									<statusCode code="completed"/>
+									<effectiveTime value="20210602090000+0300"/>
+									<value xsi:type="REAL" value="10.0"/>
+									<!-- this interpretationCode declares, that the value of the observation is "normal" in relation to the reference range -->
+									<interpretationCode code="N" codeSystem="2.16.840.1.113883.5.83" codeSystemName="HL7:ObservationInterpretation" displayName="normal">
+										<originalText>
+											<reference value="#obs1_10-interpretation"/>
+										</originalText>
+									</interpretationCode>
+									<referenceRange typeCode="REFV">
+										<observationRange classCode="OBS" moodCode="EVN.CRT">
+											<text>
+												<reference value="#obs1_10--refrange"/>
+											</text>
+											<value xsi:type="IVL_REAL">
+												<low value="7.4"/>
+												<high value="10.4"/>
+											</value>
+											<interpretationCode code="N" codeSystem="2.16.840.1.113883.5.83" codeSystemName="HL7:ObservationInterpretation" displayName="normal"/>
+										</observationRange>
+									</referenceRange>
+								</observation>
+							</entryRelationship>
+							<!--
+									Laboratory Observation 1.11 not organized in a battery, example for value in IVL_REAL datatype (LOINC code not clinically correct)
+							-->
+							<entryRelationship typeCode="COMP">
+								<observation classCode="OBS" moodCode="EVN">
+									<templateId root="2.16.840.1.113883.3.3731.1.105.16"/>
+									<templateId root="1.3.6.1.4.1.19376.1.3.1.6"/>
+									<id extension="obs1_11" root="2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.300.301.302"/>
+									<code code="1701-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Acetaldehyde [Mass/volume] in Serum or Plasma"/>
+									<text>
+										<reference value="#obs1_11--test"/>
+									</text>
+									<statusCode code="completed"/>
+									<effectiveTime value="20210602090000+0300"/>
+									<value xsi:type="IVL_REAL">
+										<low value="7.4"/>
+										<high value="10.4"/>
+									</value>
+									<referenceRange typeCode="REFV">
+										<observationRange classCode="OBS" moodCode="EVN.CRT">
+											<text>
+												<reference value="#obs1_11--refrange"/>
+											</text>
+											<interpretationCode code="N" codeSystem="2.16.840.1.113883.5.83" codeSystemName="HL7:ObservationInterpretation" displayName="normal"/>
+										</observationRange>
+									</referenceRange>
+								</observation>
+							</entryRelationship>
+							<!--
+									Laboratory Observation 1.12 not organized in a battery, example for value in BL datatype (LOINC code not clinically correct)
+							-->
+							<entryRelationship typeCode="COMP">
+								<observation classCode="OBS" moodCode="EVN">
+									<templateId root="2.16.840.1.113883.3.3731.1.105.16"/>
+									<templateId root="1.3.6.1.4.1.19376.1.3.1.6"/>
+									<id extension="obs1_12" root="2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.300.301.302"/>
+									<code code="21048-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Acetaldehyde [Mass/volume] in Urine"/>
+									<text>
+										<reference value="#obs1_12--test"/>
+									</text>
+									<statusCode code="completed"/>
+									<effectiveTime value="20210602090000+0300"/>
+									<value xsi:type="BL" value="true"/>
+									<referenceRange typeCode="REFV">
+										<observationRange classCode="OBS" moodCode="EVN.CRT">
+											<text>
+												<reference value="#obs1_12--refrange"/>
+											</text>
+											<interpretationCode code="N" codeSystem="2.16.840.1.113883.5.83" codeSystemName="HL7:ObservationInterpretation" displayName="normal"/>
+										</observationRange>
+									</referenceRange>
+								</observation>
+							</entryRelationship>
+						</act>
+					</entry>
+					<!--
+							=================================================
+							=================================================
+		
+							Laboratory Order Specialty section 1: Hematology Studies
+
+							AS DERIVED FROM THE LABORATORY ORDER
+		
+							=================================================
+							=================================================
+					-->
+					<component>
+						<section>
+							<templateId root="2.16.840.1.113883.3.3731.1.105.14"/>
+							<code code="18723-7" displayName="Hematology Studies" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+							<title>Hematology Studies</title>
+							<text>
+								<paragraph styleCode="Bold">Lab Order</paragraph>
+								<br/>
+								Lab order type: Hematology Studies
+								<br/>
+								<paragraph styleCode="Bold">Specimen Procedure</paragraph>
+								<br/>
+								<list>
+									<item ID="order_specimen_1_1-collectiontime">Collection Time: 05/29/2021 09:00:00</item>
+									<item ID="order_specimen_1_1-type">Blood</item>
+									<item ID="order_specimen_1_1-source">Blood, Whole</item>
+									<item ID="order_specimen_1_1-collectionmethod"/>
+									<item ID="order_specimen_1_1-handling"/>
+									<item ID="order_specimen_1_1-risk"/>
+									<item ID="order_specimen_1_1-riskcomment"/>
+								</list>
+								<br/>
+								<paragraph styleCode="Bold">Laboratory Test(s) Ordered</paragraph>
+								<br/>
+								<table>
+									<thead>
+										<tr>
+											<th>Test</th>
+											<th>Priority</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td ID="order_test_1_1-code">58407-8, Leukocyte morphology panel – Blood</td>
+											<td ID="order_test_1_1-prioritycode">As Soon As Possible (ASAP)</td>
+										</tr>
+										<tr>
+											<td ID="order_test_1_2-code">13046-8, Lymphocytes Variant/100 leukocytes in Blood</td>
+											<td ID="order_test_1_2-prioritycode">As Soon As Possible (ASAP)</td>
+										</tr>
+									</tbody>
+								</table>
+								<br/>
+								<paragraph styleCode="Bold">Additional Order Information</paragraph>
+								<table>
+									<thead>
+										<tr>
+											<th>Type</th>
+											<th>Value</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr ID="order_addinfo_1_1">
+											<td>50373000, Body Height Measure</td>
+											<td>170 cm</td>
+										</tr>
+										<tr ID="order_addinfo_1_2">
+											<td>16985007, Fasting</td>
+											<td>true</td>
+										</tr>
+										<tr ID="order_addinfo_1_3">
+											<td>148006, Preliminary diagnosis</td>
+											<td>M25.46 - Effusion of joint, lower leg</td>
+										</tr>
+									</tbody>
+								</table>
+							</text>
+							<!-- 
+									****************************
+									Specimen Collection (default)
+									****************************
+							-->
+							<entry typeCode="DRIV">
+								<procedure classCode="PROC" moodCode="EVN">
+									<templateId root="2.16.840.1.113883.3.3731.1.105.10"/>
+									<templateId root="1.3.6.1.4.1.19376.1.3.1.2"/>
+									<code code="33882-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Specimen Collection"/>
+									<!-- Date and time of specimen collection -->
+									<effectiveTime value="202105280900+0300"/>
+									<!-- Specimen -->
+									<participant typeCode="PRD">
+										<participantRole classCode="SPEC">
+											<id extension="spec321" root="2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.200.201.202"/>
+											<playingEntity>
+												<code code="BLD" displayName="Blood" codeSystem="2.16.840.1.113883.5.129" codeSystemName="Laboratory Specimen Type">
+													<originalText>
+														<reference value="#order_specimen_1_1-type"/>
+													</originalText>
+												</code>
+											</playingEntity>
+										</participantRole>
+									</participant>
+								</procedure>
+							</entry>
+							<!-- 
+									==================================
+									Laboratory Order Data Processing Entry(s)
+									==================================
+							-->
+							<!-- 
+									Laboratory Order Data Processing Entry: Ordered test 1.1
+							-->
+							<entry typeCode="DRIV">
+								<templateId root="2.16.840.1.113883.3.3731.1.105.3"/>
+								<act classCode="ACT" moodCode="RQO">
+									<code code="58407-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Leukocyte morphology panel – Blood">
+										<originalText>
+											<reference value="#order_test_1_1-code"/>
+										</originalText>
+									</code>
+									<priorityCode code="A" displayName="As Soon As Possible (ASAP)" codeSystem="2.16.840.1.113883.5.7">
+										<originalText>
+											<reference value="#order_test_1_1-prioritycode"/>
+										</originalText>
+									</priorityCode>
+								</act>
+							</entry>
+							<!-- 
+									Laboratory Order Data Processing Entry: Ordered test 1.2
+							-->
+							<entry typeCode="DRIV">
+								<templateId root="2.16.840.1.113883.3.3731.1.105.3"/>
+								<act classCode="ACT" moodCode="RQO">
+									<code code="13046-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Lymphocytes Variant/100 leukocytes in Blood">
+										<originalText>
+											<reference value="#order_test_1_2-code"/>
+										</originalText>
+									</code>
+									<priorityCode code="A" displayName="As Soon As Possible (ASAP)" codeSystem="2.16.840.1.113883.5.7">
+										<originalText>
+											<reference value="#order_test_1_2-prioritycode"/>
+										</originalText>
+									</priorityCode>
+								</act>
+							</entry>
+							<!-- 
+									Additional Order Information
+							-->
+							<entry>
+								<organizer classCode="CLUSTER" moodCode="EVN">
+									<templateId root="2.16.840.1.113883.3.3731.1.210.100.67"/>
+									<statusCode code="completed"/>
+									<component>
+										<observation classCode="OBS" moodCode="EVN">
+											<templateId root="2.16.840.1.113883.3.3731.1.210.100.68"/>
+											<code code="50373000" displayName="Body Height Measure" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT"/>
+											<text>
+												<reference value="#order_addinfo_1_1"/>
+											</text>
+											<value xsi:type="PQ" value="170" unit="cm"/>
+										</observation>
+									</component>
+									<component>
+										<observation classCode="OBS" moodCode="EVN">
+											<templateId root="2.16.840.1.113883.3.3731.1.210.100.68"/>
+											<code code="16985007" displayName="Fasting" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT"/>
+											<text>
+												<reference value="#order_addinfo_1_2"/>
+											</text>
+											<value xsi:type="BL" value="true"/>
+										</observation>
+									</component>
+									<component>
+										<observation classCode="OBS" moodCode="EVN">
+											<templateId root="2.16.840.1.113883.3.3731.1.210.100.68"/>
+											<code code="148006" displayName="Preliminary diagnosis" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT"/>
+											<text>
+												<reference value="#order_addinfo_1_3"/>
+											</text>
+											<value xsi:type="CE" code="M25.46" displayName="Effusion of joint, lower leg" codeSystem="2.16.840.1.113883.6.135" codeSystemName="ICD10-AM"/>
+										</observation>
+									</component>
+								</organizer>
+							</entry>
+						</section>
+					</component>
+				</section>
+			</component>
+			<!--
+					=================================================
+					=================================================
+
+					Laboratory Specialty section 2: Microbiology
+
+					=================================================
+					=================================================
+			-->
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.3.3731.1.105.8"/>
+					<templateId root="1.3.6.1.4.1.19376.1.3.3.2.1"/>
+					<code code="18725-2" displayName="Microbiology" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+					<title>Microbiology</title>
+					<text>
+						<paragraph styleCode="Bold">Specimen</paragraph>
+						<br/>
+						<list>
+							<item ID="specimen2-collectiontime">Collection Time: 05/29/2021 09:00:00</item>
+							<item ID="specimen2-type">Blood</item>
+							<item ID="specimen2-source">Blood, Whole</item>
+							<item ID="specimen2-collectionmethod">Aterial puncture</item>
+							<item ID="specimen2-handling">Only upright transportation</item>
+							<item ID="specimen2-risk">Material Danger Infectious</item>
+							<item ID="specimen2-riskcomment">Utmost attention: May contain infectious virus</item>
+						</list>
+						<br/>
+						===================================================================
+						<paragraph styleCode="Bold">Laboratory Result</paragraph>
+						<br/>
+						2011.12.24 08:23:24
+						<br/>
+						<table>
+							<thead>
+								<tr>
+									<th>Isolate</th>
+									<th>Method</th>
+									<th>Result / Bacterial count</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td ID="obs2_1-pathogen">Streptococcus pneumoniae</td>
+									<td ID="obs2_1-method">Cultur</td>
+									<td ID="obs2_1-value">Detected</td>
+								</tr>
+							</tbody>
+						</table>
+						<!-- Table Antibiogram -->
+						<paragraph>Antibiogram</paragraph>
+						<table>
+							<thead>
+								<tr>
+									<th>Active substance</th>
+									<th>Susceptibility</th>
+									<th>Minimum inhibitory concentration in mg/L</th>
+								</tr>
+							</thead>
+							<tfoot>
+								<tr>
+									<td>
+                                        S = Sensible at standard dosage, I = Sensible at higher exposition, R = resistant
+                                    </td>
+								</tr>
+							</tfoot>
+							<tbody>
+								<tr>
+									<td ID="obs2_1_ab-1-actsubst">Penicillin</td>
+									<td ID="obs2_1_ab-1-susceptibility">R</td>
+									<td/>
+								</tr>
+								<tr>
+									<td ID="obs2_1_ab-2-actsubst">Oxacillin</td>
+									<td ID="obs2_1_ab-2-susceptibility">I</td>
+									<td>0.75</td>
+								</tr>
+								<tr>
+									<td ID="obs2_1_ab-3-actsubst">Erythromycin</td>
+									<td ID="obs2_1_ab-3-susceptibility">S</td>
+									<td>0.25</td>
+								</tr>
+							</tbody>
+						</table>
+					</text>
+					<!-- 
+							==================================
+							Laboratory Data Processing Entry
+							==================================
+					-->
+					<entry typeCode="DRIV">
+						<templateId root="2.16.840.1.113883.3.3731.1.105.9"/>
+						<templateId root="1.3.6.1.4.1.19376.1.3.1"/>
+						<act classCode="ACT" moodCode="EVN">
+							<!-- code of the "act" is always set to code of the "section" -->
+							<code code="18725-2" displayName="Microbiology" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+							<statusCode code="completed"/>
+							<!-- 
+									****************************
+									Specimen Collection (in this example: maximal)
+									****************************
+							-->
+							<entryRelationship typeCode="COMP">
+								<procedure classCode="PROC" moodCode="EVN">
+									<templateId root="2.16.840.1.113883.3.3731.1.105.10"/>
+									<templateId root="1.3.6.1.4.1.19376.1.3.1.2"/>
+									<code code="33882-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Specimen Collection"/>
+									<!-- Date and time of specimen collection -->
+									<effectiveTime value="202105280900+0300"/>
+									<!-- Specimen Collection Method -->
+									<methodCode code="PNA" codeSystem="2.16.840.1.113883.12.488" codeSystemName="Specimen Collection Method" displayName="Aterial puncture">
+										<originalText>
+											<reference value="#specimen2-collectionmethod"/>
+										</originalText>
+									</methodCode>
+									<!-- Specimen Source -->
+									<targetSiteCode code="BLOOD_WHOLE" codeSystem="2.16.840.1.113883.12.70" codeSystemName="Specimen Source" displayName="Blood, Whole">
+										<originalText>
+											<reference value="#specimen2-source"/>
+										</originalText>
+									</targetSiteCode>
+									<!-- Specimen -->
+									<participant typeCode="PRD">
+										<participantRole classCode="SPEC">
+											<id extension="spec321" root="1.3.6.1.4.1.19376.1.3.4.1111.2222.1"/>
+											<playingEntity>
+												<code code="BLD" displayName="Blood" codeSystem="2.16.840.1.113883.5.129" codeSystemName="Laboratory Specimen Type">
+													<originalText>
+														<reference value="#specimen2-type"/>
+													</originalText>
+												</code>
+											</playingEntity>
+										</participantRole>
+									</participant>
+									<!-- Specimen Handling -->
+									<entryRelationship typeCode="COMP">
+										<observation classCode="COND" moodCode="INT">
+											<templateId root="2.16.840.1.113883.3.3731.1.105.11"/>
+											<code code="01908" codeSystem="2.16.840.1.113883.3.3731.1.105.2"/>
+											<text>
+												<reference value="#specimen2-handling"/>
+											</text>
+										</observation>
+									</entryRelationship>
+									<!-- Specimen Risks -->
+									<entryRelationship typeCode="COMP">
+										<observation classCode="OBS" moodCode="EVN">
+											<templateId root="2.16.840.1.113883.3.3731.1.105.12"/>
+											<code code="01903" codeSystem="2.16.840.1.113883.3.3731.1.105.2"/>
+											<text>
+												<reference value="#specimen2-riskcomment"/>
+											</text>
+											<value xsi:type="CE" code="INF" codeSystem="2.16.840.1.113883.12.489" codeSystemName="Specimen Risk" displayName="Material Danger Infectious">
+												<originalText>
+													<reference value="#specimen2-risk"/>
+												</originalText>
+											</value>
+										</observation>
+									</entryRelationship>
+									<!-- Specimen Received -->
+									<entryRelationship typeCode="COMP">
+										<act classCode="ACT" moodCode="EVN">
+											<templateId root="2.16.840.1.113883.3.3731.1.105.13"/>
+											<templateId root="1.3.6.1.4.1.19376.1.3.1.3"/>
+											<code code="SPRECEIVE" codeSystem="1.3.5.1.4.1.19376.1.5.3.2" codeSystemName="IHEActCode" displayName="Receive Time">
+												<originalText>
+													<reference value="#specimen2-collectiontime"/>
+												</originalText>
+											</code>
+											<effectiveTime value="20210529090000+0300"/>
+											<performer>
+												<assignedEntity>
+													<id nullFlavor="UNK"/>
+													<assignedPerson>
+														<name>
+															<prefix>Dr.</prefix>
+															<family>KASEM</family>
+															<given>Osama</given>
+														</name>
+													</assignedPerson>
+													<representedOrganization>
+														<id extension="11000000002333" root="2.16.840.1.113883.3.3731.1.2.2"/>
+														<name>International University Hospital</name>
+														<telecom value="tel:+966920011223"/>
+														<addr>
+															<streetAddressLine>3920 Mathar Alshibani St</streetAddressLine>
+															<city>Riyadh</city>
+															<postalCode>12629</postalCode>
+															<country>Saudi Arabia</country>
+														</addr>
+													</representedOrganization>
+												</assignedEntity>
+											</performer>
+										</act>
+									</entryRelationship>
+								</procedure>
+							</entryRelationship>
+							<!-- 
+									****************************
+									Laboratory Isolate Organizer (parent container, includes the isolate, observations and susceptibility observations (antibiogram)
+									****************************
+							-->
+							<entryRelationship typeCode="COMP">
+								<organizer classCode="CLUSTER" moodCode="EVN">
+									<templateId root="2.16.840.1.113883.3.3731.1.105.17"/>
+									<templateId root="1.3.6.1.4.1.19376.1.3.1.5"/>
+									<id extension="obs2_1" root="2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.300.301.302"/>
+									<statusCode code="completed"/>
+									<!-- 
+											The found isolate "Staphylococcus epidermidis"
+									-->
+									<specimen typeCode="SPC">
+										<specimenRole classCode="SPEC">
+											<specimenPlayingEntity classCode="MIC">
+												<code code="9861002" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" displayName="Streptococcus pneumoniae">
+													<originalText>
+														<reference value="#obs2_1-pathogen"/>
+													</originalText>
+												</code>
+											</specimenPlayingEntity>
+										</specimenRole>
+									</specimen>
+									<!-- Method and Value -->
+									<component typeCode="COMP">
+										<observation classCode="OBS" moodCode="EVN">
+											<templateId root="2.16.840.1.113883.3.3731.1.105.18"/>
+											<templateId root="1.3.6.1.4.1.19376.1.3.1.6"/>
+											<code code="11475-1" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Microorganism identified in Specimen by Culture">
+												<originalText>
+													<reference value="#obs2_1-method"/>
+												</originalText>
+											</code>
+											<statusCode code="completed"/>
+											<value xsi:type="CE" code="260373001" codeSystem="2.16.840.1.113883.6.96" displayName="Detected">
+												<originalText>
+													<reference value="#obs2_1-value"/>
+												</originalText>
+											</value>
+										</observation>
+									</component>
+									<!-- 
+											Antibiogram
+									-->
+									<component typeCode="COMP">
+										<organizer classCode="BATTERY" moodCode="EVN">
+											<templateId root="2.16.840.1.113883.3.3731.1.105.19"/>
+											<templateId root="1.3.6.1.4.1.19376.1.3.1.4"/>
+											<code code="29576-6" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Bacterial susceptibility panel"/>
+											<statusCode code="completed"/>
+											<!-- Susceptibility Observation 1: First medication "Penicillin" is resistant -->
+											<component typeCode="COMP">
+												<observation classCode="OBS" moodCode="EVN">
+													<templateId root="2.16.840.1.113883.3.3731.1.105.20"/>
+													<templateId root="1.3.6.1.4.1.19376.1.3.1.6"/>
+													<code code="70618" codeSystem="2.16.840.1.113883.6.88" codeSystemName="KSA Antimicrobial" displayName="Penicillin">
+														<originalText>
+															<reference value="#obs2_1_ab-1-actsubst"/>
+														</originalText>
+													</code>
+													<statusCode code="completed"/>
+													<interpretationCode code="R" codeSystem="2.16.840.1.113883.5.83" codeSystemName="HL7 ObservationInterpretation" displayName="Resistant">
+														<originalText>
+															<reference value="#obs2_1_ab-1-susceptibility"/>
+														</originalText>
+													</interpretationCode>
+												</observation>
+											</component>
+											<!-- Susceptibility Observation 2: Second medication "Oxacillin" is intermediate -->
+											<component typeCode="COMP">
+												<observation classCode="OBS" moodCode="EVN">
+													<templateId root="2.16.840.1.113883.3.3731.1.105.20"/>
+													<templateId root="1.3.6.1.4.1.19376.1.3.1.6"/>
+													<code code="7773" codeSystem="2.16.840.1.113883.6.88" codeSystemName="KSA Antimicrobial" displayName="Oxacillin">
+														<originalText>
+															<reference value="#obs2_1_ab-2-actsubst"/>
+														</originalText>
+													</code>
+													<statusCode code="completed"/>
+													<value xsi:type="PQ" value="0.75" unit="mg/L"/>
+													<interpretationCode code="I" codeSystem="2.16.840.1.113883.5.83" codeSystemName="HL7:ObservationInterpretation" displayName="Intermediate">
+														<originalText>
+															<reference value="#obs2_1_ab-2-susceptibility"/>
+														</originalText>
+													</interpretationCode>
+												</observation>
+											</component>
+											<!-- Susceptibility Observation 3: Third medication "Erythromycin" is susceptible -->
+											<component typeCode="COMP">
+												<observation classCode="OBS" moodCode="EVN">
+													<templateId root="2.16.840.1.113883.3.3731.1.105.20"/>
+													<templateId root="1.3.6.1.4.1.19376.1.3.1.6"/>
+													<code code="4053" codeSystem="2.16.840.1.113883.6.88" codeSystemName="KSA Antimicrobial" displayName="Erythromycin">
+														<originalText>
+															<reference value="#obs2_1_ab-3-actsubst"/>
+														</originalText>
+													</code>
+													<statusCode code="completed"/>
+													<value xsi:type="PQ" value="0.25" unit="mg/L"/>
+													<interpretationCode code="S" codeSystem="2.16.840.1.113883.5.83" codeSystemName="HL7:ObservationInterpretation" displayName="Susceptible">
+														<originalText>
+															<reference value="#obs2_1_ab-3-susceptibility"/>
+														</originalText>
+													</interpretationCode>
+												</observation>
+											</component>
+										</organizer>
+									</component>
+								</organizer>
+							</entryRelationship>
+						</act>
+					</entry>
+					<!--
+							=================================================
+							=================================================
+		
+							Laboratory Order Specialty section 2: Microbiology
+
+							AS DERIVED FROM THE LABORATORY ORDER
+		
+							=================================================
+							=================================================
+					-->
+					<component>
+						<section>
+							<templateId root="2.16.840.1.113883.3.3731.1.105.14"/>
+							<code code="18725-2" displayName="Microbiology" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+							<title>Microbiology</title>
+							<text>
+								<paragraph styleCode="Bold">Lab Order</paragraph>
+								<br/>
+								Lab order type: Microbiology
+								<br/>
+								<paragraph styleCode="Bold">Specimen Procedure</paragraph>
+								<br/>
+								No specimen
+								<br/>
+								<paragraph styleCode="Bold">Laboratory Test(s) Ordered</paragraph>
+								<br/>
+								<table>
+									<thead>
+										<tr>
+											<th>Test</th>
+											<th>Priority</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td ID="order_test_2_1-code">42365-7, Streptococcus pneumoniae 4 antibody IgG Panel; Serum</td>
+											<td ID="order_test_2_1-prioritycode">Routine</td>
+										</tr>
+									</tbody>
+								</table>
+							</text>
+							<!-- 
+									==================================
+									Laboratory Order Data Processing Entry(s)
+									==================================
+							-->
+							<!-- 
+									Laboratory Order Data Processing Entry: Ordered test 2.1
+							-->
+							<entry typeCode="DRIV">
+								<templateId root="2.16.840.1.113883.3.3731.1.105.3"/>
+								<act classCode="ACT" moodCode="RQO">
+									<!-- code of the "act" is always set to code of the "section" -->
+									<code code="42365-7" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Streptococcus pneumoniae 4 antibody IgG Panel; Serum"/>
+									<priorityCode code="R" displayName="Routine" codeSystem="2.16.840.1.113883.5.7"/>
+								</act>
+							</entry>
+						</section>
+					</component>
+				</section>
+			</component>
+		</structuredBody>
+	</component>
+</ClinicalDocument>

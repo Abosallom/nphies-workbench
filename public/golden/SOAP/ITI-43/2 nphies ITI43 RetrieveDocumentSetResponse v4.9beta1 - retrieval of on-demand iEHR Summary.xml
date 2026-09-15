@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soap:Envelope xmlns="urn:ihe:iti:xds-b:2007" xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:addressing="http://www.w3.org/2005/08/addressing" xmlns:rs="urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0">
+	<soap:Header>
+		<addressing:Action>urn:ihe:iti:2007:RetrieveDocumentSetResponse</addressing:Action>
+		<addressing:RelatesTo>uuid:a54d6aa5-d40d-43f9-88c5-b4633d873bdc</addressing:RelatesTo>
+	</soap:Header>
+	<soap:Body>
+		<RetrieveDocumentSetResponse>
+			<rs:RegistryResponse status="urn:oasis:names:tc:ebxml-regrep:ResponseStatusType:Success"/>
+			<DocumentResponse>
+				<!-- RepositoryUniqueId: the repository from where to get the on-demand iEHR Summary -->
+				<RepositoryUniqueId>2.16.840.1.113883.3.3731.1.2.2.11111111111110.2.4.2</RepositoryUniqueId>
+				<!-- 
+					DocumentUniqueId: the unique id of the on-demand iEHR Summary document (from there the actual "instances" of the iEHR summary are created)
+					In this example: 2.16.840.1.113883.3.3731.1.2.2.11111111111110.2.4.2^bc5ef457-63a4-4b52-8740-cc0b7dfca96e is the unique id of the on-demand iEHR Summary of the patient, from where this instance has been created
+				-->
+				<DocumentUniqueId>2.16.840.1.113883.3.3731.1.2.2.11111111111110.2.4.2^bc5ef457-63a4-4b52-8740-cc0b7dfca96e</DocumentUniqueId>
+				<!-- 
+					NewDocumentUniqueId: the unique id of the created instance of the iEHR Summary (the same as it is persisted)
+					In this example: 2.16.840.1.113883.3.3731.1.2.2.11111111111110^f26a51ee-7e6c-4696-bd4b-24485a285401 is the unique id of the created instance of the on-demand iEHR Summary of the patient
+				-->				
+				<NewDocumentUniqueId>2.16.840.1.113883.3.3731.1.2.2.11111111111110^f26a51ee-7e6c-4696-bd4b-24485a285401</NewDocumentUniqueId>
+				<mimeType>text/xml</mimeType>
+				<Document>
+					<!-- the on-demand created instance of the iEHR Summary -->
+					<xop:Include href="cid:iEHRSummary_f26a51ee-7e6c-4696-bd4b-24485a285401.xml" xmlns:xop="http://www.w3.org/2004/08/xop/include"/>
+				</Document>
+			</DocumentResponse>
+		</RetrieveDocumentSetResponse>
+	</soap:Body>
+</soap:Envelope>

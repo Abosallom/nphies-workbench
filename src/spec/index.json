@@ -275,7 +275,7 @@
     "valuesets/type-of-the-social-history-observation.json",
     "valuesets/vital-signs-observations.json"
   ],
-  "generatedAt": "2026-09-15T20:48:22.758Z",
+  "generatedAt": "2026-09-15T21:04:27.502Z",
   "generator": "scripts/compile-spec.mjs",
   "inputs": [
     {

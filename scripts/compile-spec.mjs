@@ -2156,7 +2156,7 @@ function buildCdaStructures() {
             kind: 'group',
             id: `${structureId}/body`,
             label: 'CDA body (section order)',
-            locator: { kind: 'cdaXPath', path: '/ClinicalDocument/component/structuredBody' },
+            locator: { kind: 'cdaXPath', path: bodyLocatorPath(sectionMembers) },
             repeats: false,
             usage: usageFromCode('M', { min: 1, max: 1 }),
             members: sectionMembers,
@@ -2175,6 +2175,23 @@ function buildCdaStructures() {
     });
   }
   return out;
+}
+
+/**
+ * Which body element a document type actually uses.
+ *
+ * A CDA body is either a `structuredBody` holding sections or a `nonXMLBody` wrapping an
+ * embedded PDF. Hard-coding `structuredBody` made the checker report the official Radiology
+ * Results Embedded PDF sample as missing a body it is not meant to have — a confidently
+ * wrong verdict about a conformant document.
+ */
+function bodyLocatorPath(sectionMembers) {
+  const paths = (sectionMembers || [])
+    .map((m) => m?.locator?.path)
+    .filter((p) => typeof p === 'string' && p.startsWith('/'));
+  const nonXml = '/ClinicalDocument/component/nonXMLBody';
+  if (paths.length && paths.every((p) => p === nonXml || p.startsWith(`${nonXml}/`))) return nonXml;
+  return '/ClinicalDocument/component/structuredBody';
 }
 
 /** Parse an indented shape outline into nested element members. */

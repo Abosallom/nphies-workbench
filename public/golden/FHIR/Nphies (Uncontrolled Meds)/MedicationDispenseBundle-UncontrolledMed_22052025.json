@@ -1,0 +1,472 @@
+{
+    "resourceType": "Bundle",
+    "id": "75e66c37-7d48-405d-b6ec-7264a8f558ff",
+    "meta": {
+        "profile": [
+            "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/medicationdispensed|1.0"
+        ]
+    },
+    "type": "message",
+    "timestamp": "2021-06-02T08:00:00+03:00",
+    "entry": [
+        {
+            "resource": {
+                "resourceType": "MessageHeader",
+                "id": "118fd067-aa2e-43a9-9074-6cf480b6c647",
+                "meta": {
+                    "profile": [
+                        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/messageheader|1.0"
+                    ]
+                },
+                "eventCoding": {
+                    "system": "http://nphies.sa/fhir/ksa/nphies-cs/terminology/CodeSystem/EventCoding",
+                    "code": "submit"
+                },
+                "sender": {
+                    "identifier": [
+                        {
+                            "system": "urn:oid:2.16.840.1.113883.3.3731.1.2.2",
+                            "value": "11000000002333"
+                        }
+                    ]
+                },
+                "author": {
+                    "identifier": [
+                        {
+                            "system": "urn:oid:2.16.840.1.113883.3.3731.1.2.1",
+                            "value": "05RM14422"
+                        }
+                    ]
+                },
+                "focus": {
+                    "identifier": [
+                        {
+                            "system": "urn:oid:2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.100.200.2",
+                            "value": "2_dis1_s1_di1"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "resource": {
+                "resourceType": "Patient",
+                "id": "248156ff-3453-4344-a75a-bbb66c2bba92",
+                "meta": {
+                    "profile": [
+                        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/patient|1.0"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "system": "urn:oid:2.16.840.1.113883.3.3731.1.1.100.1",
+                        "value": "30000999999999"
+                    }
+                ],
+                "name": [
+                    {
+                        "text": "YAHYA SAEED A ALQAHTANI",
+                        "family": "ALQAHTANI",
+                        "given": [
+                            "YAHYA",
+                            "SAEED A"
+                        ]
+                    }
+                ],
+                "gender": "male",
+                "birthDate": "1976-12-30",
+                "address": [
+                    {
+                        "text": "1234 Guardian St, Riyadh 12629, Saudi Arabia",
+                        "line": "1234 Guardian St",
+						"city": "Riyadh",
+						"postalCode": "13337",
+						"country": "Saudi Arabia"
+                    }
+                ],
+                "telecom": [
+                    {
+                        "system": "phone",
+                        "value": "+974.143.2345678"
+                    }
+                ],
+                "maritalStatus": {
+                    "coding": [
+                        {
+                            "system": "urn:oid:2.16.840.1.113883.5.2",
+                            "code": "S",
+                            "display": "Single"
+                        }
+                    ]
+                },
+                "extension" : [
+                    {
+                        "valueCodeableConcept" : {
+                            "coding" : [
+                            {
+                                "system" : "urn:oid:2.16.840.1.113883.3.3731.1.202.10",
+                                "code" : "1",
+                                "display": "Islam"
+                            }
+                            ]
+                        },
+                        "url" : "https://hl7.org/fhir/extensions/StructureDefinition-patient-religion"
+                    },
+                    {
+                      "extension" : [
+                        {
+                          "url" : "code",
+                          "valueCodeableConcept" : {
+                            "coding" : [
+                              {
+                                "system" : "urn:oid:1.0.3166.1",
+                                "code" : "SAU"
+                              }
+                            ]
+                          }
+                        }
+                      ],
+                      "url" : "http://hl7.org/fhir/StructureDefinition/patient-citizenship"
+                    }
+                ]
+            }
+        },
+        {
+            "resource": {
+                "resourceType": "Practitioner",
+                "id": "ef3b8d35-c3e9-407a-a233-2ada6e22bb37",
+                "meta": {
+                    "profile": [
+                        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/practitioner|1.0"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "system": "urn:oid:2.16.840.1.113883.3.3731.1.2.1",
+                        "value": "05RM14422"
+                    }
+                ],
+                "name": {
+                    "given": "Aditya",
+                    "family": "Khan"
+                },
+                "address": [
+                    {
+                        "text": "3920 Mathar Alshibani St, Riyadh 12629, Saudi Arabia",
+                        "line": "3920 Mathar Alshibani St",
+						"city": "Riyadh",
+						"postalCode": "12629",
+						"country": "Saudi Arabia"
+                    }
+                ],
+                "telecom": [
+                    {
+                        "system": "phone",
+                        "value": "+974.143.47444"
+                    },
+                    {
+                        "system": "email",
+                        "value": "office@intmedcentre.sa"
+                    }
+                ]
+            }
+        },
+        {
+            "resource": {
+                "resourceType": "PractitionerRole",
+                "id": "e1fbbf0b-f039-4524-b3d8-35cc681a1ccb",
+                "meta": {
+                    "profile": [
+                        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/practitionerrole|1.0"
+                    ]
+                },
+                "practitioner": {
+                    "reference": "Practitioner/ef3b8d35-c3e9-407a-a233-2ada6e22bb37",
+                    "identifier": [
+                        {
+                            "system": "urn:oid:2.16.840.1.113883.3.3731.1.2.1",
+                            "value": "05RM14422"
+                        }
+                    ]
+                },
+                "organization": {
+                    "reference": "Organization/2617a95d-8471-460e-8562-16b0d05e7b43",
+                    "identifier": [
+                        {
+                            "system": "urn:oid:2.16.840.1.113883.3.3731.1.2.2",
+                            "value": "11000000002333"
+                        }
+                    ]
+                },
+               "code": {
+                    "coding": [
+                        {
+                            "system": "urn:oid:2.16.840.1.113883.3.3731.1.202.1",
+                            "code": "100000005",
+                            "display": "Pharmacists and Pharmacy Technicians"
+                        }
+                    ]
+                },
+                "specialty": {
+                    "coding": [
+                        {
+                            "system": "urn:oid:2.16.840.1.113883.3.3731.1.202.5",
+                            "code": "FB9D7C6B-62F9-E811-B80F-005056AD2FD8",
+                            "display": "Pharmacy"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "resource": {
+                "resourceType": "Organization",
+                "id": "2617a95d-8471-460e-8562-16b0d05e7b43",
+                "meta": {
+                    "profile": [
+                        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/organization|1.0"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "system": "urn:oid:2.16.840.1.113883.3.3731.1.2.2",
+                        "value": "11000000002333"
+                    }
+                ],
+                "name": "International University Hospital"
+            }
+        },
+        {
+            "resource": {
+                "resourceType": "Encounter",
+                "id": "4fd3fd0f-42e7-4278-8a4f-293ace8ce7dd",
+                "meta": {
+                    "profile": [
+                        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/encounter|1.0"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "system": "urn:oid:2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.300.1",
+                        "value": "12345678"
+                    }
+                ],
+                "class": {
+                    "coding": [
+                        {
+                            "system": "urn:oid:2.16.840.1.113883.18.5",
+                            "code": "E",
+                            "display": "Emergency"
+                        }
+                    ]
+                },
+                "period": {
+                    "start": "2021-06-01T12:30:00+03:00"
+                },
+                "serviceProvider": {
+                    "display": "International University Hospital"
+                }
+            }
+        },
+        {
+            "resource": {
+                "resourceType": "MedicationDispense",
+                "id": "01bf0006-e2ff-7f7a-e063-0100007feb0b",
+                "meta": {
+                    "profile": [
+                        "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/medicationdispense|1.0"
+                    ]
+                },
+                "contained": [
+                    {
+                        "resourceType": "Medication",
+                        "id": "medicationdispensed",
+                        "meta": {
+                            "profile": [
+                                "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/medicationdispensed|1.0"
+                            ]
+                        },
+                        "code": {
+                            "coding": [
+                                {
+                                    "system": "urn:oid:2.16.840.1.113883.3.3731.1.205.2",
+                                    "code": "800402-0130-5406-01-06",
+                                    "display": "cromoglicic acid and tetryzoline 40 and 0.5 mg/ml solution/ drops, bottle/dropper"
+                                }
+                            ],
+                            "text": "cromoglicic acid and tetryzoline 40 and 0.5 mg/ml solution/ drops, bottle/dropper"
+                        },
+                        "form": {
+                            "coding": [
+                                {
+                                    "system": "urn:oid:2.16.840.1.113883.3.3731.1.205.8",
+                                    "code": "5406",
+                                    "display": "solution/ drops"
+                                }
+                            ]
+                        },
+                        "batch": {
+                            "lotNumber": "ABDCDff111233",
+                            "expirationDate": "2023-07-27"
+                        },
+                        "extension": [
+                            {
+                                "url": "http://nphies.sa/fhir/ksa/nphies-cs/Extension/medicationdefinition",
+                                "definition": {
+                                    "reference": "#medicationknowledge1"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "resourceType": "MedicationKnowledge",
+                        "id": "medicationknowledge1",
+                        "meta": {
+                            "profile": [
+                                "http://nphies.sa/fhir/ksa/nphies-cs/StructureDefinition/medicationknowledge|1.0"
+                            ]
+                        },
+                        "packaging": {
+                            "type": {
+                                "coding": [
+                                    {
+                                        "system": "urn:oid:2.16.840.1.113883.3.3731.1.205.9",
+                                        "code": "6",
+                                        "display": "bottle/dropper"
+                                    }
+                                ]
+                            },
+                            "quantity": {
+                                "value": "200",
+                                "unit": "mL"
+                            }
+                        }
+                    }
+                ],
+                "identifier": [
+                    {
+                        "system": "urn:oid:2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.100.200.2",
+                        "value": "2_dis1_s1_di1"
+                    }
+                ],
+                "status": "completed",
+                "whenHandedOver": "2021-06-02T13:02:00+03:00",
+                "authorizingPrescription": {
+                    "identifier": [
+                        {
+                            "system": "urn:oid:2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.100.100.2",
+                            "value": "1_pre_s1_pi1"
+                        }
+                    ]
+                },
+                "type": {
+                    "coding": [
+                        {
+                            "system": "urn:oid:2.16.840.1.113883.5.4",
+                            "code": "FF",
+                            "display": "First Fill"
+                        }
+                    ]
+                },
+                "text": {
+                    "status": "generated",
+                    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Placeholder for the narrative expression in XHTML format</div>"
+                },
+                "subject": {
+                    "reference": "Patient/248156ff-3453-4344-a75a-bbb66c2bba92",
+                    "identifier": [
+                        {
+                            "system": "urn:oid:2.16.840.1.113883.3.3731.1.1.100.1",
+                            "value": "30000999999999"
+                        }
+                    ]
+                },
+                "performer": {
+                    "actor": {
+                        "reference": "PractitionerRole/e1fbbf0b-f039-4524-b3d8-35cc681a1ccb"
+                    }
+                },
+                "context": {
+                    "reference": "Encounter/4fd3fd0f-42e7-4278-8a4f-293ace8ce7dd",
+                    "identifier": [
+                        {
+                            "system": "urn:oid:2.16.840.1.113883.3.3731.1.2.2.100.1.1.11000000002333.300.1",
+                            "value": "12345678"
+                        }
+                    ]
+                },
+                "medicationReference": {
+                    "reference": "#medicationdispensed"
+                },
+                "quantity": {
+                    "value": 1,
+	                "unit": "{bottle_dropper}"
+                },
+                "dosageInstruction": [
+                    {
+                        "text": "Narrative dosage instructions: 3 times per day for 3 months, intraocular route, both eyes, an hour before food (or on an empty stomach), as needed",
+                        "patientInstruction": "apply carefully, drops should not be cold",
+                        "timing": {
+                            "repeat": {
+                                "boundsPeriod": {
+                                    "start": "2021-06-02",
+                                    "end": "2021-09-02"
+                                }
+                            }
+                        },
+                        "route": {
+                            "coding": [
+                                {
+                                    "system": "urn:oid:2.16.840.1.113883.6.96",
+                                    "code": "372468001",
+                                    "display": "intraocular route"
+                                }
+                            ]
+                        },
+                        "site": {
+                            "coding": [
+                                {
+                                    "system": "urn:oid:2.16.840.1.113883.6.96",
+                                    "code": "362508001",
+                                    "display": "both eyes"
+                                }
+                            ]
+                        },
+                        "additionalInstruction": {
+                            "coding": [
+                                {
+                                    "system": "urn:oid:2.16.840.1.113883.6.96",
+                                    "code": "311502001",
+                                    "display": "an hour before food (or on an empty stomach)"
+                                }
+                            ]
+                        },
+                        "asNeededBoolean": "true"
+                    }
+                ],
+                "daysSupply": {
+                    "value": 30,
+                    "unit": "day(s)",
+                    "code": "d"
+                },                
+                "extension": [
+                    {
+                        "url": "https://hl7.org/fhir/extensions/StructureDefinition-medicationdispense-refillsRemaining",
+                        "valueInteger": "2"
+                    }
+                ],
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "urn:oid:2.16.840.1.113883.4.642.3.1322",
+                                "code": "outpatient",
+                                "display": "Outpatient"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ]
+}
