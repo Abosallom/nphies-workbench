@@ -115,7 +115,9 @@ export function DecoderView({ baseUrl }: DecoderViewProps) {
           </div>
         </div>
 
-        <aside className="flex w-[24rem] shrink-0 flex-col">
+        {/* No density prop reaches this view; the presentation width is keyed off the
+            <html data-density> attribute in CSS, the same way the tokens are. */}
+        <aside className="flex w-[24rem] shrink-0 flex-col [[data-density=roomy]_&]:w-[28rem]">
           <div className="shrink-0 border-b border-line p-2">
             <input
               value={browse}
@@ -151,7 +153,7 @@ function EntryCard({
   baseUrl?: string;
 }) {
   return (
-    <article className="rounded-sm border border-line bg-surface p-2.5 text-xs">
+    <article className="rounded-sm border border-line bg-surface p-2.5 text-xs [[data-density=roomy]_&]:p-3 [[data-density=roomy]_&]:leading-relaxed">
       <header className="mb-1.5 flex flex-wrap items-center gap-1.5">
         <Badge tone={match.kind === "keywords" ? "warn" : "accent"} mono>
           {Math.round(match.score * 100)}%
@@ -162,8 +164,13 @@ function EntryCard({
       </header>
 
       <Tooltip wide content={MATCH_LABEL[match.kind]}>
-        <p className="mb-1.5 cursor-help text-2xs text-ink-3">
-          matched on {MATCH_LABEL[match.kind]}: <code className="font-mono">{match.evidence}</code>
+        {/* Evidence can be a whole rejection line; it wraps and breaks inside long tokens so
+            the card never scrolls sideways, and the line loosens at presentation scale. */}
+        <p className="mb-1.5 cursor-help text-2xs text-ink-3 [[data-density=roomy]_&]:mb-2 [[data-density=roomy]_&]:leading-relaxed">
+          matched on {MATCH_LABEL[match.kind]}:{" "}
+          <code className="break-words rounded-xs bg-inset px-1 font-mono text-ink-2 [[data-density=roomy]_&]:px-1.5">
+            {match.evidence}
+          </code>
         </p>
       </Tooltip>
 

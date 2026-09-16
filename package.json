@@ -11,7 +11,8 @@
     "samples": "node scripts/copy-samples.mjs",
     "compile": "node scripts/compile-spec.mjs",
     "gate": "node scripts/gate-golden.mjs",
-    "test": "node --test \"tests/**/*.test.mjs\""
+    "test": "node --test \"tests/**/*.test.mjs\"",
+    "eval:ai": "node scripts/eval-ai.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.126.0",

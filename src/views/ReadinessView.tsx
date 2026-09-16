@@ -82,13 +82,15 @@ export function ReadinessView({ registry, results, onOpen }: ReadinessViewProps)
       <div className="min-h-0 flex-1 overflow-auto">
         <table className="w-full border-collapse text-xs">
           <thead className="sticky top-0 bg-surface text-2xs uppercase tracking-wide text-ink-3">
-            <tr className="border-b border-line">
+            {/* The rule is a box-shadow on the cells, not a border on the row: under
+                border-collapse a sticky header leaves its border behind when it scrolls. */}
+            <tr className="[&>th]:shadow-[inset_0_-1px_0_var(--nw-line)]">
               <th className="px-3 py-1.5 text-left font-semibold">Use case</th>
               <th className="px-2 py-1.5 text-left font-semibold">Spec</th>
-              <th className="px-2 py-1.5 text-left font-semibold">Official sample</th>
+              <th className="px-2 py-1.5 text-left font-semibold whitespace-nowrap">Official sample</th>
               <th className="px-2 py-1.5 text-left font-semibold">Variants</th>
-              <th className="px-2 py-1.5 text-left font-semibold">Your message</th>
-              <th className="px-2 py-1.5 text-left font-semibold">Required covered</th>
+              <th className="px-2 py-1.5 text-left font-semibold whitespace-nowrap">Your message</th>
+              <th className="px-2 py-1.5 text-left font-semibold whitespace-nowrap">Required covered</th>
             </tr>
           </thead>
           <tbody>
@@ -128,10 +130,13 @@ function Row({
   return (
     <tr className="cursor-pointer border-b border-line/60 align-middle hover:bg-inset" onClick={onOpen}>
       <td className="px-3 py-1.5">
+        {/* The label wraps rather than truncating: in an auto-width table `truncate` never
+            fires, it only forces nowrap and pushes the table into a horizontal scroll once
+            the presentation scale makes the labels wider than the pane. */}
         <div className="flex items-center gap-1.5">
           <UseCaseStatusDot status={ui.status} />
-          <code className="font-mono text-ink">{ui.code}</code>
-          <span className="truncate text-ink-2">{ui.label}</span>
+          <code className="shrink-0 whitespace-nowrap font-mono text-ink">{ui.code}</code>
+          <span className="min-w-0 text-ink-2">{ui.label}</span>
         </div>
       </td>
       <td className="px-2 py-1.5">
@@ -155,7 +160,7 @@ function Row({
       <td className="px-2 py-1.5 font-mono text-2xs text-ink-3">{summary.structureIds.length}</td>
       <td className="px-2 py-1.5">
         {result ? (
-          <span className="flex items-center gap-2">
+          <span className="flex flex-wrap items-center gap-2">
             <SeverityCount severity="error" count={result.errors} />
             <SeverityCount severity="warn" count={result.warns} />
             {result.errors === 0 ? (
@@ -165,7 +170,7 @@ function Row({
             )}
           </span>
         ) : (
-          <span className="flex items-center gap-1.5 text-ink-3">
+          <span className="flex items-center gap-1.5 whitespace-nowrap text-ink-3">
             <StatusDot severity="info" hollow label="Not checked" />
             not checked
           </span>

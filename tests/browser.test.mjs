@@ -82,6 +82,27 @@ test("the built app loads the compiled spec and works end to end", { skip }, asy
       "the compiled spec bundle did not load in the browser",
     );
 
+    /* --- first run: the Welcome sits in front of the work area --------- */
+    // A fresh profile is a first run, so the onboarding surface is what a new user sees.
+    // Go through it the way they would: the "Check an official sample" action selects ADT and
+    // opens Check. This exercises the onboarding flow rather than bypassing it via storage.
+    await waitFor(
+      evaluate,
+      `[...document.querySelectorAll("button")].some((b) => /Check an official sample/i.test(b.textContent))`,
+      "the first-run welcome",
+      30000,
+    );
+    await evaluate(
+      `[...document.querySelectorAll("button")].find((b) => /Check an official sample/i.test(b.textContent)).click()`,
+    );
+    const welcomed = await waitFor(
+      evaluate,
+      `localStorage.getItem("isit.welcomed") === "1" && ![...document.querySelectorAll("button")].some((b) => /Check an official sample/i.test(b.textContent))`,
+      "the welcome to dismiss and persist",
+      10000,
+    );
+    assert.ok(welcomed, "dismissing the welcome did not persist");
+
     /* --- Check: load an official sample and run it --------------------- */
     await waitFor(
       evaluate,

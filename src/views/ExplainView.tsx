@@ -5,10 +5,13 @@ import {
   EmptyState,
   SourceNote,
   StructureTree,
+  TREE_ROW_HEIGHT,
   Toolbar,
   ToolbarTitle,
   Tooltip,
   UsageBadge,
+  cx,
+  type DensityChoice,
   type StructureNode,
   type Usage,
 } from "../ui";
@@ -24,12 +27,21 @@ import { adaptStructure, type SpecDetail } from "../lib/adapt";
  * claim is traceable, and a rule with no quote behind it says so.
  * ========================================================================== */
 
+/**
+ * Tree row height in presentation mode. The row height is a JavaScript constant feeding
+ * useVirtualRows, so the CSS density block cannot reach it: leaving it at 22 while the type
+ * scale grew made the rule tree's rows overlap on a projector.
+ */
+const ROOMY_TREE_ROW_HEIGHT = 30;
+
 export interface ExplainViewProps {
   structure: MessageStructure | null;
   structures: MessageStructure[];
   resolved: ResolvedUseCase | null;
   onStructureChange: (structureId: string) => void;
   baseUrl?: string;
+  /** Owned by Shell; only the virtualised row height needs it as a JS value. */
+  density: DensityChoice;
 }
 
 export function ExplainView({
@@ -38,7 +50,9 @@ export function ExplainView({
   resolved,
   onStructureChange,
   baseUrl,
+  density,
 }: ExplainViewProps) {
+  const roomy = density === "roomy";
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [hideIgnored, setHideIgnored] = useState(false);
 
@@ -117,10 +131,16 @@ export function ExplainView({
             onSelect={(n) => setSelectedId(n.id)}
             defaultExpandedDepth={1}
             hideIgnored={hideIgnored}
+            rowHeight={roomy ? ROOMY_TREE_ROW_HEIGHT : TREE_ROW_HEIGHT}
           />
         </div>
-        <aside className="flex w-[26rem] shrink-0 flex-col overflow-auto">
-          <DetailPanel structure={structure} detail={detail} baseUrl={baseUrl} />
+        <aside
+          className={cx(
+            "flex shrink-0 flex-col overflow-auto",
+            roomy ? "w-[32rem]" : "w-[26rem]",
+          )}
+        >
+          <DetailPanel structure={structure} detail={detail} baseUrl={baseUrl} roomy={roomy} />
         </aside>
       </div>
     </div>
@@ -133,15 +153,17 @@ function DetailPanel({
   structure,
   detail,
   baseUrl,
+  roomy,
 }: {
   structure: MessageStructure;
   detail: SpecDetail | null;
   baseUrl?: string;
+  roomy: boolean;
 }) {
-  if (!detail) return <EnvelopePanel structure={structure} />;
+  if (!detail) return <EnvelopePanel structure={structure} roomy={roomy} />;
 
   return (
-    <div className="space-y-3 p-3 text-xs">
+    <div className={cx("p-3 text-xs", roomy ? "space-y-4 leading-relaxed" : "space-y-3")}>
       <header>
         <div className="font-mono text-sm text-ink">{detail.locator ?? detail.label}</div>
         {detail.locator && detail.label !== detail.locator ? (
@@ -150,7 +172,7 @@ function DetailPanel({
         <div className="mt-1 break-all font-mono text-2xs text-ink-3">{detail.path}</div>
       </header>
 
-      <Section title="Usage">
+      <Section title="Usage" roomy={roomy}>
         {detail.usage.length ? (
           <div className="flex flex-wrap gap-1">
             {detail.usage.map((r, i) => (
@@ -172,13 +194,13 @@ function DetailPanel({
       </Section>
 
       {detail.datatype ? (
-        <Section title="Datatype">
+        <Section title="Datatype" roomy={roomy}>
           <code className="font-mono text-ink">{detail.datatype}</code>
         </Section>
       ) : null}
 
       {detail.fixedValues.length ? (
-        <Section title="Fixed values">
+        <Section title="Fixed values" roomy={roomy}>
           <ul className="space-y-1">
             {detail.fixedValues.map((f, i) => (
               <li key={i} className="break-all">
@@ -194,7 +216,7 @@ function DetailPanel({
       ) : null}
 
       {detail.templateIds.length ? (
-        <Section title="templateId">
+        <Section title="templateId" roomy={roomy}>
           <ul className="space-y-0.5 font-mono text-2xs text-ink">
             {detail.templateIds.map((t) => (
               <li key={t} className="break-all">
@@ -206,7 +228,7 @@ function DetailPanel({
       ) : null}
 
       {detail.valueSets.length ? (
-        <Section title="Value sets">
+        <Section title="Value sets" roomy={roomy}>
           <ul className="space-y-1">
             {detail.valueSets.map((v, i) => (
               <li key={i}>
@@ -232,29 +254,33 @@ function DetailPanel({
       ) : null}
 
       {detail.codeSet ? (
-        <Section title="Code set column">
+        <Section title="Code set column" roomy={roomy}>
           <p className="whitespace-pre-wrap text-ink-2">{detail.codeSet}</p>
         </Section>
       ) : null}
 
       {detail.guidance ? (
-        <Section title="Guidance">
+        <Section title="Guidance" roomy={roomy}>
           <p className="whitespace-pre-wrap text-ink-2">{detail.guidance}</p>
         </Section>
       ) : null}
 
-      <Section title="Where this comes from">
+      <Section title="Where this comes from" roomy={roomy}>
         {detail.provenance?.pageId && detail.provenance.quote ? (
-          <SourceNote
-            source={{
-              pageId: detail.provenance.pageId,
-              pageTitle: detail.provenance.pageTitle ?? "",
-              quote: detail.provenance.quote,
-              ...(detail.provenance.row ? { row: detail.provenance.row } : {}),
-            }}
-            baseUrl={baseUrl}
-            defaultOpen
-          />
+          // SourceNote pins its blockquote at leading-4, which the mono scale outgrows in
+          // presentation mode; it is a shared primitive, so the quote is loosened from here.
+          <div className={roomy ? "[&_blockquote]:leading-5" : undefined}>
+            <SourceNote
+              source={{
+                pageId: detail.provenance.pageId,
+                pageTitle: detail.provenance.pageTitle ?? "",
+                quote: detail.provenance.quote,
+                ...(detail.provenance.row ? { row: detail.provenance.row } : {}),
+              }}
+              baseUrl={baseUrl}
+              defaultOpen
+            />
+          </div>
         ) : detail.provenance?.sample ? (
           <p className="text-ink-2">
             This rule is not in the published specification. It was recovered from the official
@@ -289,10 +315,10 @@ function DetailPanel({
   );
 }
 
-function EnvelopePanel({ structure }: { structure: MessageStructure }) {
+function EnvelopePanel({ structure, roomy }: { structure: MessageStructure; roomy: boolean }) {
   const env = structure.envelope;
   return (
-    <div className="space-y-3 p-3 text-xs">
+    <div className={cx("p-3 text-xs", roomy ? "space-y-4 leading-relaxed" : "space-y-3")}>
       <header>
         <div className="text-sm font-semibold text-ink">{structure.title}</div>
         <div className="font-mono text-2xs text-ink-3">{structure.id}</div>
@@ -303,7 +329,7 @@ function EnvelopePanel({ structure }: { structure: MessageStructure }) {
       </p>
 
       {env ? (
-        <Section title="Envelope">
+        <Section title="Envelope" roomy={roomy}>
           <dl className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-0.5">
             {Object.entries(env)
               .filter(([, v]) => v !== null && v !== undefined && typeof v !== "object")
@@ -318,7 +344,7 @@ function EnvelopePanel({ structure }: { structure: MessageStructure }) {
       ) : null}
 
       {structure.notes.length ? (
-        <Section title="Caveats the compiler recorded">
+        <Section title="Caveats the compiler recorded" roomy={roomy}>
           <ul className="list-disc space-y-1 pl-4 text-ink-2">
             {structure.notes.map((n, i) => (
               <li key={i}>{n}</li>
@@ -328,7 +354,7 @@ function EnvelopePanel({ structure }: { structure: MessageStructure }) {
       ) : null}
 
       {structure.variantAxis ? (
-        <Section title={structure.variantAxis.label}>
+        <Section title={structure.variantAxis.label} roomy={roomy}>
           <p className="text-ink-2">{structure.variantAxis.note ?? ""}</p>
           <div className="mt-1 flex flex-wrap gap-1">
             {structure.variantAxis.values.map((v) => (
@@ -343,10 +369,25 @@ function EnvelopePanel({ structure }: { structure: MessageStructure }) {
   );
 }
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+function Section({
+  title,
+  roomy,
+  children,
+}: {
+  title: string;
+  roomy: boolean;
+  children: React.ReactNode;
+}) {
   return (
     <section>
-      <h3 className="mb-1 text-2xs font-semibold uppercase tracking-wider text-ink-3">{title}</h3>
+      <h3
+        className={cx(
+          "text-2xs font-semibold uppercase tracking-wider text-ink-3",
+          roomy ? "mb-1.5" : "mb-1",
+        )}
+      >
+        {title}
+      </h3>
       {children}
     </section>
   );

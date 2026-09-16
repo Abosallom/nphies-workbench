@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Badge,
   Button,
+  DensityToggle,
   EmptyState,
   KeyDialog,
   Tabs,
@@ -10,6 +11,7 @@ import {
   UseCaseRail,
   maskKey,
   useApiKey,
+  useDensity,
   useTheme,
   type TabItem,
   type UseCase,
@@ -22,6 +24,7 @@ import { CoverageView } from "./CoverageView";
 import { DecoderView } from "./DecoderView";
 import { ExplainView } from "./ExplainView";
 import { ReadinessView, type SessionResult } from "./ReadinessView";
+import { Welcome, useWelcome } from "./Welcome";
 import { CONFLUENCE_BASE } from "./constants";
 import { useGolden, useRegistry, useResolved } from "./useSpec";
 
@@ -37,6 +40,13 @@ type ActiveTab = "build" | "check" | "explain" | "readiness" | "decoder" | "cove
 
 const GLOBAL_TABS = new Set<ActiveTab>(["readiness", "decoder", "coverage"]);
 
+/**
+ * Where "Check an official sample" lands. ADT is the message every hospital sends first and
+ * the use case with official samples for every variant, so a first check there is the least
+ * likely to end in "no sample for this shape".
+ */
+const SAMPLE_USE_CASE_ID = "adt";
+
 interface UseCaseState {
   structureId: string | null;
   text: string;
@@ -51,7 +61,12 @@ export function Shell() {
   const [keyOpen, setKeyOpen] = useState(false);
 
   const { theme, setTheme } = useTheme();
+  /* The one useDensity instance: it stamps <html data-density>, which the CSS scale reads,
+   * and its value goes down as a prop only to the views whose virtualised row heights are
+   * JavaScript constants — those are the sole places a token cannot reach. */
+  const { density, setDensity } = useDensity();
   const { key, setKey } = useApiKey();
+  const welcome = useWelcome();
   const railRef = useRef<UseCaseRailHandle>(null);
 
   const useCases: UseCase[] = useMemo(
@@ -78,10 +93,49 @@ export function Shell() {
     [],
   );
 
-  const onSelectUseCase = useCallback((uc: UseCase) => {
-    setSelectedId(uc.id);
-    setTab((t) => (GLOBAL_TABS.has(t) ? "check" : t));
-  }, []);
+  const { dismiss: dismissWelcome, open: welcomeOpen } = welcome;
+
+  const onSelectUseCase = useCallback(
+    (uc: UseCase) => {
+      setSelectedId(uc.id);
+      setTab((t) => (GLOBAL_TABS.has(t) ? "check" : t));
+      // Picking a use case is already the choice the welcome asks for.
+      if (welcomeOpen) dismissWelcome();
+    },
+    [welcomeOpen, dismissWelcome],
+  );
+
+  /**
+   * Check's "this looks like a different use case" action. The paste is carried across so
+   * the person is never asked to find it again; the target's own variant choice survives
+   * unless Check named one. It only ever fires from an explicit click — the shell never
+   * re-homes a message on its own, because a wrong guess here would silently judge the
+   * message against the wrong rules.
+   */
+  const onSwitchUseCase = useCallback(
+    (useCaseId: string, structureId: string | null) => {
+      setStates((prev) => {
+        const text = selectedId ? (prev[selectedId]?.text ?? "") : "";
+        const current = prev[useCaseId] ?? { structureId: null, text: "" };
+        return { ...prev, [useCaseId]: { structureId: structureId ?? current.structureId, text } };
+      });
+      setSelectedId(useCaseId);
+      setTab("check");
+    },
+    [selectedId],
+  );
+
+  const onWelcomeSample = useCallback(() => {
+    const target = useCases.find((u) => u.id === SAMPLE_USE_CASE_ID) ?? useCases[0];
+    if (target) setSelectedId(target.id);
+    setTab("check");
+    dismissWelcome();
+  }, [useCases, dismissWelcome]);
+
+  const onWelcomeStart = useCallback(() => {
+    setTab("check");
+    dismissWelcome();
+  }, [dismissWelcome]);
 
   const onStructureChange = useCallback(
     (structureId: string) => {
@@ -183,6 +237,12 @@ export function Shell() {
           >
             <Button onClick={() => setKeyOpen(true)}>{key ? "API key set" : "Set API key"}</Button>
           </Tooltip>
+          <Tooltip content="About ISIT — what it is for and what it promises.">
+            <Button aria-label="About ISIT" onClick={welcome.reopen} className="font-mono">
+              ?
+            </Button>
+          </Tooltip>
+          <DensityToggle density={density} onChange={setDensity} />
           <ThemeToggle theme={theme} onChange={setTheme} />
         </div>
       </header>
@@ -208,17 +268,29 @@ export function Shell() {
               aria-label="Workflow"
               items={tabs}
               activeId={tab}
-              onChange={(id) => setTab(id as ActiveTab)}
+              onChange={(id) => {
+                setTab(id as ActiveTab);
+                // Choosing a tab is choosing to work; the welcome has done its job.
+                if (welcomeOpen) dismissWelcome();
+              }}
               className="ml-auto"
             />
           </div>
 
           <div className="min-h-0 flex-1">
             {registry.error ? (
+              /* A broken bundle outranks the welcome: nothing may stand in front of that. */
               <EmptyState
                 fill
                 title="The compiled spec bundle could not be loaded"
                 description={registry.error}
+              />
+            ) : welcomeOpen ? (
+              <Welcome
+                firstRun={!welcome.welcomed}
+                onCheckSample={onWelcomeSample}
+                onStart={onWelcomeStart}
+                onDismiss={dismissWelcome}
               />
             ) : tab === "readiness" ? (
               <ReadinessView
@@ -232,7 +304,7 @@ export function Shell() {
             ) : tab === "decoder" ? (
               <DecoderView baseUrl={CONFLUENCE_BASE} />
             ) : tab === "coverage" ? (
-              <CoverageView registry={registry.data} baseUrl={CONFLUENCE_BASE} />
+              <CoverageView registry={registry.data} baseUrl={CONFLUENCE_BASE} density={density} />
             ) : tab === "build" ? (
               <BuildView
                 structure={structure}
@@ -242,6 +314,7 @@ export function Shell() {
                 onStructureChange={onStructureChange}
                 onOpenSample={openSample}
                 baseUrl={CONFLUENCE_BASE}
+                density={density}
               />
             ) : tab === "explain" ? (
               <ExplainView
@@ -250,6 +323,7 @@ export function Shell() {
                 resolved={resolved.data?.resolved ?? null}
                 onStructureChange={onStructureChange}
                 baseUrl={CONFLUENCE_BASE}
+                density={density}
               />
             ) : (
               <CheckView
@@ -261,10 +335,12 @@ export function Shell() {
                 text={state.text}
                 onTextChange={onTextChange}
                 onStructureChange={onStructureChange}
+                onSwitchUseCase={onSwitchUseCase}
                 structureIdForSample={(sample) => structureForSample(structures, sample)?.id ?? null}
                 onResult={(r) => selectedId && recordResult(selectedId, r)}
                 baseUrl={CONFLUENCE_BASE}
                 useCaseCode={entry?.ui.code}
+                density={density}
               />
             )}
           </div>

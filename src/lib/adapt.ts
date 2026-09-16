@@ -532,7 +532,10 @@ export function adaptStructure(
   let total = 0;
 
   const specChild = (node: SpecNode, parentPath: string, depth: number): StructureNode | null => {
-    if (node.role === "omit") return null;
+    // `role: "omit"` means "omit from a HIS INPUT template" — it is the compiler's name for the
+    // 538 HL7 rows NPHIES ignores. It does not mean "hide". Dropping them here silently erased the
+    // product's headline: Explain never showed an ignored field and Build's "Do not build" bucket
+    // was always empty, when telling a hospital what NOT to build is the biggest saving on offer.
     const label = node.locator ? formatLocator(node.locator) : node.label;
     const path = `${parentPath}/${label}`;
     const id = `spec:${node.id}`;

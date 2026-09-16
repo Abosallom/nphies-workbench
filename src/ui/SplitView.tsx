@@ -85,6 +85,12 @@ export interface SplitViewProps {
   baseUrl?: string;
 
   lineHeight?: number;
+  /**
+   * Row height of the structure tree. Both panes are virtualised, so these are JavaScript
+   * constants, not CSS: a host that rescales its type (presentation mode) must pass bigger
+   * numbers here too, or the taller text overlaps the rows the window positioned for it.
+   */
+  treeRowHeight?: number;
   overscan?: number;
   /** Start with `ignored` nodes/findings hidden. */
   hideIgnoredByDefault?: boolean;
@@ -162,6 +168,7 @@ export function SplitView({
   structureTitle = "Structure",
   baseUrl,
   lineHeight = CODE_LINE_HEIGHT,
+  treeRowHeight,
   overscan = 14,
   hideIgnoredByDefault = false,
   renderFindingFooter,
@@ -267,9 +274,12 @@ export function SplitView({
     return m;
   }, [flatRegions, findings, regionById]);
 
+  // The digit advance follows the line height rather than being a fixed 8px: the gutter text
+  // scales with the type tokens, and at the presentation scale a four-digit line number
+  // clipped against the gutter rule when the width did not scale with it.
   const gutterWidth = useMemo(
-    () => Math.max(3, String(lines.length).length) * 8 + 26,
-    [lines.length],
+    () => Math.max(3, String(lines.length).length) * Math.round(lineHeight * 0.4) + 26,
+    [lines.length, lineHeight],
   );
 
   const code = useVirtualRows({
@@ -524,6 +534,7 @@ export function SplitView({
             aria-label="Message structure"
             nodes={tree}
             hideIgnored={hideIgnored}
+            rowHeight={treeRowHeight}
             selectedId={selection?.nodeId ?? null}
             onSelect={(n) => selectNode(n, "tree")}
           />
