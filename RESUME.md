@@ -1,97 +1,97 @@
 # Resume notes
 
-The app is complete and running. `npx tsc --noEmit -p tsconfig.app.json` is clean,
-`npm run build` succeeds, and `npm test` passes 15 tests — including one that drives the built
-bundle in a real browser.
+The app is complete, redesigned, and deployed from `main`. `npx tsc --noEmit -p tsconfig.app.json`
+is clean, `npm run build` succeeds, and `npm test` passes 93 tests — including one that drives
+the built bundle through a real Chrome, from first-run onboarding to every surface.
 
 ## Run it
 
 ```bash
 npm run dev      # the whole workbench, against the compiled spec
-npm test         # golden round-trip · structural mutation · view mount
+npm test         # golden round-trip · mutation · detector · boundary · skeleton · views · browser
+npm run eval:ai  # opt-in, needs ANTHROPIC_API_KEY, never part of npm test
 ```
 
-## What W2/W3 added on top of the earlier engine work
+## What this round added
 
-- `src/lib/workbench.ts` — use-case registry from the compiled manifest, encoding detection,
-  parse/emit/check pipeline, golden-sample index, sample→variant resolution.
-- `src/lib/adapt.ts` — engine shapes → the presentational shapes `src/ui` takes, plus the
-  spec-only rule tree the Explain surface walks.
-- `src/lib/profile.ts` — the required surface per message, exportable as Markdown/JSON/CSV.
-- `src/lib/errors.ts` — the error catalogue plus a decoder that matches a pasted rejection by
-  signature, code, or keyword overlap, and labels which of the three it used.
-- `src/lib/highlight.ts`, `src/lib/ai.ts` (lazy-loaded SDK, BYO key).
-- `src/views/` — Build · Check · Explain · Readiness · Error Decoder · Coverage, wired into
-  `Shell.tsx`; the fixture is gone.
-- `tests/` — the suites described in the README, run by `npm test`.
+**Two layouts.** The dense instrument is unchanged. Presentation mode (header toggle, persisted as
+`isit.density`) rescales the app through tokens alone — `--spacing`, the `--text-*` scale,
+`--radius-*`, a warmer paper in light — plus one JS value: the virtualised row heights (20/22 →
+26/30), because those are constants feeding `useVirtualRows` and a bigger type scale without
+bigger rows overlaps.
 
-## Defects this work found and fixed in the engine
+**Charts, hand-written SVG, no dependency** (`src/ui/charts/`): `ProportionBar`, `Donut`,
+`MiniBars`, `AnatomyMap`. Severity always ships with its glyph; identity uses four categorical
+hues (`--nw-cat-1..4`) computed and validated against both surfaces. Anatomy above every check;
+obligations on Build; provenance and defect charts on Coverage — which also fixed a pre-existing
+misuse of verdict colour for a provenance share.
 
-Each was a confidently-wrong verdict or a hang, found by the round-trip or mutation suite:
+**Deterministic detection** (`src/lib/detect.ts`): which use case and variant a paste is, from the
+compiled envelope fingerprints, graded certain / probable / possible with the verbatim fragment
+as evidence. 60/60 official samples identify their own use case; 57 their exact structure; the
+three the corpus genuinely cannot separate are returned as ties and pinned by name in
+`tests/detect.test.mjs`. The banner in Check names the evidence and OFFERS the switch — never
+performs it.
 
-1. **`check.ts` counted composite parts as repeats** — one `PID-3` looked like eight, so every
-   official ADT sample reported five phantom `cardinality-too-many` errors.
-2. **Lexical XML nodes counted as element instances** — `structuredBody` with seven whitespace
-   children looked like eight `structuredBody`s.
-3. **A collection container counted instead of its repetitions** — a conformant 15-entry bundle
-   reported fifteen `fullUrl`s at a `[1..1]` position. Cardinality is now judged per position.
-4. **`emit/cda.ts` hung forever** on the first attribute of any element (`countAttrsIn` stepped
-   back onto the `=` it had just consumed). This would have frozen the browser tab.
-5. **Prose members judged as elements** — "CDA header constraints for this document type
-   (Table 22)" was reported as a required element missing from five official documents. Such
-   members are now transparent: not judged, children still checked.
-6. **Relative member locators never matched** (`./text` inside `nonXMLBody`), so an embedded-PDF
-   document was told it was missing the text element it plainly had.
-7. **`import.meta.glob` guarded by `typeof import.meta.glob === "function"`** — that guard is
-   left alone by the compile-time transform and is `false` in a browser, so the built app
-   resolved the whole compiled spec to `{}`: no use cases, every surface dead, in dev and in
-   the deployed build alike. Nothing caught it because the Node suites install their own
-   resolver and the SSR suite runs under Vite's Node transform. `tests/browser.test.mjs` now
-   drives the built bundle in headless Chrome so this class of bug cannot return.
-8. **`resolveUseCase` threw on `saml-sso`** — the SAML structure cites four Confluence pages
-   as `specRefs` marked `resolved: false`, and resolution treated one as a field table, tried
-   to load a `fields/saml.json` that by design does not exist, and left the surface saying "no
-   compiled structure". Unresolved refs and unshipped families are now skipped, and a test
-   resolves EVERY use case rather than only the ones with a golden sample.
-9. **Clicking a finding emptied the findings pane** — findings were scoped to the selection by
-   path TEXT, but a finding's path is the checker's (`ADT^A03/MSH/MSH-6`) and a node's is built
-   from labels (`Message Header/Receiving Facility`), so they never matched and the pane
-   reported "nothing to report" about the element that had just reported something. Scoping is
-   by node id now, with a path fallback for findings about something absent.
-10. **The compiled CDA body locator was hard-coded to `structuredBody`**, so the official
-   Radiology Results Embedded PDF sample was told it had no body. Fixed in
-   `scripts/compile-spec.mjs`; re-running the compiler changes exactly that one field.
+**AI, structurally beside the verdicts.** `Advisory` (`src/lib/advisory.ts`) has no severity,
+provenance or code, so `summarise()` rejects it at compile time — `tests/advisory.test.mjs`
+compiles a fixture and asserts it FAILS. `tests/boundary.test.mjs` asserts no engine file imports
+the AI layer or the SDK; the engine harness stubs `fetch` to throw. The model only ever sees a
+spec-driven **skeleton** (`src/lib/skeleton.ts`) — a value survives only where a rule pins it,
+binds it, or marks it structural; an 87 KB CDA is 9.7k tokens with no name, id, date or address,
+asserted over every sample. Second opinion and gap proposals live in `AdvisoryPanel` below the
+split view; a proposal becomes a verdict only when the analyst clicks "Re-check as X" and
+`check()` re-runs with that condition declared.
+
+**Ingest** (`src/lib/ingest.ts`, `IngestView`): spreadsheets and CSV (xlsx `import()`ed on demand —
+it is 7.2 MB), deterministic name mapping, optional model proposals over column names only, and
+message generation by filling an official template's values — never from scratch.
+
+**Profile import** (`profile.ts` `parseProfile` / `reconcileProfile`, on Build): a vendor's profile
+diffed against this hospital's compiled structure; the diff is the deliverable, nothing is applied.
+
+**Onboarding** (`Welcome.tsx`): a first-run surface stating what the tool is for and what makes it
+trustworthy, with "Check an official sample" as the one-click tour.
+
+## Defects found and fixed this round
+
+1. **`check.ts` never judged a CDA section's field rows.** Every section table opens with a row for
+   the section itself, and that row was looked up INSIDE the very node it names, so it never
+   matched and `if (node.children.length && instances.length)` skipped every child. Zero CDA
+   findings carried a `specNodeId`. Fixed; required rules judged across the golden set went
+   790 → 1,594 and mutation scores 83/77/60 → **97/93/75**. Floors raised to 96/92/74.
+2. **`adaptStructure` dropped `role: "omit"` rows** — the compiler's name for the 538 HL7 fields
+   NPHIES ignores. Explain never showed one; Build's "Do not build" was always empty. ADT^A01 now
+   reports 253 rules, 180 ignored.
+3. **`AiExplain` sent raw message lines to the API.** Replaced by the skeleton window; its
+   severity-toned confidence badge (a verdict colour on a model output) is gone too.
+4. **`autoMapByName` normalised locators like labels**, so a column named `PID-3.1` mapped,
+   confirmed, onto PID-31. Locators are matched as locators now.
+5. **`CoverageView` coloured a provenance share with ok/warn/error.** Replaced with a bar.
+6. Reaching CDA section rows surfaced **two more published-rule-vs-published-sample
+   contradictions** (a section title typo in both Immunization Summary samples; a Data Processing
+   entry nested one level deeper than Table 138 states). Pinned; six in total.
 
 ## Not done — pick up here
 
-1. **Create the repo and deploy.** `.github/workflows/deploy.yml` is ready, Vite `base` is
-   `/ISIT/` under GitHub Actions, and `public/golden/` is committed so the build
-   needs no `spec-source/`. Needs a GitHub repo to push to — ask before creating one.
-2. **HIS extract ingest** (`xlsx` is already a dependency): upload a spreadsheet, auto-map its
-   columns onto the profile, and generate messages. `suggestColumnMapping` in `ai.ts` is
-   written and unused; `profile.ts` already produces the target list it needs.
-3. **Mapping-profile import.** Export exists (Build → JSON/CSV/Markdown); reading one back so a
-   vendor can reuse it across hospitals does not.
-4. **CDA section-level coverage.** For some documents the section member matches but its field
-   table is never evaluated — `cda-discharge-summary` judges 30 required rules where the table
-   holds more. The count of unlocated members is surfaced on every check, so this under-reports
-   rather than misreports, but it is the largest remaining coverage gap.
-5. **Raise the mutation floors.** They sit at the measured numbers (80/72/60) in
-   `tests/mutation.test.mjs`; each point of classification is a real improvement to Check.
+1. **Run `npm run eval:ai` once with a real key** (`--limit 3` first). It measures rescue rate,
+   false alarms on clean samples and undermining; "better" is defined in its header. Nothing has
+   yet shown the second opinion helps — only that it cannot hurt a score.
+2. **Ingest v2**: repeating groups and adding nodes are out of scope (recorded as `skipped`);
+   FHIR relative locators hit the Bundle-level element first; the sheet is per use case.
+3. **`explainPayloadPreview` in `ai.ts`** so AiExplain's preview is byte-exact with what is sent.
+4. **ACK detection** cannot tell ADT from ORU without a trigger in MSH-9.2; ask NPHIES whether ACKs
+   always echo it.
+5. **Compiler**: 75 of 142 CDA tables are cited by no member; the header group has no `specRefs`;
+   34 section members have no table. Coverage would rise further with those linked.
 
 ## Known limits to carry forward
 
-- SOAP/XDS is only 55% independently sourced; `soapPath` 33%. Every XDS finding shows that
-  provenance rather than presenting it as normative.
-- `oru-vitals` and `saml-sso` have no official sample — unverifiable by round-trip.
-- `cdaTemplateId 2.16.840.1.113883.3.3731.1.105.1` appears in none of the 617 Confluence pages.
-  Left unresolved on purpose.
-- Five official NPHIES samples are themselves defective; catalogued in
-  `src/spec/sample-defects.json` and reported as such when pasted into Check.
-- Three published rules contradict their own published samples. Pinned in
-  `tests/golden.test.mjs` so a fourth fails the suite.
-- `spec-source/` (617 cached pages + 62 official samples) is gitignored — large and
-  re-derivable. It must exist locally for `npm run compile` and the gate to run; the tests and
-  the app do not need it.
+- SOAP/XDS is 55% independently sourced; every XDS finding says which kind of evidence it rests on.
+- `oru-vitals` and `saml-sso` have no official sample.
+- Five official samples are themselves defective; catalogued and reported as such.
+- Three official samples are ambiguous from the message alone (dispense pairs; the structured
+  radiology report's Composition profile). Reported as ties, never guessed.
+- `spec-source/` is gitignored; `npm run compile` needs it, the app and tests do not.
 
-Plan: `~/.claude/plans/plan-it-using-fable-pure-crayon.md`
+Plan: `~/.claude/plans/redesign-the-pages-to-groovy-fairy.md`

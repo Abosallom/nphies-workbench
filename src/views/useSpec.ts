@@ -105,10 +105,31 @@ export function structureIdForSample(
 
 /* ----------------------------------------------------------------- analysis */
 
-export interface AnalysisState extends Async<Analysis> {
-  /** Re-run against the current text. */
-  run: () => void;
+export interface RunOptions {
+  /**
+   * Condition strings to declare for conditional-usage rows ("Report", "Order", …). Only a
+   * human sets these — a model may SUGGEST one, but the click that passes it here is the
+   * analyst's, and `check()` then emits the finding under its own evidence.
+   */
+  conditions?: readonly string[];
 }
+
+export interface AnalysisState extends Async<Analysis> {
+  /** Re-run against the current text, optionally with conditions declared. */
+  run: (opts?: RunOptions) => void;
+  /**
+   * The conditions the verdict in `data` was checked under. Empty for a plain check. Kept
+   * beside the data rather than inferred from it, so the UI can say "checked as Report"
+   * about exactly the run it is showing and nothing else.
+   */
+  conditions: readonly string[];
+}
+
+const NONE: readonly string[] = [];
+
+type AnalysisInner = Async<Analysis> & { conditions: readonly string[] };
+
+const CLEARED: AnalysisInner = { data: null, loading: false, error: null, conditions: NONE };
 
 /**
  * Parse + check one message. Runs only when asked, because checking a 90KB CDA on every
@@ -120,32 +141,37 @@ export function useAnalysis(
   structure: MessageStructure | null,
   resolved: ResolvedUseCase | null,
 ): AnalysisState {
-  const [state, setState] = useState<Async<Analysis>>({ data: null, loading: false, error: null });
+  const [state, setState] = useState<AnalysisInner>(CLEARED);
   const seq = useRef(0);
   const trimmed = text.trim();
 
-  const run = useCallback(() => {
-    if (!trimmed || !structure || !resolved) {
-      setState({ data: null, loading: false, error: null });
-      return;
-    }
-    const mine = ++seq.current;
-    setState({ data: null, loading: true, error: null });
-    analyse(text, structure, resolved).then(
-      (data) => {
-        if (seq.current === mine) setState({ data, loading: false, error: null });
-      },
-      (err) => {
-        if (seq.current === mine) setState({ data: null, loading: false, error: messageOf(err) });
-      },
-    );
-  }, [text, trimmed, structure, resolved]);
+  const run = useCallback(
+    (opts?: RunOptions) => {
+      if (!trimmed || !structure || !resolved) {
+        setState(CLEARED);
+        return;
+      }
+      const conditions = opts?.conditions?.filter((c) => c.trim()) ?? NONE;
+      const mine = ++seq.current;
+      setState({ data: null, loading: true, error: null, conditions });
+      analyse(text, structure, resolved, conditions.length ? { conditions } : undefined).then(
+        (data) => {
+          if (seq.current === mine) setState({ data, loading: false, error: null, conditions });
+        },
+        (err) => {
+          if (seq.current === mine) setState({ data: null, loading: false, error: messageOf(err), conditions });
+        },
+      );
+    },
+    [text, trimmed, structure, resolved],
+  );
 
   // A new message or a new structure invalidates the previous verdict immediately: showing
-  // findings about the text that WAS there is the one thing worse than showing none.
+  // findings about the text that WAS there is the one thing worse than showing none. The
+  // declared conditions go with it — they were declared about that text.
   useEffect(() => {
     seq.current++;
-    setState({ data: null, loading: false, error: null });
+    setState(CLEARED);
   }, [trimmed, structure?.id]);
 
   return { ...state, run };

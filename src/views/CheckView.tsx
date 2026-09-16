@@ -29,8 +29,12 @@ import { ENCODING_LABEL, fetchGolden, type GoldenSample } from "../lib/workbench
 import { adaptAnatomy, adaptMessage } from "../lib/adapt";
 import { detectMessage, type DetectResult } from "../lib/detect";
 import { highlight } from "../lib/highlight";
+import { buildSkeleton, skeletonWindow, type Skeleton } from "../lib/skeleton";
+import { gapsOf } from "../lib/gaps";
+import { ruleStubsFrom, type GapOutcome, type ReviewOutcome } from "../lib/ai";
 import { useAnalysis } from "./useSpec";
 import { AiExplain } from "./AiExplain";
+import { AdvisoryPanel, type AdvisoryInput, type DeclaredConditions } from "./AdvisoryPanel";
 import { DetectionBanner } from "./DetectionBanner";
 import type { SessionResult } from "./ReadinessView";
 
@@ -245,25 +249,99 @@ export function CheckView({
     return map;
   }, [analysis.data]);
 
-  const lines = useMemo(() => text.split(/\r\n|\r|\n/), [text]);
+  /* ---- what may leave the browser ------------------------------------- *
+   * The redacted skeleton, built once per verdict. It is the ONLY message-derived text any
+   * AI action here is handed: the explain footer gets a window of it, the advisory panel
+   * gets the whole of it. The raw `text` never reaches either. */
+  const skeleton = useMemo<Skeleton | null>(() => {
+    if (!analysis.data || analysis.data.parse.failure || !resolved) return null;
+    return buildSkeleton(analysis.data.parse.tree, resolved.specNodes, { findings: analysis.data.findings });
+  }, [analysis.data, resolved]);
+
+  /* ---- the advisory panel's state -------------------------------------- *
+   * Advisories live HERE and in the panel, in React state, and nowhere else: not in
+   * `analysis.data.findings`, not in `model`, not in what `onResult` reports. The panel is
+   * closed until asked for, and a new verdict clears what a model said about the old one. */
+  const [panelOpen, setPanelOpen] = useState(false);
+  /* Each outcome is stored WITH the input it was asked about, and read back only while that
+   * input is the one on screen: a new check has a new payload digest, and what a model said
+   * about the previous payload is dropped rather than read against this one. */
+  const [reviewFor, setReviewFor] = useState<{ input: AdvisoryInput; outcome: ReviewOutcome } | null>(null);
+  const [gapsFor, setGapsFor] = useState<{ input: AdvisoryInput; outcome: GapOutcome } | null>(null);
+  /** Set by the panel's "Re-check as <condition>" click, and only by it. */
+  const [declaredFor, setDeclaredFor] = useState<DeclaredConditions | null>(null);
+
+  const advisoryInput = useMemo<AdvisoryInput | null>(() => {
+    if (!analysis.data || analysis.data.parse.failure || !skeleton || !resolved || !structure) return null;
+    // Positive findings are the bulk of a clean message and give a reviewer nothing to
+    // doubt, so they stay home; the panel says how many did.
+    const findings = analysis.data.findings.filter((f) => f.severity !== "ok" && f.severity !== "ignored");
+    return {
+      structure,
+      findings,
+      withheld: analysis.data.findings.length - findings.length,
+      skeleton,
+      rules: ruleStubsFrom(resolved.specNodes),
+      gaps: gapsOf(analysis.data.findings, { tree: analysis.data.parse.tree, structure, specNodes: resolved.specNodes }),
+    };
+  }, [analysis.data, skeleton, resolved, structure]);
+
+  const review = reviewFor && reviewFor.input === advisoryInput ? reviewFor.outcome : null;
+  const gapOutcome = gapsFor && gapsFor.input === advisoryInput ? gapsFor.outcome : null;
+  // An outcome that lands after the check it was asked about has gone is stored against
+  // that old input, and therefore never shown.
+  const onReview = useCallback((outcome: ReviewOutcome) => advisoryInput && setReviewFor({ input: advisoryInput, outcome }), [advisoryInput]);
+  const onGaps = useCallback((outcome: GapOutcome) => advisoryInput && setGapsFor({ input: advisoryInput, outcome }), [advisoryInput]);
+
+  // The declared-condition note describes the verdict on screen; once that verdict is gone
+  // (new text, new structure, a plain re-check) `analysis.conditions` is empty and so is the note.
+  const declared = analysis.conditions.length ? declaredFor : null;
+
+  const recheckAs = useCallback(
+    (condition: string) => {
+      setDeclaredFor({ conditions: [condition], via: "advisory" });
+      run({ conditions: [condition] });
+    },
+    [run],
+  );
+
+  const selectFinding = useCallback(
+    (findingId: string) => {
+      const ui = model?.findings.find((f) => f.id === findingId);
+      if (!ui?.regionId) return;
+      // `adaptMessage` gives a region the id of the node it was drawn for, so the same id
+      // reveals the code line and the tree row; "external" makes SplitView scroll to both.
+      setSelection({ regionId: ui.regionId, nodeId: ui.regionId, origin: "external" });
+    },
+    [model],
+  );
+
+  /* Finding ids the model doubted. Used for ONE thing: a one-line text link in the row's
+   * footer. The row itself — severity, glyph, colour, order — is untouched. */
+  const doubted = useMemo(() => {
+    const ids = new Set<string>();
+    for (const a of review?.advisories ?? []) if (a.verdict === "doubt" && a.about.findingId) ids.add(a.about.findingId);
+    return ids;
+  }, [review]);
+
+  const openPanel = useCallback(() => setPanelOpen(true), []);
 
   const findingFooter = useCallback(
     (finding: { id: string; line?: number }) => {
       const engine = engineFindings.get(finding.id);
       if (!engine || !structure) return null;
-      // Only offer it where a model can add something: a positive or informational finding
-      // is already as actionable as it gets.
-      if (engine.severity !== "error" && engine.severity !== "warn") return null;
-      const at = finding.line ?? engine.location?.line;
-      const snippet = at
-        ? lines
-            .slice(Math.max(0, at - 3), at + 2)
-            .map((l, i) => `${Math.max(1, at - 2) + i}: ${l}`)
-            .join("\n")
-        : undefined;
-      return <AiExplain finding={engine} structure={structure} snippet={snippet} />;
+      return (
+        <CheckFindingFooter
+          finding={engine}
+          line={finding.line ?? engine.location?.line}
+          structure={structure}
+          skeleton={skeleton}
+          doubted={doubted.has(engine.id)}
+          onShowDoubt={openPanel}
+        />
+      );
     },
-    [engineFindings, structure, lines],
+    [engineFindings, structure, skeleton, doubted, openPanel],
   );
 
   const loadSample = useCallback(
@@ -442,6 +520,15 @@ export function CheckView({
         </Banner>
       ) : null}
       {analysis.error ? <Banner tone="error">{analysis.error}</Banner> : null}
+      {analysis.conditions.length && showResult ? (
+        <Banner tone="info">
+          Checked as <strong className="font-semibold">{analysis.conditions.join(", ")}</strong>
+          {declared ? " — condition declared by analyst, suggested by model." : "."}{" "}
+          <button type="button" className="underline decoration-dotted hover:text-ink" onClick={() => run()}>
+            Re-check without it
+          </button>
+        </Banner>
+      ) : null}
       {sampleError ? <Banner tone="warn">{sampleError}</Banner> : null}
       {liveDetection ? (
         <DetectionBanner
@@ -569,6 +656,68 @@ export function CheckView({
           />
         )}
       </div>
+
+      {/* ----------------------------------------------------------- advisory */}
+      {showResult ? (
+        <AdvisoryPanel
+          input={advisoryInput}
+          open={panelOpen}
+          onToggle={() => setPanelOpen((o) => !o)}
+          review={review}
+          onReview={onReview}
+          gaps={gapOutcome}
+          onGaps={onGaps}
+          onSelectFinding={selectFinding}
+          onRecheck={recheckAs}
+          declared={declared}
+          density={density}
+        />
+      ) : null}
+    </div>
+  );
+}
+
+/* ========================================================================== *
+ * The finding footer
+ * ========================================================================== */
+
+export interface CheckFindingFooterProps {
+  finding: EngineFinding;
+  /** The line the row points at, when it has one. */
+  line?: number;
+  structure: MessageStructure;
+  /** The verdict's skeleton; `null` only while there is no verdict, in which case no window is sent. */
+  skeleton: Skeleton | null;
+  /** A second opinion doubted this finding. Produces a text link and nothing else. */
+  doubted?: boolean;
+  onShowDoubt?: () => void;
+}
+
+/**
+ * What sits under a finding row: the explain action, and — when a model doubted the finding
+ * — a one-line link to where that doubt is shown. The AI action gets a WINDOW of the
+ * redacted skeleton, never the message lines; `skeletonWindow` is the only excerpt function
+ * this file calls.
+ */
+export function CheckFindingFooter({ finding, line, structure, skeleton, doubted, onShowDoubt }: CheckFindingFooterProps) {
+  // Only offer the explanation where a model can add something: a positive or informational
+  // finding is already as actionable as it gets.
+  const explainable = finding.severity === "error" || finding.severity === "warn";
+  if (!explainable && !doubted) return null;
+  const excerpt = skeleton && line ? skeletonWindow(skeleton, line, 2) : "";
+  return (
+    <div className="flex flex-col gap-1">
+      {explainable ? <AiExplain finding={finding} structure={structure} skeletonWindow={excerpt || undefined} windowLine={line} /> : null}
+      {doubted ? (
+        <button
+          type="button"
+          onClick={onShowDoubt}
+          className="self-start text-2xs text-ink-2 underline decoration-dotted underline-offset-2 hover:text-ink"
+          data-model-doubt
+        >
+          model doubts this — see below
+        </button>
+      ) : null}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import {
   Badge,
   Button,
@@ -25,12 +25,15 @@ import {
   buildProfile,
   OBLIGATION_HINT,
   OBLIGATION_LABEL,
+  parseProfile,
   profileToCsv,
   profileToJson,
   profileToMarkdown,
+  reconcileProfile,
   sortByObligation,
   type Obligation,
   type Profile,
+  type ProfileDiff,
   type ProfileRow,
 } from "../lib/profile";
 
@@ -95,6 +98,61 @@ const NO_VERDICT = "No verdict either way: NPHIES leaves this position to you.";
 
 const INT = new Intl.NumberFormat("en-US");
 
+/* ------------------------------------------------------------------ import */
+
+/**
+ * One file a person handed the workbench, as far as it got. The diff is NOT stored here: it
+ * is recomputed against whatever structure is on screen, so switching variant after an import
+ * never leaves a comparison that was made against a different specification.
+ */
+export type ProfileImport =
+  | { source: string; error: string }
+  | { source: string; imported: Profile; warnings: string[] };
+
+/**
+ * Read a vendor's exported profile. The library's sentences are written for the person who
+ * has to fix the file, so they are carried through untouched and shown verbatim.
+ */
+export function readProfileFile(text: string, source: string): ProfileImport {
+  const out = parseProfile(text);
+  return "error" in out ? { source, error: out.error } : { source, imported: out.profile, warnings: out.warnings };
+}
+
+/** The four rule fields a vendor builds against, in the order a changed row shows them. */
+const RULE_FIELDS = ["obligation", "usage", "cardinality", "fixedValue"] as const;
+type RuleField = (typeof RULE_FIELDS)[number];
+
+const RULE_LABEL: Record<RuleField, string> = {
+  obligation: "Obligation",
+  usage: "Usage",
+  cardinality: "Cardinality",
+  fixedValue: "Fixed value",
+};
+
+function ruleText(row: ProfileRow, field: RuleField): string | null {
+  switch (field) {
+    case "obligation":
+      return OBLIGATION_LABEL[row.obligation];
+    case "usage":
+      return row.usage.length ? row.usage.join(" / ") : null;
+    default:
+      return row[field];
+  }
+}
+
+/**
+ * Which of a changed pair's fields actually differ. `reconcileProfile` compares the whole
+ * rule, so a pair may differ only in guidance or the quoted evidence; those are named as
+ * "other" so the row never looks like it changed for no reason.
+ */
+function differences(before: ProfileRow, after: ProfileRow): { rule: RuleField[]; other: string[] } {
+  const rule = RULE_FIELDS.filter((f) => ruleText(before, f) !== ruleText(after, f));
+  const other = (Object.keys(before) as (keyof ProfileRow)[]).filter(
+    (k) => k !== "id" && !(RULE_FIELDS as readonly string[]).includes(k) && JSON.stringify(before[k]) !== JSON.stringify(after[k]),
+  );
+  return { rule, other };
+}
+
 export interface BuildViewProps {
   structure: MessageStructure | null;
   structures: MessageStructure[];
@@ -109,6 +167,11 @@ export interface BuildViewProps {
    * type; the JS value only decides whether the summary panel is mounted at all.
    */
   density?: DensityChoice;
+  /**
+   * A profile already read from a file, so a caller (or an SSR test) can mount the surface
+   * mid-comparison. The file input replaces it; it is never merged.
+   */
+  importedProfile?: ProfileImport | null;
 }
 
 export function BuildView({
@@ -120,9 +183,12 @@ export function BuildView({
   onOpenSample,
   baseUrl,
   density = "dense",
+  importedProfile = null,
 }: BuildViewProps) {
   const [filter, setFilter] = useState<Obligation | "all">("must");
   const [query, setQuery] = useState("");
+  const [imported, setImported] = useState<ProfileImport | null>(importedProfile);
+  const fileRef = useRef<HTMLInputElement>(null);
   const toast = useToast();
 
   const profile = useMemo(
@@ -142,6 +208,11 @@ export function BuildView({
           }))
         : [],
     [profile],
+  );
+
+  const diff = useMemo<ProfileDiff | null>(
+    () => (profile && imported && "imported" in imported ? reconcileProfile(imported.imported, profile) : null),
+    [profile, imported],
   );
 
   const rows = useMemo(() => {
@@ -222,6 +293,27 @@ export function BuildView({
             >
               CSV
             </Button>
+            <input
+              ref={fileRef}
+              type="file"
+              accept="application/json,.json"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                // Reset so choosing the same file again (after fixing it) fires onChange.
+                e.target.value = "";
+                if (!file) return;
+                file.text().then((text) => setImported(readProfileFile(text, file.name)));
+              }}
+            />
+            <Tooltip
+              wide
+              content="Lay a vendor's exported profile (the JSON this surface writes) beside the compiled structure. The file is read here in the browser and changes nothing."
+            >
+              <Button size="xs" onClick={() => fileRef.current?.click()}>
+                Import profile…
+              </Button>
+            </Tooltip>
           </div>
         }
       >
@@ -323,6 +415,15 @@ export function BuildView({
       )}
 
       <div className="min-h-0 flex-1 overflow-auto">
+        {imported ? (
+          <ImportPanel
+            imported={imported}
+            diff={diff}
+            current={profile}
+            density={density}
+            onDismiss={() => setImported(null)}
+          />
+        ) : null}
         <p className="border-b border-line px-3 py-2 text-2xs leading-relaxed text-ink-2">
           {OBLIGATION_HINT[filter === "all" ? "must" : filter]}{" "}
           {filter === "ignored" ? (
@@ -374,6 +475,239 @@ export function BuildView({
         </footer>
       ) : null}
     </div>
+  );
+}
+
+/* ------------------------------------------------------------------ import panel */
+
+/**
+ * The vendor's file laid beside the compiled structure.
+ *
+ * Nothing here is applied, because there is nothing to apply: the compiled structure IS the
+ * specification, and the file is one party's claim about it. A vendor whose file says
+ * "optional" where the specification says "must build" has found a defect in their backlog,
+ * not a reason to soften the rule — so the diff is the whole deliverable, and the panel says
+ * so in words rather than leaving the reader to guess which column wins. Obligation badges
+ * keep the TONE map: that is verdict semantics, decided above.
+ */
+function ImportPanel({
+  imported,
+  diff,
+  current,
+  density,
+  onDismiss,
+}: {
+  imported: ProfileImport;
+  diff: ProfileDiff | null;
+  current: Profile;
+  density: DensityChoice;
+  onDismiss: () => void;
+}) {
+  const pad = density === "roomy" ? "px-4 py-3" : "px-3 py-2";
+  const heading = (
+    <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+      <h2 className="text-xs font-semibold text-ink">Vendor profile vs this compiled structure</h2>
+      <span className="font-mono text-2xs text-ink-3">{imported.source}</span>
+      <Button size="xs" variant="ghost" className="ml-auto" onClick={onDismiss}>
+        Clear import
+      </Button>
+    </div>
+  );
+
+  if ("error" in imported) {
+    return (
+      <section aria-label="Profile import" className={`border-b border-line bg-surface ${pad}`}>
+        {heading}
+        <p role="alert" className="mt-1.5 max-w-prose text-2xs leading-relaxed text-ink">
+          <strong className="font-semibold">Could not read the file.</strong> {imported.error}
+        </p>
+      </section>
+    );
+  }
+  if (!diff) return null;
+
+  const { imported: vendor, warnings } = imported;
+  const total = diff.unchanged + diff.changed.length + diff.added.length + diff.removed.length;
+  const differs = diff.changed.length + diff.added.length + diff.removed.length;
+  const otherStructure = vendor.structureId !== current.structureId;
+
+  const stat = (key: keyof ProfileDiff, label: string, value: number, hint: string) => (
+    <div className="min-w-24 flex-1">
+      <dt className="text-2xs uppercase tracking-wide text-ink-3">{label}</dt>
+      <dd className="font-mono text-base leading-tight text-ink" data-diff={key}>
+        {INT.format(value)}
+      </dd>
+      <dd className="text-2xs leading-snug text-ink-3">{hint}</dd>
+    </div>
+  );
+
+  return (
+    <section aria-label="Profile import" className={`border-b border-line bg-surface ${pad}`}>
+      {heading}
+      <p className="mt-1.5 max-w-prose text-2xs leading-relaxed text-ink-2">
+        The compiled structure is the specification. The file is the vendor&apos;s claim about it —{" "}
+        <span className="font-mono text-ink">{vendor.title}</span> (<code>{vendor.structureId}</code>, generated{" "}
+        {vendor.generatedAt}). Nothing in it is applied to the table below; the differences are the deliverable.
+      </p>
+      {otherStructure ? (
+        <p className="mt-1 max-w-prose text-2xs leading-relaxed text-ink-2">
+          The file describes <code>{vendor.structureId}</code>, but this surface has compiled{" "}
+          <code>{current.structureId}</code>. Every difference below may be nothing more than that.
+        </p>
+      ) : null}
+      {warnings.length ? (
+        <div className="mt-2 max-w-prose text-2xs leading-relaxed">
+          <div className="font-semibold text-ink">Repaired on import — read before trusting the file:</div>
+          <ul className="mt-0.5 list-disc pl-4 text-ink-2">
+            {warnings.map((w, i) => (
+              <li key={i}>{w}</li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+
+      <dl className="mt-3 flex flex-wrap gap-x-6 gap-y-2">
+        {stat("unchanged", "Unchanged", diff.unchanged, "Both sides state the same rule.")}
+        {stat("changed", "Changed", diff.changed.length, "Same position, different rule.")}
+        {stat("added", "Added", diff.added.length, "In the vendor's file only.")}
+        {stat("removed", "Removed", diff.removed.length, "In the compiled structure only.")}
+      </dl>
+
+      {differs === 0 ? (
+        <p className="mt-2 max-w-prose text-2xs leading-relaxed text-ink">
+          Every one of {INT.format(total)} positions matches: the vendor&apos;s file agrees with the compiled
+          structure.
+        </p>
+      ) : (
+        <div className="mt-3 overflow-x-auto">
+          <table className="w-full border-collapse text-xs">
+            <thead className="text-2xs uppercase tracking-wide text-ink-3">
+              <tr className="border-b border-line">
+                <th className="py-1 pr-2 text-left font-semibold">Difference</th>
+                <th className="py-1 pr-2 text-left font-semibold">Position</th>
+                <th className="py-1 pr-2 text-left font-semibold">Field</th>
+                <th className="py-1 pr-2 text-left font-semibold">Compiled structure (specification)</th>
+                <th className="py-1 text-left font-semibold">Vendor&apos;s file (claim)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {diff.changed.map(({ before, after }) => (
+                <DiffRow key={`c:${before.id}`} kind="Changed" before={before} after={after} />
+              ))}
+              {diff.removed.map((r) => (
+                <DiffRow key={`r:${r.id}`} kind="Removed" before={r} after={null} />
+              ))}
+              {diff.added.map((r) => (
+                <DiffRow key={`a:${r.id}`} kind="Added" before={null} after={r} />
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </section>
+  );
+}
+
+/**
+ * The label rides beside the locator because a locator is not always a row: seven FHIR
+ * bundle slots share `./entry`, and "Removed: ./entry" alone would not say which one.
+ */
+function Position({ row }: { row: ProfileRow }) {
+  return (
+    <>
+      <div className="font-mono text-ink">{row.locator ?? row.path}</div>
+      {row.locator && row.locator !== row.path ? (
+        <div className="max-w-64 truncate font-mono text-2xs text-ink-3" title={row.path}>
+          {row.path}
+        </div>
+      ) : null}
+    </>
+  );
+}
+
+function RuleSummary({ row }: { row: ProfileRow }) {
+  return (
+    <div className="flex flex-col gap-0.5">
+      <Badge tone={TONE[row.obligation]} className="self-start">
+        {OBLIGATION_LABEL[row.obligation]}
+      </Badge>
+      <span className="text-2xs text-ink-2">
+        {ruleText(row, "usage") ?? "—"} · {row.cardinality ?? "—"}
+        {row.fixedValue ? (
+          <>
+            {" · "}
+            <code className="break-all font-mono text-ink">{row.fixedValue}</code>
+          </>
+        ) : null}
+      </span>
+    </div>
+  );
+}
+
+function DiffRow({
+  kind,
+  before,
+  after,
+}: {
+  kind: "Changed" | "Added" | "Removed";
+  before: ProfileRow | null;
+  after: ProfileRow | null;
+}) {
+  const row = (before ?? after) as ProfileRow;
+  const changed = before && after ? differences(before, after) : null;
+  const value = (r: ProfileRow, f: RuleField) =>
+    f === "obligation" ? (
+      <Badge tone={TONE[r.obligation]}>{OBLIGATION_LABEL[r.obligation]}</Badge>
+    ) : f === "fixedValue" && r.fixedValue ? (
+      <code className="break-all font-mono text-ink">{r.fixedValue}</code>
+    ) : (
+      <span className="text-ink">{ruleText(r, f) ?? "—"}</span>
+    );
+  return (
+    <tr className="border-b border-line/60 align-top">
+      <td className="py-1 pr-2">
+        <Badge>{kind}</Badge>
+      </td>
+      <td className="py-1 pr-2">
+        <Position row={row} />
+      </td>
+      <td className="py-1 pr-2 text-ink-2">
+        {row.label}
+        {after && before && after.label !== before.label ? (
+          <div className="text-2xs text-ink-3">file says: {after.label}</div>
+        ) : null}
+      </td>
+      {changed ? (
+        <td className="py-1 pr-2" colSpan={2}>
+          {changed.rule.length ? (
+            <dl className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-0.5 text-2xs">
+              {changed.rule.map((f) => (
+                <div key={f} className="contents">
+                  <dt className="text-ink-3">{RULE_LABEL[f]}</dt>
+                  <dd className="flex flex-wrap items-center gap-1.5">
+                    {value(before as ProfileRow, f)}
+                    <span aria-label="becomes, in the vendor's file" className="text-ink-3">
+                      →
+                    </span>
+                    {value(after as ProfileRow, f)}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          ) : null}
+          {changed.other.length ? (
+            <div className="mt-0.5 text-2xs text-ink-3">
+              Also differs in {changed.other.join(", ")} — the rule itself is the same.
+            </div>
+          ) : null}
+        </td>
+      ) : (
+        <>
+          <td className="py-1 pr-2">{before ? <RuleSummary row={before} /> : <span className="text-ink-3">—</span>}</td>
+          <td className="py-1">{after ? <RuleSummary row={after} /> : <span className="text-ink-3">—</span>}</td>
+        </>
+      )}
+    </tr>
   );
 }
 

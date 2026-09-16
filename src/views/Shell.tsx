@@ -23,6 +23,7 @@ import { CheckView } from "./CheckView";
 import { CoverageView } from "./CoverageView";
 import { DecoderView } from "./DecoderView";
 import { ExplainView } from "./ExplainView";
+import { IngestView } from "./IngestView";
 import { ReadinessView, type SessionResult } from "./ReadinessView";
 import { Welcome, useWelcome } from "./Welcome";
 import { CONFLUENCE_BASE } from "./constants";
@@ -36,7 +37,7 @@ import { useGolden, useRegistry, useResolved } from "./useSpec";
  * work, and the Readiness matrix can report what has actually been checked in this session.
  * ========================================================================== */
 
-type ActiveTab = "build" | "check" | "explain" | "readiness" | "decoder" | "coverage";
+type ActiveTab = "build" | "check" | "explain" | "ingest" | "readiness" | "decoder" | "coverage";
 
 const GLOBAL_TABS = new Set<ActiveTab>(["readiness", "decoder", "coverage"]);
 
@@ -167,6 +168,20 @@ export function Shell() {
     [selectedId, structures, patch],
   );
 
+  /**
+   * Ingest's hand-off. The generated text lands in the CURRENT use case's paste box and Check
+   * opens on it — the same state a manual paste would set, so the checker judges it exactly as
+   * it would judge anything else. Nothing about the generator's own report travels with it.
+   */
+  const onOpenInCheck = useCallback(
+    (text: string) => {
+      if (!selectedId) return;
+      patch(selectedId, { text });
+      setTab("check");
+    },
+    [selectedId, patch],
+  );
+
   const recordResult = useCallback((useCaseId: string, result: SessionResult) => {
     setResults((prev) => (prev[useCaseId]?.at === result.at ? prev : { ...prev, [useCaseId]: result }));
   }, []);
@@ -202,6 +217,7 @@ export function Shell() {
         ) : undefined,
     },
     { id: "explain", label: "Explain", title: "Walk the compiled rules for this message type" },
+    { id: "ingest", label: "Ingest", title: "Map a HIS spreadsheet onto this message type and generate a message from one row" },
     { id: "readiness", label: "Readiness", startsGroup: true, title: "Global: which use cases have been checked" },
     { id: "decoder", label: "Error Decoder", title: "Global: decode an NPHIES rejection" },
     { id: "coverage", label: "Coverage", title: "Global: what the workbench does not know" },
@@ -324,6 +340,17 @@ export function Shell() {
                 onStructureChange={onStructureChange}
                 baseUrl={CONFLUENCE_BASE}
                 density={density}
+              />
+            ) : tab === "ingest" ? (
+              <IngestView
+                key={selectedId ?? "none"}
+                structure={structure}
+                structures={structures}
+                resolved={resolved.data?.resolved ?? null}
+                samples={golden.data ?? []}
+                density={density}
+                onOpenInCheck={onOpenInCheck}
+                onStructureChange={onStructureChange}
               />
             ) : (
               <CheckView

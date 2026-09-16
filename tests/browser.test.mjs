@@ -277,6 +277,37 @@ test("the built app loads the compiled spec and works end to end", { skip }, asy
     assert.ok(roomy.row > denseRow, `tree rows did not grow (dense ${denseRow}px, roomy ${roomy.row}px)`);
     assert.ok(roomy.codeStillThere, "presentation mode hid the wire message");
 
+    /* --- the advisory panel exists, is inert without a key, and the AI footer is redacted -- */
+    // The panel is collapsed until asked for; open it the way a user would, from its header.
+    await evaluate(`(() => {
+      const main = document.querySelector("main");
+      const header = [...main.querySelectorAll("button, summary")].find((el) =>
+        /Model opinion|second opinion|advisor/i.test(el.textContent),
+      );
+      header?.click();
+    })()`);
+    await waitFor(evaluate, `/no Anthropic API key/i.test(document.querySelector("main").innerText)`, "the advisory panel to open", 10000);
+    const advisory = await evaluate(`(() => {
+      const main = document.querySelector("main");
+      const text = main.innerText;
+      return {
+        disclaimer: text.includes("Model opinion — not a structural verdict"),
+        noKeyExplained: /no Anthropic API key/i.test(text),
+        // Findings still say what the model would be sent, and that it is redacted.
+        footerRedacted: [...main.querySelectorAll("button")].some((b) => /Explain for my HIS team/.test(b.textContent))
+          ? /redacted excerpt/.test(text)
+          : /needs a key|redacted/.test(text),
+        // Nothing in the advisory region wears a verdict colour.
+        panelSeverityClasses: [...main.querySelectorAll('[class*="border-dashed"] *')].filter((el) =>
+          /\b(bg|text|border)-(error|warn|ok)\b/.test(el.className || ""),
+        ).length,
+      };
+    })()`);
+    assert.ok(advisory.disclaimer, "the advisory panel does not carry its disclaimer");
+    assert.ok(advisory.noKeyExplained, "with no key, the panel does not say why the model is inert");
+    assert.ok(advisory.footerRedacted, "the AI footer no longer says its excerpt is redacted");
+    assert.equal(advisory.panelSeverityClasses, 0, "a verdict colour leaked into the advisory region");
+
     /* --- the other surfaces -------------------------------------------- */
     await evaluate(`[...document.querySelectorAll("button")].find((b) => b.textContent.trim() === "Explain").click()`);
     const rules = await waitFor(
@@ -290,6 +321,10 @@ test("the built app loads the compiled spec and works end to end", { skip }, asy
     await evaluate(`[...document.querySelectorAll("button")].find((b) => b.textContent.trim() === "Build").click()`);
     const profile = await waitFor(evaluate, `document.querySelectorAll("table tbody tr").length`, "the profile table", 25000);
     assert.ok(profile > 5, `Build rendered ${profile} rows`);
+    const importOffered = await evaluate(
+      `[...document.querySelectorAll("main button")].some((b) => /Import profile/.test(b.textContent))`,
+    );
+    assert.ok(importOffered, "Build no longer offers to import a vendor profile");
     // Still roomy: the summary panel with the donut must be there, and the obligation chart.
     await waitFor(evaluate, `!!document.querySelector('[aria-label="Build summary"]')`, "the roomy Build summary", 10000);
     await waitFor(evaluate, `!!document.querySelector('[aria-label^="Obligations across"]')`, "the obligations chart", 10000);
@@ -304,6 +339,19 @@ test("the built app loads the compiled spec and works end to end", { skip }, asy
       "the dense density to return",
       10000,
     );
+
+    /* --- Ingest: the tab exists, states its privacy rule, and the model stays inert -- */
+    await evaluate(`[...document.querySelectorAll("button")].find((b) => b.textContent.trim() === "Ingest").click()`);
+    await waitFor(evaluate, `!!document.querySelector('main input[type="file"]')`, "the ingest upload", 20000);
+    const ingest = await evaluate(`(() => {
+      const text = document.querySelector("main").innerText;
+      return {
+        privacy: /stays in this browser/i.test(text) && /column names/i.test(text),
+        acceptsSheets: /\.xlsx|\.csv/i.test(document.querySelector('main input[type="file"]').getAttribute("accept") || "") || /xlsx|csv/i.test(text),
+      };
+    })()`);
+    assert.ok(ingest.privacy, "Ingest does not state that cell data stays in the browser");
+    assert.ok(ingest.acceptsSheets, "Ingest does not accept spreadsheets");
 
     await evaluate(`[...document.querySelectorAll("button")].find((b) => /Error Decoder/.test(b.textContent)).click()`);
     await waitFor(evaluate, `document.querySelectorAll("textarea").length`, "the decoder");

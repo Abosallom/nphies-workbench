@@ -285,18 +285,38 @@ export function mappingCandidates(profile: Profile): { locator: string; label: s
  * Same input, same output, every time — this is the part of the mapping nobody needs to
  * review for hallucination.
  */
+/**
+ * The key a LOCATOR is matched under — never `normaliseName`.
+ *
+ * Stripping punctuation is right for labels ("Patient Identifier List" ≈ "patient identifier
+ * list") and catastrophic for locators: `PID-3.1` and `PID-31` both normalise to `pid31`, so a
+ * hospital that labels its extract columns by component position got a confidently wrong,
+ * auto-confirmed mapping onto a different field. A locator is matched only as a locator: HL7
+ * positions through the same parser and key the emitter uses, everything else case-insensitively
+ * but with its punctuation intact.
+ */
+function locatorMatchKey(text: string): string | null {
+  // Hospitals spell positions "pid_7", "PID 7" or "pid-7": the segment/field separator is
+  // forgiven, the field/component "." is not — it is the boundary that keeps PID-3.1 and PID-31
+  // apart, and the whole reason this function exists.
+  const loose = text.trim().replace(/[\s_]+/g, "-");
+  const hl7 = parseHl7Locator(loose);
+  if (hl7) return `loc:${locatorKey(hl7)}`;
+  const bare = text.trim().toLowerCase();
+  return bare ? `loc:${bare}` : null;
+}
+
 export function autoMapByName(sheet: Pick<Sheet, "columns">, profile: Profile): ColumnMapping {
   const byName = new Map<string, Set<string>>();
-  const add = (name: string, locator: string) => {
-    const key = normaliseName(name);
+  const add = (key: string | null, locator: string) => {
     if (!key) return;
     const set = byName.get(key) ?? new Set<string>();
     set.add(locator);
     byName.set(key, set);
   };
   for (const c of mappingCandidates(profile)) {
-    add(c.label, c.locator);
-    add(c.locator, c.locator);
+    add(normaliseName(c.label) || null, c.locator);
+    add(locatorMatchKey(c.locator), c.locator);
   }
 
   const entries: MappingEntry[] = [];
@@ -304,7 +324,9 @@ export function autoMapByName(sheet: Pick<Sheet, "columns">, profile: Profile): 
   const notes: string[] = [];
   const claimed = new Map<string, string>();
   for (const column of sheet.columns) {
-    const hits = byName.get(normaliseName(column.name));
+    // A column named like a position is matched as a position; otherwise as a label.
+    const hits =
+      byName.get(locatorMatchKey(column.name) ?? "") ?? byName.get(normaliseName(column.name));
     if (!hits || hits.size === 0) {
       unmapped.push(column.name);
       continue;
