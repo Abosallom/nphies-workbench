@@ -24,7 +24,12 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const PORT = 41733;
 // `localhost`, not `127.0.0.1`: vite preview binds the loopback name, which resolves to ::1
 // on a dual-stack machine, and polling the IPv4 literal then never sees the server come up.
-const URL = `http://localhost:${PORT}/`;
+//
+// ISIT_BROWSER_URL points the whole suite at a deployed site instead of the local preview —
+// the same journey, against what users actually get. That is how the live site is re-audited
+// after every deploy.
+const LIVE = process.env.ISIT_BROWSER_URL;
+const URL = LIVE ?? `http://localhost:${PORT}/`;
 
 const chrome = findChrome();
 const skip = chrome ? false : "no Chrome or Chromium binary on this machine";
@@ -33,6 +38,7 @@ let server;
 
 before(async () => {
   if (skip) return;
+  if (LIVE) return; // nothing to build or serve: the site under test is already published
   if (!fs.existsSync(path.join(ROOT, "dist", "index.html"))) {
     const built = spawnSync("npm", ["run", "build"], { cwd: ROOT, stdio: "inherit" });
     assert.equal(built.status, 0, "npm run build failed");
