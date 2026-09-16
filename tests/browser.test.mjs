@@ -120,6 +120,45 @@ test("the built app loads the compiled spec and works end to end", { skip }, asy
     );
     assert.ok(chars > 500, `the official sample loaded only ${chars} characters`);
 
+    /*
+     * The detector, end to end. Loading an official sample selects its own variant, so the
+     * banner should first CONFIRM. Then the analyst picks the wrong variant on purpose — the
+     * mistake that used to produce a page of confidently wrong "required but missing"
+     * findings — and the banner must name the evidence and OFFER the switch, never perform it.
+     */
+    await waitFor(
+      evaluate,
+      `document.querySelector("main select")?.value === "adt-a03" && /A03/.test(document.querySelector("main").innerText)`,
+      "the sample to select its own variant and the detector to confirm it",
+      20000,
+    );
+    await evaluate(`(() => {
+      const select = document.querySelector("main select");
+      const setter = Object.getOwnPropertyDescriptor(window.HTMLSelectElement.prototype, "value").set;
+      setter.call(select, "adt-a01");
+      select.dispatchEvent(new Event("change", { bubbles: true }));
+    })()`);
+    await waitFor(
+      evaluate,
+      `[...document.querySelectorAll("button")].some((b) => /^Switch to/.test(b.textContent.trim()))`,
+      "the detector banner offering a switch after the analyst picked A01",
+      20000,
+    );
+    const bannerText = await evaluate(`document.querySelector("main").innerText`);
+    assert.match(bannerText, /A03/, "the detector banner does not name the detected event");
+    const selectedBefore = await evaluate(`document.querySelector("main select")?.value ?? null`);
+    assert.equal(selectedBefore, "adt-a01", "the detector switched the structure on its own");
+    await evaluate(
+      `[...document.querySelectorAll("button")].find((b) => /^Switch to/.test(b.textContent.trim())).click()`,
+    );
+    const selectedAfter = await waitFor(
+      evaluate,
+      `document.querySelector("main select")?.value === "adt-a03" ? "adt-a03" : 0`,
+      "the analyst's click to select A03",
+      10000,
+    );
+    assert.equal(selectedAfter, "adt-a03");
+
     await evaluate(
       `[...document.querySelectorAll("button")].find((b) => /Check structure/.test(b.textContent)).click()`,
     );
@@ -186,6 +225,58 @@ test("the built app loads the compiled spec and works end to end", { skip }, asy
     assert.equal(afterClick.markedSelected, 1, "the clicked finding is not marked as selected");
     assert.ok(afterClick.treeFollowed, "the structure pane did not follow the selection");
 
+    /* --- the anatomy map: a click lands in the code pane ----------------- */
+    const blocks = await waitFor(
+      evaluate,
+      `document.querySelectorAll('[aria-label^="Message anatomy"] [role="option"]').length`,
+      "the anatomy map",
+      20000,
+    );
+    assert.ok(blocks >= 4, `the anatomy map drew only ${blocks} blocks for an ADT message`);
+    const anatomyClick = await evaluate(`(() => {
+      const options = [...document.querySelectorAll('[aria-label^="Message anatomy"] [role="option"]')];
+      // The blocks are SVG elements: no HTMLElement.click(), so dispatch the event a user would.
+      options[1].dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+      return new Promise((r) =>
+        setTimeout(
+          () =>
+            r({
+              selected: document.querySelectorAll('[aria-label^="Message anatomy"] [aria-selected="true"]').length,
+              structureHeader: (document.querySelector('[aria-label="Structure and findings"]')?.innerText || "").includes("/"),
+            }),
+          600,
+        ),
+      );
+    })()`);
+    assert.equal(anatomyClick.selected, 1, "clicking a block did not select exactly one block");
+    assert.ok(anatomyClick.structureHeader, "clicking a block did not select a node in the structure pane");
+
+    /* --- presentation mode: bigger type AND bigger rows ------------------ */
+    // Row heights are JS constants feeding the virtualiser; a token-only rescale would leave
+    // 15px type inside 20px rows. Both must move together or rows overlap.
+    const denseRow = await evaluate(
+      `document.querySelector('[aria-label="Message structure"] [role="treeitem"]')?.offsetHeight ?? 0`,
+    );
+    const denseFont = await evaluate(`parseFloat(getComputedStyle(document.body).fontSize)`);
+    await evaluate(`document.querySelector('[aria-label="Presentation layout"]').click()`);
+    await waitFor(
+      evaluate,
+      `document.documentElement.getAttribute("data-density") === "roomy"`,
+      "the roomy density to stamp <html>",
+      10000,
+    );
+    const roomy = await evaluate(`(() => ({
+      stored: localStorage.getItem("isit.density"),
+      font: parseFloat(getComputedStyle(document.body).fontSize),
+      row: document.querySelector('[aria-label="Message structure"] [role="treeitem"]')?.offsetHeight ?? 0,
+      codeStillThere: document.body.innerText.includes("MSH|"),
+      verdictBar: !!document.querySelector('main [role="img"], main svg'),
+    }))()`);
+    assert.equal(roomy.stored, "roomy", "the density choice was not persisted");
+    assert.ok(roomy.font > denseFont, `type did not grow (dense ${denseFont}px, roomy ${roomy.font}px)`);
+    assert.ok(roomy.row > denseRow, `tree rows did not grow (dense ${denseRow}px, roomy ${roomy.row}px)`);
+    assert.ok(roomy.codeStillThere, "presentation mode hid the wire message");
+
     /* --- the other surfaces -------------------------------------------- */
     await evaluate(`[...document.querySelectorAll("button")].find((b) => b.textContent.trim() === "Explain").click()`);
     const rules = await waitFor(
@@ -199,6 +290,20 @@ test("the built app loads the compiled spec and works end to end", { skip }, asy
     await evaluate(`[...document.querySelectorAll("button")].find((b) => b.textContent.trim() === "Build").click()`);
     const profile = await waitFor(evaluate, `document.querySelectorAll("table tbody tr").length`, "the profile table", 25000);
     assert.ok(profile > 5, `Build rendered ${profile} rows`);
+    // Still roomy: the summary panel with the donut must be there, and the obligation chart.
+    await waitFor(evaluate, `!!document.querySelector('[aria-label="Build summary"]')`, "the roomy Build summary", 10000);
+    await waitFor(evaluate, `!!document.querySelector('[aria-label^="Obligations across"]')`, "the obligations chart", 10000);
+    const ignoredShown = await evaluate(`/Do not build/.test(document.querySelector("main").innerText)`);
+    assert.ok(ignoredShown, "Build no longer states what NPHIES ignores");
+
+    // Back to dense, and the app must follow.
+    await evaluate(`document.querySelector('[aria-label="Dense layout"]').click()`);
+    await waitFor(
+      evaluate,
+      `document.documentElement.getAttribute("data-density") !== "roomy"`,
+      "the dense density to return",
+      10000,
+    );
 
     await evaluate(`[...document.querySelectorAll("button")].find((b) => /Error Decoder/.test(b.textContent)).click()`);
     await waitFor(evaluate, `document.querySelectorAll("textarea").length`, "the decoder");
@@ -221,6 +326,15 @@ test("the built app loads the compiled spec and works end to end", { skip }, asy
 
     await evaluate(`[...document.querySelectorAll("button")].find((b) => b.textContent.trim() === "Coverage").click()`);
     await waitFor(evaluate, `document.body.innerText.includes("rules")`, "the coverage surface", 20000);
+    await waitFor(evaluate, `!!document.querySelector('[aria-label="Spec defects by kind"]')`, "the spec-defect chart", 15000);
+    // The SOAP pane used to colour a provenance SHARE with verdict colours; it is a bar now.
+    await evaluate(`[...document.querySelectorAll("main button")].find((b) => /^SOAP/.test(b.textContent.trim()))?.click()`);
+    await waitFor(
+      evaluate,
+      `!!document.querySelector('[aria-label="Independently sourced rules by element kind"]')`,
+      "the provenance bars",
+      15000,
+    );
 
     /* --- nothing threw along the way ----------------------------------- */
     assert.deepEqual(errors, [], `the page logged errors:\n${errors.join("\n")}`);
