@@ -1,5 +1,5 @@
 {
-  "$schema": "nphies-workbench/patch-xds-names@1",
+  "$schema": "isit/patch-xds-names@1",
   "generatedAt": "2026-09-15T00:00:00Z",
   "generator": "targeted XDS literal-recovery pass. Two rules in the compiled spec resolved against the golden samples while being wrong, and both are invisible to a resolution-rate metric: the ebRIM metadata attribute NAME an HIS must write into rim:ExternalIdentifier/rim:Name, and the literal value of rim:Association/@associationType. Every literal and every quote below was read out of spec-source/golden/SOAP/**.xml or spec-source/pages/17694743.json by script; nothing was retyped or recalled.",
   "closes": "gate-report.json byElementKind.xdsAssociationType (12 found / 0 resolved, because all three compiled fixedValue rows carried a null `value`) and byElementKind.xdsExternalIdentifierName (59 found / 59 'normalised', 0 exact, because the compiled spec stored only the bare attribute label).",

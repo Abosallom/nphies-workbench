@@ -65,7 +65,7 @@ Each was a confidently-wrong verdict or a hang, found by the round-trip or mutat
 ## Not done — pick up here
 
 1. **Create the repo and deploy.** `.github/workflows/deploy.yml` is ready, Vite `base` is
-   `/nphies-workbench/` under GitHub Actions, and `public/golden/` is committed so the build
+   `/ISIT/` under GitHub Actions, and `public/golden/` is committed so the build
    needs no `spec-source/`. Needs a GitHub repo to push to — ask before creating one.
 2. **HIS extract ingest** (`xlsx` is already a dependency): upload a spreadsheet, auto-map its
    columns onto the profile, and generate messages. `suggestColumnMapping` in `ai.ts` is

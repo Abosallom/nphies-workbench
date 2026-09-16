@@ -1,5 +1,5 @@
 {
- "$schema": "nphies-workbench/sample-defects@1",
+ "$schema": "isit/sample-defects@1",
  "generatedAt": "2026-09-15T20:01:45.174175Z",
  "what": "Defects found in the 60 OFFICIAL NPHIES sample messages themselves. These are faults in the published samples, not rules a HIS must follow. A hospital whose message was rejected after being copied from one of these files needs to know the sample was wrong.",
  "howToReadThis": [

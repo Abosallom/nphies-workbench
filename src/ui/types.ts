@@ -1,5 +1,5 @@
 /**
- * Shared presentational types for the NPHIES Workbench design system.
+ * Shared presentational types for the ISIT design system.
  *
  * NOTHING here knows about HL7, FHIR, CDA or SOAP. Every component in `src/ui`
  * takes data through these shapes, so the compiled spec (produced by sibling

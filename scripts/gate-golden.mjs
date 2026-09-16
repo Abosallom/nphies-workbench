@@ -2763,7 +2763,7 @@ function main() {
   }
 
   const report = {
-    $schema: "nphies-workbench/gate-report@1",
+    $schema: "isit/gate-report@1",
     generatedAt: startedAt,
     generator: "scripts/gate-golden.mjs",
     what: "Resolution gate: every structural element present in an OFFICIAL NPHIES sample must be KNOWN to the compiled spec in src/spec/. Unresolved identifiers mean the compiled spec is incomplete, not that the sample is wrong.",

@@ -163,10 +163,10 @@ export function Shell() {
           >
             N
           </span>
-          <span className="text-xs font-semibold tracking-tight">NPHIES Workbench</span>
+          <span className="text-xs font-semibold tracking-tight">ISIT</span>
         </span>
         <Badge mono className="shrink-0">
-          message structure
+          NPHIES message structure
         </Badge>
         <span className="hidden text-2xs text-ink-3 sm:inline">
           Nothing you paste leaves this browser.

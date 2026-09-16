@@ -39,7 +39,7 @@ const ROOT = resolve(HERE, '..');
 const IN_DIR = join(ROOT, 'spec-build');
 const OUT_DIR = join(ROOT, 'src', 'spec');
 
-const BUNDLE_SCHEMA = 'nphies-workbench/spec-bundle@1';
+const BUNDLE_SCHEMA = 'isit/spec-bundle@1';
 const BUNDLE_VERSION = 1;
 
 /** Collected non-fatal problems; surfaced in index.json#warnings. */

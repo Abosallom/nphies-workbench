@@ -1,5 +1,5 @@
 {
-  "$schema": "nphies-workbench/patch-literals@1",
+  "$schema": "isit/patch-literals@1",
   "artifact": "spec-build/patch-literals.json",
   "generatedAt": "2026-09-15",
   "purpose": "Corrects stored structural literals that the first-pass extractor mangled, so a validator matching on the stored string stops rejecting official NPHIES messages. Separates extractor mangling (corrections) from genuine defects in the published spec (specDefects), which are recorded, never silently fixed.",

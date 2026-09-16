@@ -1,5 +1,5 @@
 {
-  "$schema": "nphies-workbench/patch-fhir-entries@1",
+  "$schema": "isit/patch-fhir-entries@1",
   "generatedAt": "2026-09-15T00:00:00.000Z",
   "patchFor": "src/spec/structures.json messageStructures.<useCaseId>.root.members[kind=group].members[kind=entry]",
   "what": "Re-derived TRUE Bundle.entry resourceTypes for all 8 FHIR use cases. The compiled spec had put PROFILE names and row LABELS in the resourceType slot. Every corrected value is derived from, in order: the row's profile URL resolved through constants.json fhirProfiles, the row's guidance sentence, the ./resourceType fixed value on the resource's own Confluence page, and finally the official sample.",

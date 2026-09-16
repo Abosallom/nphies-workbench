@@ -1,5 +1,5 @@
 {
-  "$schema": "nphies-workbench/datatypes/v1",
+  "$schema": "isit/datatypes/v1",
   "artifact": "datatypes.json",
   "purpose": "HL7 v2.5.1 composite-datatype component dictionary for NPHIES message construction and structural validation. Layer 1 is the HL7 v2.5.1 standard component layout (provenance \"hl7-base\"); layer 2 is the NPHIES overlay extracted from the Confluence spec (provenance \"nphies-table\" / \"nphies-guidance\"), every overlay item carrying a verbatim quote.",
   "hl7Version": "2.5.1",

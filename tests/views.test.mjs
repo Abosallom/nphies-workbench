@@ -17,7 +17,7 @@ test("every view mounts and renders its own subject", async () => {
 
     const { Shell } = await load("/src/views/Shell.tsx");
     const shell = wrap(h(Shell));
-    for (const probe of ["NPHIES Workbench", "Check", "Explain", "Readiness", "Error Decoder", "Coverage"]) {
+    for (const probe of ["ISIT", "Check", "Explain", "Readiness", "Error Decoder", "Coverage"]) {
       assert.ok(shell.includes(probe), `the shell does not render "${probe}"`);
     }
 

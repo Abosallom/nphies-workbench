@@ -1,5 +1,5 @@
 {
-  "$schema": "nphies-workbench/patch-cda@1",
+  "$schema": "isit/patch-cda@1",
   "generatedAt": "2026-09-15",
   "generator": "CDA gap-closure pass (gate blockers: cdaHeaderElement typeId, section-not-in-structure x13, required-section-missing, cda-rad-order empty body)",
   "scope": "CDA only. Does not touch FHIR, HL7 v2 or SOAP/XDS.",

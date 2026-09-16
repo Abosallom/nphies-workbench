@@ -1,5 +1,5 @@
 {
-  "$schema": "nphies-workbench/patch-saml@1",
+  "$schema": "isit/patch-saml@1",
   "patchId": "patch-saml",
   "generatedBy": "SAML structure pass (gate blocker 1: saml-sso had no compiled MessageStructure)",
   "targets": {

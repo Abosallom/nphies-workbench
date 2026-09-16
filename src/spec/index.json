@@ -1,5 +1,5 @@
 {
-  "$schema": "nphies-workbench/spec-bundle@1",
+  "$schema": "isit/spec-bundle@1",
   "bundleVersion": 1,
   "counts": {
     "datatypes": 42,
@@ -275,7 +275,7 @@
     "valuesets/type-of-the-social-history-observation.json",
     "valuesets/vital-signs-observations.json"
   ],
-  "generatedAt": "2026-09-15T21:04:27.502Z",
+  "generatedAt": "2026-09-16T06:54:17.553Z",
   "generator": "scripts/compile-spec.mjs",
   "inputs": [
     {
@@ -319,76 +319,76 @@
       "sha256": "6ac77712b2b04cac95434a442704b0f2f36c5525640bc047d2eff6681ff645bf"
     },
     {
-      "bytes": 152476,
+      "bytes": 152464,
       "error": null,
       "kind": "extraction",
       "name": "spec-build/datatypes.json",
       "present": true,
-      "sha256": "a3f26bf3ae96ae23582e8646f9e6020e5847ad7dbaf95f70a5ec304d575912bf"
+      "sha256": "13c7da17868e282c357436f09d005d402fdd065ae98b8e55149d63ee1a7c931f"
     },
     {
-      "bytes": 738760,
+      "bytes": 738748,
       "error": null,
       "kind": "extraction",
       "name": "spec-build/golden.json",
       "present": true,
-      "sha256": "fd3e68342eb68fab16cfc225af8922e625c7a7d71006c2995e68617a42433063"
+      "sha256": "466a8c760d3465ba36d417396e60f5830c94d3ccb3dc2bc7f29bad3aa21af14a"
     },
     {
-      "bytes": 201252,
+      "bytes": 201240,
       "error": null,
       "kind": "repair-patch",
       "name": "spec-build/patch-xds-ebrim.json",
       "present": true,
-      "sha256": "7292a33ff3cd312d8eaea79c194c426160b3c89b3a7efdaf14bc9f0afa1e1bfa"
+      "sha256": "14dae16d36eadc30293ebb3446d27ed542d3a51cc0dd2e5e08fc0fbebc483742"
     },
     {
-      "bytes": 40450,
+      "bytes": 40438,
       "error": null,
       "kind": "repair-patch",
       "name": "spec-build/patch-xds-names.json",
       "present": true,
-      "sha256": "61aeb9828ce26c9cff2456c8ae33cbf8620b1f4a8294a4829f1807d4ec41730d"
+      "sha256": "718b21d6f5eb188afdfe393516e61eba6e2372148e2fd35b8b0b503e170a3807"
     },
     {
-      "bytes": 82509,
+      "bytes": 82497,
       "error": null,
       "kind": "repair-patch",
       "name": "spec-build/patch-literals.json",
       "present": true,
-      "sha256": "f7606b0f02600b45cc0d48bf087cb88cd86ccdcc4c5e847cf84cec83a1663585"
+      "sha256": "eb1d261dc6a712ddecdaf6aa06581c1a2bbebd62f23bc705ee89347e914e9e88"
     },
     {
-      "bytes": 216141,
+      "bytes": 216129,
       "error": null,
       "kind": "repair-patch",
       "name": "spec-build/patch-fhir-entries.json",
       "present": true,
-      "sha256": "ebdabfb9c3a56282be90e95d084ef00b13c7ebc054021a722f17749ea72e502f"
+      "sha256": "293992145ed40da668ce74158f54f340921081548faffddf6102e7782c2cce7d"
     },
     {
-      "bytes": 109735,
+      "bytes": 109723,
       "error": null,
       "kind": "repair-patch",
       "name": "spec-build/patch-cda.json",
       "present": true,
-      "sha256": "5f010a832798b1727e668e149d87aa5e09df80696c8854e8a55f475724437032"
+      "sha256": "d398ba49d01b021331c8cdd5d81e4074be0495597398f075a4bf17c4d1184963"
     },
     {
-      "bytes": 169655,
+      "bytes": 169643,
       "error": null,
       "kind": "repair-patch",
       "name": "spec-build/patch-saml.json",
       "present": true,
-      "sha256": "74c33eb2d04fda00ab7c3f00e485bac7fe771bafdba84ced4fe9e93b8d3d397f"
+      "sha256": "01857724581cd733e33ad0933ce23414fc4b549ba21f78f7600f7e9a703d87d6"
     },
     {
-      "bytes": 245654,
+      "bytes": 245642,
       "error": null,
       "kind": "repair-patch",
       "name": "spec-build/sample-defects.json",
       "present": true,
-      "sha256": "34d9745368bf8f26692ef9dc84ee8a597ccd4c122e5d71859a367e5efb721907"
+      "sha256": "671a48e7d84b26314cf67175ddf1a29e50ab3bc3e1a19ce0df3366ee8c0529a3"
     }
   ],
   "missingInputs": [],

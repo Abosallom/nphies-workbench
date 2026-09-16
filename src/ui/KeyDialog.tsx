@@ -9,7 +9,10 @@ import {
 import { Button } from "./Button";
 import { cx } from "./cx";
 
-export const API_KEY_STORAGE_KEY = "nphies-workbench.anthropic-api-key";
+export const API_KEY_STORAGE_KEY = "isit.anthropic-api-key";
+
+/** What the key was stored under before the tool was named ISIT. Read once, then migrated. */
+const LEGACY_API_KEY_STORAGE_KEY = "nphies-workbench.anthropic-api-key";
 
 /* ------------------------------------------------------------------ hook -- */
 
@@ -21,7 +24,19 @@ export const API_KEY_STORAGE_KEY = "nphies-workbench.anthropic-api-key";
 export function useApiKey(storageKey: string = API_KEY_STORAGE_KEY) {
   const [key, setKeyState] = useState<string>(() => {
     try {
-      return localStorage.getItem(storageKey) ?? "";
+      const current = localStorage.getItem(storageKey);
+      if (current) return current;
+      // Carry a key stored under the old product name across, rather than silently
+      // losing something the user had to paste in by hand.
+      if (storageKey === API_KEY_STORAGE_KEY) {
+        const legacy = localStorage.getItem(LEGACY_API_KEY_STORAGE_KEY);
+        if (legacy) {
+          localStorage.setItem(storageKey, legacy);
+          localStorage.removeItem(LEGACY_API_KEY_STORAGE_KEY);
+          return legacy;
+        }
+      }
+      return "";
     } catch {
       return "";
     }

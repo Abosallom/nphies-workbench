@@ -1,5 +1,5 @@
 /**
- * NPHIES Workbench design system.
+ * ISIT design system.
  *
  * Every component here is PRESENTATIONAL: props in, DOM out, no data fetching,
  * no knowledge of HL7 / FHIR / CDA / SOAP. Sibling agents should import from

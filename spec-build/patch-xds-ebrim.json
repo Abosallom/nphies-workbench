@@ -1,5 +1,5 @@
 {
-  "$schema": "nphies-workbench/patch-xds-ebrim@1",
+  "$schema": "isit/patch-xds-ebrim@1",
   "generatedAt": "2026-09-15T19:57:39.866280Z",
   "generator": "targeted XDS/ebRIM pass — empirical scan of the 19 official SOAP samples, cross-checked against IHE ITI TF-3 constants and Confluence pages 17596480 / 17694733 / 17694743 / 54788213 / 54689860",
   "closes": "gate-report.json byElementKind.xdsClassificationScheme (118 found / 0 resolved) and xdsIdentificationScheme (59 found / 0 resolved), plus the unmodelled ebXML RegistryObjectList payload under soapPath and the 4 unresolved xdsSlot names",

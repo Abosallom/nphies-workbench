@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 
 export type ThemeChoice = "system" | "light" | "dark";
 
-const STORAGE_KEY = "nphies-workbench.theme";
+const STORAGE_KEY = "isit.theme";
 
 /**
  * Explicit theme choice stamped on <html data-theme>. "system" removes the

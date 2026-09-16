@@ -1,5 +1,5 @@
 {
-  "$schema": "nphies-workbench/golden-index@1",
+  "$schema": "isit/golden-index@1",
   "generated": {
     "by": "golden-index agent",
     "sourceRoot": "spec-source/golden/",
