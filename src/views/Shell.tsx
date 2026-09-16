@@ -251,7 +251,7 @@ export function Shell() {
                 : "No Anthropic key stored. Every structural check works without one."
             }
           >
-            <Button onClick={() => setKeyOpen(true)}>{key ? "API key set" : "Set API key"}</Button>
+            <Button variant="ai" onClick={() => setKeyOpen(true)}>{key ? "API key set" : "Set API key"}</Button>
           </Tooltip>
           <Tooltip content="About ISIT — what it is for and what it promises.">
             <Button aria-label="About ISIT" onClick={welcome.reopen} className="font-mono">

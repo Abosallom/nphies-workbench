@@ -157,7 +157,7 @@ export function AdvisoryPanel({
 
   return (
     <section
-      className="shrink-0 border-t border-dashed border-line-strong bg-surface"
+      className="shrink-0 border-t border-dashed border-ai/50 bg-surface"
       data-advisory-panel
       aria-label="Model advisory"
     >
@@ -170,7 +170,7 @@ export function AdvisoryPanel({
         <span aria-hidden="true" className="font-mono text-2xs text-ink-3">
           {open ? "▾" : "▸"}
         </span>
-        <Badge mono>Model</Badge>
+        <Badge mono tone="ai">Model</Badge>
         <span className="text-xs font-medium text-ink">Second opinion and open questions</span>
         <span className="text-2xs text-ink-3">{summary}</span>
         <span className="ml-auto text-2xs text-ink-3">{DISCLAIMER}</span>
@@ -254,7 +254,7 @@ function SendControls({
   return (
     <div className="flex flex-col gap-1">
       <div className="flex flex-wrap items-center gap-1.5">
-        <Button size="xs" onClick={onRun} disabled={disabled || busy}>
+        <Button size="xs" variant="ai" onClick={onRun} disabled={disabled || busy}>
           {busy ? "Asking…" : label}
         </Button>
         <span className="text-2xs text-ink-3">
@@ -439,7 +439,7 @@ function AdvisoryCard({
 }) {
   const head = a.verdict ? `Model ${VERDICT_WORD[a.verdict]}` : "Model observes";
   return (
-    <article className="rounded-sm border border-dashed border-line-strong bg-raised p-2 text-xs" data-advisory-card data-verdict={a.verdict ?? "observation"}>
+    <article className="rounded-sm border border-dashed border-ai/50 bg-raised p-2 text-xs" data-advisory-card data-verdict={a.verdict ?? "observation"}>
       <div className="flex flex-wrap items-baseline gap-x-2">
         <span className="font-medium text-ink">{head}</span>
         <span className="text-2xs text-ink-3">model confidence: {CONFIDENCE_WORD[a.modelConfidence]}</span>
@@ -607,9 +607,9 @@ function Proposal({
   const rule = a.ruleIds[0] ? gap.options.find((o) => o.type === "rule" && o.ruleId === a.ruleIds[0]) : undefined;
   const action = a.action;
   return (
-    <div className="mt-1.5 rounded-sm border border-dashed border-line-strong bg-surface p-2" data-advisory-card>
+    <div className="mt-1.5 rounded-sm border border-dashed border-ai/50 bg-surface p-2" data-advisory-card>
       <div className="flex flex-wrap items-baseline gap-x-2">
-        <Badge mono>Model</Badge>
+        <Badge mono tone="ai">Model</Badge>
         <span className="text-2xs text-ink-3">model confidence: {CONFIDENCE_WORD[a.modelConfidence]}</span>
       </div>
       <p className="mt-0.5 text-ink">{a.reasoning || a.claim}</p>

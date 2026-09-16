@@ -16,7 +16,7 @@ import { Tooltip } from "./Tooltip";
 export interface BadgeProps {
   children: ReactNode;
   /** Neutral by default; `tone` opts into the reserved severity palette. */
-  tone?: Severity | "neutral" | "accent";
+  tone?: Severity | "neutral" | "accent" | "ai";
   mono?: boolean;
   title?: string;
   className?: string;
@@ -25,6 +25,8 @@ export interface BadgeProps {
 const TONE: Record<string, string> = {
   neutral: "bg-inset text-ink-2 border-line",
   accent: "bg-accent-soft text-accent border-transparent",
+  /* The model's own colour — see the `ai` Button variant. */
+  ai: "bg-ai-soft text-ai border-transparent",
   error: SEV_CHIP.error + " border-transparent",
   warn: SEV_CHIP.warn + " border-transparent",
   ok: SEV_CHIP.ok + " border-transparent",

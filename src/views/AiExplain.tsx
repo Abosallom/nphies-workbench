@@ -94,9 +94,9 @@ export function AiExplain({ finding, structure, skeletonWindow, windowLine }: Ai
   if (state.result) {
     const r = state.result;
     return (
-      <div className="rounded-sm border border-dashed border-line-strong bg-inset p-2 text-xs" data-advisory>
+      <div className="rounded-sm border border-dashed border-ai/50 bg-inset p-2 text-xs" data-advisory>
         <div className="mb-1 flex items-center gap-1.5">
-          <Badge mono>Model</Badge>
+          <Badge mono tone="ai">Model</Badge>
           <span className="text-2xs text-ink-3">model confidence: {r.confidence}</span>
           <button
             type="button"
@@ -133,7 +133,7 @@ export function AiExplain({ finding, structure, skeletonWindow, windowLine }: Ai
   return (
     <div className="flex flex-col gap-1">
       <div className="flex flex-wrap items-center gap-1.5">
-        <Button size="xs" onClick={run} disabled={state.loading}>
+        <Button size="xs" variant="ai" onClick={run} disabled={state.loading}>
           {state.loading ? "Asking…" : "Explain for my HIS team"}
         </Button>
         <span className="text-2xs text-ink-3">{sends}</span>

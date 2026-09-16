@@ -431,12 +431,13 @@ export function IngestView({
                 className={cx("rounded-sm border border-dashed border-line-strong p-2", roomy ? "space-y-2" : "space-y-1.5")}
               >
                 <div className="flex flex-wrap items-center gap-1.5">
-                  <Badge>Model</Badge>
+                  <Badge tone="ai">Model</Badge>
                   <span className="text-2xs text-ink-2">Model opinion — not a structural verdict. Nothing here changes the findings.</span>
                 </div>
                 <div className="flex flex-wrap items-center gap-1.5">
                   <Button
                     size="xs"
+                    variant="ai"
                     onClick={ask}
                     disabled={!key || asking || !columnsToAsk.length || mappingIsStale}
                   >

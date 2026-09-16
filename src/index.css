@@ -63,6 +63,9 @@
   --color-accent: var(--nw-accent);
   --color-accent-ink: var(--nw-accent-ink);
   --color-accent-soft: var(--nw-accent-soft);
+  --color-ai: var(--nw-ai);
+  --color-ai-ink: var(--nw-ai-ink);
+  --color-ai-soft: var(--nw-ai-soft);
   --color-focus: var(--nw-focus);
   --color-sel: var(--nw-sel);
   --color-sel-line: var(--nw-sel-line);
@@ -153,6 +156,14 @@
   --nw-cat-3: #0891b2;
   --nw-cat-4: #9333ea;
 
+  /* AI affordances — one hue for everything a model touches, so an analyst can tell at a
+     glance which button asks a model and which reads the specification. Deliberately not a
+     severity, not the accent (that means "selected"), not a chart slot. */
+  --nw-ai: #7c3aed;
+  --nw-ai-ink: #ffffff;
+  --nw-ai-soft: #f1ebff;
+  --nw-ai-glow: rgba(124, 58, 237, 0.45);
+
   --nw-syn-punct: #9aa1ab;
   --nw-syn-name: #1f4fb8;
   --nw-syn-key: #7b3fa0;
@@ -204,6 +215,10 @@
     --nw-cat-2: #e0468f;
     --nw-cat-3: #0ea5c4;
     --nw-cat-4: #9b5de5;
+  --nw-ai: #a78bfa;
+  --nw-ai-ink: #0c0e12;
+  --nw-ai-soft: #251a45;
+  --nw-ai-glow: rgba(167, 139, 250, 0.55);
 
     --nw-syn-punct: #5b6475;
     --nw-syn-name: #7fb0ff;
@@ -256,6 +271,10 @@
   --nw-cat-2: #e0468f;
   --nw-cat-3: #0ea5c4;
   --nw-cat-4: #9b5de5;
+  --nw-ai: #a78bfa;
+  --nw-ai-ink: #0c0e12;
+  --nw-ai-soft: #251a45;
+  --nw-ai-glow: rgba(167, 139, 250, 0.55);
 
   --nw-syn-punct: #5b6475;
   --nw-syn-name: #7fb0ff;
@@ -398,6 +417,20 @@ textarea {
 }
 *::-webkit-scrollbar-corner {
   background: transparent;
+}
+
+/*
+ * The AI glow. Every control that sends something to a model wears it, and nothing else does:
+ * the halo IS the disclosure. It breathes slowly rather than flashes, and the reduced-motion
+ * block below freezes it to a steady ring.
+ */
+@keyframes ai-breathe {
+  0%, 100% { box-shadow: 0 0 0 1px var(--nw-ai), 0 0 6px 0 var(--nw-ai-glow); }
+  50%      { box-shadow: 0 0 0 1px var(--nw-ai), 0 0 14px 2px var(--nw-ai-glow); }
+}
+@utility ai-glow {
+  box-shadow: 0 0 0 1px var(--nw-ai), 0 0 10px 1px var(--nw-ai-glow);
+  animation: ai-breathe 2.6s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {

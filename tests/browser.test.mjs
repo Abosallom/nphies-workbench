@@ -314,6 +314,21 @@ test("the built app loads the compiled spec and works end to end", { skip }, asy
     assert.ok(advisory.footerRedacted, "the AI footer no longer says its excerpt is redacted");
     assert.equal(advisory.panelSeverityClasses, 0, "a verdict colour leaked into the advisory region");
 
+    /* --- every AI control wears the AI colour and glow; no deterministic control does ---- */
+    const aiMarks = await evaluate(`(() => {
+      const ai = [...document.querySelectorAll("button[data-ai]")];
+      const glowing = ai.filter((b) => /ai-glow/.test(b.className)).length;
+      const labels = ai.map((b) => b.textContent.trim().slice(0, 32));
+      // "Check structure" and "Re-check as …" are deterministic: they must NOT carry the mark.
+      const deterministicMarked = [...document.querySelectorAll("button")].filter(
+        (b) => /^(Check structure|Re-check as)/.test(b.textContent.trim()) && b.hasAttribute("data-ai"),
+      ).length;
+      return { count: ai.length, glowing, labels, deterministicMarked };
+    })()`);
+    assert.ok(aiMarks.count >= 2, `expected the API-key button and the finding explainers to be marked as AI, found ${aiMarks.count}: ${aiMarks.labels.join(" | ")}`);
+    assert.equal(aiMarks.glowing, aiMarks.count, "an AI control is marked but not glowing");
+    assert.equal(aiMarks.deterministicMarked, 0, "a deterministic control wears the AI mark");
+
     /* --- the other surfaces -------------------------------------------- */
     await evaluate(`[...document.querySelectorAll("button")].find((b) => b.textContent.trim() === "Explain").click()`);
     const rules = await waitFor(
