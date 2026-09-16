@@ -118,6 +118,10 @@ const EXPECTED_ERROR_CODES = new Set([
   "parse-diagnostic",
   "quarantined-oid",
   "required-field-missing",
+  // A published fixed value that the published sample does not carry is the same kind of
+  // contradiction as a required element the sample omits; it entered the set when the checker
+  // started reaching CDA section rows (Immunization Summary's section title).
+  "fixed-value-mismatch",
 ]);
 
 test("checking an official sample produces no unaccounted-for error", async () => {
@@ -129,7 +133,7 @@ test("checking an official sample produces no unaccounted-for error", async () =
       if (f.severity !== "error") continue;
       if (!EXPECTED_ERROR_CODES.has(f.code)) {
         unexpected.push(`${c.sample.fileName}: [${f.code}] ${f.title}`);
-      } else if (f.code === "required-field-missing") {
+      } else if (f.code === "required-field-missing" || f.code === "fixed-value-mismatch") {
         // Counted per RULE, not per sample: two samples of the same structure hitting the
         // same contradiction is one contradiction.
         const key = `${c.structure.id}: ${f.title}`;
@@ -147,6 +151,15 @@ test("checking an official sample produces no unaccounted-for error", async () =
       // The NoInfo rendering of the immunization card exists precisely to say the patient has
       // no immunization record, yet the compiled section rule marks the section required.
       "cda-immunization-card-noinfo: Immunization Recommendations is required but missing",
+      // Page 16777781 row 48.4: the Medication Risk Factors section title SHALL be
+      // "Medication Risk Factors List". Both official Immunization Summary samples carry
+      // "Medications Risk Factor List" — the sample's typo, reported with expected and actual.
+      'cda-immunization-summary-full: ./title Title must be "Medication Risk Factors List"',
+      'cda-immunization-summary-noinfo: ./title Title must be "Medication Risk Factors List"',
+      // Page 23199954 Table 138 row 2.8 requires the Data Processing entry as a DIRECT child of
+      // the Laboratory Specialty Section (child axis ./entry). The official sample nests every
+      // one of them inside the Laboratory Order Specialty sub-section instead.
+      "cda-lab-result: ./entry[templateId='2.16.840.1.113883.3.3731.1.105.3'] Laboratory Order Data Processing Entry is required but missing",
       // The published radiology-report bundles require entries their own official samples do
       // not carry — the PDF sample is named "NoImages" and carries no ImagingStudy, and the
       // structured sample carries no DiagnosticReport at all.

@@ -26,7 +26,9 @@ import {
   type UsageRule,
 } from "./structure";
 import { toUiFinding, type Finding } from "./check";
+import { isLexicalLabel } from "./parse/cda";
 import type { Finding as UiFinding, Region, Severity, StructureNode, UsageRule as UiUsageRule } from "../ui/types";
+import type { AnatomyBlock } from "../ui/charts/types";
 
 /* ---------------------------------------------------------------- severity */
 
@@ -235,6 +237,210 @@ export function adaptMessage(tree: StructureTree, findings: readonly Finding[]):
     return toUiFinding(f, regionId && drawn.has(regionId) ? regionId : undefined) as UiFinding;
   });
   return { regions, tree: roots, findings: ui, nodeCount: indexed.length };
+}
+
+/* ================================================================== anatomy */
+
+export interface AdaptedAnatomy {
+  /** Document order. At most {@link MAX_BLOCKS}, the last one a "+N more" fold when needed. */
+  blocks: AnatomyBlock[];
+  /** How many blocks the trailing fold stands for; `0` when every block is drawn. */
+  folded: number;
+  /**
+   * Findings no block's counts include — attached above or beside every block (the message
+   * root, a lexical sibling) or attached to nothing at all. Reported so the map can say it is
+   * not showing the whole verdict rather than let the tiles imply it is.
+   */
+  unplaced: number;
+  /** Nodes in the whole tree, so the blocks' `nodeCount`s can be read as shares. */
+  nodeCount: number;
+}
+
+/**
+ * Where the map stops. Sixty tiles is roughly what still reads as a map rather than a
+ * texture, and every family's official sample fits under it except a long bundle — whose
+ * tail is folded, and said to be folded, never dropped.
+ */
+export const MAX_BLOCKS = 60;
+
+/**
+ * Is this node something the anatomy map should tile?
+ *
+ * Lexical nodes (`#text`, `#decl`, `#comment`…) are the parser accounting for every byte so
+ * that emit is exact, not anatomy; and an attribute is part of its element's start tag, so
+ * listing it as a sibling would put five `xmlns` tiles beside `soap:Body`.
+ */
+function isAnatomical(node: TreeNode): boolean {
+  return node.kind !== "attribute" && !isLexicalLabel(node.label);
+}
+
+interface Candidate {
+  node: TreeNode;
+  /** The node whose children the block was taken from — the fold selects it. */
+  parent: TreeNode;
+}
+
+/**
+ * Pick the nodes that are the message's blocks, by one family-agnostic rule measured against
+ * the real trees: descend while there is exactly one anatomical child (past `#decl`/`#text`
+ * to `ClinicalDocument`, past `soap:Envelope`), stop at the first level with two or more.
+ *
+ * Then, because a bundle's content is INSIDE `entry`, a block whose anatomical children are
+ * all entries or repetitions is replaced by those children — the map should show
+ * `MessageHeader`, `Patient`, `Practitioner`, not the word "entry".
+ */
+function blockCandidates(root: TreeNode): Candidate[] {
+  let parent = root;
+  let kids = root.children.filter(isAnatomical);
+  while (kids.length === 1) {
+    parent = kids[0];
+    kids = parent.children.filter(isAnatomical);
+  }
+  // A message that is one leaf all the way down is its own single block.
+  if (!kids.length) return parent === root ? [] : [{ node: parent, parent: root }];
+
+  const out: Candidate[] = [];
+  for (const node of kids) {
+    const inner = node.children.filter(isAnatomical);
+    if (inner.length && inner.every((c) => c.kind === "entry" || c.kind === "repetition")) {
+      for (const c of inner) out.push({ node: c, parent: node });
+    } else out.push({ node, parent });
+  }
+  return out;
+}
+
+/**
+ * The tile's two lines. An HL7 segment node is labelled by its spec name ("Patient
+ * Identification") and carries the wire code only in its locator; a FHIR entry node is the
+ * word "entry" wrapping the resource whose type is the name an integrator recognises. Both
+ * put the wire name on the tile and the other name under it.
+ */
+function blockLabels(node: TreeNode): Pick<AnatomyBlock, "label" | "detail"> {
+  if (node.kind === "segment" && node.locator?.kind === "hl7Field") {
+    return { label: node.locator.segment, detail: node.label };
+  }
+  if (node.kind === "entry") {
+    const resource = node.children.find((c) => c.kind === "resource");
+    if (resource) {
+      return resource.label === node.label ? { label: resource.label } : { label: resource.label, detail: node.label };
+    }
+  }
+  const spec = node.spec?.label;
+  return spec && spec !== node.label ? { label: node.label, detail: spec } : { label: node.label };
+}
+
+interface Measure {
+  count: number;
+  start: number;
+  end: number;
+  line: number;
+  severity: Severity | null;
+  counts: Record<Severity, number>;
+  placed: number;
+}
+
+function emptyMeasure(): Measure {
+  return {
+    count: 0,
+    start: Infinity,
+    end: -Infinity,
+    line: Infinity,
+    severity: null,
+    counts: { error: 0, warn: 0, ok: 0, ignored: 0, info: 0 },
+    placed: 0,
+  };
+}
+
+/**
+ * Fold one subtree into `m`. The span is the union over the subtree rather than the block
+ * node's own `loc`, because the parsers disagree on what an element's location is: the CDA
+ * parser spans the whole element, the XDS parser spans the start tag only — `soap:Header`
+ * measured 13 bytes before this. Every block is a disjoint subtree, so over all blocks this
+ * visits each node once.
+ */
+function measure(node: TreeNode, byNode: ReadonlyMap<string, Finding[]>, m: Measure): void {
+  m.count++;
+  const loc = node.loc;
+  if (loc) {
+    if (loc.offset !== undefined && loc.offset < m.start) m.start = loc.offset;
+    if (loc.endOffset !== undefined && loc.endOffset > m.end) m.end = loc.endOffset;
+    if (loc.line < m.line) m.line = loc.line;
+  }
+  const found = byNode.get(node.id);
+  if (found) {
+    for (const f of found) {
+      m.counts[f.severity]++;
+      m.severity = m.severity === null ? f.severity : worst(m.severity, f.severity);
+    }
+    m.placed += found.length;
+  }
+  for (const child of node.children) measure(child, byNode, m);
+}
+
+function toBlock(id: string, labels: Pick<AnatomyBlock, "label" | "detail">, regionOf: TreeNode | null, m: Measure): AnatomyBlock {
+  const block: AnatomyBlock = {
+    id,
+    ...labels,
+    nodeCount: m.count,
+    bytes: m.end > m.start ? m.end - m.start : 0,
+    firstLine: m.line === Infinity ? 1 : m.line,
+    severity: m.severity ?? "info",
+    counts: m.counts,
+  };
+  // Same rule as the code pane's regions: a zero-width location has nothing to select.
+  if (regionOf?.loc && regionOf.loc.endCol > regionOf.loc.startCol) block.regionId = regionOf.id;
+  return block;
+}
+
+/**
+ * Turn a parsed tree plus its findings into the blocks the anatomy map tiles.
+ *
+ * Severity is attached exactly as {@link adaptMessage} attaches it — same index, same
+ * location-then-specNodeId lookup — so a tile can never disagree with the tree row it
+ * stands for. One pass over the tree after the index; nothing here is quadratic, and it runs
+ * on a 5000-node CDA on every check.
+ */
+export function adaptAnatomy(tree: StructureTree, findings: readonly Finding[]): AdaptedAnatomy {
+  const indexed = indexTree(tree);
+  const { byNode } = attachFindings(findings, indexed);
+
+  const candidates = blockCandidates(tree.root);
+  const shown = candidates.length > MAX_BLOCKS ? MAX_BLOCKS - 1 : candidates.length;
+
+  const blocks: AnatomyBlock[] = [];
+  let placed = 0;
+  for (let i = 0; i < shown; i++) {
+    const { node } = candidates[i];
+    const m = emptyMeasure();
+    measure(node, byNode, m);
+    placed += m.placed;
+    blocks.push(toBlock(node.id, blockLabels(node), node, m));
+  }
+
+  const folded = candidates.length - shown;
+  if (folded) {
+    const m = emptyMeasure();
+    let parent: TreeNode | null = candidates[shown].parent;
+    for (let i = shown; i < candidates.length; i++) {
+      const c = candidates[i];
+      measure(c.node, byNode, m);
+      if (c.parent !== parent) parent = null;
+    }
+    placed += m.placed;
+    // Clicking the fold selects the container the folded blocks share (`Bundle.entry`),
+    // or the message itself when they do not share one; there is no id that means "the rest".
+    const target = parent ?? tree.root;
+    blocks.push(
+      toBlock(
+        target.id,
+        { label: `+${folded} more`, detail: `${folded} further blocks after the first ${shown}` },
+        target,
+        m,
+      ),
+    );
+  }
+
+  return { blocks, folded, unplaced: findings.length - placed, nodeCount: indexed.length };
 }
 
 

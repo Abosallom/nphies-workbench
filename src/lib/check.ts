@@ -418,13 +418,120 @@ function attributeNameOf(member: StructureMember): string | null {
 
 /** Walk down from each scope node by wire name, then optionally into an attribute. */
 function descendByName(scope: readonly TreeNode[], steps: readonly string[], attribute: string | null): TreeNode[] {
+  return descendByPath(
+    scope,
+    steps.map((name) => ({ name })),
+    attribute,
+  );
+}
+
+/** One step of a compiled CDA path, with the predicates the section tables actually use. */
+interface PathStep {
+  name: string;
+  /** 1-based position among same-named siblings, from `[n]`. */
+  index?: number;
+  /** From `[templateId='…']` or `[templateId/@root='…']`. */
+  templateId?: string;
+  /** From `[@attr='value']`. */
+  attr?: { name: string; value: string };
+}
+
+/**
+ * The steps of a RELATIVE compiled CDA path, predicates kept: `./entry[templateId='2.16…']`,
+ * `./templateId[2]`. Anything else — an absolute path, an alternation, a predicate this does
+ * not understand — returns `null`, and the caller has no fallback. That is the honest
+ * outcome: matching by name alone would let any entry stand in for the one the row asked
+ * for. A cardinality decoration such as `[1..*]` is spec prose, not a filter, and is dropped.
+ */
+function relativePathSteps(path: string): PathStep[] | null {
+  if (!path.startsWith("./")) return null;
+  const raws: string[] = [];
+  let depth = 0;
+  let buf = "";
+  for (const ch of path.slice(2)) {
+    if (ch === "[") depth++;
+    else if (ch === "]") depth--;
+    if (ch === "/" && depth === 0) {
+      raws.push(buf);
+      buf = "";
+      continue;
+    }
+    buf += ch;
+  }
+  raws.push(buf);
+  const steps: PathStep[] = [];
+  for (const raw of raws) {
+    const open = raw.indexOf("[");
+    const name = (open < 0 ? raw : raw.slice(0, open)).trim();
+    if (!name || name === "." || name.includes("|")) return null;
+    const step: PathStep = { name };
+    if (open >= 0) {
+      for (const m of raw.slice(open).matchAll(/\[([^\]]*)\]/g)) {
+        const pred = m[1].trim().replace(/[‘’]/g, "'").replace(/[“”]/g, '"');
+        if (/^\d+$/.test(pred)) {
+          step.index = Number(pred);
+          continue;
+        }
+        if (/^\d+\.\.(\d+|\*)$/.test(pred)) continue;
+        const tid = /^templateId(?:\/@root)?\s*=\s*['"]([^'"]+)['"]$/.exec(pred);
+        const at = /^@([-\w.:]+)\s*=\s*['"]([^'"]*)['"]$/.exec(pred);
+        if (tid) step.templateId = tid[1];
+        else if (at) step.attr = { name: at[1], value: at[2] };
+        else return null;
+      }
+    }
+    steps.push(step);
+  }
+  return steps.length ? steps : null;
+}
+
+/**
+ * The templateId roots an element declares.
+ *
+ * A CDA `<entry>` declares none of its own: the template lives on the one clinical statement
+ * inside it (`entry/organizer/templateId`), and that is what a section table's
+ * `./entry[templateId='…']` row means — no official sample puts a templateId on the wrapper.
+ * The parser reads the predicate on the wrapper itself and so never links those rows; read
+ * literally here too, every entry row of every section was "required but missing" on every
+ * official document. An element with no templateIds of its own answers with its children's.
+ */
+function templateIdRootsOf(node: TreeNode): string[] {
+  const own = (n: TreeNode): string[] => {
+    const out: string[] = [];
+    for (const child of n.children) {
+      if (child.kind === "attribute" || child.present === false || wireNameOf(child) !== "templateId") continue;
+      const root = attributeValue(child, "root");
+      const value = root ? valueOf(root) : null;
+      if (value) out.push(value);
+    }
+    return out;
+  };
+  const direct = own(node);
+  if (direct.length) return direct;
+  const out: string[] = [];
+  for (const child of node.children) {
+    if (child.kind === "attribute" || child.present === false || isLexicalNode(child)) continue;
+    out.push(...own(child));
+  }
+  return out;
+}
+
+/** Walk down from each scope node along `steps`, honouring each step's predicates. */
+function descendByPath(scope: readonly TreeNode[], steps: readonly PathStep[], attribute: string | null): TreeNode[] {
   let level: TreeNode[] = [...scope];
   for (const step of steps) {
     const next: TreeNode[] = [];
     for (const node of level) {
       for (const child of node.children) {
-        if (child.present === false || child.kind === "attribute") continue;
-        if (wireNameOf(child) === step) next.push(child);
+        if (child.present === false || child.kind === "attribute" || isLexicalNode(child)) continue;
+        if (wireNameOf(child) !== step.name) continue;
+        if (step.index !== undefined && child.occurrence + 1 !== step.index) continue;
+        if (step.templateId !== undefined && !templateIdRootsOf(child).includes(step.templateId)) continue;
+        if (step.attr) {
+          const attr = attributeValue(child, step.attr.name);
+          if (!attr || valueOf(attr) !== step.attr.value) continue;
+        }
+        next.push(child);
       }
     }
     if (!next.length) return [];
@@ -587,6 +694,20 @@ function matchSpecNode(index: TreeIndex, node: SpecNode, scope: TreeNode[] | nul
       if (hit.length) return hit;
     }
   }
+  // A relative row — `./code`, `./entry[templateId='…']` — names a path inside the scope, and
+  // the parser indexes every node under its absolute path, so no key above can meet it: the
+  // id lookup is the only thing that did, and only where the parser linked the node. Where
+  // it did not, walking the path down from the scope with its predicates intact is what the
+  // row means. Same reasoning as the member-level fallback in matchInstances.
+  if (scope?.length) {
+    for (const locator of locators) {
+      if (locator.kind !== "cdaXPath") continue;
+      const steps = relativePathSteps(locator.path);
+      if (!steps) continue;
+      const hit = instancesFrom(index, descendByPath(scope, steps, locator.attribute ?? null));
+      if (hit.length) return hit;
+    }
+  }
   return [];
 }
 
@@ -599,6 +720,28 @@ function valueOf(node: TreeNode): string | null {
   if (node.value !== null && node.value !== undefined) return node.value;
   if (typeof node.raw === "string") return node.raw;
   return null;
+}
+
+/**
+ * The one value a whole-field rule is compared against, or `null` when the node has none.
+ *
+ * A leaf carries it in `value`. An XML element that holds nothing but text —
+ * `<title>Chief Complaint</title>` — carries it in its `#text` children, and its own `raw`
+ * is the source markup, tags included; comparing THAT to "Chief Complaint" would flag the
+ * title of every section of every official CDA sample. An element with element children
+ * has no single value, and saying so beats comparing markup. Surrounding whitespace is not
+ * compared: nothing published says NPHIES matches a title byte for byte.
+ */
+function wholeValueOf(node: TreeNode): string | null {
+  if (node.value !== null && node.value !== undefined) return node.value;
+  if (node.kind !== "element") return valueOf(node);
+  let text = "";
+  for (const child of node.children) {
+    if (child.kind === "attribute") continue;
+    if (!isLexicalNode(child)) return null;
+    if (child.label === "#text" || child.label === "#cdata") text += child.value ?? "";
+  }
+  return text.trim();
 }
 
 /** Present in the message but carrying nothing — HL7's `||`, an empty XML element. */
@@ -1703,13 +1846,59 @@ function longestNonDecreasingRun(values: number[]): Set<number> {
  * Field tables: per-SpecNode usage, fixed values, composites, value sets
  * ========================================================================== */
 
-function specNodesFor(state: RunState, member: StructureMember): SpecNode[] {
+/** The section templateIds a section table pins: the `@root` its `./templateId[n]` rows fix. */
+function pinnedSectionTemplateIds(table: FieldTable): string[] {
+  const out: string[] = [];
+  for (const root of table.nodes) {
+    for (const row of [root, ...root.children]) {
+      if (!row.locator || lastStepOf(row.locator) !== "templateId") continue;
+      for (const rule of row.fixedValues) {
+        if (rule.scope === "attribute" && rule.attribute === "root" && rule.value) out.push(rule.value);
+      }
+    }
+  }
+  return out;
+}
+
+/**
+ * The rows of the field tables a member cites.
+ *
+ * A section table is applied only when it describes THIS section. The compiled immunization
+ * summary cites the Immunization Serology table (templateId …100.87) from its List of
+ * Surgeries member (…100.7), and judging the section by that table reported its templateId,
+ * code and title as wrong when they are not — four confident errors about a conformant
+ * official document. Every table pins the section templateId it describes, so the mismatch
+ * is detectable, and a table that describes another section is reported and skipped rather
+ * than applied. 176 of the 179 compiled citations agree with their table.
+ */
+function specNodesFor(state: RunState, member: StructureMember, path: string): SpecNode[] {
   const tables = state.opts.tables;
   if (!tables?.size || !member.specRefs?.length) return [];
   const out: SpecNode[] = [];
   for (const ref of member.specRefs) {
     const table = tables.get(ref.ref);
     if (!table) continue;
+    if (member.kind === "section" && member.templateIds.length) {
+      const pinned = pinnedSectionTemplateIds(table);
+      if (pinned.length && !pinned.some((oid) => member.templateIds.includes(oid))) {
+        state.checksSkipped.push(`field table ${ref.ref} on ${member.label}: it describes a different section`);
+        state.sink.push({
+          code: "structure-caveat",
+          severity: "info",
+          title: `${member.label}: the compiled structure cites a field table for a different section; it was NOT applied`,
+          detail:
+            `Table ${ref.ref} pins templateId ${pinned.join(" / ")}, but this section is identified by ` +
+            `${member.templateIds.join(" / ")}. Judged by that table the section's templateId, code and title ` +
+            "would all read as wrong when they are not, so its rows were skipped. The section's own presence was still judged.",
+          path,
+          memberId: member.id,
+          provenance: { pageId: null, pageTitle: null, row: null, quote: `structure ${state.structure.id}` },
+          caveat: "This is a defect in the compiled specification, not in the message.",
+          confidence: "high",
+        });
+        continue;
+      }
+    }
     for (const node of table.nodes) out.push(node);
   }
   return out;
@@ -1756,28 +1945,186 @@ function reconcileByLocation(nodes: SpecNode[], ctx: VariantContext): Reconciled
   return out;
 }
 
+/**
+ * Fields the CDA repair pass added to section members that `structure.ts` does not declare;
+ * the CDA parser reads the same two. `entryConstraintWaived` is set on every section of a
+ * NoInfo rendering, `noInfoFlagTemplateId` is the extra templateId that flags one section
+ * as "no information available".
+ */
+interface SectionExtras {
+  entryConstraintWaived?: boolean;
+  noInfoFlagTemplateId?: string | null;
+}
+
+/** The element a CDA path ends at, predicates stripped: `./entry[templateId='…']` -> `entry`. */
+function lastStepOf(locator: SpecLocator): string | null {
+  if (locator.kind !== "cdaXPath" || locator.attribute) return null;
+  return lastStep(locator.path) || null;
+}
+
+/**
+ * The templateId roots that flag a section as "no information available".
+ *
+ * NPHIES marks an empty section of an on-demand document with one EXTRA templateId — the
+ * section's own nphies templateId with `.1` appended; all 17 compiled section tables that
+ * carry such a row pin exactly `<section root>.1`. The compiled NoInfo structures name that
+ * OID on the member (`noInfoFlagTemplateId`); a Full structure and the single-shape
+ * documents name nothing, so the `.1` convention is what lets a flag be recognised there.
+ */
+function noInfoFlagRootsOf(member: StructureMember): Set<string> {
+  const roots = new Set<string>();
+  const flag = (member as SectionExtras).noInfoFlagTemplateId;
+  if (flag) roots.add(flag);
+  if (member.kind === "section") for (const oid of member.templateIds) roots.add(`${oid}.1`);
+  return roots;
+}
+
+/** The templateId roots the instance declares directly (not its children's — see templateIdRootsOf). */
+function ownTemplateIdRoots(instance: TreeNode): string[] {
+  const out: string[] = [];
+  for (const child of instance.children) {
+    if (child.kind === "attribute" || child.present === false || wireNameOf(child) !== "templateId") continue;
+    const root = attributeValue(child, "root");
+    const value = root ? valueOf(root) : null;
+    if (value) out.push(value);
+  }
+  return out;
+}
+
+/**
+ * Whether this section instance's `<entry>` requirement is waived.
+ *
+ * NPHIES flags an empty section with an extra templateId, NOT with @nullFlavor, and the
+ * flagged section stays required while only its entries are excused. The compiled NoInfo
+ * structures say so on the member; a Full structure does not, so the document is consulted
+ * too — a NoInfo section pasted against the Full shape must not be told its entries are
+ * missing. Until the section tables were actually reached (see checkSpecNodesUnder) no entry
+ * row was ever judged and the waiver never mattered here.
+ */
+function entryRequirementWaived(member: StructureMember, instance: TreeNode): boolean {
+  if ((member as SectionExtras).entryConstraintWaived === true) return true;
+  const flags = noInfoFlagRootsOf(member);
+  return ownTemplateIdRoots(instance).some((root) => flags.has(root));
+}
+
+/**
+ * Whether a section carries clinical content, in the sense the NoInfo flag row negates.
+ *
+ * For a section whose table requires `<entry>` rows, the entries are the content: the
+ * official NoInfo sample renders an empty section as the flag plus `<text>No information
+ * available</text>`, so a narrative alone proves nothing there. Where no entry is required
+ * (Visible Implanted Medical Devices, Assessment and Plan, Family Medical History; Care Plan
+ * with its three optional entries) the `<text>` IS the content, and a non-blank one counts.
+ */
+function sectionCarriesInformation(instance: TreeNode, narrativeSuffices: boolean): boolean {
+  const content = (node: TreeNode): boolean =>
+    node.children.some((c) => {
+      if (c.kind === "attribute" || c.present === false) return false;
+      if (!isLexicalNode(c)) return true;
+      return (c.label === "#text" || c.label === "#cdata") && (c.value ?? "").trim() !== "";
+    });
+  const elements = instance.children.filter((c) => c.kind !== "attribute" && c.present !== false && !isLexicalNode(c));
+  if (elements.some((c) => wireNameOf(c) === "entry" && !isEmptyInstance(c))) return true;
+  return narrativeSuffices && elements.some((c) => wireNameOf(c) === "text" && content(c));
+}
+
+/** A `templateId` row pinned to one of the section's NoInfo flag roots. */
+function isNoInfoFlagRow(node: SpecNode, flags: ReadonlySet<string>): boolean {
+  if (!flags.size || !node.locator || lastStepOf(node.locator) !== "templateId") return false;
+  return node.fixedValues.some((f) => f.scope === "attribute" && f.attribute === "root" && f.value !== null && flags.has(f.value));
+}
+
+/** What a table's rows are being judged inside. */
+interface TableScope {
+  /** Keys the citing member is indexed under: a row carrying one names the scope itself. */
+  self: ReadonlySet<string>;
+  /** The section's `<entry>` rows are excused (NoInfo flag). */
+  entriesWaived: boolean;
+  /** templateId roots that would flag this section "no information available". */
+  noInfoFlags: ReadonlySet<string>;
+  /** The section carries content, so its NoInfo flag row does not apply. */
+  informationPresent: boolean;
+}
+
+const NO_SELF: ReadonlySet<string> = new Set();
+
 function checkSpecTablesFor(state: RunState, member: StructureMember, instances: TreeNode[], path: string): void {
-  const nodes = specNodesFor(state, member);
+  const nodes = specNodesFor(state, member, path);
   if (!nodes.length) return;
   const reconciled = reconcileByLocation(nodes, state.ctx);
+  const self = new Set(memberKeys(member));
+  const noInfoFlags = noInfoFlagRootsOf(member);
+  // Where the table requires no entry — none at all, or only optional ones, as in Care Plan —
+  // the narrative is the section's content.
+  const narrativeSuffices = !nodes.some((root) =>
+    [root, ...root.children].some((row) => {
+      if (!row.locator || lastStepOf(row.locator) !== "entry") return false;
+      const usage = usageVerdictFor(row, state.ctx).usage;
+      return usage === "M" || usage === "R" || usage === "R2";
+    }),
+  );
   const limit = Math.min(instances.length, state.maxInstances);
   for (let i = 0; i < limit; i++) {
     const instance = instances[i];
     const suffix = instances.length > 1 ? `[${i}]` : "";
-    checkSpecNodesUnder(state, reconciled, instance, `${path}${suffix}`);
+    checkSpecNodesUnder(state, reconciled, instance, `${path}${suffix}`, {
+      self,
+      entriesWaived: entryRequirementWaived(member, instance),
+      noInfoFlags,
+      informationPresent: sectionCarriesInformation(instance, narrativeSuffices),
+    });
   }
 }
 
-function checkSpecNodesUnder(state: RunState, nodes: ReconciledNode[], scope: TreeNode, pathPrefix: string): void {
+/**
+ * Judge a table's rows inside one instance of the member that cites the table.
+ *
+ * Every one of the 55 CDA section tables opens with a row for the section ITSELF —
+ * `./component/section`, no usage, no fixed values — and lists the section's fields as that
+ * row's children. The row names the very node we are scoped to, and the parser indexes that
+ * node under its absolute path, so looking the row up INSIDE the scope found nothing, the
+ * row was judged absent, and its children were never reached: a discharge summary judged 30
+ * required rules, all of them members, and not one templateId, code, title, text or entry
+ * row of any section. A row whose locator is the citing member's own locator is instantiated
+ * by the scope — the same "two rows, one location" reading reconcileByLocation applies. The
+ * rule holds only for the table's top-level rows: a nested `./component/section` row is a
+ * sub-section, not the section again.
+ */
+function checkSpecNodesUnder(
+  state: RunState,
+  nodes: ReconciledNode[],
+  scope: TreeNode,
+  pathPrefix: string,
+  table: TableScope,
+): void {
   for (const { node, others, disagrees } of nodes) {
     if (!node.locator) continue;
-    const instances = matchSpecNode(state.index, node, [scope]);
+    const isScope = locatorKeys(node.locator).some((key) => table.self.has(key));
+    const instances = isScope ? [scope] : matchSpecNode(state.index, node, [scope]);
     for (const instance of instances) state.matched.add(instance);
-    const path = `${pathPrefix}/${formatLocator(node.locator)}`;
+    const path = isScope ? pathPrefix : `${pathPrefix}/${formatLocator(node.locator)}`;
+    // An excused entry row that is absent is not judged: the parser has already told the
+    // reader why, and counting it as a required rule would misstate coverage either way.
+    if (table.entriesWaived && !instances.length && lastStepOf(node.locator) === "entry") continue;
+    // The mirror image. Every section table lists its NoInfo flag as an R2 `templateId[n]`
+    // row, and the row's own guidance says what it means: "indicates that the section is used
+    // in an on-demand document … and that there is no information available", "only allowed
+    // to be used by the nphies central services". Read as plain R2 it told every section of
+    // every Full official document — 58 warnings across the golden set — that the flag saying
+    // it has NO information was recommended but missing. Where the section carries content
+    // the flag does not apply and an absent row is not judged; absent on an empty section it
+    // still is, because there the flag is the one sanctioned way to say why.
+    if (table.informationPresent && !instances.length && isNoInfoFlagRow(node, table.noInfoFlags)) continue;
     judgeSpecNode(state, node, others, disagrees, instances, path, scope);
     if (node.children.length && instances.length) {
       const childNodes = reconcileByLocation(node.children, state.ctx);
-      checkSpecNodesUnder(state, childNodes, instances[0], path);
+      // Every instance, not just the first: the second identifier's `system` is as much a
+      // rule as the first's. Same cap as the member level.
+      const limit = Math.min(instances.length, state.maxInstances);
+      for (let i = 0; i < limit; i++) {
+        const suffix = instances.length > 1 ? `[${i}]` : "";
+        checkSpecNodesUnder(state, childNodes, instances[i], `${path}${suffix}`, { ...table, self: NO_SELF });
+      }
     }
   }
 }
@@ -1962,7 +2309,7 @@ function checkFixedValues(state: RunState, node: SpecNode, instance: TreeNode, p
       continue;
     }
 
-    const actual = valueOf(instance);
+    const actual = wholeValueOf(instance);
     if (actual === null || actual.trim() === "") continue;
     if (actual !== rule.value) {
       state.sink.push({

@@ -92,6 +92,22 @@
   --color-syn-comment: var(--nw-syn-comment);
 }
 
+/*
+ * Categorical chart series — deliberately NOT severity hues.
+ *
+ * `@theme static` because the charts reference these as runtime `var(--color-cat-N)` strings
+ * (see src/ui/charts/types.ts), not as Tailwind classes. The default @theme only emits a
+ * variable when the scanner sees a utility use it, so a refactor that moved those strings into
+ * computed code would silently drop the tokens from the build and every chart would fall back
+ * to black. Static emission removes that trap for four variables' worth of CSS.
+ */
+@theme static {
+  --color-cat-1: var(--nw-cat-1);
+  --color-cat-2: var(--nw-cat-2);
+  --color-cat-3: var(--nw-cat-3);
+  --color-cat-4: var(--nw-cat-4);
+}
+
 /* ---------------------------------------------------------------- LIGHT -- */
 :root {
   --nw-canvas: #f7f8f9;
@@ -124,6 +140,18 @@
   --nw-ignored: #8b929c;
   --nw-ignored-bg: #f2f3f5;
   --nw-ignored-ink: #6f767f;
+
+  /* Categorical series for charts that encode IDENTITY (which segment, which
+     resource type), not verdict. The severity palette is reserved and the
+     accent means "selected", so these four sit in the hue space that is
+     left. They were computed, not picked by eye: lightness band, chroma
+     floor, CVD separation, normal-vision separation and contrast all pass
+     against this app's real surfaces. Do not re-tune one without re-running
+     the whole set. */
+  --nw-cat-1: #5b5bd6;
+  --nw-cat-2: #db2777;
+  --nw-cat-3: #0891b2;
+  --nw-cat-4: #9333ea;
 
   --nw-syn-punct: #9aa1ab;
   --nw-syn-name: #1f4fb8;
@@ -171,6 +199,12 @@
     --nw-ignored-bg: #191d27;
     --nw-ignored-ink: #808a9b;
 
+    /* Categorical series, dark variants — see the light block for why. */
+    --nw-cat-1: #6f6fe8;
+    --nw-cat-2: #e0468f;
+    --nw-cat-3: #0ea5c4;
+    --nw-cat-4: #9b5de5;
+
     --nw-syn-punct: #5b6475;
     --nw-syn-name: #7fb0ff;
     --nw-syn-key: #c9a2ef;
@@ -217,6 +251,12 @@
   --nw-ignored-bg: #191d27;
   --nw-ignored-ink: #808a9b;
 
+  /* Categorical series, dark variants — see the light block for why. */
+  --nw-cat-1: #6f6fe8;
+  --nw-cat-2: #e0468f;
+  --nw-cat-3: #0ea5c4;
+  --nw-cat-4: #9b5de5;
+
   --nw-syn-punct: #5b6475;
   --nw-syn-name: #7fb0ff;
   --nw-syn-key: #c9a2ef;
@@ -232,6 +272,63 @@
 /* ------------------------------------------------------- DARK (explicit light) */
 :root[data-theme="light"] {
   color-scheme: light;
+}
+
+/* ============================================================================
+   Density — "dense" (default, the instrument) and "roomy" (presentation).
+   ----------------------------------------------------------------------------
+   Tailwind v4 compiles every size through a variable: `.h-9` is
+   `calc(var(--spacing) * 9)`, `.text-xs` is `var(--text-xs)`, `.rounded-sm`
+   is `var(--radius-sm)`. So redefining the scale under one attribute rescales
+   the whole app without a single component knowing — no density prop, no
+   second set of classes. Stamped on <html data-density> by useDensity.ts.
+
+   Only size, rhythm and (in light) surface warmth change here. Severity and
+   syntax tokens are deliberately absent: a verdict must look identical on a
+   projector and on a desk.
+   ========================================================================== */
+:root[data-density="roomy"] {
+  /* 4px unit -> 5px. Every gap, pad, height and width follows. */
+  --spacing: 0.3125rem;
+
+  /* 13px base -> 15px; the rest of the scale keeps the same ratios, snapped
+     to half-pixels so line-heights still stack cleanly. */
+  --text-2xs: 0.71875rem; /* 11.5px */
+  --text-2xs--line-height: 1rem;
+  --text-xs: 0.78125rem; /* 12.5px */
+  --text-xs--line-height: 1.15625rem;
+  --text-sm: 0.875rem; /* 14px */
+  --text-sm--line-height: 1.3125rem;
+  --text-base: 0.9375rem; /* 15px */
+  --text-base--line-height: 1.4375rem;
+  --text-lg: 1rem; /* 16px */
+  --text-lg--line-height: 1.4375rem;
+  --text-xl: 1.15625rem; /* 18.5px */
+  --text-xl--line-height: 1.59375rem;
+  --text-2xl: 1.4375rem; /* 23px */
+  --text-2xl--line-height: 1.75rem;
+
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+}
+
+/* Warm paper for presentation, LIGHT ONLY. Dark stays cool. Both branches
+   below describe "the resolved theme is light" outright rather than relying
+   on the dark blocks above out-ranking this one by source order — an equal-
+   specificity race is exactly the kind of thing a later edit breaks silently. */
+:root[data-density="roomy"][data-theme="light"] {
+  --nw-canvas: #fbfaf7;
+  --nw-surface: #ffffff;
+  --nw-raised: #f7f5f0;
+}
+@media (prefers-color-scheme: light) {
+  :root[data-density="roomy"]:not([data-theme="dark"]) {
+    --nw-canvas: #fbfaf7;
+    --nw-surface: #ffffff;
+    --nw-raised: #f7f5f0;
+  }
 }
 
 /* ============================================================================
@@ -253,8 +350,10 @@ body {
   background: var(--nw-canvas);
   color: var(--nw-ink);
   font-family: var(--font-sans);
-  font-size: 0.8125rem;
-  line-height: 1.25rem;
+  /* Through the theme variables, not literals, so the density block above
+     reaches inherited body text and not only `text-*` utilities. */
+  font-size: var(--text-base);
+  line-height: var(--text-base--line-height);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-variant-numeric: tabular-nums;

@@ -19,6 +19,23 @@ const jiti = createJiti(import.meta.url, { interopDefault: true, moduleCache: tr
 
 let engine = null;
 
+/**
+ * No suite that uses this harness may reach the network.
+ *
+ * Every score the product publishes — round trips, unaccounted-for errors, the mutation
+ * floors — must depend on the compiled specification alone. The AI layer lives beside the
+ * engine, never inside it, and this is the mechanical guarantee: a test that accidentally
+ * called a model would throw here instead of quietly producing a number that varies with a
+ * remote service. Browser and SSR suites use their own drivers and are unaffected.
+ */
+globalThis.fetch = async (input) => {
+  throw new Error(
+    `network access is disabled under the engine test harness (attempted ${String(
+      typeof input === "string" ? input : (input && input.url) || input,
+    )})`,
+  );
+};
+
 /** Load the engine once, wired to read `src/spec/` from disk. */
 export async function loadEngine() {
   if (engine) return engine;

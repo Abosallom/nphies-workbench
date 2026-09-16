@@ -23,7 +23,10 @@ import test from "node:test";
 import { loadEngine, readGolden, goldenExists } from "./harness.mjs";
 import { mutationsFor } from "./mutate.mjs";
 
-const FLOORS = { detected: 0.8, classified: 0.72, located: 0.6 };
+// Raised from 80/72/60 after the CDA section-table fix: reaching a section's field rows took
+// the measured scores to 97/93/75 across the same 75 mutations. Each floor sits one point
+// under the measurement so a genuine regression fails and a rounding wobble does not.
+const FLOORS = { detected: 0.96, classified: 0.92, located: 0.74 };
 
 const { workbench, structure: S } = await loadEngine();
 const golden = await workbench.loadGoldenIndex();

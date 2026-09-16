@@ -92,3 +92,12 @@ export type { ThemeChoice } from "./useTheme";
 
 export { useVirtualRows } from "./useVirtualRows";
 export type { VirtualWindow, UseVirtualRowsOptions } from "./useVirtualRows";
+
+export { useDensity } from "./useDensity";
+export type { DensityChoice } from "./useDensity";
+
+export { DensityToggle } from "./DensityToggle";
+export type { DensityToggleProps } from "./DensityToggle";
+
+/* Chart primitives: hand-written SVG, format-agnostic, colour reserved like everything else. */
+export * from "./charts";
